@@ -28,15 +28,15 @@ public class Membership extends AbstractAuditable<User, Integer> {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "unit_id")
+    @JoinColumn(name = "unit_id", nullable = false)
     private Unit unit;
 
     @ManyToOne
-    @JoinColumn(name = "person_id")
+    @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
     @Enumerated
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private Status status;
 
 }
