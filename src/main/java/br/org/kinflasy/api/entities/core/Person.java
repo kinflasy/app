@@ -1,6 +1,7 @@
 package br.org.kinflasy.api.entities.core;
 
 import java.time.LocalDate;
+import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import br.org.kinflasy.api.entities.core.contact.Address;
 import jakarta.persistence.CascadeType;
@@ -14,7 +15,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "people")
-public class Person {
+public class Person extends AbstractAuditable<User, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

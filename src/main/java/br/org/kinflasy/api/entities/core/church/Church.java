@@ -1,10 +1,39 @@
 package br.org.kinflasy.api.entities.core.church;
 
+import java.time.LocalDateTime;
+
+import org.springframework.data.jpa.domain.AbstractAuditable;
+
+import br.org.kinflasy.api.entities.core.User;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "churches")
-public class Church {
-    // TODO: ver repositório Laravel
+public class Church extends AbstractAuditable<User, Integer> {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Integer id;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "slug", nullable = false, unique = true)
+    private String slug;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "emailVerifiedAt")
+    private LocalDateTime emailVerifiedAt;
+
 }

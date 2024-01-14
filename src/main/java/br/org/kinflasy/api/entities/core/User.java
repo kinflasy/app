@@ -2,6 +2,8 @@ package br.org.kinflasy.api.entities.core;
 
 import java.time.LocalDateTime;
 
+import org.springframework.data.jpa.domain.AbstractAuditable;
+
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -14,17 +16,17 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends AbstractAuditable<User, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Integer id;
 
-    @Column(name = "username", nullable = true)
+    @Column(name = "username", nullable = false)
     private String username;
 
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
 
     @Column(name = "emailVerifiedAt")
