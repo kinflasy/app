@@ -17,7 +17,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "entries")
+@Table(name = "leaves")
 public class Leave extends AbstractAuditable<User, Integer> {
 
     @Id
