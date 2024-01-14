@@ -16,11 +16,19 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "memberships", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"unit_id", "person_id"})
 })
+@NoArgsConstructor()
+@AllArgsConstructor()
+@Getter
+@EqualsAndHashCode(callSuper = false)
 public class Membership extends AbstractAuditable<User, Integer> {
 
     @Id

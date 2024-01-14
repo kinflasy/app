@@ -6,9 +6,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "addresses")
+@NoArgsConstructor()
+@AllArgsConstructor()
+@Getter
+@EqualsAndHashCode(callSuper = false)
 public abstract class Address {
 
     @Id
