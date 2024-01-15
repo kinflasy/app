@@ -1,14 +1,12 @@
-package br.org.kinflasy.api.entities.core.church.membership;
+package br.org.kinflasy.api.entities.core.church.department;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.entities.core.User;
-import br.org.kinflasy.api.entities.core.church.Unit;
-import br.org.kinflasy.api.utils.enums.core.church.membership.Status;
+import br.org.kinflasy.api.utils.enums.core.church.department.IntegrationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,29 +20,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "memberships", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"unit_id", "person_id"})
+@Table(name = "integrations", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"department_id", "person_id"})
 })
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class Membership extends AbstractAuditable<User, Integer> {
+public class Integration extends AbstractAuditable<User, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "unit_id", nullable = false)
-    private Unit unit;
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
 
     @ManyToOne
     @JoinColumn(name = "person_id", nullable = false)
     private Person person;
 
-    @Enumerated
-    @Column(name = "status", nullable = false)
-    private Status status;
+    @Column(name = "type", nullable = false)
+    private IntegrationType type = IntegrationType.INTEGRANT;
 
 }

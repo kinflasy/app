@@ -22,8 +22,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "leaves")
-@NoArgsConstructor()
-@AllArgsConstructor()
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
 public class Leave extends AbstractAuditable<User, Integer> {

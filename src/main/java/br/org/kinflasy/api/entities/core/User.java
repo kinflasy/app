@@ -20,8 +20,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
-@NoArgsConstructor()
-@AllArgsConstructor()
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
 public class User extends AbstractAuditable<User, Integer> {
@@ -37,7 +37,7 @@ public class User extends AbstractAuditable<User, Integer> {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "emailVerifiedAt")
+    @Column(name = "email_verified_at")
     @Nullable
     private LocalDateTime emailVerifiedAt;
 

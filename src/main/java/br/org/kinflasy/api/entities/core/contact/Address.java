@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "addresses")
-@NoArgsConstructor()
-@AllArgsConstructor()
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
 public abstract class Address {
@@ -24,28 +24,28 @@ public abstract class Address {
     @Column(name = "id", nullable = false)
     private Integer id;
     
-    @Column(name = "zip" , nullable = true)
+    @Column(name = "zip")
     private String zip;
 
-    @Column(name = "country" , nullable = true)
+    @Column(name = "country")
     private String country;
 
-    @Column(name = "state" , nullable = true)
+    @Column(name = "state")
     private String state;
 
-    @Column(name = "city" , nullable = true)
+    @Column(name = "city")
     private String city;
 
-    @Column(name = "neighborhood" , nullable = true)
+    @Column(name = "neighborhood")
     private String neighborhood;
 
-    @Column(name = "street" , nullable = true)
+    @Column(name = "street")
     private String street;
 
-    @Column(name = "number" , nullable = true)
+    @Column(name = "number")
     private String number;
 
-    @Column(name = "reference", nullable = true)
+    @Column(name = "reference")
     private String reference;
     
 }

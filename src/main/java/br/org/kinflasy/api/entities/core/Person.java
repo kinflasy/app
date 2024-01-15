@@ -20,8 +20,8 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "people")
-@NoArgsConstructor()
-@AllArgsConstructor()
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
 public class Person extends AbstractAuditable<User, Integer> {
@@ -34,19 +34,19 @@ public class Person extends AbstractAuditable<User, Integer> {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "nickname", nullable = true)
+    @Column(name = "nickname")
     private String nickname;
 
     @Column(name = "gender", nullable = false)
     private Gender gender;
 
-    @Column(name = "localDate", nullable = false)
+    @Column(name = "birth_date", nullable = false)
     private LocalDate birthDate;
 
-    @OneToOne(optional = true, cascade = CascadeType.ALL)
-    private Address address;
-
-    @Column(name = "phone", nullable = true)
+    @Column(name = "phone")
     private String phone;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Address address;
 
 }
