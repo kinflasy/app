@@ -1,0 +1,20 @@
+{
+    "build": {
+        "context": "../..",
+        "dockerfile": "Dockerfile"
+    },
+
+    "workspaceFolder": "..",
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "vscjava.vscode-java-pack",
+                "vmware.vscode-boot-dev-pack",
+                "redhat.vscode-xml",
+                "redhat.vscode-yaml",
+                "cweijan.dbclient-jdbc"
+            ]
+        }
+    }
+}
