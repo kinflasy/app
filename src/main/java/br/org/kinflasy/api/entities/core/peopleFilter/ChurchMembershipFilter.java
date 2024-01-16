@@ -2,7 +2,7 @@ package br.org.kinflasy.api.entities.core.peopleFilter;
 
 import java.util.function.Function;
 
-import br.org.kinflasy.api.entities.core.User;
+import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.entities.core.church.Church;
 import br.org.kinflasy.api.utils.enums.core.church.membership.Status;
 import jakarta.persistence.Column;
@@ -36,7 +36,7 @@ public class ChurchMembershipFilter extends PeopleFilter {
     private Status status;
 
     @Override
-    public Function<User, Boolean> getFilter() {
+    public Function<Person, Boolean> getFilter() {
         // TODO: escrever regra de negócio (usar repository/service)
         throw new UnsupportedOperationException("Unimplemented method 'getFilter'");
     }

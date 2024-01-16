@@ -4,7 +4,7 @@ import java.util.function.Function;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
-import br.org.kinflasy.api.entities.core.User;
+import br.org.kinflasy.api.entities.core.Person;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,13 +17,13 @@ import lombok.Getter;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Getter
-public abstract class PeopleFilter extends AbstractAuditable<User, Integer> {
+public abstract class PeopleFilter extends AbstractAuditable<Person, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
-    public abstract Function<User, Boolean> getFilter();
+    public abstract Function<Person, Boolean> getFilter();
 
 }

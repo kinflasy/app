@@ -3,7 +3,7 @@ package br.org.kinflasy.api.entities.core.peopleFilter;
 import java.util.List;
 import java.util.function.Function;
 
-import br.org.kinflasy.api.entities.core.User;
+import br.org.kinflasy.api.entities.core.Person;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
@@ -24,14 +24,14 @@ public class OrGroupPeopleFilter extends PeopleFilter {
     private List<PeopleFilter> filters;
 
     @Override
-    public Function<User, Boolean> getFilter() {
-        return (user -> {
+    public Function<Person, Boolean> getFilter() {
+        return (person -> {
             // Iniciar com false (valor neutro do OR)
             var result = false;
 
             // Apicar cada filtro
             for (final var filter : filters) {
-                result |= filter.getFilter().apply(user);
+                result |= filter.getFilter().apply(person);
             }
 
             // Retornar
