@@ -29,5 +29,5 @@
       }
     }
   },
-  "postCreateCommand": "git config --global --add safe.directory /home/dev/api && git checkout develop && mvn clean install"
+  "postCreateCommand": "git config --global --add safe.directory /home/dev/api && git checkout develop"
 }
