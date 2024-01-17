@@ -11,9 +11,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "churches")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@EqualsAndHashCode(callSuper = false)
 public class Church extends AbstractAuditable<User, Integer> {
 
     @Id
@@ -33,7 +41,7 @@ public class Church extends AbstractAuditable<User, Integer> {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "emailVerifiedAt")
+    @Column(name = "email_verified_at")
     private LocalDateTime emailVerifiedAt;
 
 }

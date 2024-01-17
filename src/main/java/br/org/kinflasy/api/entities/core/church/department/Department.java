@@ -1,13 +1,14 @@
-package br.org.kinflasy.api.entities.core.church.membership;
+package br.org.kinflasy.api.entities.core.church.department;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
-import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.entities.core.User;
 import br.org.kinflasy.api.entities.core.church.Unit;
-import br.org.kinflasy.api.utils.enums.core.church.membership.Status;
+import br.org.kinflasy.api.entities.core.peopleFilter.PeopleFilter;
+import br.org.kinflasy.api.utils.enums.core.church.department.DepartmentType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,36 +16,38 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "memberships", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"unit_id", "person_id"})
-})
+@Table(name = "departments")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class Membership extends AbstractAuditable<User, Integer> {
+public class Department extends AbstractAuditable<User, Integer>  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "unit_id", nullable = false)
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @Column(name = "slug", nullable = false)
+    private String slug;
+
+    @ManyToOne(optional = false)
     private Unit unit;
 
-    @ManyToOne
-    @JoinColumn(name = "person_id", nullable = false)
-    private Person person;
+    @Enumerated(EnumType.ORDINAL)
+    @Column(name = "type", nullable = false)
+    private DepartmentType type;
 
-    @Enumerated
-    @Column(name = "status", nullable = false)
-    private Status status;
+    @ManyToOne
+    @JoinColumn(name = "visibility_filter", nullable = false)
+    private PeopleFilter visibilityFilter;
 
 }

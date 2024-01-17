@@ -16,17 +16,26 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "units", uniqueConstraints = {
         @UniqueConstraint(columnNames = { "church_id", "name" }),
         @UniqueConstraint(columnNames = { "church_id", "slug" })
 })
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@EqualsAndHashCode(callSuper = false)
 public class Unit extends AbstractAuditable<User, Integer> {
 
     @Id
@@ -50,6 +59,7 @@ public class Unit extends AbstractAuditable<User, Integer> {
     private UnitType type;
 
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "church_id")
     private Church church;
 
     @OneToOne(cascade = CascadeType.ALL, optional = false)

@@ -13,9 +13,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@EqualsAndHashCode(callSuper = false)
 public class User extends AbstractAuditable<User, Integer> {
 
     @Id
@@ -29,7 +37,7 @@ public class User extends AbstractAuditable<User, Integer> {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "emailVerifiedAt")
+    @Column(name = "email_verified_at")
     @Nullable
     private LocalDateTime emailVerifiedAt;
 
@@ -38,4 +46,5 @@ public class User extends AbstractAuditable<User, Integer> {
 
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     private Person person;
+
 }

@@ -15,9 +15,17 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "entries")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@EqualsAndHashCode(callSuper = false)
 public class Entry extends AbstractAuditable<User, Integer>  {
 
     @Id
