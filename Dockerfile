@@ -18,12 +18,8 @@ RUN apt-get install -y openjdk-17-jdk
 RUN apt-get install -y maven
 RUN apt-get install -y git
 
-# Instalar o Zsh
-RUN apt-get install -y zsh
-
-# Copiar as configurações padrão do Zsh e Dev Container para o usuário dev
-COPY /config/* /home/dev/
-COPY .devcontainer.json /home/dev/
+# Definir JAVA_HOME
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 
 # Copiar o projeto
 COPY . .
@@ -37,8 +33,11 @@ EXPOSE 8080
 # Definir as permissões necessárias
 RUN chown -R dev:dev ..
 
+# Ativar repositório do Git
+RUN git config --global --add safe.directory /home/dev/api
+
 # Switch para o usuário "dev"
 USER dev
 
-# Definir Zsh como o shell padrão no contêiner
-ENTRYPOINT ["/usr/bin/zsh"]
+# Definir Bash como o shell padrão no container
+ENTRYPOINT ["/bin/bash"]
