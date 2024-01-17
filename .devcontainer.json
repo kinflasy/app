@@ -1,9 +1,9 @@
 {
-  "name": "${APP_NAME}",
+  "name": "kinflasy-api",
   "dockerComposeFile": [
     "docker-compose.yml"
   ],
-  "service": "app",
+  "service": "api",
   "workspaceFolder": "/home/dev/api",
   "customizations": {
     "vscode": {
@@ -13,20 +13,21 @@
         "vmware.vscode-boot-dev-pack",
         "redhat.vscode-xml",
         "redhat.vscode-yaml",
-        "cweijan.dbclient-jdbc"
+        "cweijan.vscode-database-client2"
       ],
       "settings": {
-        "java.jdt.ls.home": "/usr/lib/jvm/java-17-openjdk-amd64", // Caminho do Java no container
-        // "java.configuration.maven.userSettings": "/root/.m2/settings.xml", // Configurações do Maven
+        "java.jdt.ls.home": "/usr/lib/jvm/java-17-openjdk-amd64",
         "java.configuration.runtimes": [
           {
             "name": "JavaSE-17",
             "path": "/usr/lib/jvm/java-17-openjdk-amd64",
             "default": true
           }
-        ]
+        ],
+        "java.compile.nullAnalysis.mode": "automatic",
+        "terminal.integrated.defaultProfile.linux": "bash"
       }
     }
   },
-  "postCreateCommand": "mvn clean install" // Comando a ser executado após a criação do contêiner
+  "postCreateCommand": "git config --global --add safe.directory /home/dev/api && git checkout develop && mvn clean install"
 }

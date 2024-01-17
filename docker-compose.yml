@@ -4,6 +4,7 @@ services:
   # Serviço para a aplicação Spring Boot
   api:
     container_name: api
+    hostname: ${APP_NAME}-api
     build: .
     image: ${APP_NAME}-api
     ports:
