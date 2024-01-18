@@ -15,12 +15,14 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "addresses")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @EqualsAndHashCode(callSuper = false)
 public class Address extends AbstractAuditable<User, Integer> {
 
