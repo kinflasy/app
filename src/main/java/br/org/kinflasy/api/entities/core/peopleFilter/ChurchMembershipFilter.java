@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "church_membership_people_filters", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"church_id", "status"})
+        @UniqueConstraint(columnNames = { "church_id", "status" })
 })
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,8 +37,9 @@ public class ChurchMembershipFilter extends PeopleFilter {
 
     @Override
     public Function<Person, Boolean> getFilter() {
-        // TODO: escrever regra de negócio (usar repository/service)
-        throw new UnsupportedOperationException("Unimplemented method 'getFilter'");
+        return (person -> person.getMemberships().stream()
+                .anyMatch(membership -> membership.getUnit().getChurch().equals(church)
+                        && membership.getStatus() == status));
     }
 
 }

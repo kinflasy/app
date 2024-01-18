@@ -1,10 +1,14 @@
 package br.org.kinflasy.api.entities.core;
 
 import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.data.jpa.domain.AbstractAuditable;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import br.org.kinflasy.api.entities.core.church.department.Integration;
+import br.org.kinflasy.api.entities.core.church.membership.Membership;
 import br.org.kinflasy.api.entities.core.contact.Address;
 import br.org.kinflasy.api.utils.enums.core.Gender;
 import jakarta.persistence.CascadeType;
@@ -15,6 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -62,5 +67,11 @@ public class Person extends AbstractAuditable<User, Integer> {
     @OneToOne(cascade = CascadeType.ALL)
     @Nullable
     private Address address;
+
+    @OneToMany(mappedBy = "person")
+    private List<Membership> memberships;
+
+    @OneToMany(mappedBy = "person")
+    private List<Integration> integrations;
 
 }

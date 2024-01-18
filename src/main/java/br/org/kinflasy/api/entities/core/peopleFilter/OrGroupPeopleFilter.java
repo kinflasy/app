@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "or_group_people_filter")
+@Table(name = "or_group_people_filters")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
