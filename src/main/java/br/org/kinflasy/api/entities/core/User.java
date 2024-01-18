@@ -2,7 +2,9 @@ package br.org.kinflasy.api.entities.core;
 
 import java.time.LocalDateTime;
 
-import jakarta.annotation.Nullable;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,12 +27,15 @@ public class User extends Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @NonNull
     private Integer id;
 
     @Column(name = "username", nullable = false)
+    @NonNull
     private String username;
 
     @Column(name = "email", nullable = false)
+    @NonNull
     private String email;
 
     @Column(name = "email_verified_at")

@@ -2,6 +2,8 @@ package br.org.kinflasy.api.entities.core;
 
 import java.time.LocalDate;
 import org.springframework.data.jpa.domain.AbstractAuditable;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.contact.Address;
 import br.org.kinflasy.api.utils.enums.core.Gender;
@@ -15,6 +17,7 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -31,25 +34,33 @@ public class Person extends AbstractAuditable<User, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
+    @NonNull
     private Integer id;
 
     @Column(name = "name", nullable = false)
+    @NonNull
+    @NotBlank
     private String name;
 
     @Column(name = "nickname")
+    @Nullable
     private String nickname;
 
     @Column(name = "gender", nullable = false)
+    @NonNull
     private Gender gender;
 
     @Column(name = "birth_date", nullable = false)
+    @NonNull
     private LocalDate birthDate;
 
     @Column(name = "phone")
+    @Nullable
     private String phone;
 
     @OneToOne(cascade = CascadeType.ALL)
+    @Nullable
     private Address address;
 
 }

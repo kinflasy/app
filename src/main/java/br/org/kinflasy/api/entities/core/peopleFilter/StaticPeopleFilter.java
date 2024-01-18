@@ -2,6 +2,8 @@ package br.org.kinflasy.api.entities.core.peopleFilter;
 
 import java.util.function.Function;
 
+import org.springframework.lang.NonNull;
+
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.utils.enums.core.PersonCharacteristic;
 import jakarta.persistence.Column;
@@ -24,11 +26,12 @@ public class StaticPeopleFilter extends PeopleFilter {
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "mode", unique = true)
-    private PersonCharacteristic mode;
+    @NonNull
+    private PersonCharacteristic characteristic;
 
     @Override
     public Function<Person, Boolean> getFilter() {
-        return mode.getFilter();
+        return characteristic.getFilter();
     }
 
 }
