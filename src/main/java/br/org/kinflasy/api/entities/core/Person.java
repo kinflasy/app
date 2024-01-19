@@ -14,6 +14,7 @@ import br.org.kinflasy.api.utils.enums.core.Gender;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -67,7 +68,7 @@ public class Person extends AbstractAuditable<User, Integer> {
     @Nullable
     private String phone;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     @Nullable
     private Address address;
