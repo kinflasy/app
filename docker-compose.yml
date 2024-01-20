@@ -16,6 +16,8 @@ services:
       - DATABASE_URL=jdbc:mariadb://mariadb:3306/${DB_DATABASE}
       - DATABASE_USERNAME=${DB_USERNAME}
       - DATABASE_PASSWORD=${DB_PASSWORD}
+      - GIT_USER=${GIT_USER}
+      - GIT_EMAIL=${GIT_EMAIL}
     volumes:
       - .:/home/dev/api
     tty: true
