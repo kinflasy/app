@@ -2,6 +2,8 @@ package br.org.kinflasy.api.entities.core.peopleFilter;
 
 import java.util.function.Function;
 
+import org.springframework.lang.NonNull;
+
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.entities.core.church.department.Department;
 import br.org.kinflasy.api.utils.enums.core.church.department.IntegrationType;
@@ -28,13 +30,13 @@ public class DepartmentIntegrationFilter extends PeopleFilter {
 
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
-    private Department department;
+    private @NonNull Department department;
 
     @Column(name = "type")
-    private IntegrationType type = IntegrationType.INTEGRANT;
+    private @NonNull IntegrationType type = IntegrationType.INTEGRANT;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
+    public @NonNull Function<Person, Boolean> getFilter() {
         return (person -> person.getIntegrations().stream()
                 .anyMatch(integration -> integration.getDepartment().equals(department)
                         && integration.getType() == type));

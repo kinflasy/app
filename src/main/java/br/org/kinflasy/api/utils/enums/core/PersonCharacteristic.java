@@ -1,6 +1,10 @@
 package br.org.kinflasy.api.utils.enums.core;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.function.Function;
+
+import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.Person;
 
@@ -8,15 +12,17 @@ public enum PersonCharacteristic {
 
     EVERYBODY(person -> true),
     MALE(person -> person.getGender() == Gender.MALE),
-    FEMALE(person -> person.getGender() == Gender.FEMALE);
+    FEMALE(person -> person.getGender() == Gender.FEMALE),
+    ADULT(person -> Period.between(person.getBirthDate(), LocalDate.now()).getYears() >= Person.ADULT_AGE),
+    MINOR(person -> !(ADULT.getFilter().apply(person)));
 
-    private final Function<Person, Boolean> filter;
+    private final @NonNull Function<Person, Boolean> filter;
 
-    private PersonCharacteristic(final Function<Person, Boolean> filter) {
+    private PersonCharacteristic(final @NonNull Function<Person, Boolean> filter) {
         this.filter = filter;
     }
 
-    public Function<Person, Boolean> getFilter() {
+    public @NonNull Function<Person, Boolean> getFilter() {
         return filter;
     }
 

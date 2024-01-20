@@ -29,7 +29,7 @@ public class StaticPeopleFilter extends PeopleFilter {
     private @NonNull PersonCharacteristic characteristic;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
+    public @NonNull Function<Person, Boolean> getFilter() {
         return characteristic.getFilter();
     }
 

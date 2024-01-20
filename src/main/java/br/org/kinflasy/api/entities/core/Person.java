@@ -41,6 +41,8 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = false)
 public class Person extends AbstractAuditable<User, Integer> {
 
+    public final static Integer ADULT_AGE = 18;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

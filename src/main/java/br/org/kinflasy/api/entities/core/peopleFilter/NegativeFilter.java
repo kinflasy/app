@@ -2,6 +2,8 @@ package br.org.kinflasy.api.entities.core.peopleFilter;
 
 import java.util.function.Function;
 
+import org.springframework.lang.NonNull;
+
 import br.org.kinflasy.api.entities.core.Person;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -22,10 +24,10 @@ public class NegativeFilter extends PeopleFilter {
 
     @ManyToOne
     @JoinColumn(name = "filter", nullable = false)
-    private PeopleFilter filter;
+    private @NonNull PeopleFilter filter;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
+    public @NonNull Function<Person, Boolean> getFilter() {
         // Negar resultado do filtro base
         return (person -> !filter.getFilter().apply(person));
     }

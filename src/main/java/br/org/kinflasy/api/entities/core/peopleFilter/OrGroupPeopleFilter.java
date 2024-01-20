@@ -3,6 +3,8 @@ package br.org.kinflasy.api.entities.core.peopleFilter;
 import java.util.List;
 import java.util.function.Function;
 
+import org.springframework.lang.NonNull;
+
 import br.org.kinflasy.api.entities.core.Person;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -21,10 +23,10 @@ import lombok.NoArgsConstructor;
 public class OrGroupPeopleFilter extends PeopleFilter {
 
     @ManyToMany
-    private List<PeopleFilter> filters;
+    private @NonNull List<PeopleFilter> filters;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
+    public @NonNull Function<Person, Boolean> getFilter() {
         return (person -> {
             // Iniciar com false (valor neutro do OR)
             var result = false;

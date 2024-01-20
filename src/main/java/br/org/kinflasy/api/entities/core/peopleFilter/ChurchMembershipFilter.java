@@ -2,6 +2,8 @@ package br.org.kinflasy.api.entities.core.peopleFilter;
 
 import java.util.function.Function;
 
+import org.springframework.lang.NonNull;
+
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.entities.core.church.Church;
 import br.org.kinflasy.api.utils.enums.core.church.membership.Status;
@@ -29,14 +31,14 @@ public class ChurchMembershipFilter extends PeopleFilter {
 
     @ManyToOne
     @JoinColumn(name = "church_id", nullable = false)
-    private Church church;
+    private @NonNull Church church;
 
     @Enumerated
     @Column(name = "status")
-    private Status status;
+    private @NonNull Status status;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
+    public @NonNull Function<Person, Boolean> getFilter() {
         return (person -> person.getMemberships().stream()
                 .anyMatch(membership -> membership.getUnit().getChurch().equals(church)
                         && membership.getStatus() == status));
