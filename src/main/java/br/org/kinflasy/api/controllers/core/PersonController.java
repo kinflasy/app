@@ -61,7 +61,7 @@ public class PersonController {
             @RequestBody final @NonNull UpdatePerson form) {
         try {
             final var existingItem = service.findById(id);
-            return new ResponseEntity<>(PersonDTO.ofNullable(service.update(form.transferTo(existingItem))),
+            return new ResponseEntity<>(PersonDTO.ofNullable(service.update(form.update(existingItem))),
                     HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

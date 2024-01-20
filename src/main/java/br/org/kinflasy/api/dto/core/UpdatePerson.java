@@ -33,7 +33,7 @@ public class UpdatePerson {
     @Nullable
     protected CreateAddress address;
 
-    public @NonNull Person transferTo(@NonNull final Person person) {
+    public @NonNull Person update(@NonNull final Person person) {
         if (name != null) {
             person.setName(name);
         }

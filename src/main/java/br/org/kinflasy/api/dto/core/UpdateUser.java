@@ -26,30 +26,20 @@ public class UpdateUser extends UpdatePerson {
 
     }
 
-    public @NonNull User transferTo(@NonNull final User user) {
-        if (name != null) {
-            user.setName(name);
+    public @NonNull User update(@NonNull final User user) {
+        super.update(user);
+
+        if (username != null) {
+            user.setUsername(username);
         }
 
-        if (nickname != null) {
-            user.setNickname(nickname);
-        }
-
-        if (gender != null) {
-            user.setGender(gender);
-        }
-
-        if (birthDate != null) {
-            user.setBirthDate(birthDate);
-        }
-
-        if (phone != null) {
-            user.setPhone(phone);
+        if (email != null) {
+            user.setEmail(email);
         }
 
         user.setAddress((address != null) ? address.toAddress() : null);
-        return user;
 
+        return user;
     }
 
 }
