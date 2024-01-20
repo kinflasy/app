@@ -6,6 +6,7 @@ import org.springframework.lang.NonNull;
 import br.org.kinflasy.api.entities.core.User;
 import br.org.kinflasy.api.entities.core.contact.Address;
 import br.org.kinflasy.api.utils.enums.core.church.UnitType;
+import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,6 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "units", uniqueConstraints = {
@@ -32,6 +34,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @EqualsAndHashCode(callSuper = false)
 public class Unit extends AbstractAuditable<User, Integer> {
 
@@ -50,7 +53,7 @@ public class Unit extends AbstractAuditable<User, Integer> {
     private @NonNull String email;
 
     @Column(name = "phone", nullable = false)
-    private @NonNull String phone;
+    private @Nullable String phone;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "type", nullable = false)

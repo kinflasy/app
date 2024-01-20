@@ -18,19 +18,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.api.dto.core.church.ChurchDTO;
 import br.org.kinflasy.api.dto.core.church.CreateChurch;
+import br.org.kinflasy.api.dto.core.church.CreateUnit;
+import br.org.kinflasy.api.dto.core.church.UnitDTO;
 import br.org.kinflasy.api.dto.core.church.UpdateChurch;
 import br.org.kinflasy.api.services.core.church.ChurchService;
+import br.org.kinflasy.api.services.core.church.UnitService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("v1/core/church")
+@RequestMapping("v1/core/churches")
 public class ChurchController {
 
     private final ChurchService service;
+    private final UnitService unitService;
 
-    public ChurchController(@Autowired final ChurchService service) {
+    public ChurchController(@Autowired final ChurchService service, @Autowired final UnitService unitService) {
         this.service = service;
+        this.unitService = unitService;
     }
 
     @GetMapping
@@ -76,6 +81,18 @@ public class ChurchController {
         } catch (final Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
+    }
+
+    @GetMapping("{id}/units")
+    public ResponseEntity<List<UnitDTO>> getUnits(@PathVariable("id") final @NonNull Integer id) {
+        return new ResponseEntity<>(unitService.dto().nonNull(service.getUnits(id)), HttpStatus.OK);
+    }
+
+    @PostMapping("{id}/units")
+    public ResponseEntity<UnitDTO> createUnit(@PathVariable("id") final @NonNull Integer id,
+            @RequestBody @Valid final @NonNull CreateUnit form) {
+        final var createdUnit = service.createUnit(id, form.toUnit());
+        return new ResponseEntity<>(unitService.dto().nonNull(createdUnit), HttpStatus.CREATED);
     }
 
 }

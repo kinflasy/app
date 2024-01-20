@@ -1,6 +1,7 @@
 package br.org.kinflasy.api.entities.core.church;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
 import org.springframework.lang.NonNull;
@@ -12,6 +13,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -50,5 +52,8 @@ public class Church extends AbstractAuditable<User, Integer> {
 
     @Column(name = "email_verified_at")
     private @Nullable LocalDateTime emailVerifiedAt;
+
+    @OneToMany(mappedBy = "church")
+    private @NonNull List<Unit> units;
 
 }

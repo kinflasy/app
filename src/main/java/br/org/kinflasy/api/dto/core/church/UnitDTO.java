@@ -12,7 +12,7 @@ public record UnitDTO(
         @NonNull String name,
         @NonNull String slug,
         @NonNull String email,
-        @NonNull String phone,
+        @Nullable String phone,
         @NonNull UnitType type,
         @NonNull ChurchDTO church,
         @Nullable AddressDTO address) {
