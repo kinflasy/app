@@ -46,32 +46,32 @@ public class Person extends AbstractAuditable<User, Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private @NonNull Integer id;
+    protected @NonNull Integer id;
 
     @Column(name = "name", nullable = false)
     @NotBlank
-    private @NonNull String name;
+    protected @NonNull String name;
 
     @Column(name = "nickname")
-    private @Nullable String nickname;
+    protected @Nullable String nickname;
 
     @Column(name = "gender", nullable = false)
-    private @NonNull Gender gender;
+    protected @NonNull Gender gender;
 
     @Column(name = "birth_date", nullable = false)
-    private @NonNull LocalDate birthDate;
+    protected @NonNull LocalDate birthDate;
 
     @Column(name = "phone")
-    private @Nullable String phone;
+    protected @Nullable String phone;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "address_id")
-    private @Nullable Address address;
+    protected @Nullable Address address;
 
     @OneToMany(mappedBy = "person")
-    private @NonNull List<Membership> memberships;
+    protected @NonNull List<Membership> memberships;
 
     @OneToMany(mappedBy = "person")
-    private @NonNull List<Integration> integrations;
+    protected @NonNull List<Integration> integrations;
 
 }

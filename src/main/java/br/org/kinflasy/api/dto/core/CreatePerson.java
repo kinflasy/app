@@ -15,33 +15,26 @@ import lombok.Getter;
 @Getter
 public class CreatePerson {
 
-    @NonNull
-    private String name;
+    protected @NonNull String name;
+    protected @Nullable String nickname;
+    protected @NonNull Gender gender;
+    protected @NonNull LocalDate birthDate;
+    protected @Nullable String phone;
+    protected @Nullable CreateAddress address;
 
-    @Nullable
-    private String nickname;
-
-    @NonNull
-    private Gender gender;
-
-    @NonNull
-    private LocalDate birthDate;
-
-    @Nullable
-    private String phone;
-
-    @Nullable
-    private CreateAddress address;
-
-    public @NonNull Person toPerson() {
-        final var person = new Person();
+    public @NonNull Person update(final @NonNull Person person) {
         person.setName(name);
         person.setNickname(nickname);
         person.setGender(gender);
         person.setBirthDate(birthDate);
         person.setPhone(phone);
         person.setAddress((address != null) ? address.toAddress() : null);
+
         return person;
     }
 
+    public @NonNull Person toPerson() {
+        return update(new Person());
+    }
+    
 }

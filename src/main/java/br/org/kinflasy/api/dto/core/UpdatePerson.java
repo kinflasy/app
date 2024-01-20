@@ -16,22 +16,22 @@ import lombok.Getter;
 public class UpdatePerson {
 
     @Nullable
-    private String name;
+    protected String name;
 
     @Nullable
-    private String nickname;
+    protected String nickname;
 
     @Nullable
-    private Gender gender;
+    protected Gender gender;
 
     @Nullable
-    private LocalDate birthDate;
+    protected LocalDate birthDate;
 
     @Nullable
-    private String phone;
+    protected String phone;
 
     @Nullable
-    private CreateAddress address;
+    protected CreateAddress address;
 
     public @NonNull Person transferTo(@NonNull final Person person) {
         if (name != null) {

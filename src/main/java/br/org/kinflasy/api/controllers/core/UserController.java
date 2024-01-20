@@ -16,40 +16,40 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.org.kinflasy.api.dto.core.CreatePerson;
-import br.org.kinflasy.api.dto.core.PersonDTO;
-import br.org.kinflasy.api.dto.core.UpdatePerson;
-import br.org.kinflasy.api.entities.core.Person;
-import br.org.kinflasy.api.services.core.PersonService;
+import br.org.kinflasy.api.dto.core.CreateUser;
+import br.org.kinflasy.api.dto.core.UserDTO;
+import br.org.kinflasy.api.dto.core.UpdateUser;
+import br.org.kinflasy.api.entities.core.User;
+import br.org.kinflasy.api.services.core.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("v1/core/people")
-public class PersonController {
+@RequestMapping("v1/core/users")
+public class UserController {
 
-    private final PersonService service;
+    private final UserService service;
 
-    public PersonController(@Autowired final PersonService service) {
+    public UserController(@Autowired final UserService service) {
         this.service = service;
     }
 
     @GetMapping
-    public ResponseEntity<List<PersonDTO>> getAll() {
-        return new ResponseEntity<>(service.findAll().stream().map(PersonDTO::ofNullable).toList(), HttpStatus.OK);
+    public ResponseEntity<List<UserDTO>> getAll() {
+        return new ResponseEntity<>(service.findAll().stream().map(UserDTO::ofNullable).toList(), HttpStatus.OK);
     }
 
     @PostMapping
     @Transactional
-    public ResponseEntity<PersonDTO> create(@RequestBody @Valid final @NonNull CreatePerson form) {
-        final Person savedItem = service.create(form.toPerson());
-        return new ResponseEntity<>(PersonDTO.ofNullable(savedItem), HttpStatus.CREATED);
+    public ResponseEntity<UserDTO> create(@RequestBody @Valid final @NonNull CreateUser form) {
+        final User savedItem = service.create(form.toUser());
+        return new ResponseEntity<>(UserDTO.ofNullable(savedItem), HttpStatus.CREATED);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<PersonDTO> getById(@PathVariable("id") final @NonNull Integer id) {
+    public ResponseEntity<UserDTO> getById(@PathVariable("id") final @NonNull Integer id) {
         try {
-            return new ResponseEntity<>(PersonDTO.ofNullable(service.findById(id)), HttpStatus.OK);
+            return new ResponseEntity<>(UserDTO.ofNullable(service.findById(id)), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -57,11 +57,11 @@ public class PersonController {
 
     @PutMapping("{id}")
     @Transactional
-    public ResponseEntity<PersonDTO> update(@PathVariable("id") final @NonNull Integer id,
-            @RequestBody final @NonNull UpdatePerson form) {
+    public ResponseEntity<UserDTO> update(@PathVariable("id") final @NonNull Integer id,
+            @RequestBody @Valid final @NonNull UpdateUser form) {
         try {
             final var existingItem = service.findById(id);
-            return new ResponseEntity<>(PersonDTO.ofNullable(service.update(form.transferTo(existingItem))),
+            return new ResponseEntity<>(UserDTO.ofNullable(service.update(form.transferTo(existingItem))),
                     HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
