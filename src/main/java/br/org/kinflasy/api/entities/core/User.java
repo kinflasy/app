@@ -31,7 +31,7 @@ public class User extends Person {
     @Column(name = "id")
     private @NonNull Integer id;
 
-    @Column(name = "username", nullable = false)
+    @Column(name = "username", nullable = false, unique = true)
     private @NonNull String username;
 
     @Column(name = "email", nullable = false)

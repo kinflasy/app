@@ -14,24 +14,13 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class UpdatePerson {
-
-    @Nullable
-    protected String name;
-
-    @Nullable
-    protected String nickname;
-
-    @Nullable
-    protected Gender gender;
-
-    @Nullable
-    protected LocalDate birthDate;
-
-    @Nullable
-    protected String phone;
-
-    @Nullable
-    protected CreateAddress address;
+    
+    protected @Nullable String name;
+    protected @Nullable String nickname;
+    protected @Nullable Gender gender;
+    protected @Nullable LocalDate birthDate;
+    protected @Nullable String phone;
+    protected @Nullable CreateAddress address;
 
     public @NonNull Person update(@NonNull final Person person) {
         if (name != null) {
