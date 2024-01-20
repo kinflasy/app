@@ -59,11 +59,11 @@ public class Unit extends AbstractAuditable<User, Integer> {
     @Column(name = "type", nullable = false)
     private @NonNull UnitType type;
 
-    @ManyToOne(cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(optional = false)
     @JoinColumn(name = "church_id")
     private @NonNull Church church;
 
-    @OneToOne(cascade = CascadeType.ALL, optional = false)
+    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, optional = false, orphanRemoval = true)
     @JoinColumn(name = "address_id")
     private @NonNull Address address;
 

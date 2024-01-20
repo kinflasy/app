@@ -64,7 +64,7 @@ public class Person extends AbstractAuditable<User, Integer> {
     @Column(name = "phone")
     protected @Nullable String phone;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "address_id")
     protected @Nullable Address address;
 

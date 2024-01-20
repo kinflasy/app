@@ -8,6 +8,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.User;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -53,7 +54,7 @@ public class Church extends AbstractAuditable<User, Integer> {
     @Column(name = "email_verified_at")
     private @Nullable LocalDateTime emailVerifiedAt;
 
-    @OneToMany(mappedBy = "church")
+    @OneToMany(mappedBy = "church", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
     private @NonNull List<Unit> units;
 
 }
