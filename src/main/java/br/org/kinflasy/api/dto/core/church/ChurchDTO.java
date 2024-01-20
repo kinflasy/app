@@ -9,15 +9,17 @@ public record ChurchDTO(
         @NonNull Integer id,
         @NonNull String name,
         @NonNull String slug,
+        @Nullable String acronym,
         @Nullable String phone,
         @NonNull String email) {
 
     public static @Nullable ChurchDTO ofNullable(final @Nullable Church church) {
         return (church != null) ? ofNonNull(church) : null;
     }
-    
+
     public static @NonNull ChurchDTO ofNonNull(final @NonNull Church church) {
-        return new ChurchDTO(church.getId(), church.getName(), church.getSlug(), church.getPhone(), church.getEmail());
+        return new ChurchDTO(church.getId(), church.getName(), church.getSlug(), church.getAcronym(), church.getPhone(),
+                church.getEmail());
     }
 
 }

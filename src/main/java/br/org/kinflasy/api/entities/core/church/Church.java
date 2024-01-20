@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.User;
-import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,12 +17,14 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "churches")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @EqualsAndHashCode(callSuper = false)
 public class Church extends AbstractAuditable<User, Integer> {
 
@@ -36,6 +38,9 @@ public class Church extends AbstractAuditable<User, Integer> {
 
     @Column(name = "slug", nullable = false, unique = true)
     private @NonNull String slug;
+
+    @Column(name = "acronym")
+    private @Nullable String acronym;
 
     @Column(name = "phone")
     private @Nullable String phone;
