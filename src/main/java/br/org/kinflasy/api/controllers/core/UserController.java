@@ -36,7 +36,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAll() {
-        return new ResponseEntity<>(service.findAll().stream().map(UserDTO::ofNullable).toList(), HttpStatus.OK);
+        return new ResponseEntity<>(service.dto().findAll(), HttpStatus.OK);
     }
 
     @PostMapping
@@ -72,7 +72,7 @@ public class UserController {
     @Transactional
     public ResponseEntity<HttpStatus> delete(@PathVariable("id") final @NonNull Integer id) {
         try {
-            service.delete(service.findById(id));
+            service.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (final EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
