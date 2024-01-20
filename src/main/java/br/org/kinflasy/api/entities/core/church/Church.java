@@ -29,27 +29,21 @@ public class Church extends AbstractAuditable<User, Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @NonNull
-    private Integer id;
+    private @NonNull Integer id;
 
     @Column(name = "name", nullable = false)
-    @NonNull
-    private String name;
+    private @NonNull String name;
 
     @Column(name = "slug", nullable = false, unique = true)
-    @NonNull
-    private String slug;
+    private @NonNull String slug;
 
     @Column(name = "phone")
-    @Nullable
-    private String phone;
+    private @Nullable String phone;
 
     @Column(name = "email", nullable = false, unique = true)
-    @NonNull
-    private String email;
+    private @NonNull String email;
 
     @Column(name = "email_verified_at")
-    @Nullable
-    private LocalDateTime emailVerifiedAt;
+    private @Nullable LocalDateTime emailVerifiedAt;
 
 }

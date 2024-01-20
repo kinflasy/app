@@ -16,14 +16,14 @@ public record AddressDTO(
         @Nullable String number,
         @Nullable String reference) {
 
-    public static @Nullable AddressDTO of(@Nullable final Address address) {
-        if (address != null) {
-            return new AddressDTO(address.getId(), address.getZip(), address.getCountry(), address.getState(),
-                    address.getCity(), address.getNeighborhood(), address.getStreet(), address.getNumber(),
-                    address.getReference());
-        }
+    public static @Nullable AddressDTO ofNullable(@Nullable final Address address) {
+        return (address != null) ? ofNonNull(address) : null;
+    }
 
-        return null;
+    public static @NonNull AddressDTO ofNonNull(final @NonNull Address address) {
+        return new AddressDTO(address.getId(), address.getZip(), address.getCountry(), address.getState(),
+                address.getCity(), address.getNeighborhood(), address.getStreet(), address.getNumber(),
+                address.getReference());
     }
 
 }

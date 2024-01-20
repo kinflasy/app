@@ -33,20 +33,16 @@ public class Entry extends AbstractAuditable<User, Integer>  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @NonNull
-    private Integer id;
+    private @NonNull Integer id;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "membership_id")
-    @NonNull
-    private Membership membership;
+    private @NonNull Membership membership;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "type", nullable = false)
-    @NonNull
-    private EntryType type;
+    private @NonNull EntryType type;
 
     @Column(name = "date", nullable = false)
-    @NonNull
-    private LocalDate date;
+    private @NonNull LocalDate date;
 }

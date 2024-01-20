@@ -18,9 +18,13 @@ public record PersonDTO(
         @Nullable String phone,
         @Nullable AddressDTO address) {
 
-    public static @NonNull PersonDTO of(@NonNull Person person) {
+    public static @Nullable PersonDTO ofNullable(@Nullable Person person) {
+        return (person != null) ? ofNonNull(person) : null;
+    }
+
+    public static @NonNull PersonDTO ofNonNull(@NonNull Person person) {
         return new PersonDTO(person.getId(), person.getName(), person.getNickname(), person.getGender(),
-                person.getBirthDate(), person.getPhone(), AddressDTO.of(person.getAddress()));
+                person.getBirthDate(), person.getPhone(), AddressDTO.ofNullable(person.getAddress()));
     }
 
 }

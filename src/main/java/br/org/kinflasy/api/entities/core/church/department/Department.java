@@ -33,29 +33,23 @@ public class Department extends AbstractAuditable<User, Integer>  {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @NonNull
-    private Integer id;
+    private @NonNull Integer id;
 
     @Column(name = "name", nullable = false)
-    @NonNull
-    private String name;
+    private @NonNull String name;
 
     @Column(name = "slug", nullable = false)
-    @NonNull
-    private String slug;
+    private @NonNull String slug;
 
     @ManyToOne(optional = false)
-    @NonNull
-    private Unit unit;
+    private @NonNull Unit unit;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "type", nullable = false)
-    @NonNull
-    private DepartmentType type;
+    private @NonNull DepartmentType type;
 
     @ManyToOne
     @JoinColumn(name = "visibility_filter", nullable = false)
-    @NonNull
-    private PeopleFilter visibilityFilter;
+    private @NonNull PeopleFilter visibilityFilter;
 
 }

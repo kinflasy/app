@@ -1,55 +1,36 @@
 package br.org.kinflasy.api.services.core.peopleFilter;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.api.dto.core.peopleFilter.StaticPeopleFilterDTO;
 import br.org.kinflasy.api.entities.core.peopleFilter.StaticPeopleFilter;
 import br.org.kinflasy.api.repositories.core.peopleFilter.StaticPeopleFilterRepository;
-import jakarta.persistence.EntityNotFoundException;
+import br.org.kinflasy.api.services.BaseService;
 
 @Service
-public class StaticPeopleFilterService {
+public class StaticPeopleFilterService
+        extends BaseService<StaticPeopleFilterRepository, StaticPeopleFilterDTO, StaticPeopleFilter, Integer> {
 
-    private final StaticPeopleFilterRepository repository;
-
-    public StaticPeopleFilterService(@Autowired final StaticPeopleFilterRepository repository) {
-        this.repository = repository;
+    protected StaticPeopleFilterService(@Autowired final StaticPeopleFilterRepository repository) {
+        super(repository);
     }
 
-    public List<StaticPeopleFilter> findAll() {
-        return repository.findAll();
+    @Override
+    public @NonNull Integer getId(final @NonNull StaticPeopleFilter staticpeoplefilter) {
+        return staticpeoplefilter.getId();
     }
 
-    public StaticPeopleFilter create(@NonNull final StaticPeopleFilter staticpeoplefilter) {
-        return repository.save(staticpeoplefilter);
+    @Override
+    public @Nullable StaticPeopleFilterDTO toNullableDTO(final @Nullable StaticPeopleFilter staticpeoplefilter) {
+        return StaticPeopleFilterDTO.ofNullable(staticpeoplefilter);
     }
 
-    public StaticPeopleFilter findById(@NonNull final Integer id) throws EntityNotFoundException {
-        return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("ID não encontrado"));
-    }
-
-    public Boolean exists(@NonNull final StaticPeopleFilter staticpeoplefilter) {
-        return repository.existsById(staticpeoplefilter.getId());
-    }
-    
-    public StaticPeopleFilter update(@NonNull final StaticPeopleFilter staticpeoplefilter) throws EntityNotFoundException {
-        if (exists(staticpeoplefilter)) {
-            return repository.save(staticpeoplefilter);
-        } 
-        
-        throw new EntityNotFoundException("ID não encontrado");
-    }
-    
-    public void delete(@NonNull final StaticPeopleFilter staticpeoplefilter) throws EntityNotFoundException {
-        if (exists(staticpeoplefilter)) {
-            repository.delete(staticpeoplefilter);
-        } 
-        
-        throw new EntityNotFoundException("ID não encontrado");
+    @Override
+    public @NonNull StaticPeopleFilterDTO toNonNullDTO(final @NonNull StaticPeopleFilter staticpeoplefilter) {
+        return StaticPeopleFilterDTO.ofNonNull(staticpeoplefilter);
     }
 
 }

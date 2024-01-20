@@ -1,55 +1,35 @@
 package br.org.kinflasy.api.services.core.contact;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.api.dto.core.contact.AddressDTO;
 import br.org.kinflasy.api.entities.core.contact.Address;
 import br.org.kinflasy.api.repositories.core.contact.AddressRepository;
-import jakarta.persistence.EntityNotFoundException;
+import br.org.kinflasy.api.services.BaseService;
 
 @Service
-public class AddressService {
+public class AddressService extends BaseService<AddressRepository, AddressDTO, Address, Integer> {
 
-    private final AddressRepository repository;
-
-    public AddressService(@Autowired final AddressRepository repository) {
-        this.repository = repository;
+    protected AddressService(@Autowired final AddressRepository repository) {
+        super(repository);
     }
 
-    public List<Address> findAll() {
-        return repository.findAll();
+    @Override
+    public @NonNull Integer getId(final @NonNull Address address) {
+        return address.getId();
     }
 
-    public Address create(@NonNull final Address address) {
-        return repository.save(address);
+    @Override
+    public @Nullable AddressDTO toNullableDTO(final @Nullable Address address) {
+        return AddressDTO.ofNullable(address);
     }
 
-    public Address findById(@NonNull final Integer id) throws EntityNotFoundException {
-        return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("ID não encontrado"));
-    }
-
-    public Boolean exists(@NonNull final Address address) {
-        return repository.existsById(address.getId());
-    }
-    
-    public Address update(@NonNull final Address address) throws EntityNotFoundException {
-        if (exists(address)) {
-            return repository.save(address);
-        } 
-        
-        throw new EntityNotFoundException("ID não encontrado");
-    }
-    
-    public void delete(@NonNull final Address address) throws EntityNotFoundException {
-        if (exists(address)) {
-            repository.delete(address);
-        } 
-        
-        throw new EntityNotFoundException("ID não encontrado");
+    @Override
+    public @NonNull AddressDTO toNonNullDTO(final @NonNull Address address) {
+        return AddressDTO.ofNonNull(address);
     }
 
 }

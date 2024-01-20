@@ -38,37 +38,30 @@ public class Unit extends AbstractAuditable<User, Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @NonNull
-    private Integer id;
+    private @NonNull Integer id;
 
     @Column(name = "name", nullable = false)
-    @NonNull
-    private String name;
+    private @NonNull String name;
 
     @Column(name = "slug", nullable = false)
-    @NonNull
-    private String slug;
+    private @NonNull String slug;
 
     @Column(name = "email", nullable = false)
-    @NonNull
-    private String email;
+    private @NonNull String email;
 
     @Column(name = "phone", nullable = false)
-    @NonNull
-    private String phone;
+    private @NonNull String phone;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "type", nullable = false)
-    @NonNull
-    private UnitType type;
+    private @NonNull UnitType type;
 
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "church_id")
-    @NonNull
-    private Church church;
+    private @NonNull Church church;
 
     @OneToOne(cascade = CascadeType.ALL, optional = false)
-    @NonNull
-    private Address address;
+    @JoinColumn(name = "address_id")
+    private @NonNull Address address;
 
 }

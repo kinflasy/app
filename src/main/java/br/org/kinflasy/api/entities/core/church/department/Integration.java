@@ -1,6 +1,7 @@
 package br.org.kinflasy.api.entities.core.church.department;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
+import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.entities.core.User;
@@ -32,17 +33,17 @@ public class Integration extends AbstractAuditable<User, Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private @NonNull Integer id;
 
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
-    private Department department;
+    private @NonNull Department department;
 
     @ManyToOne
     @JoinColumn(name = "person_id", nullable = false)
-    private Person person;
+    private @NonNull Person person;
 
     @Column(name = "type", nullable = false)
-    private IntegrationType type = IntegrationType.INTEGRANT;
+    private @NonNull IntegrationType type = IntegrationType.INTEGRANT;
 
 }

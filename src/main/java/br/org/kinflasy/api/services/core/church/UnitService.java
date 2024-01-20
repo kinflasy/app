@@ -1,55 +1,34 @@
 package br.org.kinflasy.api.services.core.church;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.api.dto.core.church.UnitDTO;
 import br.org.kinflasy.api.entities.core.church.Unit;
 import br.org.kinflasy.api.repositories.core.church.UnitRepository;
-import jakarta.persistence.EntityNotFoundException;
+import br.org.kinflasy.api.services.BaseService;
 
 @Service
-public class UnitService {
+public class UnitService extends BaseService<UnitRepository, UnitDTO, Unit, Integer> {
 
-    private final UnitRepository repository;
-
-    public UnitService(@Autowired final UnitRepository repository) {
-        this.repository = repository;
+    protected UnitService(@Autowired final UnitRepository repository) {
+        super(repository);
     }
 
-    public List<Unit> findAll() {
-        return repository.findAll();
+    @Override
+    public @NonNull Integer getId(final @NonNull Unit unit) {
+        return unit.getId();
     }
 
-    public Unit create(@NonNull final Unit unit) {
-        return repository.save(unit);
+    @Override
+    public @Nullable UnitDTO toNullableDTO(final @Nullable Unit unit) {
+        return UnitDTO.ofNullable(unit);
     }
 
-    public Unit findById(@NonNull final Integer id) throws EntityNotFoundException {
-        return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("ID não encontrado"));
+    @Override
+    public @NonNull UnitDTO toNonNullDTO(final @NonNull Unit unit) {
+        return UnitDTO.ofNonNull(unit);
     }
-
-    public Boolean exists(@NonNull final Unit unit) {
-        return repository.existsById(unit.getId());
-    }
-    
-    public Unit update(@NonNull final Unit unit) throws EntityNotFoundException {
-        if (exists(unit)) {
-            return repository.save(unit);
-        } 
-        
-        throw new EntityNotFoundException("ID não encontrado");
-    }
-    
-    public void delete(@NonNull final Unit unit) throws EntityNotFoundException {
-        if (exists(unit)) {
-            repository.delete(unit);
-        } 
-        
-        throw new EntityNotFoundException("ID não encontrado");
-    }
-
 }

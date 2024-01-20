@@ -1,55 +1,35 @@
 package br.org.kinflasy.api.services.core.church;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.api.dto.core.church.ChurchDTO;
 import br.org.kinflasy.api.entities.core.church.Church;
 import br.org.kinflasy.api.repositories.core.church.ChurchRepository;
-import jakarta.persistence.EntityNotFoundException;
+import br.org.kinflasy.api.services.BaseService;
 
 @Service
-public class ChurchService {
+public class ChurchService extends BaseService<ChurchRepository, ChurchDTO, Church, Integer> {
 
-    private final ChurchRepository repository;
-
-    public ChurchService(@Autowired final ChurchRepository repository) {
-        this.repository = repository;
+    protected ChurchService(@Autowired final ChurchRepository repository) {
+        super(repository);
     }
 
-    public List<Church> findAll() {
-        return repository.findAll();
+    @Override
+    public @NonNull Integer getId(final @NonNull Church church) {
+        return church.getId();
     }
 
-    public Church create(@NonNull final Church church) {
-        return repository.save(church);
+    @Override
+    public @Nullable ChurchDTO toNullableDTO(final @Nullable Church church) {
+        return ChurchDTO.ofNullable(church);
     }
 
-    public Church findById(@NonNull final Integer id) throws EntityNotFoundException {
-        return repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("ID não encontrado"));
-    }
-
-    public Boolean exists(@NonNull final Church church) {
-        return repository.existsById(church.getId());
-    }
-    
-    public Church update(@NonNull final Church church) throws EntityNotFoundException {
-        if (exists(church)) {
-            return repository.save(church);
-        } 
-        
-        throw new EntityNotFoundException("ID não encontrado");
-    }
-    
-    public void delete(@NonNull final Church church) throws EntityNotFoundException {
-        if (exists(church)) {
-            repository.delete(church);
-        } 
-        
-        throw new EntityNotFoundException("ID não encontrado");
+    @Override
+    public @NonNull ChurchDTO toNonNullDTO(final @NonNull Church church) {
+        return ChurchDTO.ofNonNull(church);
     }
     
 }

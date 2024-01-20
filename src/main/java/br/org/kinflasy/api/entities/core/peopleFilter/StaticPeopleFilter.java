@@ -26,8 +26,7 @@ public class StaticPeopleFilter extends PeopleFilter {
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "mode", unique = true)
-    @NonNull
-    private PersonCharacteristic characteristic;
+    private @NonNull PersonCharacteristic characteristic;
 
     @Override
     public Function<Person, Boolean> getFilter() {

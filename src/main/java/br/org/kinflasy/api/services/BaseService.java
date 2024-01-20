@@ -2,19 +2,25 @@ package br.org.kinflasy.api.services;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.function.Function;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
 
-public abstract class ServiceBase<Entity, Id, Repository extends JpaRepository<Entity, Id>> {
+public abstract class BaseService<Repository extends JpaRepository<Entity, Id>, DTO, Entity, Id> {
 
     protected final Repository repository;
 
-    protected ServiceBase(final Repository repository) {
+    public abstract @NonNull Id getId(@NonNull Entity item);
+
+    public abstract @Nullable DTO toNullableDTO(final @Nullable Entity item);
+
+    public abstract @NonNull DTO toNonNullDTO(final @NonNull Entity item);
+
+    protected BaseService(final Repository repository) {
         this.repository = repository;
     }
 
@@ -41,10 +47,8 @@ public abstract class ServiceBase<Entity, Id, Repository extends JpaRepository<E
         }
     }
 
-    public abstract @NonNull Function<Entity, Id> getIdFunction();
-
     private @NonNull Boolean exists(@NonNull final Entity item) {
-        final Id id = getIdFunction().apply(item);
+        final Id id = getId(item);
         return (id != null) ? repository.existsById(id) : false;
     }
 
