@@ -9,16 +9,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "is_people_filters", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "church_id", "status" })
-})
+@Table(name = "is_people_filters")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -26,7 +23,7 @@ import lombok.NoArgsConstructor;
 public class IsFilter extends PeopleFilter {
 
     @ManyToOne
-    @JoinColumn(name = "church_id", nullable = false)
+    @JoinColumn(name = "person_id", unique = true, nullable = false)
     private @NonNull Person person;
 
     @Override
