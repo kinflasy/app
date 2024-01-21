@@ -43,6 +43,7 @@ USER dev
 
 # Expor a porta em que a aplicação vai rodar
 EXPOSE 8080
+EXPOSE 35729
 
 # Definir Bash como o shell padrão no container
 ENTRYPOINT ["/bin/bash"]

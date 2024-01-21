@@ -11,9 +11,12 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-    format_sql: true
+    properties:
+      hibernate.format_sql: true
 
   # Configurações do DevTools
   devtools:
+    livereload:
+      enabled: true
     restart:
       enabled: false

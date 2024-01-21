@@ -8,7 +8,8 @@ services:
     build: .
     image: ${APP_NAME}-api
     ports:
-      - "8000:8080"
+      - "8484:8080"
+      - "8485:35729"
     environment:
       - APP_NAME=${APP_NAME}
       - APP_VERSION=${APP_VERSION}
