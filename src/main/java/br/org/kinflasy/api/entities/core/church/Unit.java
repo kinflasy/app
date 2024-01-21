@@ -25,6 +25,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,6 +38,7 @@ import lombok.Setter;
 })
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)

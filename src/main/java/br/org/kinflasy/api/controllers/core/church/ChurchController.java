@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.api.dto.core.church.ChurchDTO;
 import br.org.kinflasy.api.dto.core.church.CreateChurch;
+import br.org.kinflasy.api.dto.core.church.CreateStarterChurch;
 import br.org.kinflasy.api.dto.core.church.CreateUnit;
+import br.org.kinflasy.api.dto.core.church.StarterChurchDTO;
 import br.org.kinflasy.api.dto.core.church.UnitDTO;
 import br.org.kinflasy.api.dto.core.church.UpdateChurch;
 import br.org.kinflasy.api.services.core.church.ChurchService;
@@ -47,6 +49,13 @@ public class ChurchController {
     @Transactional
     public ResponseEntity<ChurchDTO> create(@RequestBody @Valid final @NonNull CreateChurch form) {
         return new ResponseEntity<>(service.dto().create(form.toChurch()), HttpStatus.CREATED);
+    }
+
+
+    @PostMapping("starter")
+    @Transactional
+    public ResponseEntity<StarterChurchDTO> createStarter(@RequestBody @Valid final @NonNull CreateStarterChurch form) {
+        return new ResponseEntity<>(StarterChurchDTO.ofNonNull(service.createStarter(form)), HttpStatus.CREATED);
     }
 
     @GetMapping("{id}")

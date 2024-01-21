@@ -54,7 +54,7 @@ public class Church extends AbstractAuditable<User, Integer> {
     @Column(name = "email_verified_at")
     private @Nullable LocalDateTime emailVerifiedAt;
 
-    @OneToMany(mappedBy = "church", cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+    @OneToMany(mappedBy = "church", cascade = CascadeType.ALL)
     private @NonNull List<Unit> units;
 
 }

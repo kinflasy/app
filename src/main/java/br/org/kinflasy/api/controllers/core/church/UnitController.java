@@ -37,11 +37,6 @@ public class UnitController {
         this.departmentService = departmentService;
     }
 
-    @GetMapping
-    public ResponseEntity<List<UnitDTO>> getAll() {
-        return new ResponseEntity<>(service.dto().findAll(), HttpStatus.OK);
-    }
-
     @GetMapping("{id}")
     public ResponseEntity<UnitDTO> getById(@PathVariable("id") final @NonNull Integer id) {
         try {

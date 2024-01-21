@@ -33,4 +33,8 @@ public class StaticPeopleFilterService
         return StaticPeopleFilterDTO.ofNonNull(staticpeoplefilter);
     }
 
+    public @NonNull StaticPeopleFilter findOrCreate(final @NonNull StaticPeopleFilter filter) {
+        return repository.findOrCreate(filter);
+    }
+
 }

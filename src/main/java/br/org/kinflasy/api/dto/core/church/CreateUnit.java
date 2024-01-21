@@ -4,6 +4,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.dto.core.contact.CreateAddress;
+import br.org.kinflasy.api.entities.core.church.Church;
 import br.org.kinflasy.api.entities.core.church.Unit;
 import br.org.kinflasy.api.utils.enums.core.church.UnitType;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,12 @@ public class CreateUnit {
 
     public @NonNull Unit toUnit() {
         return update(new Unit());
+    }
+
+    public @NonNull Unit toUnit(final @NonNull Church church) {
+        final var unit = update(new Unit());
+        unit.setChurch(church);
+        return unit;
     }
 
 }

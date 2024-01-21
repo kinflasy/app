@@ -1,7 +1,5 @@
 package br.org.kinflasy.api.controllers.core.church.department;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +26,6 @@ public class DepartmentController {
 
     public DepartmentController(@Autowired final DepartmentService service) {
         this.service = service;
-    }
-
-    @GetMapping
-    public ResponseEntity<List<DepartmentDTO>> getAll() {
-        return new ResponseEntity<>(service.dto().findAll(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
