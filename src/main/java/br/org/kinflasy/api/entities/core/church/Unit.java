@@ -1,9 +1,12 @@
 package br.org.kinflasy.api.entities.core.church;
 
+import java.util.List;
+
 import org.springframework.data.jpa.domain.AbstractAuditable;
 import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.User;
+import br.org.kinflasy.api.entities.core.church.department.Department;
 import br.org.kinflasy.api.entities.core.contact.Address;
 import br.org.kinflasy.api.utils.enums.core.church.UnitType;
 import io.micrometer.common.lang.Nullable;
@@ -17,6 +20,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -66,5 +70,8 @@ public class Unit extends AbstractAuditable<User, Integer> {
     @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, optional = false, orphanRemoval = true)
     @JoinColumn(name = "address_id")
     private @NonNull Address address;
+
+    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+    private @NonNull List<Department> departments;
 
 }

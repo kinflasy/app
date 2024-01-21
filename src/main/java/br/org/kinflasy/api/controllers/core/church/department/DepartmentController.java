@@ -1,4 +1,4 @@
-package br.org.kinflasy.api.controllers.core.church;
+package br.org.kinflasy.api.controllers.core.church.department;
 
 import java.util.List;
 
@@ -10,40 +10,33 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.org.kinflasy.api.dto.core.church.UnitDTO;
-import br.org.kinflasy.api.dto.core.church.UpdateUnit;
-import br.org.kinflasy.api.dto.core.church.department.CreateDepartment;
 import br.org.kinflasy.api.dto.core.church.department.DepartmentDTO;
-import br.org.kinflasy.api.services.core.church.UnitService;
+import br.org.kinflasy.api.dto.core.church.department.UpdateDepartment;
 import br.org.kinflasy.api.services.core.church.department.DepartmentService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("v1/core/church/units")
-public class UnitController {
+@RequestMapping("v1/core/church/unit/departments")
+public class DepartmentController {
 
-    private final UnitService service;
-    private final DepartmentService departmentService;
+    private final DepartmentService service;
 
-    public UnitController(@Autowired final UnitService service, @Autowired final DepartmentService departmentService) {
+    public DepartmentController(@Autowired final DepartmentService service) {
         this.service = service;
-        this.departmentService = departmentService;
     }
 
     @GetMapping
-    public ResponseEntity<List<UnitDTO>> getAll() {
+    public ResponseEntity<List<DepartmentDTO>> getAll() {
         return new ResponseEntity<>(service.dto().findAll(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<UnitDTO> getById(@PathVariable("id") final @NonNull Integer id) {
+    public ResponseEntity<DepartmentDTO> getById(@PathVariable("id") final @NonNull Integer id) {
         try {
             return new ResponseEntity<>(service.dto().findById(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
@@ -53,8 +46,8 @@ public class UnitController {
 
     @PutMapping("{id}")
     @Transactional
-    public ResponseEntity<UnitDTO> update(@PathVariable("id") final @NonNull Integer id,
-            @RequestBody final @NonNull UpdateUnit form) {
+    public ResponseEntity<DepartmentDTO> update(@PathVariable("id") final @NonNull Integer id,
+            @RequestBody final @NonNull UpdateDepartment form) {
         try {
             final var existingItem = service.findById(id);
             return new ResponseEntity<>(service.dto().update(form.update(existingItem)), HttpStatus.OK);
@@ -74,18 +67,6 @@ public class UnitController {
         } catch (final Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
-    }
-
-    @GetMapping("{id}/departments")
-    public ResponseEntity<List<DepartmentDTO>> getDepartments(@PathVariable("id") final @NonNull Integer id) {
-        return new ResponseEntity<>(departmentService.dto().nonNull(service.getDepartments(id)), HttpStatus.OK);
-    }
-
-    @PostMapping("{id}/departments")
-    public ResponseEntity<DepartmentDTO> createDepartment(@PathVariable("id") final @NonNull Integer id,
-            @RequestBody @Valid final @NonNull CreateDepartment form) {
-        final var createdDepartment = service.createDepartment(id, form.toDepartment());
-        return new ResponseEntity<>(departmentService.dto().nonNull(createdDepartment), HttpStatus.CREATED);
     }
 
 }

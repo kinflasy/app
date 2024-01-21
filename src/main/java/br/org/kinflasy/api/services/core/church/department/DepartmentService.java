@@ -11,7 +11,7 @@ import br.org.kinflasy.api.repositories.core.church.department.DepartmentReposit
 import br.org.kinflasy.api.services.BaseService;
 
 @Service
-public class DepartmentService extends BaseService<DepartmentRepository, Object, Department, Integer> {
+public class DepartmentService extends BaseService<DepartmentRepository, DepartmentDTO, Department, Integer> {
 
     protected DepartmentService(final @Autowired DepartmentRepository repository) {
         super(repository);
@@ -23,12 +23,12 @@ public class DepartmentService extends BaseService<DepartmentRepository, Object,
     }
 
     @Override
-    public @Nullable Object toNullableDTO(final @Nullable Department department) {
+    public @Nullable DepartmentDTO toNullableDTO(final @Nullable Department department) {
         return DepartmentDTO.ofNullable(department);
     }
 
     @Override
-    public @NonNull Object toNonNullDTO(final @NonNull Department department) {
+    public @NonNull DepartmentDTO toNonNullDTO(final @NonNull Department department) {
         return DepartmentDTO.ofNonNull(department);
     }
 

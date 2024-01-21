@@ -7,6 +7,7 @@ import br.org.kinflasy.api.entities.core.User;
 import br.org.kinflasy.api.entities.core.church.Unit;
 import br.org.kinflasy.api.entities.core.peopleFilter.PeopleFilter;
 import br.org.kinflasy.api.utils.enums.core.church.department.DepartmentType;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -21,14 +22,16 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "departments")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @EqualsAndHashCode(callSuper = false)
-public class Department extends AbstractAuditable<User, Integer>  {
+public class Department extends AbstractAuditable<User, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +51,7 @@ public class Department extends AbstractAuditable<User, Integer>  {
     @Column(name = "type", nullable = false)
     private @NonNull DepartmentType type;
 
-    @ManyToOne
+    @ManyToOne(cascade = { CascadeType.PERSIST })
     @JoinColumn(name = "visibility_filter", nullable = false)
     private @NonNull PeopleFilter visibilityFilter;
 
