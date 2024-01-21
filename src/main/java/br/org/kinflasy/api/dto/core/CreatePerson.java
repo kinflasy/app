@@ -19,6 +19,7 @@ public class CreatePerson {
     protected @Nullable String nickname;
     protected @NonNull Gender gender;
     protected @NonNull LocalDate birthDate;
+    protected @Nullable String email;
     protected @Nullable String phone;
     protected @Nullable CreateAddress address;
 

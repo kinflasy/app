@@ -21,7 +21,7 @@ public class CreateUser extends CreatePerson {
             @NonNull LocalDate birthDate, @Nullable String phone, @Nullable CreateAddress address,
             @NonNull String username, @NonNull String email, @NonNull String password) {
 
-        super(name, nickname, gender, birthDate, phone, address);
+        super(name, nickname, gender, birthDate, email, phone, address);
         this.username = username;
         this.email = email;
         this.password = password;

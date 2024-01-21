@@ -20,7 +20,7 @@ public class UpdateUser extends UpdatePerson {
             @Nullable LocalDate birthDate, @Nullable String phone, @Nullable CreateAddress address,
             @Nullable String username, @Nullable String email) {
 
-        super(name, nickname, gender, birthDate, phone, address);
+        super(name, nickname, gender, birthDate, phone, email, address);
         this.username = username;
         this.email = email;
 

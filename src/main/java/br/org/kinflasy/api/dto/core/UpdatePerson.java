@@ -20,6 +20,7 @@ public class UpdatePerson {
     protected @Nullable Gender gender;
     protected @Nullable LocalDate birthDate;
     protected @Nullable String phone;
+    protected @Nullable String email;
     protected @Nullable CreateAddress address;
 
     public @NonNull Person update(@NonNull final Person person) {
@@ -37,6 +38,10 @@ public class UpdatePerson {
 
         if (birthDate != null) {
             person.setBirthDate(birthDate);
+        }
+
+        if (email != null) {
+            person.setEmail(email);
         }
 
         if (phone != null) {

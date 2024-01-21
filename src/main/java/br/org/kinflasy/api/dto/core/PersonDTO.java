@@ -16,6 +16,7 @@ public record PersonDTO(
         @NonNull Gender gender,
         @NonNull LocalDate birthDate,
         @Nullable String phone,
+        @Nullable String email,
         @Nullable AddressDTO address) {
 
     public static @Nullable PersonDTO ofNullable(@Nullable Person person) {
@@ -24,7 +25,8 @@ public record PersonDTO(
 
     public static @NonNull PersonDTO ofNonNull(@NonNull Person person) {
         return new PersonDTO(person.getId(), person.getName(), person.getNickname(), person.getGender(),
-                person.getBirthDate(), person.getPhone(), AddressDTO.ofNullable(person.getAddress()));
+                person.getBirthDate(), person.getPhone(), person.getEmail(),
+                AddressDTO.ofNullable(person.getAddress()));
     }
 
 }

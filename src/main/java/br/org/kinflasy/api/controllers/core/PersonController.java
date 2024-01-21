@@ -20,11 +20,14 @@ import br.org.kinflasy.api.dto.core.CreatePerson;
 import br.org.kinflasy.api.dto.core.PersonDTO;
 import br.org.kinflasy.api.dto.core.UpdatePerson;
 import br.org.kinflasy.api.services.core.PersonService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("v1/core/people")
+@Tag(name = "Person")
 public class PersonController {
 
     private final PersonService service;
@@ -34,17 +37,20 @@ public class PersonController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar todos", description = "Listar todas as pessoas cadastradas.")
     public ResponseEntity<List<PersonDTO>> getAll() {
         return new ResponseEntity<>(service.dto().findAll(), HttpStatus.OK);
     }
 
     @PostMapping
     @Transactional
+    @Operation(summary = "Cadastrar", description = "Cadastrar uma nova pessoa.")
     public ResponseEntity<PersonDTO> create(@RequestBody @Valid final @NonNull CreatePerson form) {
         return new ResponseEntity<>(service.dto().create(form.toPerson()), HttpStatus.CREATED);
     }
 
     @GetMapping("{id}")
+    @Operation(summary = "Buscar", description = "Buscar uma pessoa pelo ID.")
     public ResponseEntity<PersonDTO> getById(@PathVariable("id") final @NonNull Integer id) {
         try {
             return new ResponseEntity<>(service.dto().findById(id), HttpStatus.OK);
@@ -55,6 +61,7 @@ public class PersonController {
 
     @PutMapping("{id}")
     @Transactional
+    @Operation(summary = "Editar", description = "Editar os dados de uma pessoa.")
     public ResponseEntity<PersonDTO> update(@PathVariable("id") final @NonNull Integer id,
             @RequestBody final @NonNull UpdatePerson form) {
         try {
@@ -67,6 +74,7 @@ public class PersonController {
 
     @DeleteMapping("{id}")
     @Transactional
+    @Operation(summary = "Excluir", description = "Descadastrar uma pessoa, removendo-a do sistema.")
     public ResponseEntity<HttpStatus> delete(@PathVariable("id") final @NonNull Integer id) {
         try {
             service.delete(id);
