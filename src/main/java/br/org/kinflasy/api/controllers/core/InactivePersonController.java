@@ -1,4 +1,6 @@
-package br.org.kinflasy.api.controllers.core.church.department;
+package br.org.kinflasy.api.controllers.core;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,32 +10,48 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.org.kinflasy.api.dto.core.church.department.DepartmentDTO;
-import br.org.kinflasy.api.dto.core.church.department.UpdateDepartment;
-import br.org.kinflasy.api.services.core.church.department.DepartmentService;
+import br.org.kinflasy.api.dto.core.CreateInactivePerson;
+import br.org.kinflasy.api.dto.core.InactivePersonDTO;
+import br.org.kinflasy.api.dto.core.UpdateInactivePerson;
+import br.org.kinflasy.api.services.core.InactivePersonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("v1/core/church/unit/departments")
-@Tag(name = "Department")
-public class DepartmentController {
+@RequestMapping("v1/core/inactive-people")
+@Tag(name = "Inactive Person")
+public class InactivePersonController {
 
-    private final DepartmentService service;
+    private final InactivePersonService service;
 
-    public DepartmentController(@Autowired final DepartmentService service) {
+    public InactivePersonController(@Autowired final InactivePersonService service) {
         this.service = service;
     }
 
+    @GetMapping
+    @Operation(summary = "Listar todos", description = "Listar todas as pessoas inativas cadastradas.")
+    public ResponseEntity<List<InactivePersonDTO>> getAll() {
+        return new ResponseEntity<>(service.dto().findAll(), HttpStatus.OK);
+    }
+
+    @PostMapping
+    @Transactional
+    @Operation(summary = "Cadastrar", description = "Cadastrar uma nova pessoa inativa.")
+    public ResponseEntity<InactivePersonDTO> create(@RequestBody @Valid final @NonNull CreateInactivePerson form) {
+        return new ResponseEntity<>(service.dto().create(form.toInactivePerson()), HttpStatus.CREATED);
+    }
+
     @GetMapping("{id}")
-    @Operation(summary = "Buscar", description = "Buscar um departamento pelo ID.")
-    public ResponseEntity<DepartmentDTO> getById(@PathVariable("id") final @NonNull Integer id) {
+    @Operation(summary = "Buscar", description = "Buscar uma pessoa inativa pelo ID.")
+    public ResponseEntity<InactivePersonDTO> getById(@PathVariable("id") final @NonNull Integer id) {
         try {
             return new ResponseEntity<>(service.dto().findById(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
@@ -43,9 +61,9 @@ public class DepartmentController {
 
     @PutMapping("{id}")
     @Transactional
-    @Operation(summary = "Editar", description = "Editar os dados de um departamento.")
-    public ResponseEntity<DepartmentDTO> update(@PathVariable("id") final @NonNull Integer id,
-            @RequestBody final @NonNull UpdateDepartment form) {
+    @Operation(summary = "Editar", description = "Editar os dados de uma pessoa inativa.")
+    public ResponseEntity<InactivePersonDTO> update(@PathVariable("id") final @NonNull Integer id,
+            @RequestBody final @NonNull UpdateInactivePerson form) {
         try {
             final var existingItem = service.findById(id);
             return new ResponseEntity<>(service.dto().update(form.update(existingItem)), HttpStatus.OK);
@@ -56,7 +74,7 @@ public class DepartmentController {
 
     @DeleteMapping("{id}")
     @Transactional
-    @Operation(summary = "Excluir", description = "Descadastrar um departamento, removendo-o do sistema.")
+    @Operation(summary = "Excluir", description = "Descadastrar uma pessoa inativa, removendo-a do sistema.")
     public ResponseEntity<HttpStatus> delete(@PathVariable("id") final @NonNull Integer id) {
         try {
             service.delete(id);

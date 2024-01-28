@@ -16,7 +16,7 @@ public record AddressDTO(
         @Nullable String number,
         @Nullable String reference) {
 
-    public static @Nullable AddressDTO ofNullable(@Nullable final Address address) {
+    public static @Nullable AddressDTO ofNullable(final @Nullable Address address) {
         return (address != null) ? ofNonNull(address) : null;
     }
 

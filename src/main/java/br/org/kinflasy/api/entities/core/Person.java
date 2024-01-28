@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.AbstractAuditable;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import br.org.kinflasy.api.contracts.contact.Emailable;
 import br.org.kinflasy.api.entities.core.church.department.Integration;
 import br.org.kinflasy.api.entities.core.church.membership.Membership;
 import br.org.kinflasy.api.entities.core.contact.Address;
@@ -39,42 +40,40 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class Person extends AbstractAuditable<User, Integer> {
+public abstract class Person extends AbstractAuditable<User, Integer> implements Emailable {
 
     public final static Integer ADULT_AGE = 18;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    protected @NonNull Integer id;
+    private @NonNull Integer id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "full_name", nullable = false)
     @NotBlank
-    protected @NonNull String name;
+    private @NonNull String fullName;
 
     @Column(name = "nickname")
-    protected @Nullable String nickname;
+    private @Nullable String nickname;
 
     @Column(name = "gender", nullable = false)
-    protected @NonNull Gender gender;
+    private @NonNull Gender gender;
 
     @Column(name = "birth_date", nullable = false)
-    protected @NonNull LocalDate birthDate;
+    private @NonNull LocalDate birthDate;
 
     @Column(name = "phone")
-    protected @Nullable String phone;
-    
-    @Column(name = "email", nullable = false)
-    private @Nullable String email;
+    private @Nullable String phone;
 
-    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.REMOVE }, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "address_id")
-    protected @Nullable Address address;
+    private @Nullable Address address;
 
     @OneToMany(mappedBy = "person")
-    protected @NonNull List<Membership> memberships;
+    private @NonNull List<Membership> memberships;
 
     @OneToMany(mappedBy = "person")
-    protected @NonNull List<Integration> integrations;
+    private @NonNull List<Integration> integrations;
 
 }

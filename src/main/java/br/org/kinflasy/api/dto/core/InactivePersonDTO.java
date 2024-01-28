@@ -9,7 +9,7 @@ import br.org.kinflasy.api.dto.core.contact.AddressDTO;
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.utils.enums.core.Gender;
 
-public record PersonDTO(
+public record InactivePersonDTO(
         @NonNull Integer id,
         @NonNull String name,
         @Nullable String nickname,
@@ -19,12 +19,12 @@ public record PersonDTO(
         @Nullable String email,
         @Nullable AddressDTO address) {
 
-    public static @Nullable PersonDTO ofNullable(@Nullable Person person) {
+    public static @Nullable InactivePersonDTO ofNullable(@Nullable Person person) {
         return (person != null) ? ofNonNull(person) : null;
     }
 
-    public static @NonNull PersonDTO ofNonNull(@NonNull Person person) {
-        return new PersonDTO(person.getId(), person.getFullName(), person.getNickname(), person.getGender(),
+    public static @NonNull InactivePersonDTO ofNonNull(@NonNull Person person) {
+        return new InactivePersonDTO(person.getId(), person.getFullName(), person.getNickname(), person.getGender(),
                 person.getBirthDate(), person.getPhone(), person.getEmail(),
                 AddressDTO.ofNullable(person.getAddress()));
     }

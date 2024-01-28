@@ -6,14 +6,14 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.dto.core.contact.CreateAddress;
-import br.org.kinflasy.api.entities.core.Person;
+import br.org.kinflasy.api.entities.core.InactivePerson;
 import br.org.kinflasy.api.utils.enums.core.Gender;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class UpdatePerson {
+public class UpdateInactivePerson {
     
     protected @Nullable String name;
     protected @Nullable String nickname;
@@ -22,7 +22,7 @@ public class UpdatePerson {
     protected @Nullable String phone;
     protected @Nullable CreateAddress address;
 
-    public @NonNull Person update(final @NonNull Person person) {
+    public @NonNull InactivePerson update(final @NonNull InactivePerson person) {
         if (name != null) {
             person.setFullName(name);
         }

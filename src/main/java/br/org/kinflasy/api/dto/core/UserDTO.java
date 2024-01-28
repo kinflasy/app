@@ -25,7 +25,7 @@ public record UserDTO(
     }
 
     public static @NonNull UserDTO ofNonNull(final @NonNull User user) {
-        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getName(), user.getNickname(),
+        return new UserDTO(user.getId(), user.getUsername(), user.getEmail(), user.getFullName(), user.getNickname(),
                 user.getGender(), user.getBirthDate(), user.getPhone(), AddressDTO.ofNullable(user.getAddress()));
     }
 

@@ -10,7 +10,7 @@ public record StaticPeopleFilterDTO(
         @NonNull Integer id,
         @NonNull PersonCharacteristic characteristic) {
 
-    public static @Nullable StaticPeopleFilterDTO ofNullable(@Nullable final StaticPeopleFilter filter) {
+    public static @Nullable StaticPeopleFilterDTO ofNullable(final @Nullable StaticPeopleFilter filter) {
         return (filter != null) ? ofNonNull(filter) : null;
     }
 

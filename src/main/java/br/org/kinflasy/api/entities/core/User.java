@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -34,13 +35,14 @@ public class User extends Person {
     @Column(name = "username", nullable = false, unique = true)
     private @NonNull String username;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = true)
+    @Email
     private @NonNull String email;
 
     @Column(name = "email_verified_at")
     private @Nullable LocalDateTime emailVerifiedAt;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private @NonNull String password;
 
 }

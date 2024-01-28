@@ -69,7 +69,8 @@ public class Unit extends AbstractAuditable<User, Integer> {
     @JoinColumn(name = "church_id")
     private @NonNull Church church;
 
-    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, optional = false, orphanRemoval = true)
+    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE,
+            CascadeType.REMOVE }, optional = false, orphanRemoval = true)
     @JoinColumn(name = "address_id")
     private @NonNull Address address;
 

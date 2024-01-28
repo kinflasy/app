@@ -19,12 +19,11 @@ public class CreatePerson {
     protected @Nullable String nickname;
     protected @NonNull Gender gender;
     protected @NonNull LocalDate birthDate;
-    protected @Nullable String email;
     protected @Nullable String phone;
     protected @Nullable CreateAddress address;
 
     public @NonNull Person update(final @NonNull Person person) {
-        person.setName(name);
+        person.setFullName(name);
         person.setNickname(nickname);
         person.setGender(gender);
         person.setBirthDate(birthDate);
@@ -32,10 +31,6 @@ public class CreatePerson {
         person.setAddress((address != null) ? address.toAddress() : null);
 
         return person;
-    }
-
-    public @NonNull Person toPerson() {
-        return update(new Person());
     }
     
 }

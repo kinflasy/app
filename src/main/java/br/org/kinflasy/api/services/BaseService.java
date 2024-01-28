@@ -37,19 +37,19 @@ public abstract class BaseService<Repository extends JpaRepository<Entity, Id>, 
     }
 
     @Transactional
-    public @NonNull Entity create(@NonNull final Entity item) {
+    public @NonNull Entity create(final @NonNull Entity item) {
         return repository.save(item);
     }
 
-    private @NonNull Boolean existsById(@NonNull final Id id) {
+    private @NonNull Boolean existsById(final @NonNull Id id) {
         return (id != null) ? repository.existsById(id) : false;
     }
 
-    public @NonNull Boolean exists(@NonNull final Entity item) {
+    public @NonNull Boolean exists(final @NonNull Entity item) {
         return existsById(getId(item));
     }
 
-    public @NonNull Entity findById(@NonNull final Id id) throws EntityNotFoundException {
+    public @NonNull Entity findById(final @NonNull Id id) throws EntityNotFoundException {
         try {
             final var result = repository.findById(id).get();
 
@@ -64,7 +64,7 @@ public abstract class BaseService<Repository extends JpaRepository<Entity, Id>, 
     }
 
     @Transactional
-    public @NonNull Entity update(@NonNull final Entity entity) throws EntityNotFoundException {
+    public @NonNull Entity update(final @NonNull Entity entity) throws EntityNotFoundException {
         if (exists(entity)) {
             return repository.save(entity);
         }
@@ -73,7 +73,7 @@ public abstract class BaseService<Repository extends JpaRepository<Entity, Id>, 
     }
 
     @Transactional
-    public void delete(@NonNull final Id id) throws EntityNotFoundException {
+    public void delete(final @NonNull Id id) throws EntityNotFoundException {
         if (existsById(id)) {
             repository.deleteById(id);
         } else {

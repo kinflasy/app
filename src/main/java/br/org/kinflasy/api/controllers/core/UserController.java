@@ -21,11 +21,14 @@ import br.org.kinflasy.api.dto.core.UserDTO;
 import br.org.kinflasy.api.dto.core.UpdateUser;
 import br.org.kinflasy.api.entities.core.User;
 import br.org.kinflasy.api.services.core.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("v1/core/users")
+@Tag(name = "User")
 public class UserController {
 
     private final UserService service;
@@ -35,18 +38,21 @@ public class UserController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar todos", description = "Listar todos os usuários ativos cadastrados.")
     public ResponseEntity<List<UserDTO>> getAll() {
         return new ResponseEntity<>(service.dto().findAll(), HttpStatus.OK);
     }
 
     @PostMapping
     @Transactional
+    @Operation(summary = "Cadastrar", description = "Cadastrar um novo usuário ativo.")
     public ResponseEntity<UserDTO> create(@RequestBody @Valid final @NonNull CreateUser form) {
         final User savedItem = service.create(form.toUser());
         return new ResponseEntity<>(UserDTO.ofNullable(savedItem), HttpStatus.CREATED);
     }
 
     @GetMapping("{id}")
+    @Operation(summary = "Buscar", description = "Buscar um usuário ativo pelo ID.")
     public ResponseEntity<UserDTO> getById(@PathVariable("id") final @NonNull Integer id) {
         try {
             return new ResponseEntity<>(UserDTO.ofNullable(service.findById(id)), HttpStatus.OK);
@@ -57,6 +63,7 @@ public class UserController {
 
     @PutMapping("{id}")
     @Transactional
+    @Operation(summary = "Editar", description = "Editar os dados de um usuário ativo.")
     public ResponseEntity<UserDTO> update(@PathVariable("id") final @NonNull Integer id,
             @RequestBody @Valid final @NonNull UpdateUser form) {
         try {
@@ -70,6 +77,7 @@ public class UserController {
 
     @DeleteMapping("{id}")
     @Transactional
+    @Operation(summary = "Excluir", description = "Descadastrar um usuário ativo, removendo-o do sistema.")
     public ResponseEntity<HttpStatus> delete(@PathVariable("id") final @NonNull Integer id) {
         try {
             service.delete(id);

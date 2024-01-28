@@ -20,13 +20,13 @@ public class UpdateUser extends UpdatePerson {
             @Nullable LocalDate birthDate, @Nullable String phone, @Nullable CreateAddress address,
             @Nullable String username, @Nullable String email) {
 
-        super(name, nickname, gender, birthDate, phone, email, address);
+        super(name, nickname, gender, birthDate, phone, address);
         this.username = username;
         this.email = email;
 
     }
 
-    public @NonNull User update(@NonNull final User user) {
+    public @NonNull User update(final @NonNull User user) {
         super.update(user);
 
         if (username != null) {

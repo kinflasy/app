@@ -12,7 +12,7 @@ public record UpdateChurch(
         @Nullable String phone,
         @Nullable String email) {
 
-    public @NonNull Church update(@NonNull final Church church) {
+    public @NonNull Church update(final @NonNull Church church) {
         if (name != null) {
             church.setName(name);
         }

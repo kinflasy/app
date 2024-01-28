@@ -22,11 +22,14 @@ import br.org.kinflasy.api.dto.core.church.department.CreateDepartment;
 import br.org.kinflasy.api.dto.core.church.department.DepartmentDTO;
 import br.org.kinflasy.api.services.core.church.UnitService;
 import br.org.kinflasy.api.services.core.church.department.DepartmentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("v1/core/church/units")
+@Tag(name = "Unit")
 public class UnitController {
 
     private final UnitService service;
@@ -38,6 +41,7 @@ public class UnitController {
     }
 
     @GetMapping("{id}")
+    @Operation(summary = "Buscar", description = "Buscar uma unidade pelo ID.")
     public ResponseEntity<UnitDTO> getById(@PathVariable("id") final @NonNull Integer id) {
         try {
             return new ResponseEntity<>(service.dto().findById(id), HttpStatus.OK);
@@ -48,6 +52,7 @@ public class UnitController {
 
     @PutMapping("{id}")
     @Transactional
+    @Operation(summary = "Editar", description = "Editar os dados de uma unidade.")
     public ResponseEntity<UnitDTO> update(@PathVariable("id") final @NonNull Integer id,
             @RequestBody final @NonNull UpdateUnit form) {
         try {
@@ -60,6 +65,7 @@ public class UnitController {
 
     @DeleteMapping("{id}")
     @Transactional
+    @Operation(summary = "Excluir", description = "Descadastrar uma unidade, removendo-a do sistema.")
     public ResponseEntity<HttpStatus> delete(@PathVariable("id") final @NonNull Integer id) {
         try {
             service.delete(id);
@@ -72,11 +78,13 @@ public class UnitController {
     }
 
     @GetMapping("{id}/departments")
+    @Operation(summary = "Listar departamentos", description = "Listar os departamentos de uma unidade.")
     public ResponseEntity<List<DepartmentDTO>> getDepartments(@PathVariable("id") final @NonNull Integer id) {
         return new ResponseEntity<>(departmentService.dto().nonNull(service.getDepartments(id)), HttpStatus.OK);
     }
 
     @PostMapping("{id}/departments")
+    @Operation(summary = "Cadastrar departamento", description = "Cadastrar um novo departamento em uma unidade.")
     public ResponseEntity<DepartmentDTO> createDepartment(@PathVariable("id") final @NonNull Integer id,
             @RequestBody @Valid final @NonNull CreateDepartment form) {
         final var createdDepartment = service.createDepartment(id, form.toDepartment());

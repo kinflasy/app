@@ -18,15 +18,15 @@ public class DtoService<Repository extends JpaRepository<Entity, Id>, DTO, Entit
         this.base = repository;
     }
 
-    public @NonNull DTO nonNull(@NonNull final Entity item) {
+    public @NonNull DTO nonNull(final @NonNull Entity item) {
         return base.toNonNullDTO(item);
     }
 
-    public @Nullable DTO nullable(@Nullable final Entity item) {
+    public @Nullable DTO nullable(final @Nullable Entity item) {
         return base.toNullableDTO(item);
     }
 
-    public @NonNull List<DTO> nonNull(@NonNull final List<Entity> list) {
+    public @NonNull List<DTO> nonNull(final @NonNull List<Entity> list) {
         // Verificar se não tem nenhum item nulo na lista
         final var nonNull = list.stream().allMatch(item -> item != null);
 
@@ -38,7 +38,7 @@ public class DtoService<Repository extends JpaRepository<Entity, Id>, DTO, Entit
         return (result != null) ? result : new ArrayList<>();
     }
 
-    public @Nullable List<DTO> nullable(@Nullable final List<Entity> list) {
+    public @Nullable List<DTO> nullable(final @Nullable List<Entity> list) {
         return (list != null) ? nonNull(list) : new ArrayList<>();
     }
 
@@ -51,16 +51,16 @@ public class DtoService<Repository extends JpaRepository<Entity, Id>, DTO, Entit
     }
 
     @Transactional
-    public @NonNull DTO create(@NonNull final Entity item) {
+    public @NonNull DTO create(final @NonNull Entity item) {
         return base.toNonNullDTO(base.create(item));
     }
 
-    public @NonNull DTO findById(@NonNull final Id id) throws EntityNotFoundException {
+    public @NonNull DTO findById(final @NonNull Id id) throws EntityNotFoundException {
         return base.toNonNullDTO(base.findById(id));
     }
 
     @Transactional
-    public @NonNull DTO update(@NonNull final Entity entity) throws EntityNotFoundException {
+    public @NonNull DTO update(final @NonNull Entity entity) throws EntityNotFoundException {
         return base.toNonNullDTO(base.update(entity));
     }
 

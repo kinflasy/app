@@ -25,11 +25,14 @@ import br.org.kinflasy.api.dto.core.church.UnitDTO;
 import br.org.kinflasy.api.dto.core.church.UpdateChurch;
 import br.org.kinflasy.api.services.core.church.ChurchService;
 import br.org.kinflasy.api.services.core.church.UnitService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("v1/core/churches")
+@Tag(name = "Church")
 public class ChurchController {
 
     private final ChurchService service;
@@ -41,24 +44,27 @@ public class ChurchController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar todos", description = "Listar todas as igrejas cadastradas.")
     public ResponseEntity<List<ChurchDTO>> getAll() {
         return new ResponseEntity<>(service.dto().findAll(), HttpStatus.OK);
     }
 
     @PostMapping
     @Transactional
+    @Operation(summary = "Cadastrar", description = "Cadastrar uma igreja.")
     public ResponseEntity<ChurchDTO> create(@RequestBody @Valid final @NonNull CreateChurch form) {
         return new ResponseEntity<>(service.dto().create(form.toChurch()), HttpStatus.CREATED);
     }
 
-
     @PostMapping("starter")
     @Transactional
+    @Operation(summary = "Cadastrar com itens principais", description = "Cadastrar uma igreja com unidade sede e departamentos principais.")
     public ResponseEntity<StarterChurchDTO> createStarter(@RequestBody @Valid final @NonNull CreateStarterChurch form) {
         return new ResponseEntity<>(StarterChurchDTO.ofNonNull(service.createStarter(form)), HttpStatus.CREATED);
     }
 
     @GetMapping("{id}")
+    @Operation(summary = "Buscar", description = "Buscar uma igreja pelo ID.")
     public ResponseEntity<ChurchDTO> getById(@PathVariable("id") final @NonNull Integer id) {
         try {
             return new ResponseEntity<>(service.dto().findById(id), HttpStatus.OK);
@@ -69,6 +75,7 @@ public class ChurchController {
 
     @PutMapping("{id}")
     @Transactional
+    @Operation(summary = "Editar", description = "Editar os dados de uma igreja.")
     public ResponseEntity<ChurchDTO> update(@PathVariable("id") final @NonNull Integer id,
             @RequestBody final @NonNull UpdateChurch form) {
         try {
@@ -81,6 +88,7 @@ public class ChurchController {
 
     @DeleteMapping("{id}")
     @Transactional
+    @Operation(summary = "Excluir", description = "Descadastrar uma igreja, removendo-a do sistema.")
     public ResponseEntity<HttpStatus> delete(@PathVariable("id") final @NonNull Integer id) {
         try {
             service.delete(id);
@@ -93,11 +101,13 @@ public class ChurchController {
     }
 
     @GetMapping("{id}/units")
+    @Operation(summary = "Listar unidades", description = "Listar as unidades de uma igreja.")
     public ResponseEntity<List<UnitDTO>> getUnits(@PathVariable("id") final @NonNull Integer id) {
         return new ResponseEntity<>(unitService.dto().nonNull(service.getUnits(id)), HttpStatus.OK);
     }
 
     @PostMapping("{id}/units")
+    @Operation(summary = "Cadastrar unidade", description = "Cadastrar uma nova unidade em uma igreja.")
     public ResponseEntity<UnitDTO> createUnit(@PathVariable("id") final @NonNull Integer id,
             @RequestBody @Valid final @NonNull CreateUnit form) {
         final var createdUnit = service.createUnit(id, form.toUnit());
