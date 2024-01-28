@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.domain.AbstractAuditable;
 import org.springframework.lang.NonNull;
 
+import br.org.kinflasy.api.contracts.contact.Emailable;
 import br.org.kinflasy.api.entities.core.User;
 import br.org.kinflasy.api.entities.core.church.department.Department;
 import br.org.kinflasy.api.entities.core.contact.Address;
@@ -42,7 +43,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class Unit extends AbstractAuditable<User, Integer> {
+public class Unit extends AbstractAuditable<User, Integer> implements Emailable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

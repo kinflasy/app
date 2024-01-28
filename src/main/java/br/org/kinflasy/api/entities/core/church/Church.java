@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.AbstractAuditable;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
+import br.org.kinflasy.api.contracts.contact.Emailable;
 import br.org.kinflasy.api.entities.core.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -29,7 +30,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class Church extends AbstractAuditable<User, Integer> {
+public class Church extends AbstractAuditable<User, Integer> implements Emailable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
