@@ -1,4 +1,4 @@
-package br.org.kinflasy.api.entities.core.peopleFilter;
+package br.org.kinflasy.api.entities.core.peoplefilter;
 
 import java.util.function.Function;
 
@@ -12,11 +12,9 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "negative_group_people_filters")
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
@@ -30,6 +28,11 @@ public class NegativeFilter extends PeopleFilter {
     public @NonNull Function<Person, Boolean> getFilter() {
         // Negar resultado do filtro base
         return (person -> !filter.getFilter().apply(person));
+    }
+
+    @Override
+    public @NonNull String toString() {
+        return "not " + filter.toString();
     }
 
 }

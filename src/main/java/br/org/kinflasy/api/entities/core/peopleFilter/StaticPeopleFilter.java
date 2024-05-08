@@ -1,4 +1,4 @@
-package br.org.kinflasy.api.entities.core.peopleFilter;
+package br.org.kinflasy.api.entities.core.peoplefilter;
 
 import java.util.function.Function;
 
@@ -14,11 +14,9 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "static_people_filters")
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
@@ -31,6 +29,11 @@ public class StaticPeopleFilter extends PeopleFilter {
     @Override
     public @NonNull Function<Person, Boolean> getFilter() {
         return characteristic.getFilter();
+    }
+
+    @Override
+    public @NonNull String toString() {
+        return "is " + characteristic.toString();
     }
 
 }

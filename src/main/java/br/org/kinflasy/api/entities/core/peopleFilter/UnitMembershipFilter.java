@@ -1,4 +1,4 @@
-package br.org.kinflasy.api.entities.core.peopleFilter;
+package br.org.kinflasy.api.entities.core.peoplefilter;
 
 import java.util.function.Function;
 
@@ -17,13 +17,11 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "unit_membership_people_filters", uniqueConstraints = {
         @UniqueConstraint(columnNames = { "unit_id", "status" })
 })
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
@@ -42,6 +40,11 @@ public class UnitMembershipFilter extends PeopleFilter {
         return (person -> person.getMemberships().stream()
                 .anyMatch(membership -> membership.getUnit().equals(unit)
                         && membership.getStatus() == status));
+    }
+
+    @Override
+    public @NonNull String toString() {
+        return "is " + status.toString() + " of the unit " + unit.getName() + " (#" + unit.getId() + ")";
     }
 
 }

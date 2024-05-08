@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.lang.NonNull;
 
-import br.org.kinflasy.api.entities.core.peopleFilter.StaticPeopleFilter;
+import br.org.kinflasy.api.entities.core.peoplefilter.StaticPeopleFilter;
 import br.org.kinflasy.api.utils.enums.core.PersonCharacteristic;
 
 public interface StaticPeopleFilterRepository extends JpaRepository<StaticPeopleFilter, Integer> {

@@ -5,8 +5,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import br.org.kinflasy.api.dto.core.peopleFilter.StaticPeopleFilterDTO;
-import br.org.kinflasy.api.entities.core.peopleFilter.StaticPeopleFilter;
+import br.org.kinflasy.api.dto.core.peoplefilter.StaticPeopleFilterDTO;
+import br.org.kinflasy.api.entities.core.peoplefilter.StaticPeopleFilter;
 import br.org.kinflasy.api.repositories.core.peopleFilter.StaticPeopleFilterRepository;
 import br.org.kinflasy.api.services.BaseService;
 

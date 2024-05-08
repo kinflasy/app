@@ -1,4 +1,4 @@
-package br.org.kinflasy.api.entities.core.peopleFilter;
+package br.org.kinflasy.api.entities.core.peoplefilter;
 
 import java.util.function.Function;
 
@@ -16,13 +16,11 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "department_people_filters", uniqueConstraints = {
         @UniqueConstraint(columnNames = { "department_id", "type" })
 })
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
@@ -41,4 +39,10 @@ public class DepartmentIntegrationFilter extends PeopleFilter {
                 .anyMatch(integration -> integration.getDepartment().equals(department)
                         && integration.getType() == type));
     }
+    
+    @Override
+    public @NonNull String toString() {
+        return "is " + type.toString() + " of the unit " + department.getName() + " (#" + department.getId() + ")";
+    }
+
 }

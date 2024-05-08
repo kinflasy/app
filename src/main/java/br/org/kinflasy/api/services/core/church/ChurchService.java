@@ -15,7 +15,7 @@ import br.org.kinflasy.api.dto.core.church.department.CreateDepartment;
 import br.org.kinflasy.api.entities.core.church.Church;
 import br.org.kinflasy.api.entities.core.church.Unit;
 import br.org.kinflasy.api.entities.core.church.department.Department;
-import br.org.kinflasy.api.entities.core.peopleFilter.StaticPeopleFilter;
+import br.org.kinflasy.api.entities.core.peoplefilter.StaticPeopleFilter;
 import br.org.kinflasy.api.repositories.core.church.ChurchRepository;
 import br.org.kinflasy.api.services.BaseService;
 import br.org.kinflasy.api.services.core.peopleFilter.StaticPeopleFilterService;

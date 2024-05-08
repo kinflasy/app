@@ -1,4 +1,4 @@
-package br.org.kinflasy.api.entities.core.peopleFilter;
+package br.org.kinflasy.api.entities.core.peoplefilter;
 
 import java.util.List;
 import java.util.function.Function;
@@ -39,6 +39,21 @@ public class OrGroupPeopleFilter extends PeopleFilter {
             // Retornar
             return result;
         });
+    }
+
+    @Override
+    public @NonNull String toString() {
+        final var indent = "  ";
+
+        final var result = new StringBuilder("matches at least one: ");
+
+        for (final var filter : filters) {
+            final var internal = filter.toString();
+            internal.replaceAll("\n", "\n" + indent);
+            result.append(indent + "- " + filter.toString());
+        }
+
+        return result.toString();
     }
 
 }

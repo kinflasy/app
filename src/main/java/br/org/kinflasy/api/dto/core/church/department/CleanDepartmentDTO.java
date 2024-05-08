@@ -4,7 +4,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.church.department.Department;
-import br.org.kinflasy.api.entities.core.peopleFilter.PeopleFilter;
+import br.org.kinflasy.api.entities.core.peoplefilter.PeopleFilter;
 import br.org.kinflasy.api.utils.enums.core.church.department.DepartmentType;
 
 public record CleanDepartmentDTO(
