@@ -32,4 +32,9 @@ public class NegativeFilter extends PeopleFilter {
         return (person -> !filter.getFilter().apply(person));
     }
 
+    @Override
+    public @NonNull String toString() {
+        return "not " + filter.toString();
+    }
+
 }

@@ -44,4 +44,9 @@ public class ChurchMembershipFilter extends PeopleFilter {
                         && membership.getStatus() == status));
     }
 
+    @Override
+    public @NonNull String toString() {
+        return "is " + status.toString() + " of the church " + church.getName() + " (#" + church.getId() + ")";
+    }
+
 }

@@ -41,4 +41,10 @@ public class DepartmentIntegrationFilter extends PeopleFilter {
                 .anyMatch(integration -> integration.getDepartment().equals(department)
                         && integration.getType() == type));
     }
+    
+    @Override
+    public @NonNull String toString() {
+        return "is " + type.toString() + " of the department " + department.getName() + " (#" + department.getId() + ")";
+    }
+
 }

@@ -1,10 +1,5 @@
 # Usar a imagem oficial do Ubuntu como base
-FROM ubuntu:latest
-
-# Configurar variáveis de ambiente
-ENV APP_NAME=${APP_NAME}
-ENV APP_VERSION=${APP_VERSION}
-ENV JAR_FILE=target/${APP_NAME}.jar
+FROM maven:3.9.6-eclipse-temurin-17
 
 # Definir o fuso horário para Brasília (BRT)
 ENV TZ=America/Sao_Paulo
@@ -20,17 +15,7 @@ WORKDIR /home/dev/api
 
 # Instalar o Maven
 RUN apt-get update
-RUN apt-get install -y openjdk-17-jdk
-RUN apt-get install -y maven
 RUN apt-get install -y git
-
-# Definir JAVA_HOME
-ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
-
-# Definir credenciais do Git
-# ENV GIT_USER=${GIT_USER}
-# ENV GIT_EMAIL=${GIT_EMAIL}
-# RUN git config --global user.name "${GIT_USER}" && git config --global user.email "${GIT_EMAIL}"
 
 # Copiar o projeto
 COPY . .

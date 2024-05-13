@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class IsFilter extends PeopleFilter {
+public class IdentityFilter extends PeopleFilter {
 
     @ManyToOne
     @JoinColumn(name = "person_id", unique = true, nullable = false)
@@ -29,6 +29,11 @@ public class IsFilter extends PeopleFilter {
     @Override
     public @NonNull Function<Person, Boolean> getFilter() {
         return (person -> person.equals(this.person));
+    }
+
+    @Override
+    public @NonNull String toString() {
+        return "is " + person.getFullName() + " (#" + person.getId() + ")";
     }
     
 }

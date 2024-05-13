@@ -33,4 +33,9 @@ public class StaticPeopleFilter extends PeopleFilter {
         return characteristic.getFilter();
     }
 
+    @Override
+    public @NonNull String toString() {
+        return "is " + characteristic.toString();
+    }
+
 }

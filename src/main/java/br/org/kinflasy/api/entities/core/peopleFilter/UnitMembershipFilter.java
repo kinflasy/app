@@ -44,4 +44,9 @@ public class UnitMembershipFilter extends PeopleFilter {
                         && membership.getStatus() == status));
     }
 
+    @Override
+    public @NonNull String toString() {
+        return "is " + status.toString() + " of the unit " + unit.getName() + " (#" + unit.getId() + ")";
+    }
+
 }
