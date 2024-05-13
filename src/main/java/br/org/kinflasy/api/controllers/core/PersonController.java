@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.api.dto.core.PersonDTO;
-import br.org.kinflasy.api.entities.core.peoplefilter.builder.PeopleFilterBuilder;
 import br.org.kinflasy.api.services.core.PersonService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,13 +42,6 @@ public class PersonController {
         } catch (final EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
-
-    @GetMapping("test")
-    @Operation(summary = "Testar", description = "Testar.")
-    public ResponseEntity<String> test() {
-        final var result = PeopleFilterBuilder.test();
-        return new ResponseEntity<>(result.toString(), HttpStatus.OK);
     }
 
 }

@@ -13,14 +13,16 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "and_group_people_filters")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 @EqualsAndHashCode(callSuper = false)
-public class AndGroupPeopleFilter extends PeopleFilter {
+public class AndGroupPeopleFilter extends GroupablePeopleFilter {
 
     @ManyToMany
     private @NonNull List<PeopleFilter> filters;
@@ -43,15 +45,15 @@ public class AndGroupPeopleFilter extends PeopleFilter {
 
     @Override
     public @NonNull String toString() {
-        final var indent = "  ";
+        final var result = new StringBuilder("matches all:\n");
 
-        final var result = new StringBuilder("matches all: ");
+        final var textList = filters.stream()
+                .map(filter -> "  - " + filter.toString().replaceAll("\n", "\n  "))
+                .toList();
 
-        for (final var filter : filters) {
-            final var internal = filter.toString();
-            internal.replaceAll("\n", "\n" + indent);
-            result.append(indent + "- " + filter.toString());
-        }
+        final var text = String.join("\n", textList);
+
+        result.append(text);
 
         return result.toString();
     }
