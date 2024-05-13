@@ -1,4 +1,4 @@
-package br.org.kinflasy.api.services.core.peopleFilter;
+package br.org.kinflasy.api.services.core.peoplefilter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.api.dto.core.peoplefilter.StaticPeopleFilterDTO;
 import br.org.kinflasy.api.entities.core.peoplefilter.StaticPeopleFilter;
-import br.org.kinflasy.api.repositories.core.peopleFilter.StaticPeopleFilterRepository;
+import br.org.kinflasy.api.repositories.core.peoplefilter.StaticPeopleFilterRepository;
 import br.org.kinflasy.api.services.BaseService;
 
 @Service

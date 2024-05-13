@@ -1,4 +1,4 @@
-package br.org.kinflasy.api.repositories.core.peopleFilter;
+package br.org.kinflasy.api.repositories.core.peoplefilter;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;

@@ -18,7 +18,7 @@ import br.org.kinflasy.api.entities.core.church.department.Department;
 import br.org.kinflasy.api.entities.core.peoplefilter.StaticPeopleFilter;
 import br.org.kinflasy.api.repositories.core.church.ChurchRepository;
 import br.org.kinflasy.api.services.BaseService;
-import br.org.kinflasy.api.services.core.peopleFilter.StaticPeopleFilterService;
+import br.org.kinflasy.api.services.core.peoplefilter.StaticPeopleFilterService;
 import br.org.kinflasy.api.utils.enums.core.PersonCharacteristic;
 import br.org.kinflasy.api.utils.enums.core.church.UnitType;
 import br.org.kinflasy.api.utils.enums.core.church.department.DepartmentType;
