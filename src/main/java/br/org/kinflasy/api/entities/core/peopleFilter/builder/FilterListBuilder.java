@@ -2,6 +2,7 @@ package br.org.kinflasy.api.entities.core.peoplefilter.builder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import org.springframework.lang.NonNull;
 
@@ -12,6 +13,7 @@ import br.org.kinflasy.api.entities.core.church.department.Department;
 import br.org.kinflasy.api.entities.core.peoplefilter.ChurchMembershipFilter;
 import br.org.kinflasy.api.entities.core.peoplefilter.DepartmentIntegrationFilter;
 import br.org.kinflasy.api.entities.core.peoplefilter.IdentityFilter;
+import br.org.kinflasy.api.entities.core.peoplefilter.NegativeFilter;
 import br.org.kinflasy.api.entities.core.peoplefilter.OrGroupPeopleFilter;
 import br.org.kinflasy.api.entities.core.peoplefilter.PeopleFilter;
 import br.org.kinflasy.api.entities.core.peoplefilter.StaticPeopleFilter;
@@ -19,6 +21,7 @@ import br.org.kinflasy.api.entities.core.peoplefilter.UnitMembershipFilter;
 import br.org.kinflasy.api.utils.enums.core.PersonCharacteristic;
 import br.org.kinflasy.api.utils.enums.core.church.department.IntegrationType;
 import br.org.kinflasy.api.utils.enums.core.church.membership.Status;
+import jakarta.annotation.Nonnull;
 
 public class FilterListBuilder {
 
@@ -31,6 +34,14 @@ public class FilterListBuilder {
      * Package restricted constructor
      */
     FilterListBuilder() {
+    }
+
+    public @Nonnull FilterListBuilder not(
+            final @NonNull Function<PeopleFilterBuilder, ValidPeopleFilterBuilder> filter) {
+        final var not = new NegativeFilter(filter.apply(PeopleFilterBuilder.thePerson()).filter);
+        filters.add(not);
+
+        return this;
     }
 
     /**

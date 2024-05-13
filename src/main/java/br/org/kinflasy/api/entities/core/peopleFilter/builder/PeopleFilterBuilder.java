@@ -6,7 +6,6 @@ import java.util.function.Function;
 import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.Person;
-import br.org.kinflasy.api.entities.core.User;
 import br.org.kinflasy.api.entities.core.church.Church;
 import br.org.kinflasy.api.entities.core.church.Unit;
 import br.org.kinflasy.api.entities.core.church.department.Department;
@@ -14,6 +13,7 @@ import br.org.kinflasy.api.entities.core.peoplefilter.AndGroupPeopleFilter;
 import br.org.kinflasy.api.entities.core.peoplefilter.ChurchMembershipFilter;
 import br.org.kinflasy.api.entities.core.peoplefilter.DepartmentIntegrationFilter;
 import br.org.kinflasy.api.entities.core.peoplefilter.IdentityFilter;
+import br.org.kinflasy.api.entities.core.peoplefilter.NegativeFilter;
 import br.org.kinflasy.api.entities.core.peoplefilter.OrGroupPeopleFilter;
 import br.org.kinflasy.api.entities.core.peoplefilter.PeopleFilter;
 import br.org.kinflasy.api.entities.core.peoplefilter.StaticPeopleFilter;
@@ -21,6 +21,7 @@ import br.org.kinflasy.api.entities.core.peoplefilter.UnitMembershipFilter;
 import br.org.kinflasy.api.utils.enums.core.PersonCharacteristic;
 import br.org.kinflasy.api.utils.enums.core.church.department.IntegrationType;
 import br.org.kinflasy.api.utils.enums.core.church.membership.Status;
+import jakarta.annotation.Nonnull;
 
 public class PeopleFilterBuilder {
 
@@ -31,6 +32,12 @@ public class PeopleFilterBuilder {
      */
     public static @NonNull PeopleFilterBuilder thePerson() {
         return new PeopleFilterBuilder();
+    }
+
+    public @Nonnull SinglyPeopleFilterBuilder not(
+            final @NonNull Function<PeopleFilterBuilder, ValidPeopleFilterBuilder> filter) {
+        final var not = new NegativeFilter(filter.apply(this).filter);
+        return new SinglyPeopleFilterBuilder(not);
     }
 
     /**
@@ -133,33 +140,6 @@ public class PeopleFilterBuilder {
                         .toList());
 
         return new SinglyPeopleFilterBuilder(all);
-    }
-
-    public static PeopleFilter test() {
-        final var personX = new User();
-        final var churchX = new Church();
-        final var unitX = new Unit();
-        final var departmentX = new Department();
-
-        final var builder = PeopleFilterBuilder
-                .thePerson()
-                .isMemberOf(unitX, Status.CONGREGATED, Status.MEMBER, Status.VISITOR)
-                .andMatchesAll(
-                        person -> person
-                                .is(personX)
-                                .is(PersonCharacteristic.ADULT)
-                                .isMemberOf(churchX, Status.MEMBER))
-                .allThisOrMatchesAll(list -> list
-                        .isMemberOf(unitX, Status.CONGREGATED)
-                        .isIntegrantOf(departmentX, IntegrationType.LEADER));
-
-        System.out.println(builder);
-
-        final var result = builder.build();
-
-        System.out.println(result);
-
-        return result;
     }
 
 }
