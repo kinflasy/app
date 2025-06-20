@@ -29,7 +29,7 @@ public class AndGroupPeopleFilter extends PeopleFilter {
             // Iniciar com true (valor neutro do AND)
             var result = true;
 
-            // Apicar cada filtro
+            // Aplicar cada filtro
             for (final var filter : filters) {
                 result &= filter.getFilter().apply(person);
             }

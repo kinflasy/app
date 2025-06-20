@@ -29,7 +29,7 @@ public class OrGroupPeopleFilter extends PeopleFilter {
             // Iniciar com false (valor neutro do OR)
             var result = false;
 
-            // Apicar cada filtro
+            // Aplicar cada filtro
             for (final var filter : filters) {
                 result |= filter.getFilter().apply(person);
             }
