@@ -1,13 +1,12 @@
-package br.org.kinflasy.api.entities.core.peopleFilter;
+package br.org.kinflasy.api.entities.core.people_filter;
 
 import java.util.function.Function;
 
 import br.org.kinflasy.api.entities.core.Person;
-import br.org.kinflasy.api.entities.core.church.Unit;
-import br.org.kinflasy.api.utils.enums.core.church.membership.Status;
+import br.org.kinflasy.api.entities.core.church.department.Department;
+import br.org.kinflasy.api.utils.enums.core.church.department.IntegrationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -18,27 +17,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "unit_membership_people_filters", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"unit_id", "status"})
+@Table(name = "department_people_filters", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"department_id", "type"})
 })
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class UnitMembershipFilter extends PeopleFilter {
+public class DepartmentIntegrationFilter extends PeopleFilter {
 
     @ManyToOne
-    @JoinColumn(name = "unit_id", nullable = false)
-    private Unit unit;
+    @JoinColumn(name = "department_id", nullable = false)
+    private Department department;
 
-    @Enumerated
-    @Column(name = "status")
-    private Status status;
+    @Column(name = "type")
+    private IntegrationType type = IntegrationType.INTEGRANT;
 
     @Override
     public Function<Person, Boolean> getFilter() {
         // TODO: escrever regra de negócio (usar repository/service)
         throw new UnsupportedOperationException("Unimplemented method 'getFilter'");
     }
-
 }

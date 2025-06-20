@@ -1,4 +1,4 @@
-package br.org.kinflasy.api.entities.core.peopleFilter;
+package br.org.kinflasy.api.entities.core.people_filter;
 
 import java.util.List;
 import java.util.function.Function;
@@ -13,12 +13,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "and_group_people_filters")
+@Table(name = "or_group_people_filter")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class AndGroupPeopleFilter extends PeopleFilter {
+public class OrGroupPeopleFilter extends PeopleFilter {
 
     @ManyToMany
     private List<PeopleFilter> filters;
@@ -26,12 +26,12 @@ public class AndGroupPeopleFilter extends PeopleFilter {
     @Override
     public Function<Person, Boolean> getFilter() {
         return (person -> {
-            // Iniciar com true (valor neutro do AND)
-            var result = true;
+            // Iniciar com false (valor neutro do OR)
+            var result = false;
 
             // Apicar cada filtro
             for (final var filter : filters) {
-                result &= filter.getFilter().apply(person);
+                result |= filter.getFilter().apply(person);
             }
 
             // Retornar
