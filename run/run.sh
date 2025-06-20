@@ -3,4 +3,4 @@
 mvn clean install
 
 # Construir e subir os containers
-docker-compose up --build app db
+docker-compose up --build
