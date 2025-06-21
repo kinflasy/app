@@ -18,23 +18,15 @@ public class OrGroupPeopleFilter extends GroupablePeopleFilter {
 
     @Override
     public Predicate<Person> getPredicate() {
-        return (person -> {
-            // Iniciar com false (valor neutro do OR)
-            var result = false;
+        return person -> getFilters().stream()
 
-            // Apicar cada filtro
-            for (final var filter : getFilters()) {
-                result |= filter.getPredicate().test(person);
-            }
-
-            // Retornar
-            return result;
-        });
+                // Combinar todos os predicados com OR (lista vazia retorna false)
+                .anyMatch(filter -> filter.getPredicate().test(person));
     }
 
     @Override
     public @NonNull String toString() {
-        final var result = new StringBuilder("matches at least one:\n");
+        final var result = new StringBuilder("matches any:\n");
 
         final var textList = getFilters().stream()
                 .map(filter -> "  - " + filter.toString().replace("\n", "\n  "))

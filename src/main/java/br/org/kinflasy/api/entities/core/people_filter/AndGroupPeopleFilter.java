@@ -18,18 +18,10 @@ public class AndGroupPeopleFilter extends GroupablePeopleFilter {
 
     @Override
     public Predicate<Person> getPredicate() {
-        return (person -> {
-            // Iniciar com true (valor neutro do AND)
-            var result = true;
+        return person -> getFilters().stream()
 
-            // Apicar cada filtro
-            for (final var filter : getFilters()) {
-                result &= filter.getPredicate().test(person);
-            }
-
-            // Retornar
-            return result;
-        });
+                // Combinar todos os predicados com AND (lista vazia retorna true)
+                .allMatch(filter -> filter.getPredicate().test(person));
     }
 
     @Override
