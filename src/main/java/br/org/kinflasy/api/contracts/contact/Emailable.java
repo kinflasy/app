@@ -1,6 +1,5 @@
 package br.org.kinflasy.api.contracts.contact;
 
-
 public interface Emailable {
 
     public String getEmail();

@@ -20,11 +20,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -41,15 +39,13 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = false)
 public abstract class Person extends AbstractAuditable<User, Integer> implements Emailable {
 
-    public final static Integer ADULT_AGE = 18;
+    public static final Integer ADULT_AGE = 18;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Integer id;
 
     @Column(name = "full_name", nullable = false)
-    @NotBlank
     private String fullName;
 
     @Column(name = "nickname")
@@ -66,7 +62,6 @@ public abstract class Person extends AbstractAuditable<User, Integer> implements
 
     @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.REMOVE }, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "address_id")
     private @Nullable Address address;
 
     @OneToMany(mappedBy = "person")
