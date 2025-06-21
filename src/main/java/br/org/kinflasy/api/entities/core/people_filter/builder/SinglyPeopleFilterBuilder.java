@@ -1,7 +1,6 @@
 package br.org.kinflasy.api.entities.core.people_filter.builder;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import br.org.kinflasy.api.entities.core.people_filter.AndGroupPeopleFilter;
@@ -29,12 +28,9 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
 
         // Transformar-se em Grouped
         return new GroupedPeopleFilterBuilder(filter);
-
     }
 
-    public GroupedPeopleFilterBuilder andMatchesOneOf(
-            final Function<FilterListBuilder, FilterListBuilder> person) {
-
+    public GroupedPeopleFilterBuilder andMatchesOneOf(final UnaryOperator<FilterListBuilder> person) {
         // Criar builder com filtros adicionais
         final var listed = person.apply(new FilterListBuilder());
         final var or = new OrGroupPeopleFilter().setFilters(listed.getFiltersList());
@@ -44,12 +40,9 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
 
         // Transformar-se em Grouped
         return new GroupedPeopleFilterBuilder(filter);
-
     }
 
-    public GroupedPeopleFilterBuilder orMatchesAll(
-            final Function<FilterListBuilder, FilterListBuilder> person) {
-
+    public GroupedPeopleFilterBuilder orMatchesAll(final UnaryOperator<FilterListBuilder> person) {
         // Criar builder com filtros adicionais
         final var listed = person.apply(new FilterListBuilder());
         final var and = new AndGroupPeopleFilter().setFilters(listed.getFiltersList());
@@ -59,12 +52,9 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
 
         // Transformar-se em Grouped
         return new GroupedPeopleFilterBuilder(filter);
-
     }
 
-    public GroupedPeopleFilterBuilder orMatchesOneOf(
-            final Function<FilterListBuilder, FilterListBuilder> person) {
-
+    public GroupedPeopleFilterBuilder orMatchesOneOf(final UnaryOperator<FilterListBuilder> person) {
         // Criar builder com filtros adicionais
         final var listed = person.apply(new FilterListBuilder());
         final var or = new OrGroupPeopleFilter().setFilters(listed.getFiltersList());
@@ -74,7 +64,6 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
 
         // Transformar-se em Grouped
         return new GroupedPeopleFilterBuilder(filter);
-
     }
 
 }
