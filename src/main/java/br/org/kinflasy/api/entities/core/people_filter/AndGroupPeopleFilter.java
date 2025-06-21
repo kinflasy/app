@@ -1,7 +1,7 @@
 package br.org.kinflasy.api.entities.core.people_filter;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import br.org.kinflasy.api.entities.core.Person;
 import jakarta.persistence.Entity;
@@ -21,22 +21,20 @@ import lombok.NoArgsConstructor;
 public class AndGroupPeopleFilter extends PeopleFilter {
 
     @ManyToMany
-    private List<PeopleFilter> filters;
+    private List<PeopleFilter> baseFilters;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
-        return (person -> {
-            // Iniciar com true (valor neutro do AND)
-            var result = true;
+    public Predicate<Person> getPredicate() {
+        return baseFilters.stream()
 
-            // Aplicar cada filtro
-            for (final var filter : filters) {
-                result &= filter.getFilter().apply(person);
-            }
+                // Desencapsular o predicado de cada filtro
+                .map(PeopleFilter::getPredicate)
 
-            // Retornar
-            return result;
-        });
+                // Aplicar AND a cada predicado
+                .reduce(Predicate::and)
+
+                // Definir true quando não houver filtros internos
+                .orElse(any -> true);
     }
 
 }

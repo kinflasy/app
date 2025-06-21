@@ -1,6 +1,6 @@
 package br.org.kinflasy.api.entities.core.people_filter;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.entities.core.church.department.Department;
@@ -27,15 +27,15 @@ import lombok.NoArgsConstructor;
 public class DepartmentIntegrationFilter extends PeopleFilter {
 
     @ManyToOne
-    @JoinColumn(name = "department_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Department department;
 
-    @Column(name = "type")
+    @Column
     private IntegrationType type = IntegrationType.INTEGRANT;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
+    public Predicate<Person> getPredicate() {
         // TODO: escrever regra de negócio (usar repository/service)
-        throw new UnsupportedOperationException("Unimplemented method 'getFilter'");
+        throw new UnsupportedOperationException("Unimplemented method 'getPredicate'");
     }
 }

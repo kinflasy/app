@@ -1,6 +1,7 @@
 package br.org.kinflasy.api.entities.core.church;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
@@ -16,7 +17,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -36,30 +36,29 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class Unit extends AbstractAuditable<User, Integer> {
+public class Unit extends AbstractAuditable<User, UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "slug", nullable = false)
+    @Column(nullable = false)
     private String slug;
 
-    @Column(name = "email", nullable = false)
+    @Column(nullable = false)
     private String email;
 
-    @Column(name = "phone", nullable = false)
+    @Column(nullable = false)
     private String phone;
 
+    @Column
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "type")
     private UnitType type;
 
     @ManyToOne(cascade = CascadeType.ALL, optional = false)
-    @JoinColumn(name = "church_id")
     private Church church;
 
     @OneToOne(cascade = CascadeType.ALL, optional = false)

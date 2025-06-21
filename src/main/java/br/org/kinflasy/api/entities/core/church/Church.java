@@ -1,6 +1,7 @@
 package br.org.kinflasy.api.entities.core.church;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
@@ -22,26 +23,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class Church extends AbstractAuditable<User, Integer> {
+public class Church extends AbstractAuditable<User, UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column
+    private UUID id;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "slug", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String slug;
 
-    @Column(name = "phone")
+    @Column
     private String phone;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "email_verified_at")
+    @Column
     private LocalDateTime emailVerifiedAt;
 
 }

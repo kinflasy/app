@@ -1,6 +1,7 @@
 package br.org.kinflasy.api.entities.core.church.membership;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
@@ -26,23 +27,23 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class Leave extends AbstractAuditable<User, Integer> {
+public class Leave extends AbstractAuditable<User, UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @ManyToOne(optional = false)
     private Membership membership;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "type", nullable = false)
+    @Column(nullable = false)
     private LeaveType type;
 
-    @Column(name = "date", nullable = false)
+    @Column(nullable = false)
     private LocalDate date;
 
-    @Column(name = "note")
+    @Column
     private String note;
 
 }

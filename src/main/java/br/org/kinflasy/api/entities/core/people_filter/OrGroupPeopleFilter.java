@@ -1,7 +1,7 @@
 package br.org.kinflasy.api.entities.core.people_filter;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import br.org.kinflasy.api.entities.core.Person;
 import jakarta.persistence.Entity;
@@ -13,7 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "or_group_people_filter")
+@Table(name = "or_group_people_filters")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -21,22 +21,20 @@ import lombok.NoArgsConstructor;
 public class OrGroupPeopleFilter extends PeopleFilter {
 
     @ManyToMany
-    private List<PeopleFilter> filters;
+    private List<PeopleFilter> baseFilters;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
-        return (person -> {
-            // Iniciar com false (valor neutro do OR)
-            var result = false;
+    public Predicate<Person> getPredicate() {
+        return baseFilters.stream()
 
-            // Aplicar cada filtro
-            for (final var filter : filters) {
-                result |= filter.getFilter().apply(person);
-            }
+                // Desencapsular o predicado de cada filtro
+                .map(PeopleFilter::getPredicate)
 
-            // Retornar
-            return result;
-        });
+                // Aplicar OR a cada predicado
+                .reduce(Predicate::or)
+
+                // Definir true quando não houver filtros internos
+                .orElse(any -> true);
     }
 
 }

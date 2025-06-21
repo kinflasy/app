@@ -1,5 +1,10 @@
 package br.org.kinflasy.api.entities.core.contact;
 
+import java.util.UUID;
+
+import org.springframework.data.jpa.domain.AbstractAuditable;
+
+import br.org.kinflasy.api.entities.core.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,35 +22,35 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public abstract class Address {
+public abstract class Address extends AbstractAuditable<User, UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(nullable = false)
+    private UUID id;
     
-    @Column(name = "zip")
+    @Column
     private String zip;
 
-    @Column(name = "country")
+    @Column
     private String country;
 
-    @Column(name = "state")
+    @Column
     private String state;
 
-    @Column(name = "city")
+    @Column
     private String city;
 
-    @Column(name = "neighborhood")
+    @Column
     private String neighborhood;
 
-    @Column(name = "street")
+    @Column
     private String street;
 
-    @Column(name = "number")
+    @Column
     private String number;
 
-    @Column(name = "reference")
+    @Column
     private String reference;
     
 }

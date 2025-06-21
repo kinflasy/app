@@ -1,6 +1,6 @@
 package br.org.kinflasy.api.entities.core.people_filter;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import br.org.kinflasy.api.entities.core.Person;
 import jakarta.persistence.Entity;
@@ -21,13 +21,13 @@ import lombok.NoArgsConstructor;
 public class NegativeFilter extends PeopleFilter {
 
     @ManyToOne
-    @JoinColumn(name = "filter", nullable = false)
-    private PeopleFilter filter;
+    @JoinColumn(nullable = false)
+    private PeopleFilter baseFilter;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
+    public Predicate<Person> getPredicate() {
         // Negar resultado do filtro base
-        return (person -> !filter.getFilter().apply(person));
+        return baseFilter.getPredicate().negate();
     }
 
 }

@@ -1,6 +1,6 @@
 package br.org.kinflasy.api.entities.core.people_filter;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.utils.enums.core.PersonCharacteristic;
@@ -23,12 +23,12 @@ import lombok.NoArgsConstructor;
 public class StaticPeopleFilter extends PeopleFilter {
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "mode", unique = true)
-    private PersonCharacteristic mode;
+    @Column(unique = true)
+    private PersonCharacteristic characteristic;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
-        return mode.getFilter();
+    public Predicate<Person> getPredicate() {
+        return characteristic.getPredicate();
     }
 
 }

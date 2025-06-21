@@ -1,5 +1,7 @@
 package br.org.kinflasy.api.entities.core.church.department;
 
+import java.util.UUID;
+
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import br.org.kinflasy.api.entities.core.User;
@@ -27,27 +29,28 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class Department extends AbstractAuditable<User, Integer>  {
+public class Department extends AbstractAuditable<User, UUID>  {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "slug", nullable = false)
+    @Column(nullable = false)
     private String slug;
 
     @ManyToOne(optional = false)
+    @JoinColumn(nullable = false)
     private Unit unit;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "type", nullable = false)
+    @Column(nullable = false)
     private DepartmentType type;
 
     @ManyToOne
-    @JoinColumn(name = "visibility_filter", nullable = false)
+    @JoinColumn(nullable = false)
     private PeopleFilter visibilityFilter;
 
 }

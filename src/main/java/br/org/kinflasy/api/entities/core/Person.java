@@ -1,6 +1,8 @@
 package br.org.kinflasy.api.entities.core;
 
 import java.time.LocalDate;
+import java.util.UUID;
+
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import br.org.kinflasy.api.entities.core.contact.Address;
@@ -24,26 +26,25 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class Person extends AbstractAuditable<User, Integer> {
+public class Person extends AbstractAuditable<User, UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(nullable = false)
+    private UUID id;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "nickname")
     private String nickname;
 
-    @Column(name = "gender", nullable = false)
+    @Column(nullable = false)
     private Gender gender;
 
-    @Column(name = "birth_date", nullable = false)
+    @Column(nullable = false)
     private LocalDate birthDate;
 
-    @Column(name = "phone")
+    @Column
     private String phone;
 
     @OneToOne(cascade = CascadeType.ALL)

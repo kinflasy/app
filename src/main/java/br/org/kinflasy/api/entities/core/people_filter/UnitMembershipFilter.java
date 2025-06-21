@@ -1,6 +1,6 @@
 package br.org.kinflasy.api.entities.core.people_filter;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.entities.core.church.Unit;
@@ -28,17 +28,17 @@ import lombok.NoArgsConstructor;
 public class UnitMembershipFilter extends PeopleFilter {
 
     @ManyToOne
-    @JoinColumn(name = "unit_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Unit unit;
 
     @Enumerated
-    @Column(name = "status")
+    @Column
     private Status status;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
+    public Predicate<Person> getPredicate() {
         // TODO: escrever regra de negócio (usar repository/service)
-        throw new UnsupportedOperationException("Unimplemented method 'getFilter'");
+        throw new UnsupportedOperationException("Unimplemented method 'getPredicate'");
     }
 
 }
