@@ -53,7 +53,6 @@
 			<version>42.7.5</version>
 		</dependency>
 
-
 		<!-- Dependências de utilitários -->
 		<dependency>
 			<!-- Lombok -->
@@ -61,7 +60,6 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-
 	</dependencies>
 
 	<build>
