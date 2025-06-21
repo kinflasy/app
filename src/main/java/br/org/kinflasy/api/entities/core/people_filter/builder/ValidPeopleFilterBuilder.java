@@ -1,5 +1,6 @@
 package br.org.kinflasy.api.entities.core.people_filter.builder;
 
+import java.util.Objects;
 
 import br.org.kinflasy.api.entities.core.people_filter.GroupablePeopleFilter;
 import br.org.kinflasy.api.entities.core.people_filter.PeopleFilter;
@@ -20,28 +21,30 @@ public abstract class ValidPeopleFilterBuilder {
         this.filter = filter;
     }
 
+    private void simplify() {
+        if (filter instanceof GroupablePeopleFilter groupablePeopleFilter) {
+            filter = simplifyGroup(groupablePeopleFilter);
+        }
+    }
+
     private PeopleFilter simplifyGroup(final GroupablePeopleFilter group) {
         final var simplifiedFilters = group.getFilters().stream()
                 .map(node -> {
-                    if (node instanceof GroupablePeopleFilter) {
-                        return simplifyGroup((GroupablePeopleFilter) node);
+                    if (node instanceof GroupablePeopleFilter innerGroup) {
+                        return simplifyGroup(innerGroup);
                     }
                     return node;
                 })
-                .filter(node -> node != null)
+                .filter(Objects::nonNull)
                 .distinct()
                 .toList();
 
-        if (simplifiedFilters.size() == 0) {
-
+        if (simplifiedFilters.isEmpty()) {
             // Delete empty group
             return null;
-
         } else if (simplifiedFilters.size() == 1) {
-
             // Promote the only child
-            return simplifiedFilters.get(0);
-            
+            return simplifiedFilters.getFirst();
         }
 
         // Replace the filters
@@ -49,12 +52,6 @@ public abstract class ValidPeopleFilterBuilder {
 
         // Return self
         return group;
-    }
-
-    private void simplify() {
-        if (filter instanceof GroupablePeopleFilter) {
-            filter = simplifyGroup((GroupablePeopleFilter) filter);
-        }
     }
 
     /**

@@ -12,22 +12,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "integrations", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"department_id", "person_id"})
+        @UniqueConstraint(columnNames = { "department_id", "person_id" })
 })
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
+@Data
 @EqualsAndHashCode(callSuper = false)
 public class Integration extends AbstractAuditable<User, UUID> {
 
@@ -36,12 +31,10 @@ public class Integration extends AbstractAuditable<User, UUID> {
     @Column
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @ManyToOne(optional = false)
     private Department department;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @ManyToOne(optional = false)
     private Person person;
 
     @Column(nullable = false)

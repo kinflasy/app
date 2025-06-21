@@ -14,22 +14,17 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "memberships", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"unit_id", "person_id"})
+        @UniqueConstraint(columnNames = { "unit_id", "person_id" })
 })
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
+@Data
 @EqualsAndHashCode(callSuper = false)
 public class Membership extends AbstractAuditable<User, UUID> {
 
@@ -37,12 +32,10 @@ public class Membership extends AbstractAuditable<User, UUID> {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @ManyToOne(optional = false)
     private Unit unit;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @ManyToOne(optional = false)
     private Person person;
 
     @Enumerated

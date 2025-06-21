@@ -9,13 +9,12 @@ import br.org.kinflasy.api.entities.core.church.department.Department;
 import br.org.kinflasy.api.utils.enums.core.church.department.IntegrationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
@@ -24,12 +23,11 @@ import lombok.NoArgsConstructor;
 })
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@EqualsAndHashCode(callSuper = false)
+@Data
+@EqualsAndHashCode(callSuper = true)
 public class DepartmentIntegrationFilter extends PeopleFilter {
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @ManyToOne(optional = false)
     private Department department;
 
     @Column

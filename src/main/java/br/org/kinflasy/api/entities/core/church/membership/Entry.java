@@ -14,29 +14,22 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "entries")
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
+@Data
 @EqualsAndHashCode(callSuper = false)
-public class Entry extends AbstractAuditable<User, UUID>  {
+public class Entry extends AbstractAuditable<User, UUID> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column
     private UUID id;
 
     @ManyToOne(optional = false)
-    @JoinColumn
     private Membership membership;
 
     @Enumerated(EnumType.ORDINAL)

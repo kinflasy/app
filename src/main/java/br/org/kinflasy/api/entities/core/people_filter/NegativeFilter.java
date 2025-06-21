@@ -6,24 +6,22 @@ import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.Person;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "negative_group_people_filters")
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class NegativeFilter extends PeopleFilter {
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @ManyToOne(optional = false)
     private PeopleFilter filter;
 
     @Override

@@ -10,27 +10,25 @@ import br.org.kinflasy.api.utils.enums.core.church.membership.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "church_membership_people_filters", uniqueConstraints = {
         @UniqueConstraint(columnNames = { "church_id", "status" })
 })
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class ChurchMembershipFilter extends PeopleFilter {
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @ManyToOne(optional = false)
     private Church church;
 
     @Enumerated

@@ -18,63 +18,51 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "units", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "church_id", "name" }),
-        @UniqueConstraint(columnNames = { "church_id", "slug" })
+                @UniqueConstraint(columnNames = { "church_id", "name" }),
+                @UniqueConstraint(columnNames = { "church_id", "slug" })
 })
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Getter
-@Setter
+@Data
 @EqualsAndHashCode(callSuper = false)
 public class Unit extends AbstractAuditable<User, UUID> implements Emailable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column
-    private UUID id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.UUID)
+        private UUID id;
 
-    @Column(nullable = false)
-    private String name;
+        @Column(nullable = false)
+        private String name;
 
-    @Column(nullable = false)
-    private String slug;
+        @Column(nullable = false)
+        private String slug;
 
-    @Column(nullable = false)
-    private String email;
+        @Column(nullable = false)
+        private String email;
 
-    @Column(nullable = false)
-    private String phone;
+        @Column(nullable = false)
+        private String phone;
 
-    @Enumerated(EnumType.ORDINAL)
-    @Column(nullable = false)
-    private UnitType type;
+        @Enumerated(EnumType.ORDINAL)
+        @Column(nullable = false)
+        private UnitType type;
 
-    @ManyToOne(optional = false)
-    @JoinColumn
-    private Church church;
+        @ManyToOne(optional = false)
+        private Church church;
 
-    @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE,
-            CascadeType.REMOVE }, optional = false, orphanRemoval = true)
-    @JoinColumn
-    private Address address;
+        @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE,
+                        CascadeType.REMOVE }, optional = false, orphanRemoval = true)
+        private Address address;
 
-    @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-    private List<Department> departments;
+        @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
+        private List<Department> departments;
 
 }
