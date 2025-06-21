@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.api.dto.core.PersonDTO;
@@ -25,7 +24,7 @@ public class PersonService {
         return person.getId();
     }
 
-    public @Nullable PersonDTO toNullableDTO(final @Nullable Person item) {
+    public PersonDTO toNullableDTO(final Person item) {
         return PersonDTO.ofNullable(item);
     }
 

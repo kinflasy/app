@@ -2,7 +2,6 @@ package br.org.kinflasy.api.dto.core;
 
 import java.time.LocalDate;
 
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.dto.core.contact.CreateAddress;
 import br.org.kinflasy.api.entities.core.User;
@@ -12,12 +11,12 @@ import lombok.Getter;
 @Getter
 public class UpdateUser extends UpdatePerson {
 
-    private @Nullable String username;
-    private @Nullable String email;
+    private String username;
+    private String email;
 
-    public UpdateUser(@Nullable String name, @Nullable String nickname, @Nullable Gender gender,
-            @Nullable LocalDate birthDate, @Nullable String phone, @Nullable CreateAddress address,
-            @Nullable String username, @Nullable String email) {
+    public UpdateUser(String name, String nickname, Gender gender,
+            LocalDate birthDate, String phone, CreateAddress address,
+            String username, String email) {
 
         super(name, nickname, gender, birthDate, phone, address);
         this.username = username;

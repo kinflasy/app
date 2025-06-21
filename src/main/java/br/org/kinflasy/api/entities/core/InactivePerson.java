@@ -1,6 +1,5 @@
 package br.org.kinflasy.api.entities.core;
 
-import org.springframework.lang.Nullable;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,6 +22,6 @@ public class InactivePerson extends Person {
 
     @Column(name = "email", nullable = true)
     @Email
-    private @Nullable String email;
+    private String email;
 
 }

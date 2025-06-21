@@ -1,6 +1,5 @@
 package br.org.kinflasy.api.dto.core.church;
 
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.dto.core.contact.AddressDTO;
 import br.org.kinflasy.api.entities.core.church.Unit;
@@ -11,12 +10,12 @@ public record UnitDTO(
         String name,
         String slug,
         String email,
-        @Nullable String phone,
+        String phone,
         UnitType type,
         ChurchDTO church,
-        @Nullable AddressDTO address) {
+        AddressDTO address) {
 
-    public static @Nullable UnitDTO ofNullable(final @Nullable Unit unit) {
+    public static UnitDTO ofNullable(final Unit unit) {
         return (unit != null) ? ofNonNull(unit) : null;
     }
 

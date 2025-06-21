@@ -1,6 +1,5 @@
 package br.org.kinflasy.api.dto.core.church.department;
 
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.church.department.Department;
 import br.org.kinflasy.api.entities.core.people_filter.PeopleFilter;
@@ -13,7 +12,7 @@ public record CleanDepartmentDTO(
         DepartmentType type,
         PeopleFilter visibilityFilter) {
 
-    public static @Nullable CleanDepartmentDTO ofNullable(final @Nullable Department department) {
+    public static CleanDepartmentDTO ofNullable(final Department department) {
         return (department != null) ? ofNonNull(department) : null;
     }
 

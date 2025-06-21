@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.contracts.contact.Emailable;
 import br.org.kinflasy.api.entities.core.church.department.Integration;
@@ -49,7 +48,7 @@ public abstract class Person extends AbstractAuditable<User, Integer> implements
     private String fullName;
 
     @Column(name = "nickname")
-    private @Nullable String nickname;
+    private String nickname;
 
     @Column(name = "gender", nullable = false)
     private Gender gender;
@@ -58,11 +57,11 @@ public abstract class Person extends AbstractAuditable<User, Integer> implements
     private LocalDate birthDate;
 
     @Column(name = "phone")
-    private @Nullable String phone;
+    private String phone;
 
     @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.REMOVE }, fetch = FetchType.LAZY, orphanRemoval = true)
-    private @Nullable Address address;
+    private Address address;
 
     @OneToMany(mappedBy = "person")
     private List<Membership> memberships;

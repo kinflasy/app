@@ -3,7 +3,6 @@ package br.org.kinflasy.api.services.core.church;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.api.dto.core.church.UnitDTO;
@@ -29,7 +28,7 @@ public class UnitService extends BaseService<UnitRepository, UnitDTO, Unit, Inte
     }
 
     @Override
-    public @Nullable UnitDTO toNullableDTO(final @Nullable Unit unit) {
+    public UnitDTO toNullableDTO(final Unit unit) {
         return UnitDTO.ofNullable(unit);
     }
 

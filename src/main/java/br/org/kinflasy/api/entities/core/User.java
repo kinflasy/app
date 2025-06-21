@@ -2,7 +2,6 @@ package br.org.kinflasy.api.entities.core;
 
 import java.time.LocalDateTime;
 
-import org.springframework.lang.Nullable;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -39,7 +38,7 @@ public class User extends Person {
     private String email;
 
     @Column(name = "email_verified_at")
-    private @Nullable LocalDateTime emailVerifiedAt;
+    private LocalDateTime emailVerifiedAt;
 
     @Column(name = "password", nullable = false)
     private String password;

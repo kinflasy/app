@@ -1,6 +1,5 @@
 package br.org.kinflasy.api.dto.core.church;
 
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.church.Church;
 import lombok.AllArgsConstructor;
@@ -12,8 +11,8 @@ public class CreateChurch {
 
     private String name;
     private String slug;
-    private @Nullable String acronym;
-    private @Nullable String phone;
+    private String acronym;
+    private String phone;
     private String email;
 
     public Church update(final Church church) {

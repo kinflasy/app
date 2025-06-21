@@ -1,7 +1,6 @@
 package br.org.kinflasy.api.services.core.church.department;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.api.dto.core.church.department.DepartmentDTO;
@@ -22,7 +21,7 @@ public class DepartmentService extends BaseService<DepartmentRepository, Departm
     }
 
     @Override
-    public @Nullable DepartmentDTO toNullableDTO(final @Nullable Department department) {
+    public DepartmentDTO toNullableDTO(final Department department) {
         return DepartmentDTO.ofNullable(department);
     }
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -21,7 +20,7 @@ public class DtoService<Repository extends JpaRepository<Entity, Id>, DTO, Entit
         return base.toNonNullDTO(item);
     }
 
-    public @Nullable DTO nullable(final @Nullable Entity item) {
+    public DTO nullable(final Entity item) {
         return base.toNullableDTO(item);
     }
 
@@ -37,7 +36,7 @@ public class DtoService<Repository extends JpaRepository<Entity, Id>, DTO, Entit
         return (result != null) ? result : new ArrayList<>();
     }
 
-    public @Nullable List<DTO> nullable(final @Nullable List<Entity> list) {
+    public List<DTO> nullable(final List<Entity> list) {
         return (list != null) ? nonNull(list) : new ArrayList<>();
     }
 

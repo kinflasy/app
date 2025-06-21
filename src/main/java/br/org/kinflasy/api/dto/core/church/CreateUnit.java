@@ -1,6 +1,5 @@
 package br.org.kinflasy.api.dto.core.church;
 
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.dto.core.contact.CreateAddress;
 import br.org.kinflasy.api.entities.core.church.Church;
@@ -15,7 +14,7 @@ public class CreateUnit {
 
     private String name;
     private String slug;
-    private @Nullable String phone;
+    private String phone;
     private String email;
     private UnitType type;
     private CreateAddress address;

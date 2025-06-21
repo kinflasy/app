@@ -1,7 +1,6 @@
 package br.org.kinflasy.api.services.core;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.api.dto.core.InactivePersonDTO;
@@ -22,7 +21,7 @@ public class InactivePersonService extends BaseService<InactivePersonRepository,
     }
 
     @Override
-    public @Nullable InactivePersonDTO toNullableDTO(final @Nullable InactivePerson item) {
+    public InactivePersonDTO toNullableDTO(final InactivePerson item) {
         return InactivePersonDTO.ofNullable(item);
     }
 

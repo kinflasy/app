@@ -1,7 +1,6 @@
 package br.org.kinflasy.api.services.core;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.api.dto.core.UserDTO;
@@ -22,7 +21,7 @@ public class UserService extends BaseService<UserRepository, UserDTO, User, Inte
     }
 
     @Override
-    public @Nullable UserDTO toNullableDTO(final @Nullable User user) {
+    public UserDTO toNullableDTO(final User user) {
         return UserDTO.ofNullable(user);
     }
 

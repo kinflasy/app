@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.contracts.contact.Emailable;
 import br.org.kinflasy.api.entities.core.User;
@@ -43,16 +42,16 @@ public class Church extends AbstractAuditable<User, Integer> implements Emailabl
     private String slug;
 
     @Column(name = "acronym")
-    private @Nullable String acronym;
+    private String acronym;
 
     @Column(name = "phone")
-    private @Nullable String phone;
+    private String phone;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "email_verified_at")
-    private @Nullable LocalDateTime emailVerifiedAt;
+    private LocalDateTime emailVerifiedAt;
 
     @OneToMany(mappedBy = "church", cascade = CascadeType.ALL)
     private List<Unit> units;

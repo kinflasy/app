@@ -1,7 +1,6 @@
 package br.org.kinflasy.api.services.core.people_filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.api.dto.core.people_filter.StaticPeopleFilterDTO;
@@ -23,7 +22,7 @@ public class StaticPeopleFilterService
     }
 
     @Override
-    public @Nullable StaticPeopleFilterDTO toNullableDTO(final @Nullable StaticPeopleFilter staticpeoplefilter) {
+    public StaticPeopleFilterDTO toNullableDTO(final StaticPeopleFilter staticpeoplefilter) {
         return StaticPeopleFilterDTO.ofNullable(staticpeoplefilter);
     }
 

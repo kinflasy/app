@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.api.dto.core.church.ChurchDTO;
@@ -41,7 +40,7 @@ public class ChurchService extends BaseService<ChurchRepository, ChurchDTO, Chur
     }
 
     @Override
-    public @Nullable ChurchDTO toNullableDTO(final @Nullable Church church) {
+    public ChurchDTO toNullableDTO(final Church church) {
         return ChurchDTO.ofNullable(church);
     }
 

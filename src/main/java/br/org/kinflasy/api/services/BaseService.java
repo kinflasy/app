@@ -5,7 +5,6 @@ import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -23,7 +22,7 @@ public abstract class BaseService<Repository extends JpaRepository<Entity, Id>, 
 
     public abstract Id getId(Entity item);
 
-    public abstract @Nullable DTO toNullableDTO(final @Nullable Entity item);
+    public abstract DTO toNullableDTO(final Entity item);
 
     public abstract DTO toNonNullDTO(final Entity item);
 

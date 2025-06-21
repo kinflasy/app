@@ -2,7 +2,6 @@ package br.org.kinflasy.api.dto.core.church.membership;
 
 import java.time.LocalDate;
 
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.church.membership.Leave;
 import br.org.kinflasy.api.utils.enums.core.church.membership.LeaveType;
@@ -12,9 +11,9 @@ public record LeaveDTO(
         MembershipDTO membership,
         LeaveType type,
         LocalDate date,
-        @Nullable String note) {
+        String note) {
 
-    public static @Nullable LeaveDTO ofNullable(final @Nullable Leave leave) {
+    public static LeaveDTO ofNullable(final Leave leave) {
         return (leave != null) ? ofNonNull(leave) : null;
     }
 

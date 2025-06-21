@@ -1,6 +1,5 @@
 package br.org.kinflasy.api.dto.core.church;
 
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.dto.core.contact.CreateAddress;
 import br.org.kinflasy.api.entities.core.church.Unit;
@@ -9,7 +8,7 @@ import br.org.kinflasy.api.utils.enums.core.church.UnitType;
 public record UpdateUnit(
         String name,
         String slug,
-        @Nullable String phone,
+        String phone,
         String email,
         UnitType type,
         CreateAddress address) {

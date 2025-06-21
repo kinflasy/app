@@ -9,7 +9,6 @@ import br.org.kinflasy.api.entities.core.User;
 import br.org.kinflasy.api.entities.core.church.department.Department;
 import br.org.kinflasy.api.entities.core.contact.Address;
 import br.org.kinflasy.api.utils.enums.core.church.UnitType;
-import io.micrometer.common.lang.Nullable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -59,7 +58,7 @@ public class Unit extends AbstractAuditable<User, Integer> implements Emailable 
     private String email;
 
     @Column(name = "phone", nullable = false)
-    private @Nullable String phone;
+    private String phone;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "type", nullable = false)

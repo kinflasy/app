@@ -2,7 +2,6 @@ package br.org.kinflasy.api.dto.core;
 
 import java.time.LocalDate;
 
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.dto.core.contact.AddressDTO;
 import br.org.kinflasy.api.entities.core.Person;
@@ -11,14 +10,14 @@ import br.org.kinflasy.api.utils.enums.core.Gender;
 public record InactivePersonDTO(
         Integer id,
         String name,
-        @Nullable String nickname,
+        String nickname,
         Gender gender,
         LocalDate birthDate,
-        @Nullable String phone,
-        @Nullable String email,
-        @Nullable AddressDTO address) {
+        String phone,
+        String email,
+        AddressDTO address) {
 
-    public static @Nullable InactivePersonDTO ofNullable(@Nullable Person person) {
+    public static InactivePersonDTO ofNullable(Person person) {
         return (person != null) ? ofNonNull(person) : null;
     }
 

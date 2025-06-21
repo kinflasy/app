@@ -2,7 +2,6 @@ package br.org.kinflasy.api.entities.core.contact;
 
 import org.springframework.data.annotation.Immutable;
 import org.springframework.data.jpa.domain.AbstractAuditable;
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.User;
 import jakarta.persistence.Column;
@@ -32,36 +31,28 @@ public class Address extends AbstractAuditable<User, Integer> {
     @Column(name = "id")
     private Integer id;
     
-    @Column(name = "zip")
-    @Nullable
+    @Column(name = "zip") 
     private String zip;
 
-    @Column(name = "country")
-    @Nullable
+    @Column(name = "country") 
     private String country;
 
-    @Column(name = "state")
-    @Nullable
+    @Column(name = "state") 
     private String state;
 
-    @Column(name = "city")
-    @Nullable
+    @Column(name = "city") 
     private String city;
 
-    @Column(name = "neighborhood")
-    @Nullable
+    @Column(name = "neighborhood") 
     private String neighborhood;
 
-    @Column(name = "street")
-    @Nullable
+    @Column(name = "street") 
     private String street;
 
-    @Column(name = "number")
-    @Nullable
+    @Column(name = "number") 
     private String number;
 
-    @Column(name = "reference")
-    @Nullable
+    @Column(name = "reference") 
     private String reference;
     
 }

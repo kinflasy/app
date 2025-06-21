@@ -1,7 +1,6 @@
 package br.org.kinflasy.api.services.core.contact;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.api.dto.core.contact.AddressDTO;
@@ -22,7 +21,7 @@ public class AddressService extends BaseService<AddressRepository, AddressDTO, A
     }
 
     @Override
-    public @Nullable AddressDTO toNullableDTO(final @Nullable Address address) {
+    public AddressDTO toNullableDTO(final Address address) {
         return AddressDTO.ofNullable(address);
     }
 

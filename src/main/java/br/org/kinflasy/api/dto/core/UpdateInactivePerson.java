@@ -2,7 +2,6 @@ package br.org.kinflasy.api.dto.core;
 
 import java.time.LocalDate;
 
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.dto.core.contact.CreateAddress;
 import br.org.kinflasy.api.entities.core.InactivePerson;
@@ -14,12 +13,12 @@ import lombok.Getter;
 @Getter
 public class UpdateInactivePerson {
     
-    protected @Nullable String name;
-    protected @Nullable String nickname;
-    protected @Nullable Gender gender;
-    protected @Nullable LocalDate birthDate;
-    protected @Nullable String phone;
-    protected @Nullable CreateAddress address;
+    protected String name;
+    protected String nickname;
+    protected Gender gender;
+    protected LocalDate birthDate;
+    protected String phone;
+    protected CreateAddress address;
 
     public InactivePerson update(final InactivePerson person) {
         if (name != null) {

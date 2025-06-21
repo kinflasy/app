@@ -1,7 +1,6 @@
 package br.org.kinflasy.api.services.core.church.membership;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.api.dto.core.church.membership.LeaveDTO;
@@ -22,7 +21,7 @@ public class LeaveService extends BaseService<LeaveRepository, LeaveDTO, Leave, 
     }
 
     @Override
-    public @Nullable LeaveDTO toNullableDTO(final @Nullable Leave leave) {
+    public LeaveDTO toNullableDTO(final Leave leave) {
         return LeaveDTO.ofNullable(leave);
     }
 

@@ -3,7 +3,6 @@ package br.org.kinflasy.api.entities.core.church.membership;
 import java.time.LocalDate;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.User;
 import br.org.kinflasy.api.utils.enums.core.church.membership.LeaveType;
@@ -47,6 +46,6 @@ public class Leave extends AbstractAuditable<User, Integer> {
     private LocalDate date;
 
     @Column(name = "note")
-    private @Nullable String note;
+    private String note;
 
 }

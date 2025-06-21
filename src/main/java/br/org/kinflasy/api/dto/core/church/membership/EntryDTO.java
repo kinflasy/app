@@ -2,7 +2,6 @@ package br.org.kinflasy.api.dto.core.church.membership;
 
 import java.time.LocalDate;
 
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.church.membership.Entry;
 import br.org.kinflasy.api.utils.enums.core.church.membership.EntryType;
@@ -13,7 +12,7 @@ public record EntryDTO(
         EntryType type,
         LocalDate date) {
 
-    public static @Nullable EntryDTO ofNullable(final @Nullable Entry entry) {
+    public static EntryDTO ofNullable(final Entry entry) {
         return (entry != null) ? ofNonNull(entry) : null;
     }
 

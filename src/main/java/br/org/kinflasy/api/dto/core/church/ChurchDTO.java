@@ -1,6 +1,5 @@
 package br.org.kinflasy.api.dto.core.church;
 
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.church.Church;
 
@@ -8,11 +7,11 @@ public record ChurchDTO(
         Integer id,
         String name,
         String slug,
-        @Nullable String acronym,
-        @Nullable String phone,
+        String acronym,
+        String phone,
         String email) {
 
-    public static @Nullable ChurchDTO ofNullable(final @Nullable Church church) {
+    public static ChurchDTO ofNullable(final Church church) {
         return (church != null) ? ofNonNull(church) : null;
     }
 

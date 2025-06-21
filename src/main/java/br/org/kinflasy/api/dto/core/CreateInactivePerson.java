@@ -2,7 +2,6 @@ package br.org.kinflasy.api.dto.core;
 
 import java.time.LocalDate;
 
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.dto.core.contact.CreateAddress;
 import br.org.kinflasy.api.entities.core.InactivePerson;
@@ -12,10 +11,10 @@ import lombok.Getter;
 @Getter
 public class CreateInactivePerson extends CreatePerson {
 
-    protected @Nullable String email;
+    protected String email;
 
-    public CreateInactivePerson(String name, @Nullable String nickname, Gender gender,
-            LocalDate birthDate, @Nullable String phone, @Nullable CreateAddress address, String email) {
+    public CreateInactivePerson(String name, String nickname, Gender gender,
+            LocalDate birthDate, String phone, CreateAddress address, String email) {
         super(name, nickname, gender, birthDate, phone, address);
         this.email = email;
     }

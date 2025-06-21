@@ -1,7 +1,6 @@
 package br.org.kinflasy.api.services.core.church.membership;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.api.dto.core.church.membership.EntryDTO;
@@ -22,7 +21,7 @@ public class EntryService extends BaseService<EntryRepository, EntryDTO, Entry, 
     }
 
     @Override
-    public @Nullable EntryDTO toNullableDTO(final @Nullable Entry entry) {
+    public EntryDTO toNullableDTO(final Entry entry) {
         return EntryDTO.ofNullable(entry);
     }
 

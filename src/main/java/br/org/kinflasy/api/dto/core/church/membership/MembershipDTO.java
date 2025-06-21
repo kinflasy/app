@@ -1,6 +1,5 @@
 package br.org.kinflasy.api.dto.core.church.membership;
 
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.dto.core.InactivePersonDTO;
 import br.org.kinflasy.api.dto.core.church.UnitDTO;
@@ -13,7 +12,7 @@ public record MembershipDTO(
         InactivePersonDTO person,
         Status status) {
 
-    public static @Nullable MembershipDTO ofNullable(final @Nullable Membership membership) {
+    public static MembershipDTO ofNullable(final Membership membership) {
         return (membership != null) ? ofNonNull(membership) : null;
     }
 

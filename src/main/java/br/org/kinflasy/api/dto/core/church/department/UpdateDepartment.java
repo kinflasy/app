@@ -1,14 +1,13 @@
 package br.org.kinflasy.api.dto.core.church.department;
 
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.church.department.Department;
 import br.org.kinflasy.api.utils.enums.core.church.department.DepartmentType;
 
 public record UpdateDepartment(
-        @Nullable String name,
-        @Nullable String slug,
-        @Nullable DepartmentType type) {
+        String name,
+        String slug,
+        DepartmentType type) {
 
     public Department update(final Department department) {
 

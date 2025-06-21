@@ -2,7 +2,6 @@ package br.org.kinflasy.api.dto.core;
 
 import java.time.LocalDate;
 
-import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.dto.core.contact.CreateAddress;
 import br.org.kinflasy.api.entities.core.Person;
@@ -15,11 +14,11 @@ import lombok.Getter;
 public class CreatePerson {
 
     protected String name;
-    protected @Nullable String nickname;
+    protected String nickname;
     protected Gender gender;
     protected LocalDate birthDate;
-    protected @Nullable String phone;
-    protected @Nullable CreateAddress address;
+    protected String phone;
+    protected CreateAddress address;
 
     public Person update(final Person person) {
         person.setFullName(name);
