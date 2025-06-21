@@ -1,5 +1,7 @@
 package br.org.kinflasy.api.services.core.contact;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,14 +11,14 @@ import br.org.kinflasy.api.repositories.core.contact.AddressRepository;
 import br.org.kinflasy.api.services.BaseService;
 
 @Service
-public class AddressService extends BaseService<AddressRepository, AddressDTO, Address, Integer> {
+public class AddressService extends BaseService<AddressRepository, AddressDTO, Address, UUID> {
 
     protected AddressService(@Autowired final AddressRepository repository) {
         super(repository);
     }
 
     @Override
-    public Integer getId(final Address address) {
+    public UUID getId(final Address address) {
         return address.getId();
     }
 

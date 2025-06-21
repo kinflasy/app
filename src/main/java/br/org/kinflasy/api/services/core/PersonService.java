@@ -2,6 +2,7 @@ package br.org.kinflasy.api.services.core;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class PersonService {
         this.repository = repository;
     }
 
-    public Integer getId(final Person person) {
+    public UUID getId(final Person person) {
         return person.getId();
     }
 
@@ -36,7 +37,7 @@ public class PersonService {
         return repository.findAll();
     }
     
-    private Boolean existsById(final Integer id) {
+    private Boolean existsById(final UUID id) {
         return (id != null) ? repository.existsById(id) : false;
     }
 
@@ -44,7 +45,7 @@ public class PersonService {
         return existsById(getId(item));
     }
 
-    public Person findById(final Integer id) throws EntityNotFoundException {
+    public Person findById(final UUID id) throws EntityNotFoundException {
         try {
             final var result = repository.findById(id).get();
 

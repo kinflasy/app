@@ -1,5 +1,7 @@
 package br.org.kinflasy.api.entities.core.contact;
 
+import java.util.UUID;
+
 import org.springframework.data.annotation.Immutable;
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
@@ -24,12 +26,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class Address extends AbstractAuditable<User, Integer> {
+public class Address extends AbstractAuditable<User, UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column
-    private Integer id;
+    private UUID id;
     
     @Column 
     private String zip;

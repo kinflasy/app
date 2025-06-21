@@ -1,5 +1,7 @@
 package br.org.kinflasy.api.services.core.church.membership;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,14 +11,14 @@ import br.org.kinflasy.api.repositories.core.church.membership.EntryRepository;
 import br.org.kinflasy.api.services.BaseService;
 
 @Service
-public class EntryService extends BaseService<EntryRepository, EntryDTO, Entry, Integer> {
+public class EntryService extends BaseService<EntryRepository, EntryDTO, Entry, UUID> {
 
     protected EntryService(@Autowired final EntryRepository repository) {
         super(repository);
     }
 
     @Override
-    public Integer getId(final Entry entry) {
+    public UUID getId(final Entry entry) {
         return entry.getId();
     }
 

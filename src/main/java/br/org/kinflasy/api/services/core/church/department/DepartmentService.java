@@ -1,5 +1,7 @@
 package br.org.kinflasy.api.services.core.church.department;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,14 +11,14 @@ import br.org.kinflasy.api.repositories.core.church.department.DepartmentReposit
 import br.org.kinflasy.api.services.BaseService;
 
 @Service
-public class DepartmentService extends BaseService<DepartmentRepository, DepartmentDTO, Department, Integer> {
+public class DepartmentService extends BaseService<DepartmentRepository, DepartmentDTO, Department, UUID> {
 
     protected DepartmentService(final @Autowired DepartmentRepository repository) {
         super(repository);
     }
 
     @Override
-    public Integer getId(final Department department) {
+    public UUID getId(final Department department) {
         return department.getId();
     }
 

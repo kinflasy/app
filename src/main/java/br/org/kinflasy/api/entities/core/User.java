@@ -1,7 +1,7 @@
 package br.org.kinflasy.api.entities.core;
 
 import java.time.LocalDateTime;
-
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,9 +26,9 @@ import lombok.Setter;
 public class User extends Person {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column
-    private Integer id;
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String username;

@@ -1,5 +1,7 @@
 package br.org.kinflasy.api.services.core.church.membership;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,14 +11,14 @@ import br.org.kinflasy.api.repositories.core.church.membership.LeaveRepository;
 import br.org.kinflasy.api.services.BaseService;
 
 @Service
-public class LeaveService extends BaseService<LeaveRepository, LeaveDTO, Leave, Integer> {
+public class LeaveService extends BaseService<LeaveRepository, LeaveDTO, Leave, UUID> {
 
     protected LeaveService(@Autowired final LeaveRepository repository) {
         super(repository);
     }
 
     @Override
-    public Integer getId(final Leave leave) {
+    public UUID getId(final Leave leave) {
         return leave.getId();
     }
 

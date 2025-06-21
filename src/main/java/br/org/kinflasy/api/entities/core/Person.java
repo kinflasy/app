@@ -2,6 +2,7 @@ package br.org.kinflasy.api.entities.core;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
@@ -36,13 +37,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public abstract class Person extends AbstractAuditable<User, Integer> implements Emailable {
+public abstract class Person extends AbstractAuditable<User, UUID> implements Emailable {
 
     public static final Integer ADULT_AGE = 18;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false)
     private String fullName;

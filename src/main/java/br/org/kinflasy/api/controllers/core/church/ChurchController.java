@@ -1,6 +1,7 @@
 package br.org.kinflasy.api.controllers.core.church;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -64,7 +65,7 @@ public class ChurchController {
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma igreja pelo ID.")
-    public ResponseEntity<ChurchDTO> getById(@PathVariable("id") final Integer id) {
+    public ResponseEntity<ChurchDTO> getById(@PathVariable("id") final UUID id) {
         try {
             return new ResponseEntity<>(service.dto().findById(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
@@ -75,7 +76,7 @@ public class ChurchController {
     @PutMapping("{id}")
     @Transactional
     @Operation(summary = "Editar", description = "Editar os dados de uma igreja.")
-    public ResponseEntity<ChurchDTO> update(@PathVariable("id") final Integer id,
+    public ResponseEntity<ChurchDTO> update(@PathVariable("id") final UUID id,
             @RequestBody final UpdateChurch form) {
         try {
             final var existingItem = service.findById(id);
@@ -88,7 +89,7 @@ public class ChurchController {
     @DeleteMapping("{id}")
     @Transactional
     @Operation(summary = "Excluir", description = "Descadastrar uma igreja, removendo-a do sistema.")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") final Integer id) {
+    public ResponseEntity<HttpStatus> delete(@PathVariable("id") final UUID id) {
         try {
             service.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -101,13 +102,13 @@ public class ChurchController {
 
     @GetMapping("{id}/units")
     @Operation(summary = "Listar unidades", description = "Listar as unidades de uma igreja.")
-    public ResponseEntity<List<UnitDTO>> getUnits(@PathVariable("id") final Integer id) {
+    public ResponseEntity<List<UnitDTO>> getUnits(@PathVariable("id") final UUID id) {
         return new ResponseEntity<>(unitService.dto().nonNull(service.getUnits(id)), HttpStatus.OK);
     }
 
     @PostMapping("{id}/units")
     @Operation(summary = "Cadastrar unidade", description = "Cadastrar uma nova unidade em uma igreja.")
-    public ResponseEntity<UnitDTO> createUnit(@PathVariable("id") final Integer id,
+    public ResponseEntity<UnitDTO> createUnit(@PathVariable("id") final UUID id,
             @RequestBody @Valid final CreateUnit form) {
         final var createdUnit = service.createUnit(id, form.toUnit());
         return new ResponseEntity<>(unitService.dto().nonNull(createdUnit), HttpStatus.CREATED);

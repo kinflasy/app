@@ -1,10 +1,12 @@
 package br.org.kinflasy.api.dto.core.contact;
 
 
+import java.util.UUID;
+
 import br.org.kinflasy.api.entities.core.contact.Address;
 
 public record AddressDTO(
-        Integer id,
+        UUID id,
         String zip,
         String country,
         String state,

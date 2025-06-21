@@ -2,6 +2,7 @@ package br.org.kinflasy.api.services.core.church;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ import br.org.kinflasy.api.utils.enums.core.church.UnitType;
 import br.org.kinflasy.api.utils.enums.core.church.department.DepartmentType;
 
 @Service
-public class ChurchService extends BaseService<ChurchRepository, ChurchDTO, Church, Integer> {
+public class ChurchService extends BaseService<ChurchRepository, ChurchDTO, Church, UUID> {
 
     private final UnitService unitService;
     private final StaticPeopleFilterService filterService;
@@ -35,7 +36,7 @@ public class ChurchService extends BaseService<ChurchRepository, ChurchDTO, Chur
     }
 
     @Override
-    public Integer getId(final Church church) {
+    public UUID getId(final Church church) {
         return church.getId();
     }
 
@@ -49,7 +50,7 @@ public class ChurchService extends BaseService<ChurchRepository, ChurchDTO, Chur
         return ChurchDTO.ofNonNull(church);
     }
 
-    public List<Unit> getUnits(final Integer id) {
+    public List<Unit> getUnits(final UUID id) {
         return findById(id).getUnits();
     }
 
@@ -86,7 +87,7 @@ public class ChurchService extends BaseService<ChurchRepository, ChurchDTO, Chur
         return findById(church.getId());
     }
 
-    public Unit createUnit(final Integer id, final Unit unit) {
+    public Unit createUnit(final UUID id, final Unit unit) {
         unit.setChurch(findById(id));
         return unitService.create(unit);
     }

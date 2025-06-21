@@ -1,6 +1,7 @@
 package br.org.kinflasy.api.entities.core.church;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
@@ -41,12 +42,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
-public class Unit extends AbstractAuditable<User, Integer> implements Emailable {
+public class Unit extends AbstractAuditable<User, UUID> implements Emailable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column
-    private Integer id;
+    private UUID id;
 
     @Column(nullable = false)
     private String name;

@@ -1,6 +1,7 @@
 package br.org.kinflasy.api.controllers.core;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,7 @@ public class PersonController {
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma pessoa pelo ID.")
-    public ResponseEntity<PersonDTO> getById(@PathVariable("id") final Integer id) {
+    public ResponseEntity<PersonDTO> getById(@PathVariable("id") final UUID id) {
         try {
             return new ResponseEntity<>(PersonDTO.ofNonNull(service.findById(id)), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {

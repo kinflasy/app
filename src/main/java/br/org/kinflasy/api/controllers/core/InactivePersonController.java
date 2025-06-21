@@ -1,6 +1,7 @@
 package br.org.kinflasy.api.controllers.core;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,7 +51,7 @@ public class InactivePersonController {
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma pessoa inativa pelo ID.")
-    public ResponseEntity<InactivePersonDTO> getById(@PathVariable("id") final Integer id) {
+    public ResponseEntity<InactivePersonDTO> getById(@PathVariable("id") final UUID id) {
         try {
             return new ResponseEntity<>(service.dto().findById(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
@@ -61,7 +62,7 @@ public class InactivePersonController {
     @PutMapping("{id}")
     @Transactional
     @Operation(summary = "Editar", description = "Editar os dados de uma pessoa inativa.")
-    public ResponseEntity<InactivePersonDTO> update(@PathVariable("id") final Integer id,
+    public ResponseEntity<InactivePersonDTO> update(@PathVariable("id") final UUID id,
             @RequestBody final UpdateInactivePerson form) {
         try {
             final var existingItem = service.findById(id);
@@ -74,7 +75,7 @@ public class InactivePersonController {
     @DeleteMapping("{id}")
     @Transactional
     @Operation(summary = "Excluir", description = "Descadastrar uma pessoa inativa, removendo-a do sistema.")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") final Integer id) {
+    public ResponseEntity<HttpStatus> delete(@PathVariable("id") final UUID id) {
         try {
             service.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

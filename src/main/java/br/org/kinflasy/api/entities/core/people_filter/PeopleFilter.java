@@ -1,5 +1,6 @@
 package br.org.kinflasy.api.entities.core.people_filter;
 
+import java.util.UUID;
 import java.util.function.Function;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
@@ -20,12 +21,12 @@ import lombok.NoArgsConstructor;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @NoArgsConstructor
 @Getter
-public abstract class PeopleFilter extends AbstractAuditable<User, Integer> {
+public abstract class PeopleFilter extends AbstractAuditable<User, UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column
-    protected Integer id;
+    protected UUID id;
 
     public abstract Function<Person, Boolean> getFilter();
 

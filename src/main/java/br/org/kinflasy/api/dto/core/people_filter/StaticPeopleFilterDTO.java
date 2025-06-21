@@ -1,11 +1,13 @@
 package br.org.kinflasy.api.dto.core.people_filter;
 
 
+import java.util.UUID;
+
 import br.org.kinflasy.api.entities.core.people_filter.StaticPeopleFilter;
 import br.org.kinflasy.api.utils.enums.core.PersonCharacteristic;
 
 public record StaticPeopleFilterDTO(
-        Integer id,
+        UUID id,
         PersonCharacteristic characteristic) {
 
     public static StaticPeopleFilterDTO ofNullable(final StaticPeopleFilter filter) {

@@ -1,12 +1,14 @@
 package br.org.kinflasy.api.dto.core.church.department;
 
 
+import java.util.UUID;
+
 import br.org.kinflasy.api.entities.core.church.department.Department;
 import br.org.kinflasy.api.entities.core.people_filter.PeopleFilter;
 import br.org.kinflasy.api.utils.enums.core.church.department.DepartmentType;
 
 public record CleanDepartmentDTO(
-        Integer id,
+        UUID id,
         String name,
         String slug,
         DepartmentType type,

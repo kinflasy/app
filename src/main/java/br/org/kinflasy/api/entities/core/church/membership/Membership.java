@@ -1,5 +1,7 @@
 package br.org.kinflasy.api.entities.core.church.membership;
 
+import java.util.UUID;
+
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import br.org.kinflasy.api.entities.core.Person;
@@ -29,11 +31,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class Membership extends AbstractAuditable<User, Integer> {
+public class Membership extends AbstractAuditable<User, UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(nullable = false)

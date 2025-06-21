@@ -1,6 +1,7 @@
 package br.org.kinflasy.api.services.core.church;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import br.org.kinflasy.api.services.BaseService;
 import br.org.kinflasy.api.services.core.church.department.DepartmentService;
 
 @Service
-public class UnitService extends BaseService<UnitRepository, UnitDTO, Unit, Integer> {
+public class UnitService extends BaseService<UnitRepository, UnitDTO, Unit, UUID> {
 
     private final DepartmentService departmentService;
 
@@ -23,7 +24,7 @@ public class UnitService extends BaseService<UnitRepository, UnitDTO, Unit, Inte
     }
 
     @Override
-    public Integer getId(final Unit unit) {
+    public UUID getId(final Unit unit) {
         return unit.getId();
     }
 
@@ -37,11 +38,11 @@ public class UnitService extends BaseService<UnitRepository, UnitDTO, Unit, Inte
         return UnitDTO.ofNonNull(unit);
     }
 
-    public List<Department> getDepartments(final Integer id) {
+    public List<Department> getDepartments(final UUID id) {
         return findById(id).getDepartments();
     }
 
-    public Department createDepartment(final Integer id, final Department department) {
+    public Department createDepartment(final UUID id, final Department department) {
         department.setUnit(findById(id));
         return departmentService.create(department);
     }

@@ -1,13 +1,13 @@
 package br.org.kinflasy.api.dto.core.church.membership;
 
 import java.time.LocalDate;
-
+import java.util.UUID;
 
 import br.org.kinflasy.api.entities.core.church.membership.Leave;
 import br.org.kinflasy.api.utils.enums.core.church.membership.LeaveType;
 
 public record LeaveDTO(
-        Integer id,
+        UUID id,
         MembershipDTO membership,
         LeaveType type,
         LocalDate date,

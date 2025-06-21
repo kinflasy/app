@@ -2,12 +2,12 @@ package br.org.kinflasy.api.dto.core.church;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.UUID;
 
 import br.org.kinflasy.api.entities.core.church.Church;
 
 public record StarterChurchDTO(
-        Integer id,
+        UUID id,
         String name,
         String slug,
         String acronym,

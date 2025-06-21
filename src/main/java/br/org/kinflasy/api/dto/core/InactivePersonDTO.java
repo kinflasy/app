@@ -1,14 +1,14 @@
 package br.org.kinflasy.api.dto.core;
 
 import java.time.LocalDate;
-
+import java.util.UUID;
 
 import br.org.kinflasy.api.dto.core.contact.AddressDTO;
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.utils.enums.core.Gender;
 
 public record InactivePersonDTO(
-        Integer id,
+        UUID id,
         String name,
         String nickname,
         Gender gender,

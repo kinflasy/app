@@ -1,12 +1,13 @@
 package br.org.kinflasy.api.dto.core.church.department;
 
+import java.util.UUID;
 
 import br.org.kinflasy.api.dto.core.InactivePersonDTO;
 import br.org.kinflasy.api.entities.core.church.department.Integration;
 import br.org.kinflasy.api.utils.enums.core.church.department.IntegrationType;
 
 public record IntegrationDTO(
-        Integer id,
+        UUID id,
         DepartmentDTO department,
         InactivePersonDTO person,
         IntegrationType type) {

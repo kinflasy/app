@@ -1,13 +1,13 @@
 package br.org.kinflasy.api.dto.core.church.membership;
 
 import java.time.LocalDate;
-
+import java.util.UUID;
 
 import br.org.kinflasy.api.entities.core.church.membership.Entry;
 import br.org.kinflasy.api.utils.enums.core.church.membership.EntryType;
 
 public record EntryDTO(
-        Integer id,
+        UUID id,
         MembershipDTO membership,
         EntryType type,
         LocalDate date) {

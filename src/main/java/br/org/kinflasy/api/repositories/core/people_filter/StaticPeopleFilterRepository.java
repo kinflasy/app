@@ -2,13 +2,14 @@ package br.org.kinflasy.api.repositories.core.people_filter;
 
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.org.kinflasy.api.entities.core.people_filter.StaticPeopleFilter;
 import br.org.kinflasy.api.utils.enums.core.PersonCharacteristic;
 
-public interface StaticPeopleFilterRepository extends JpaRepository<StaticPeopleFilter, Integer> {
+public interface StaticPeopleFilterRepository extends JpaRepository<StaticPeopleFilter, UUID> {
 
     public Optional<StaticPeopleFilter> findByCharacteristic(final PersonCharacteristic characteristic);
 
