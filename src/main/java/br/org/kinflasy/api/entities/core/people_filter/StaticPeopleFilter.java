@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 public class StaticPeopleFilter extends PeopleFilter {
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "mode", unique = true)
+    @Column(unique = true)
     private PersonCharacteristic characteristic;
 
     @Override

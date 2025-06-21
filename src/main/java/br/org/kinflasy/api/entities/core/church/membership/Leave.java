@@ -31,21 +31,21 @@ public class Leave extends AbstractAuditable<User, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column
     private Integer id;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "membership_id")
+    @JoinColumn
     private Membership membership;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "type", nullable = false)
+    @Column(nullable = false)
     private LeaveType type;
 
-    @Column(name = "date", nullable = false)
+    @Column(nullable = false)
     private LocalDate date;
 
-    @Column(name = "note")
+    @Column
     private String note;
 
 }

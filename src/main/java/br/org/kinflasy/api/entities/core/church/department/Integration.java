@@ -31,18 +31,18 @@ public class Integration extends AbstractAuditable<User, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "department_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Department department;
 
     @ManyToOne
-    @JoinColumn(name = "person_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Person person;
 
-    @Column(name = "type", nullable = false)
+    @Column(nullable = false)
     private IntegrationType type = IntegrationType.INTEGRANT;
 
 }

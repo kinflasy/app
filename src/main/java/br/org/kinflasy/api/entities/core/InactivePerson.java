@@ -20,7 +20,7 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = false)
 public class InactivePerson extends Person {
 
-    @Column(name = "email", nullable = true)
+    @Column
     @Email
     private String email;
 

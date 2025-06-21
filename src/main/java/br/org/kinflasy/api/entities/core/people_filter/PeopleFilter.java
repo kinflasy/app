@@ -24,7 +24,7 @@ public abstract class PeopleFilter extends AbstractAuditable<User, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column
     protected Integer id;
 
     public abstract Function<Person, Boolean> getFilter();

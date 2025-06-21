@@ -44,19 +44,19 @@ public abstract class Person extends AbstractAuditable<User, Integer> implements
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "full_name", nullable = false)
+    @Column(nullable = false)
     private String fullName;
 
-    @Column(name = "nickname")
+    @Column
     private String nickname;
 
-    @Column(name = "gender", nullable = false)
+    @Column(nullable = false)
     private Gender gender;
 
-    @Column(name = "birth_date", nullable = false)
+    @Column(nullable = false)
     private LocalDate birthDate;
 
-    @Column(name = "phone")
+    @Column
     private String phone;
 
     @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE,

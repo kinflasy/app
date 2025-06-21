@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 public class NegativeFilter extends PeopleFilter {
 
     @ManyToOne
-    @JoinColumn(name = "filter", nullable = false)
+    @JoinColumn(nullable = false)
     private PeopleFilter filter;
 
     @Override

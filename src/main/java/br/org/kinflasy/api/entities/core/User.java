@@ -27,20 +27,20 @@ public class User extends Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column
     private Integer id;
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(name = "email", nullable = true)
+    @Column
     @Email
     private String email;
 
-    @Column(name = "email_verified_at")
+    @Column
     private LocalDateTime emailVerifiedAt;
 
-    @Column(name = "password", nullable = false)
+    @Column(nullable = false)
     private String password;
 
 }

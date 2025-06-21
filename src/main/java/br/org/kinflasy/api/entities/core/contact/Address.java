@@ -28,31 +28,31 @@ public class Address extends AbstractAuditable<User, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column
     private Integer id;
     
-    @Column(name = "zip") 
+    @Column 
     private String zip;
 
-    @Column(name = "country") 
+    @Column 
     private String country;
 
-    @Column(name = "state") 
+    @Column 
     private String state;
 
-    @Column(name = "city") 
+    @Column 
     private String city;
 
-    @Column(name = "neighborhood") 
+    @Column 
     private String neighborhood;
 
-    @Column(name = "street") 
+    @Column 
     private String street;
 
-    @Column(name = "number") 
+    @Column 
     private String number;
 
-    @Column(name = "reference") 
+    @Column 
     private String reference;
     
 }

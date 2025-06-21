@@ -30,11 +30,11 @@ import lombok.NoArgsConstructor;
 public class UnitMembershipFilter extends PeopleFilter {
 
     @ManyToOne
-    @JoinColumn(name = "unit_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Unit unit;
 
     @Enumerated
-    @Column(name = "status")
+    @Column
     private Status status;
 
     @Override

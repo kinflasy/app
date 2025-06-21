@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 public class IdentityFilter extends PeopleFilter {
 
     @ManyToOne
-    @JoinColumn(name = "person_id", unique = true, nullable = false)
+    @JoinColumn(unique = true, nullable = false)
     private Person person;
 
     @Override

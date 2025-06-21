@@ -29,10 +29,10 @@ import lombok.NoArgsConstructor;
 public class DepartmentIntegrationFilter extends PeopleFilter {
 
     @ManyToOne
-    @JoinColumn(name = "department_id", nullable = false)
+    @JoinColumn(nullable = false)
     private Department department;
 
-    @Column(name = "type")
+    @Column
     private IntegrationType type = IntegrationType.INTEGRANT;
 
     @Override

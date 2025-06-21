@@ -32,25 +32,24 @@ public class Church extends AbstractAuditable<User, Integer> implements Emailabl
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Integer id;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "slug", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String slug;
 
-    @Column(name = "acronym")
+    @Column
     private String acronym;
 
-    @Column(name = "phone")
+    @Column
     private String phone;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "email_verified_at")
+    @Column
     private LocalDateTime emailVerifiedAt;
 
     @OneToMany(mappedBy = "church", cascade = CascadeType.ALL)

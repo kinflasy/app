@@ -45,32 +45,32 @@ public class Unit extends AbstractAuditable<User, Integer> implements Emailable 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column
     private Integer id;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
 
-    @Column(name = "slug", nullable = false)
+    @Column(nullable = false)
     private String slug;
 
-    @Column(name = "email", nullable = false)
+    @Column(nullable = false)
     private String email;
 
-    @Column(name = "phone", nullable = false)
+    @Column(nullable = false)
     private String phone;
 
     @Enumerated(EnumType.ORDINAL)
-    @Column(name = "type", nullable = false)
+    @Column(nullable = false)
     private UnitType type;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "church_id")
+    @JoinColumn
     private Church church;
 
     @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.REMOVE }, optional = false, orphanRemoval = true)
-    @JoinColumn(name = "address_id")
+    @JoinColumn
     private Address address;
 
     @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
