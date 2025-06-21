@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,13 +44,13 @@ public class InactivePersonController {
     @PostMapping
     @Transactional
     @Operation(summary = "Cadastrar", description = "Cadastrar uma nova pessoa inativa.")
-    public ResponseEntity<InactivePersonDTO> create(@RequestBody @Valid final @NonNull CreateInactivePerson form) {
+    public ResponseEntity<InactivePersonDTO> create(@RequestBody @Valid final CreateInactivePerson form) {
         return new ResponseEntity<>(service.dto().create(form.toInactivePerson()), HttpStatus.CREATED);
     }
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma pessoa inativa pelo ID.")
-    public ResponseEntity<InactivePersonDTO> getById(@PathVariable("id") final @NonNull Integer id) {
+    public ResponseEntity<InactivePersonDTO> getById(@PathVariable("id") final Integer id) {
         try {
             return new ResponseEntity<>(service.dto().findById(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
@@ -62,8 +61,8 @@ public class InactivePersonController {
     @PutMapping("{id}")
     @Transactional
     @Operation(summary = "Editar", description = "Editar os dados de uma pessoa inativa.")
-    public ResponseEntity<InactivePersonDTO> update(@PathVariable("id") final @NonNull Integer id,
-            @RequestBody final @NonNull UpdateInactivePerson form) {
+    public ResponseEntity<InactivePersonDTO> update(@PathVariable("id") final Integer id,
+            @RequestBody final UpdateInactivePerson form) {
         try {
             final var existingItem = service.findById(id);
             return new ResponseEntity<>(service.dto().update(form.update(existingItem)), HttpStatus.OK);
@@ -75,7 +74,7 @@ public class InactivePersonController {
     @DeleteMapping("{id}")
     @Transactional
     @Operation(summary = "Excluir", description = "Descadastrar uma pessoa inativa, removendo-a do sistema.")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") final @NonNull Integer id) {
+    public ResponseEntity<HttpStatus> delete(@PathVariable("id") final Integer id) {
         try {
             service.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

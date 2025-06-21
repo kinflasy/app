@@ -3,7 +3,6 @@ package br.org.kinflasy.api.services.core.church;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +24,7 @@ public class UnitService extends BaseService<UnitRepository, UnitDTO, Unit, Inte
     }
 
     @Override
-    public @NonNull Integer getId(final @NonNull Unit unit) {
+    public Integer getId(final Unit unit) {
         return unit.getId();
     }
 
@@ -35,15 +34,15 @@ public class UnitService extends BaseService<UnitRepository, UnitDTO, Unit, Inte
     }
 
     @Override
-    public @NonNull UnitDTO toNonNullDTO(final @NonNull Unit unit) {
+    public UnitDTO toNonNullDTO(final Unit unit) {
         return UnitDTO.ofNonNull(unit);
     }
 
-    public @NonNull List<Department> getDepartments(final @NonNull Integer id) {
+    public List<Department> getDepartments(final Integer id) {
         return findById(id).getDepartments();
     }
 
-    public @NonNull Department createDepartment(final @NonNull Integer id, final @NonNull Department department) {
+    public Department createDepartment(final Integer id, final Department department) {
         department.setUnit(findById(id));
         return departmentService.create(department);
     }

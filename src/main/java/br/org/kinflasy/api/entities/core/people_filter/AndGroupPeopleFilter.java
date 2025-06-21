@@ -25,10 +25,10 @@ import lombok.Setter;
 public class AndGroupPeopleFilter extends GroupablePeopleFilter {
 
     @ManyToMany
-    private @NonNull List<PeopleFilter> filters;
+    private List<PeopleFilter> filters;
 
     @Override
-    public @NonNull Function<Person, Boolean> getFilter() {
+    public Function<Person, Boolean> getFilter() {
         return (person -> {
             // Iniciar com true (valor neutro do AND)
             var result = true;

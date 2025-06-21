@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.function.Function;
 
-import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.InactivePerson;
 import br.org.kinflasy.api.entities.core.Person;
@@ -20,13 +19,13 @@ public enum PersonCharacteristic {
     USER(person -> person instanceof User),
     INACTIVE(person -> person instanceof InactivePerson);
 
-    private final @NonNull Function<Person, Boolean> filter;
+    private final Function<Person, Boolean> filter;
 
-    private PersonCharacteristic(final @NonNull Function<Person, Boolean> filter) {
+    private PersonCharacteristic(final Function<Person, Boolean> filter) {
         this.filter = filter;
     }
 
-    public @NonNull Function<Person, Boolean> getFilter() {
+    public Function<Person, Boolean> getFilter() {
         return filter;
     }
 

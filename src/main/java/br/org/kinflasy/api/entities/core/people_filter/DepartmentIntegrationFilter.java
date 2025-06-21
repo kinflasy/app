@@ -30,13 +30,13 @@ public class DepartmentIntegrationFilter extends PeopleFilter {
 
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
-    private @NonNull Department department;
+    private Department department;
 
     @Column(name = "type")
-    private @NonNull IntegrationType type = IntegrationType.INTEGRANT;
+    private IntegrationType type = IntegrationType.INTEGRANT;
 
     @Override
-    public @NonNull Function<Person, Boolean> getFilter() {
+    public Function<Person, Boolean> getFilter() {
         return (person -> person.getIntegrations().stream()
                 .anyMatch(integration -> integration.getDepartment().equals(department)
                         && integration.getType() == type));

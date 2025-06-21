@@ -1,7 +1,6 @@
 package br.org.kinflasy.api.services.core.church.membership;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ public class EntryService extends BaseService<EntryRepository, EntryDTO, Entry, 
     }
 
     @Override
-    public @NonNull Integer getId(final @NonNull Entry entry) {
+    public Integer getId(final Entry entry) {
         return entry.getId();
     }
 
@@ -28,7 +27,7 @@ public class EntryService extends BaseService<EntryRepository, EntryDTO, Entry, 
     }
 
     @Override
-    public @NonNull EntryDTO toNonNullDTO(final @NonNull Entry entry) {
+    public EntryDTO toNonNullDTO(final Entry entry) {
         return EntryDTO.ofNonNull(entry);
     }
 

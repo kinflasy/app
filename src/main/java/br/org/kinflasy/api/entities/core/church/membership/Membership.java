@@ -1,7 +1,6 @@
 package br.org.kinflasy.api.entities.core.church.membership;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
-import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.entities.core.User;
@@ -34,18 +33,18 @@ public class Membership extends AbstractAuditable<User, Integer> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private @NonNull Integer id;
+    private Integer id;
 
     @ManyToOne
     @JoinColumn(name = "unit_id", nullable = false)
-    private @NonNull Unit unit;
+    private Unit unit;
 
     @ManyToOne
     @JoinColumn(name = "person_id", nullable = false)
-    private @NonNull Person person;
+    private Person person;
 
     @Enumerated
     @Column(name = "status", nullable = false)
-    private @NonNull Status status;
+    private Status status;
 
 }

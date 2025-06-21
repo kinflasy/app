@@ -1,7 +1,6 @@
 package br.org.kinflasy.api.services.core.contact;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ public class AddressService extends BaseService<AddressRepository, AddressDTO, A
     }
 
     @Override
-    public @NonNull Integer getId(final @NonNull Address address) {
+    public Integer getId(final Address address) {
         return address.getId();
     }
 
@@ -28,7 +27,7 @@ public class AddressService extends BaseService<AddressRepository, AddressDTO, A
     }
 
     @Override
-    public @NonNull AddressDTO toNonNullDTO(final @NonNull Address address) {
+    public AddressDTO toNonNullDTO(final Address address) {
         return AddressDTO.ofNonNull(address);
     }
 

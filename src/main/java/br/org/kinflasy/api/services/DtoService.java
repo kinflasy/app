@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,7 +17,7 @@ public class DtoService<Repository extends JpaRepository<Entity, Id>, DTO, Entit
         this.base = repository;
     }
 
-    public @NonNull DTO nonNull(final @NonNull Entity item) {
+    public DTO nonNull(final Entity item) {
         return base.toNonNullDTO(item);
     }
 
@@ -26,7 +25,7 @@ public class DtoService<Repository extends JpaRepository<Entity, Id>, DTO, Entit
         return base.toNullableDTO(item);
     }
 
-    public @NonNull List<DTO> nonNull(final @NonNull List<Entity> list) {
+    public List<DTO> nonNull(final List<Entity> list) {
         // Verificar se não tem nenhum item nulo na lista
         final var nonNull = list.stream().allMatch(item -> item != null);
 
@@ -42,7 +41,7 @@ public class DtoService<Repository extends JpaRepository<Entity, Id>, DTO, Entit
         return (list != null) ? nonNull(list) : new ArrayList<>();
     }
 
-    public @NonNull List<DTO> findAll() {
+    public List<DTO> findAll() {
         final var result = base.findAll().stream()
                 .map(base::toNonNullDTO)
                 .toList();
@@ -51,16 +50,16 @@ public class DtoService<Repository extends JpaRepository<Entity, Id>, DTO, Entit
     }
 
     @Transactional
-    public @NonNull DTO create(final @NonNull Entity item) {
+    public DTO create(final Entity item) {
         return base.toNonNullDTO(base.create(item));
     }
 
-    public @NonNull DTO findById(final @NonNull Id id) throws EntityNotFoundException {
+    public DTO findById(final Id id) throws EntityNotFoundException {
         return base.toNonNullDTO(base.findById(id));
     }
 
     @Transactional
-    public @NonNull DTO update(final @NonNull Entity entity) throws EntityNotFoundException {
+    public DTO update(final Entity entity) throws EntityNotFoundException {
         return base.toNonNullDTO(base.update(entity));
     }
 

@@ -1,7 +1,6 @@
 package br.org.kinflasy.api.services.core.church.department;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ public class DepartmentService extends BaseService<DepartmentRepository, Departm
     }
 
     @Override
-    public @NonNull Integer getId(final @NonNull Department department) {
+    public Integer getId(final Department department) {
         return department.getId();
     }
 
@@ -28,7 +27,7 @@ public class DepartmentService extends BaseService<DepartmentRepository, Departm
     }
 
     @Override
-    public @NonNull DepartmentDTO toNonNullDTO(final @NonNull Department department) {
+    public DepartmentDTO toNonNullDTO(final Department department) {
         return DepartmentDTO.ofNonNull(department);
     }
 

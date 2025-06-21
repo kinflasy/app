@@ -3,7 +3,6 @@ package br.org.kinflasy.api.entities.core.people_filter.builder;
 import java.util.List;
 import java.util.function.Function;
 
-import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.entities.core.church.Church;
@@ -30,12 +29,12 @@ public class PeopleFilterBuilder {
      * 
      * @return
      */
-    public static @NonNull PeopleFilterBuilder thePerson() {
+    public static PeopleFilterBuilder thePerson() {
         return new PeopleFilterBuilder();
     }
 
     public @Nonnull SinglyPeopleFilterBuilder not(
-            final @NonNull Function<PeopleFilterBuilder, ValidPeopleFilterBuilder> filter) {
+            final Function<PeopleFilterBuilder, ValidPeopleFilterBuilder> filter) {
         final var not = new NegativeFilter(filter.apply(this).filter);
         return new SinglyPeopleFilterBuilder(not);
     }
@@ -46,8 +45,8 @@ public class PeopleFilterBuilder {
      * @param list
      * @return SinglyPeopleFilterBuilder
      */
-    public @NonNull SinglyPeopleFilterBuilder matchesAll(
-            final @NonNull Function<FilterListBuilder, FilterListBuilder> list) {
+    public SinglyPeopleFilterBuilder matchesAll(
+            final Function<FilterListBuilder, FilterListBuilder> list) {
         final var listed = list.apply(new FilterListBuilder());
         final var and = new AndGroupPeopleFilter(listed.getFiltersList());
         return new SinglyPeopleFilterBuilder(and);
@@ -59,8 +58,8 @@ public class PeopleFilterBuilder {
      * @param list
      * @return SinglyPeopleFilterBuilder
      */
-    public @NonNull SinglyPeopleFilterBuilder matchesOneOf(
-            final @NonNull Function<FilterListBuilder, FilterListBuilder> list) {
+    public SinglyPeopleFilterBuilder matchesOneOf(
+            final Function<FilterListBuilder, FilterListBuilder> list) {
         final var listed = list.apply(new FilterListBuilder());
         final var or = new OrGroupPeopleFilter(listed.getFiltersList());
         return new SinglyPeopleFilterBuilder(or);
@@ -72,7 +71,7 @@ public class PeopleFilterBuilder {
      * @param person
      * @return SinglyPeopleFilterBuilder
      */
-    public @NonNull SinglyPeopleFilterBuilder is(final @NonNull Person person) {
+    public SinglyPeopleFilterBuilder is(final Person person) {
         return new SinglyPeopleFilterBuilder(new IdentityFilter(person));
     }
 
@@ -82,7 +81,7 @@ public class PeopleFilterBuilder {
      * @param characteristic
      * @return SinglyPeopleFilterBuilder
      */
-    public @NonNull SinglyPeopleFilterBuilder is(final @NonNull PersonCharacteristic characteristic) {
+    public SinglyPeopleFilterBuilder is(final PersonCharacteristic characteristic) {
         return new SinglyPeopleFilterBuilder(new StaticPeopleFilter(characteristic));
     }
 
@@ -93,8 +92,8 @@ public class PeopleFilterBuilder {
      * @param status
      * @return SinglyPeopleFilterBuilder
      */
-    public @NonNull SinglyPeopleFilterBuilder isMemberOf(final @NonNull Church church,
-            final @NonNull Status... status) {
+    public SinglyPeopleFilterBuilder isMemberOf(final Church church,
+            final Status... status) {
         final var all = new OrGroupPeopleFilter(
                 List.of(status)
                         .stream()
@@ -112,7 +111,7 @@ public class PeopleFilterBuilder {
      * @param status
      * @return SinglyPeopleFilterBuilder
      */
-    public @NonNull SinglyPeopleFilterBuilder isMemberOf(final @NonNull Unit unit, final @NonNull Status... status) {
+    public SinglyPeopleFilterBuilder isMemberOf(final Unit unit, final Status... status) {
         final var all = new OrGroupPeopleFilter(
                 List.of(status)
                         .stream()
@@ -130,8 +129,8 @@ public class PeopleFilterBuilder {
      * @param integrationTypes
      * @return SinglyPeopleFilterBuilder
      */
-    public @NonNull SinglyPeopleFilterBuilder isIntegrantOf(final @NonNull Department department,
-            final @NonNull IntegrationType... integrationTypes) {
+    public SinglyPeopleFilterBuilder isIntegrantOf(final Department department,
+            final IntegrationType... integrationTypes) {
         final var all = new OrGroupPeopleFilter(
                 List.of(integrationTypes)
                         .stream()

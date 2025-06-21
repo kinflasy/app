@@ -24,10 +24,10 @@ public class IdentityFilter extends PeopleFilter {
 
     @ManyToOne
     @JoinColumn(name = "person_id", unique = true, nullable = false)
-    private @NonNull Person person;
+    private Person person;
 
     @Override
-    public @NonNull Function<Person, Boolean> getFilter() {
+    public Function<Person, Boolean> getFilter() {
         return (person -> person.equals(this.person));
     }
 

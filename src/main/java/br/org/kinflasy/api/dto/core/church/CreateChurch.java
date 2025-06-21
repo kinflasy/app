@@ -1,6 +1,5 @@
 package br.org.kinflasy.api.dto.core.church;
 
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.church.Church;
@@ -11,13 +10,13 @@ import lombok.Getter;
 @Getter
 public class CreateChurch {
 
-    private @NonNull String name;
-    private @NonNull String slug;
+    private String name;
+    private String slug;
     private @Nullable String acronym;
     private @Nullable String phone;
-    private @NonNull String email;
+    private String email;
 
-    public @NonNull Church update(final @NonNull Church church) {
+    public Church update(final Church church) {
         church.setName(name);
         church.setSlug(slug);
         church.setPhone(phone);
@@ -27,7 +26,7 @@ public class CreateChurch {
         return church;
     }
 
-    public @NonNull Church toChurch() {
+    public Church toChurch() {
         return update(new Church());
     }
 

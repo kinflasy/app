@@ -3,7 +3,6 @@ package br.org.kinflasy.api.entities.core.people_filter;
 import java.util.function.Function;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
-import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.entities.core.User;
@@ -26,8 +25,8 @@ public abstract class PeopleFilter extends AbstractAuditable<User, Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    protected @NonNull Integer id;
+    protected Integer id;
 
-    public abstract @NonNull Function<Person, Boolean> getFilter();
+    public abstract Function<Person, Boolean> getFilter();
 
 }

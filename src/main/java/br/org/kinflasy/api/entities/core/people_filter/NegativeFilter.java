@@ -24,10 +24,10 @@ public class NegativeFilter extends PeopleFilter {
 
     @ManyToOne
     @JoinColumn(name = "filter", nullable = false)
-    private @NonNull PeopleFilter filter;
+    private PeopleFilter filter;
 
     @Override
-    public @NonNull Function<Person, Boolean> getFilter() {
+    public Function<Person, Boolean> getFilter() {
         // Negar resultado do filtro base
         return (person -> !filter.getFilter().apply(person));
     }

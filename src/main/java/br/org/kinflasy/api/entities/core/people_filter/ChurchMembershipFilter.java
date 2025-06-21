@@ -31,14 +31,14 @@ public class ChurchMembershipFilter extends PeopleFilter {
 
     @ManyToOne
     @JoinColumn(name = "church_id", nullable = false)
-    private @NonNull Church church;
+    private Church church;
 
     @Enumerated
     @Column(name = "status")
-    private @NonNull Status status;
+    private Status status;
 
     @Override
-    public @NonNull Function<Person, Boolean> getFilter() {
+    public Function<Person, Boolean> getFilter() {
         return (person -> person.getMemberships().stream()
                 .anyMatch(membership -> membership.getUnit().getChurch().equals(church)
                         && membership.getStatus() == status));

@@ -1,6 +1,5 @@
 package br.org.kinflasy.api.dto.core.church.department;
 
-import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.church.department.Department;
 import br.org.kinflasy.api.entities.core.people_filter.StaticPeopleFilter;
@@ -13,11 +12,11 @@ import lombok.Getter;
 @Getter
 public class CreateDepartment {
 
-    private @NonNull String name;
-    private @NonNull String slug;
-    private @NonNull DepartmentType type;
+    private String name;
+    private String slug;
+    private DepartmentType type;
 
-    public @NonNull Department update(final @NonNull Department department) {
+    public Department update(final Department department) {
         department.setName(name);
         department.setSlug(slug);
         department.setType(type);
@@ -26,7 +25,7 @@ public class CreateDepartment {
         return department;
     }
 
-    public @NonNull Department toDepartment() {
+    public Department toDepartment() {
         return update(new Department());
     }
 

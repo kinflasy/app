@@ -1,7 +1,6 @@
 package br.org.kinflasy.api.services.core.church.membership;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ public class LeaveService extends BaseService<LeaveRepository, LeaveDTO, Leave, 
     }
 
     @Override
-    public @NonNull Integer getId(final @NonNull Leave leave) {
+    public Integer getId(final Leave leave) {
         return leave.getId();
     }
 
@@ -28,7 +27,7 @@ public class LeaveService extends BaseService<LeaveRepository, LeaveDTO, Leave, 
     }
 
     @Override
-    public @NonNull LeaveDTO toNonNullDTO(final @NonNull Leave leave) {
+    public LeaveDTO toNonNullDTO(final Leave leave) {
         return LeaveDTO.ofNonNull(leave);
     }
 

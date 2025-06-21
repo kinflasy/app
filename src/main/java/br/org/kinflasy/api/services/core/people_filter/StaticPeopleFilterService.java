@@ -1,7 +1,6 @@
 package br.org.kinflasy.api.services.core.people_filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,7 @@ public class StaticPeopleFilterService
     }
 
     @Override
-    public @NonNull Integer getId(final @NonNull StaticPeopleFilter staticpeoplefilter) {
+    public Integer getId(final StaticPeopleFilter staticpeoplefilter) {
         return staticpeoplefilter.getId();
     }
 
@@ -29,11 +28,11 @@ public class StaticPeopleFilterService
     }
 
     @Override
-    public @NonNull StaticPeopleFilterDTO toNonNullDTO(final @NonNull StaticPeopleFilter staticpeoplefilter) {
+    public StaticPeopleFilterDTO toNonNullDTO(final StaticPeopleFilter staticpeoplefilter) {
         return StaticPeopleFilterDTO.ofNonNull(staticpeoplefilter);
     }
 
-    public @NonNull StaticPeopleFilter findOrCreate(final @NonNull StaticPeopleFilter filter) {
+    public StaticPeopleFilter findOrCreate(final StaticPeopleFilter filter) {
         return repository.findOrCreate(filter);
     }
 

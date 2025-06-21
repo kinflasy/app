@@ -1,6 +1,5 @@
 package br.org.kinflasy.api.entities.core.people_filter.builder;
 
-import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.people_filter.GroupablePeopleFilter;
 import br.org.kinflasy.api.entities.core.people_filter.PeopleFilter;
@@ -10,18 +9,18 @@ public abstract class ValidPeopleFilterBuilder {
     /**
      * Main filter
      */
-    protected @NonNull PeopleFilter filter;
+    protected PeopleFilter filter;
 
     /**
      * Package restricted constructor
      * 
      * @param filter
      */
-    ValidPeopleFilterBuilder(final @NonNull PeopleFilter filter) {
+    ValidPeopleFilterBuilder(final PeopleFilter filter) {
         this.filter = filter;
     }
 
-    private PeopleFilter simplifyGroup(final @NonNull GroupablePeopleFilter group) {
+    private PeopleFilter simplifyGroup(final GroupablePeopleFilter group) {
         final var simplifiedFilters = group.getFilters().stream()
                 .map(node -> {
                     if (node instanceof GroupablePeopleFilter) {
@@ -63,13 +62,13 @@ public abstract class ValidPeopleFilterBuilder {
      * 
      * @return PeopleFilter
      */
-    public @NonNull PeopleFilter build() {
+    public PeopleFilter build() {
         simplify();
         return filter;
     }
 
     @Override
-    public @NonNull String toString() {
+    public String toString() {
         return filter.toString();
     }
 

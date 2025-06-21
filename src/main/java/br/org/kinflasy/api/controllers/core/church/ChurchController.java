@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,20 +51,20 @@ public class ChurchController {
     @PostMapping
     @Transactional
     @Operation(summary = "Cadastrar", description = "Cadastrar uma igreja.")
-    public ResponseEntity<ChurchDTO> create(@RequestBody @Valid final @NonNull CreateChurch form) {
+    public ResponseEntity<ChurchDTO> create(@RequestBody @Valid final CreateChurch form) {
         return new ResponseEntity<>(service.dto().create(form.toChurch()), HttpStatus.CREATED);
     }
 
     @PostMapping("starter")
     @Transactional
     @Operation(summary = "Cadastrar com itens principais", description = "Cadastrar uma igreja com unidade sede e departamentos principais.")
-    public ResponseEntity<StarterChurchDTO> createStarter(@RequestBody @Valid final @NonNull CreateStarterChurch form) {
+    public ResponseEntity<StarterChurchDTO> createStarter(@RequestBody @Valid final CreateStarterChurch form) {
         return new ResponseEntity<>(StarterChurchDTO.ofNonNull(service.createStarter(form)), HttpStatus.CREATED);
     }
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma igreja pelo ID.")
-    public ResponseEntity<ChurchDTO> getById(@PathVariable("id") final @NonNull Integer id) {
+    public ResponseEntity<ChurchDTO> getById(@PathVariable("id") final Integer id) {
         try {
             return new ResponseEntity<>(service.dto().findById(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
@@ -76,8 +75,8 @@ public class ChurchController {
     @PutMapping("{id}")
     @Transactional
     @Operation(summary = "Editar", description = "Editar os dados de uma igreja.")
-    public ResponseEntity<ChurchDTO> update(@PathVariable("id") final @NonNull Integer id,
-            @RequestBody final @NonNull UpdateChurch form) {
+    public ResponseEntity<ChurchDTO> update(@PathVariable("id") final Integer id,
+            @RequestBody final UpdateChurch form) {
         try {
             final var existingItem = service.findById(id);
             return new ResponseEntity<>(service.dto().update(form.update(existingItem)), HttpStatus.OK);
@@ -89,7 +88,7 @@ public class ChurchController {
     @DeleteMapping("{id}")
     @Transactional
     @Operation(summary = "Excluir", description = "Descadastrar uma igreja, removendo-a do sistema.")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") final @NonNull Integer id) {
+    public ResponseEntity<HttpStatus> delete(@PathVariable("id") final Integer id) {
         try {
             service.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -102,14 +101,14 @@ public class ChurchController {
 
     @GetMapping("{id}/units")
     @Operation(summary = "Listar unidades", description = "Listar as unidades de uma igreja.")
-    public ResponseEntity<List<UnitDTO>> getUnits(@PathVariable("id") final @NonNull Integer id) {
+    public ResponseEntity<List<UnitDTO>> getUnits(@PathVariable("id") final Integer id) {
         return new ResponseEntity<>(unitService.dto().nonNull(service.getUnits(id)), HttpStatus.OK);
     }
 
     @PostMapping("{id}/units")
     @Operation(summary = "Cadastrar unidade", description = "Cadastrar uma nova unidade em uma igreja.")
-    public ResponseEntity<UnitDTO> createUnit(@PathVariable("id") final @NonNull Integer id,
-            @RequestBody @Valid final @NonNull CreateUnit form) {
+    public ResponseEntity<UnitDTO> createUnit(@PathVariable("id") final Integer id,
+            @RequestBody @Valid final CreateUnit form) {
         final var createdUnit = service.createUnit(id, form.toUnit());
         return new ResponseEntity<>(unitService.dto().nonNull(createdUnit), HttpStatus.CREATED);
     }

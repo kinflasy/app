@@ -3,7 +3,6 @@ package br.org.kinflasy.api.entities.core.church.membership;
 import java.time.LocalDate;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.User;
@@ -34,18 +33,18 @@ public class Leave extends AbstractAuditable<User, Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private @NonNull Integer id;
+    private Integer id;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "membership_id")
-    private @NonNull Membership membership;
+    private Membership membership;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "type", nullable = false)
-    private @NonNull LeaveType type;
+    private LeaveType type;
 
     @Column(name = "date", nullable = false)
-    private @NonNull LocalDate date;
+    private LocalDate date;
 
     @Column(name = "note")
     private @Nullable String note;

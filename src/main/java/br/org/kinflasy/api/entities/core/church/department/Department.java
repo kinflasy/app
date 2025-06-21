@@ -1,7 +1,6 @@
 package br.org.kinflasy.api.entities.core.church.department;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
-import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.User;
 import br.org.kinflasy.api.entities.core.church.Unit;
@@ -38,23 +37,23 @@ public class Department extends AbstractAuditable<User, Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private @NonNull Integer id;
+    private Integer id;
 
     @Column(name = "name", nullable = false)
-    private @NonNull String name;
+    private String name;
 
     @Column(name = "slug", nullable = false)
-    private @NonNull String slug;
+    private String slug;
 
     @ManyToOne(optional = false)
-    private @NonNull Unit unit;
+    private Unit unit;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "type", nullable = false)
-    private @NonNull DepartmentType type;
+    private DepartmentType type;
 
     @ManyToOne(cascade = { CascadeType.PERSIST })
     @JoinColumn(name = "visibility_filter", nullable = false)
-    private @NonNull PeopleFilter visibilityFilter;
+    private PeopleFilter visibilityFilter;
 
 }

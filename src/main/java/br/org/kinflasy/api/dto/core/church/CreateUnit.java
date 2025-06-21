@@ -1,6 +1,5 @@
 package br.org.kinflasy.api.dto.core.church;
 
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.dto.core.contact.CreateAddress;
@@ -14,14 +13,14 @@ import lombok.Getter;
 @Getter
 public class CreateUnit {
 
-    private @NonNull String name;
-    private @NonNull String slug;
+    private String name;
+    private String slug;
     private @Nullable String phone;
-    private @NonNull String email;
-    private @NonNull UnitType type;
-    private @NonNull CreateAddress address;
+    private String email;
+    private UnitType type;
+    private CreateAddress address;
 
-    public @NonNull Unit update(final @NonNull Unit unit) {
+    public Unit update(final Unit unit) {
         unit.setName(name);
         unit.setSlug(slug);
         unit.setPhone(phone);
@@ -32,11 +31,11 @@ public class CreateUnit {
         return unit;
     }
 
-    public @NonNull Unit toUnit() {
+    public Unit toUnit() {
         return update(new Unit());
     }
 
-    public @NonNull Unit toUnit(final @NonNull Church church) {
+    public Unit toUnit(final Church church) {
         final var unit = update(new Unit());
         unit.setChurch(church);
         return unit;

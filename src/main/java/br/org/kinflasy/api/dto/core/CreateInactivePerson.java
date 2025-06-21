@@ -2,7 +2,6 @@ package br.org.kinflasy.api.dto.core;
 
 import java.time.LocalDate;
 
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.dto.core.contact.CreateAddress;
@@ -15,13 +14,13 @@ public class CreateInactivePerson extends CreatePerson {
 
     protected @Nullable String email;
 
-    public CreateInactivePerson(@NonNull String name, @Nullable String nickname, @NonNull Gender gender,
-            @NonNull LocalDate birthDate, @Nullable String phone, @Nullable CreateAddress address, String email) {
+    public CreateInactivePerson(String name, @Nullable String nickname, Gender gender,
+            LocalDate birthDate, @Nullable String phone, @Nullable CreateAddress address, String email) {
         super(name, nickname, gender, birthDate, phone, address);
         this.email = email;
     }
 
-    public @NonNull InactivePerson update(final @NonNull InactivePerson person) {
+    public InactivePerson update(final InactivePerson person) {
 
         super.update(person);
         person.setEmail(email);
@@ -30,7 +29,7 @@ public class CreateInactivePerson extends CreatePerson {
         
     }
 
-    public @NonNull InactivePerson toInactivePerson() {
+    public InactivePerson toInactivePerson() {
         return update(new InactivePerson());
     }
     

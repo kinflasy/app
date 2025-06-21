@@ -1,6 +1,5 @@
 package br.org.kinflasy.api.dto.core.church.department;
 
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.church.department.Department;
@@ -11,7 +10,7 @@ public record UpdateDepartment(
         @Nullable String slug,
         @Nullable DepartmentType type) {
 
-    public @NonNull Department update(final @NonNull Department department) {
+    public Department update(final Department department) {
 
         if (name != null) {
             department.setName(name);

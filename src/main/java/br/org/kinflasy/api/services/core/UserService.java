@@ -1,7 +1,6 @@
 package br.org.kinflasy.api.services.core;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ public class UserService extends BaseService<UserRepository, UserDTO, User, Inte
     }
 
     @Override
-    public @NonNull Integer getId(final @NonNull User user) {
+    public Integer getId(final User user) {
         return user.getId();
     }
 
@@ -28,7 +27,7 @@ public class UserService extends BaseService<UserRepository, UserDTO, User, Inte
     }
 
     @Override
-    public @NonNull UserDTO toNonNullDTO(final @NonNull User user) {
+    public UserDTO toNonNullDTO(final User user) {
         return UserDTO.ofNonNull(user);
     }
 

@@ -2,8 +2,8 @@ package br.org.kinflasy.api.entities.core.people_filter.builder;
 
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
-import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.people_filter.AndGroupPeopleFilter;
 import br.org.kinflasy.api.entities.core.people_filter.OrGroupPeopleFilter;
@@ -16,13 +16,11 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
      * 
      * @param filter
      */
-    SinglyPeopleFilterBuilder(final @NonNull PeopleFilter filter) {
+    SinglyPeopleFilterBuilder(final PeopleFilter filter) {
         super(filter);
     }
-    
-    public @NonNull GroupedPeopleFilterBuilder andMatchesAll(
-            final @NonNull Function<FilterListBuilder, FilterListBuilder> person) {
 
+    public GroupedPeopleFilterBuilder andMatchesAll(final UnaryOperator<FilterListBuilder> person) {
         // Criar builder com filtros adicionais
         final var listed = person.apply(new FilterListBuilder());
         final var and = new AndGroupPeopleFilter(listed.getFiltersList());
@@ -35,9 +33,9 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
 
     }
 
-    public @NonNull GroupedPeopleFilterBuilder andMatchesOneOf(
-            final @NonNull Function<FilterListBuilder, FilterListBuilder> person) {
-        
+    public GroupedPeopleFilterBuilder andMatchesOneOf(
+            final Function<FilterListBuilder, FilterListBuilder> person) {
+
         // Criar builder com filtros adicionais
         final var listed = person.apply(new FilterListBuilder());
         final var or = new OrGroupPeopleFilter(listed.getFiltersList());
@@ -47,12 +45,12 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
 
         // Transformar-se em Grouped
         return new GroupedPeopleFilterBuilder(filter);
-        
+
     }
 
-    public @NonNull GroupedPeopleFilterBuilder orMatchesAll(
-            final @NonNull Function<FilterListBuilder, FilterListBuilder> person) {
-        
+    public GroupedPeopleFilterBuilder orMatchesAll(
+            final Function<FilterListBuilder, FilterListBuilder> person) {
+
         // Criar builder com filtros adicionais
         final var listed = person.apply(new FilterListBuilder());
         final var and = new AndGroupPeopleFilter(listed.getFiltersList());
@@ -62,12 +60,12 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
 
         // Transformar-se em Grouped
         return new GroupedPeopleFilterBuilder(filter);
-        
+
     }
 
-    public @NonNull GroupedPeopleFilterBuilder orMatchesOneOf(
-            final @NonNull Function<FilterListBuilder, FilterListBuilder> person) {
-        
+    public GroupedPeopleFilterBuilder orMatchesOneOf(
+            final Function<FilterListBuilder, FilterListBuilder> person) {
+
         // Criar builder com filtros adicionais
         final var listed = person.apply(new FilterListBuilder());
         final var or = new OrGroupPeopleFilter(listed.getFiltersList());
@@ -77,7 +75,7 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
 
         // Transformar-se em Grouped
         return new GroupedPeopleFilterBuilder(filter);
-        
+
     }
 
 }

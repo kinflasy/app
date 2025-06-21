@@ -5,7 +5,6 @@ import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,34 +21,34 @@ public abstract class BaseService<Repository extends JpaRepository<Entity, Id>, 
         dtoService = new DtoService<>(this);
     }
 
-    public abstract @NonNull Id getId(@NonNull Entity item);
+    public abstract Id getId(Entity item);
 
     public abstract @Nullable DTO toNullableDTO(final @Nullable Entity item);
 
-    public abstract @NonNull DTO toNonNullDTO(final @NonNull Entity item);
+    public abstract DTO toNonNullDTO(final Entity item);
 
     public DtoService<Repository, DTO, Entity, Id> dto() {
         return dtoService;
     }
 
-    public @NonNull List<Entity> findAll() {
+    public List<Entity> findAll() {
         return repository.findAll();
     }
 
     @Transactional
-    public @NonNull Entity create(final @NonNull Entity item) {
+    public Entity create(final Entity item) {
         return repository.save(item);
     }
 
-    private @NonNull Boolean existsById(final @NonNull Id id) {
+    private Boolean existsById(final Id id) {
         return (id != null) ? repository.existsById(id) : false;
     }
 
-    public @NonNull Boolean exists(final @NonNull Entity item) {
+    public Boolean exists(final Entity item) {
         return existsById(getId(item));
     }
 
-    public @NonNull Entity findById(final @NonNull Id id) throws EntityNotFoundException {
+    public Entity findById(final Id id) throws EntityNotFoundException {
         try {
             final var result = repository.findById(id).get();
 
@@ -64,7 +63,7 @@ public abstract class BaseService<Repository extends JpaRepository<Entity, Id>, 
     }
 
     @Transactional
-    public @NonNull Entity update(final @NonNull Entity entity) throws EntityNotFoundException {
+    public Entity update(final Entity entity) throws EntityNotFoundException {
         if (exists(entity)) {
             return repository.save(entity);
         }
@@ -73,7 +72,7 @@ public abstract class BaseService<Repository extends JpaRepository<Entity, Id>, 
     }
 
     @Transactional
-    public void delete(final @NonNull Id id) throws EntityNotFoundException {
+    public void delete(final Id id) throws EntityNotFoundException {
         if (existsById(id)) {
             repository.deleteById(id);
         } else {

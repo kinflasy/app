@@ -3,7 +3,6 @@ package br.org.kinflasy.api.entities.core.church;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
-import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.contracts.contact.Emailable;
 import br.org.kinflasy.api.entities.core.User;
@@ -48,34 +47,34 @@ public class Unit extends AbstractAuditable<User, Integer> implements Emailable 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private @NonNull Integer id;
+    private Integer id;
 
     @Column(name = "name", nullable = false)
-    private @NonNull String name;
+    private String name;
 
     @Column(name = "slug", nullable = false)
-    private @NonNull String slug;
+    private String slug;
 
     @Column(name = "email", nullable = false)
-    private @NonNull String email;
+    private String email;
 
     @Column(name = "phone", nullable = false)
     private @Nullable String phone;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(name = "type", nullable = false)
-    private @NonNull UnitType type;
+    private UnitType type;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "church_id")
-    private @NonNull Church church;
+    private Church church;
 
     @OneToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.REMOVE }, optional = false, orphanRemoval = true)
     @JoinColumn(name = "address_id")
-    private @NonNull Address address;
+    private Address address;
 
     @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE })
-    private @NonNull List<Department> departments;
+    private List<Department> departments;
 
 }

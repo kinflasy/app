@@ -2,7 +2,6 @@ package br.org.kinflasy.api.dto.core;
 
 import java.time.LocalDate;
 
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.dto.core.contact.CreateAddress;
@@ -22,7 +21,7 @@ public class UpdatePerson {
     protected @Nullable String phone;
     protected @Nullable CreateAddress address;
 
-    public @NonNull Person update(final @NonNull Person person) {
+    public Person update(final Person person) {
         if (name != null) {
             person.setFullName(name);
         }

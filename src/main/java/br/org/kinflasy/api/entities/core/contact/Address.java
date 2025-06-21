@@ -2,7 +2,6 @@ package br.org.kinflasy.api.entities.core.contact;
 
 import org.springframework.data.annotation.Immutable;
 import org.springframework.data.jpa.domain.AbstractAuditable;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.User;
@@ -31,7 +30,6 @@ public class Address extends AbstractAuditable<User, Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @NonNull
     private Integer id;
     
     @Column(name = "zip")

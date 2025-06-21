@@ -3,7 +3,6 @@ package br.org.kinflasy.api.controllers.core.church.department;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +32,7 @@ public class DepartmentController {
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar um departamento pelo ID.")
-    public ResponseEntity<DepartmentDTO> getById(@PathVariable("id") final @NonNull Integer id) {
+    public ResponseEntity<DepartmentDTO> getById(@PathVariable("id") final Integer id) {
         try {
             return new ResponseEntity<>(service.dto().findById(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
@@ -44,8 +43,8 @@ public class DepartmentController {
     @PutMapping("{id}")
     @Transactional
     @Operation(summary = "Editar", description = "Editar os dados de um departamento.")
-    public ResponseEntity<DepartmentDTO> update(@PathVariable("id") final @NonNull Integer id,
-            @RequestBody final @NonNull UpdateDepartment form) {
+    public ResponseEntity<DepartmentDTO> update(@PathVariable("id") final Integer id,
+            @RequestBody final UpdateDepartment form) {
         try {
             final var existingItem = service.findById(id);
             return new ResponseEntity<>(service.dto().update(form.update(existingItem)), HttpStatus.OK);
@@ -57,7 +56,7 @@ public class DepartmentController {
     @DeleteMapping("{id}")
     @Transactional
     @Operation(summary = "Excluir", description = "Descadastrar um departamento, removendo-o do sistema.")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") final @NonNull Integer id) {
+    public ResponseEntity<HttpStatus> delete(@PathVariable("id") final Integer id) {
         try {
             service.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

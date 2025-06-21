@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,7 +41,7 @@ public class UnitController {
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma unidade pelo ID.")
-    public ResponseEntity<UnitDTO> getById(@PathVariable("id") final @NonNull Integer id) {
+    public ResponseEntity<UnitDTO> getById(@PathVariable("id") final Integer id) {
         try {
             return new ResponseEntity<>(service.dto().findById(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
@@ -53,8 +52,8 @@ public class UnitController {
     @PutMapping("{id}")
     @Transactional
     @Operation(summary = "Editar", description = "Editar os dados de uma unidade.")
-    public ResponseEntity<UnitDTO> update(@PathVariable("id") final @NonNull Integer id,
-            @RequestBody final @NonNull UpdateUnit form) {
+    public ResponseEntity<UnitDTO> update(@PathVariable("id") final Integer id,
+            @RequestBody final UpdateUnit form) {
         try {
             final var existingItem = service.findById(id);
             return new ResponseEntity<>(service.dto().update(form.update(existingItem)), HttpStatus.OK);
@@ -66,7 +65,7 @@ public class UnitController {
     @DeleteMapping("{id}")
     @Transactional
     @Operation(summary = "Excluir", description = "Descadastrar uma unidade, removendo-a do sistema.")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") final @NonNull Integer id) {
+    public ResponseEntity<HttpStatus> delete(@PathVariable("id") final Integer id) {
         try {
             service.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -79,14 +78,14 @@ public class UnitController {
 
     @GetMapping("{id}/departments")
     @Operation(summary = "Listar departamentos", description = "Listar os departamentos de uma unidade.")
-    public ResponseEntity<List<DepartmentDTO>> getDepartments(@PathVariable("id") final @NonNull Integer id) {
+    public ResponseEntity<List<DepartmentDTO>> getDepartments(@PathVariable("id") final Integer id) {
         return new ResponseEntity<>(departmentService.dto().nonNull(service.getDepartments(id)), HttpStatus.OK);
     }
 
     @PostMapping("{id}/departments")
     @Operation(summary = "Cadastrar departamento", description = "Cadastrar um novo departamento em uma unidade.")
-    public ResponseEntity<DepartmentDTO> createDepartment(@PathVariable("id") final @NonNull Integer id,
-            @RequestBody @Valid final @NonNull CreateDepartment form) {
+    public ResponseEntity<DepartmentDTO> createDepartment(@PathVariable("id") final Integer id,
+            @RequestBody @Valid final CreateDepartment form) {
         final var createdDepartment = service.createDepartment(id, form.toDepartment());
         return new ResponseEntity<>(departmentService.dto().nonNull(createdDepartment), HttpStatus.CREATED);
     }

@@ -1,18 +1,17 @@
 package br.org.kinflasy.api.dto.core.church;
 
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.church.Church;
 
 public record UpdateChurch(
-        @NonNull String name,
+        String name,
         @Nullable String slug,
         @Nullable String acronym,
         @Nullable String phone,
         @Nullable String email) {
 
-    public @NonNull Church update(final @NonNull Church church) {
+    public Church update(final Church church) {
         if (name != null) {
             church.setName(name);
         }

@@ -1,6 +1,5 @@
 package br.org.kinflasy.api.dto.core.contact;
 
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.entities.core.contact.Address;
@@ -35,7 +34,7 @@ public class CreateAddress {
     @Nullable
     private String reference;
     
-    public @NonNull Address toAddress() {
+    public Address toAddress() {
         final var address = new Address();
 
         address.setZip(zip);

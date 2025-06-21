@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,7 +35,7 @@ public class PersonController {
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma pessoa pelo ID.")
-    public ResponseEntity<PersonDTO> getById(@PathVariable("id") final @NonNull Integer id) {
+    public ResponseEntity<PersonDTO> getById(@PathVariable("id") final Integer id) {
         try {
             return new ResponseEntity<>(PersonDTO.ofNonNull(service.findById(id)), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {

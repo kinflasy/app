@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import br.org.kinflasy.api.contracts.contact.Emailable;
@@ -35,13 +34,13 @@ public class Church extends AbstractAuditable<User, Integer> implements Emailabl
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private @NonNull Integer id;
+    private Integer id;
 
     @Column(name = "name", nullable = false)
-    private @NonNull String name;
+    private String name;
 
     @Column(name = "slug", nullable = false, unique = true)
-    private @NonNull String slug;
+    private String slug;
 
     @Column(name = "acronym")
     private @Nullable String acronym;
@@ -50,12 +49,12 @@ public class Church extends AbstractAuditable<User, Integer> implements Emailabl
     private @Nullable String phone;
 
     @Column(name = "email", nullable = false, unique = true)
-    private @NonNull String email;
+    private String email;
 
     @Column(name = "email_verified_at")
     private @Nullable LocalDateTime emailVerifiedAt;
 
     @OneToMany(mappedBy = "church", cascade = CascadeType.ALL)
-    private @NonNull List<Unit> units;
+    private List<Unit> units;
 
 }

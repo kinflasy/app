@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,7 @@ public class PersonService {
         this.repository = repository;
     }
 
-    public @NonNull Integer getId(final @NonNull Person person) {
+    public Integer getId(final Person person) {
         return person.getId();
     }
 
@@ -30,23 +29,23 @@ public class PersonService {
         return PersonDTO.ofNullable(item);
     }
 
-    public @NonNull PersonDTO toNonNullDTO(@NonNull Person item) {
+    public PersonDTO toNonNullDTO(Person item) {
         return PersonDTO.ofNonNull(item);
     }
 
-    public @NonNull List<Person> findAll() {
+    public List<Person> findAll() {
         return repository.findAll();
     }
     
-    private @NonNull Boolean existsById(final @NonNull Integer id) {
+    private Boolean existsById(final Integer id) {
         return (id != null) ? repository.existsById(id) : false;
     }
 
-    public @NonNull Boolean exists(final @NonNull Person item) {
+    public Boolean exists(final Person item) {
         return existsById(getId(item));
     }
 
-    public @NonNull Person findById(final @NonNull Integer id) throws EntityNotFoundException {
+    public Person findById(final Integer id) throws EntityNotFoundException {
         try {
             final var result = repository.findById(id).get();
 

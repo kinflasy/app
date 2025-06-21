@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +36,7 @@ public class ChurchService extends BaseService<ChurchRepository, ChurchDTO, Chur
     }
 
     @Override
-    public @NonNull Integer getId(final @NonNull Church church) {
+    public Integer getId(final Church church) {
         return church.getId();
     }
 
@@ -47,15 +46,15 @@ public class ChurchService extends BaseService<ChurchRepository, ChurchDTO, Chur
     }
 
     @Override
-    public @NonNull ChurchDTO toNonNullDTO(final @NonNull Church church) {
+    public ChurchDTO toNonNullDTO(final Church church) {
         return ChurchDTO.ofNonNull(church);
     }
 
-    public @NonNull List<Unit> getUnits(final @NonNull Integer id) {
+    public List<Unit> getUnits(final Integer id) {
         return findById(id).getUnits();
     }
 
-    public @NonNull Church createStarter(final @NonNull CreateStarterChurch form) {
+    public Church createStarter(final CreateStarterChurch form) {
         // Criar a Igreja
         final var church = create(form.toChurch());
 
@@ -88,7 +87,7 @@ public class ChurchService extends BaseService<ChurchRepository, ChurchDTO, Chur
         return findById(church.getId());
     }
 
-    public @NonNull Unit createUnit(final @NonNull Integer id, final @NonNull Unit unit) {
+    public Unit createUnit(final Integer id, final Unit unit) {
         unit.setChurch(findById(id));
         return unitService.create(unit);
     }

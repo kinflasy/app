@@ -2,7 +2,6 @@ package br.org.kinflasy.api.entities.core;
 
 import java.time.LocalDateTime;
 
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import jakarta.persistence.Column;
@@ -30,19 +29,19 @@ public class User extends Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private @NonNull Integer id;
+    private Integer id;
 
     @Column(name = "username", nullable = false, unique = true)
-    private @NonNull String username;
+    private String username;
 
     @Column(name = "email", nullable = true)
     @Email
-    private @NonNull String email;
+    private String email;
 
     @Column(name = "email_verified_at")
     private @Nullable LocalDateTime emailVerifiedAt;
 
     @Column(name = "password", nullable = false)
-    private @NonNull String password;
+    private String password;
 
 }

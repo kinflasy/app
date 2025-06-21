@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.entities.core.church.Church;
@@ -28,7 +27,7 @@ public class FilterListBuilder {
     /**
      * Filter list
      */
-    private final @NonNull List<PeopleFilter> filters = new ArrayList<>();
+    private final List<PeopleFilter> filters = new ArrayList<>();
 
     /**
      * Package restricted constructor
@@ -37,7 +36,7 @@ public class FilterListBuilder {
     }
 
     public @Nonnull FilterListBuilder not(
-            final @NonNull Function<PeopleFilterBuilder, ValidPeopleFilterBuilder> filter) {
+            final Function<PeopleFilterBuilder, ValidPeopleFilterBuilder> filter) {
         final var not = new NegativeFilter(filter.apply(PeopleFilterBuilder.thePerson()).filter);
         filters.add(not);
 
@@ -50,7 +49,7 @@ public class FilterListBuilder {
      * @param person
      * @return this
      */
-    public @NonNull FilterListBuilder is(final @NonNull Person person) {
+    public FilterListBuilder is(final Person person) {
         filters.add(new IdentityFilter(person));
         return this;
     }
@@ -61,7 +60,7 @@ public class FilterListBuilder {
      * @param characteristic
      * @return this
      */
-    public @NonNull FilterListBuilder is(final @NonNull PersonCharacteristic characteristic) {
+    public FilterListBuilder is(final PersonCharacteristic characteristic) {
         filters.add(new StaticPeopleFilter(characteristic));
         return this;
     }
@@ -73,7 +72,7 @@ public class FilterListBuilder {
      * @param status
      * @return this
      */
-    public @NonNull FilterListBuilder isMemberOf(final @NonNull Church church, final @NonNull Status... status) {
+    public FilterListBuilder isMemberOf(final Church church, final Status... status) {
         final var all = new OrGroupPeopleFilter(
                 List.of(status)
                         .stream()
@@ -92,7 +91,7 @@ public class FilterListBuilder {
      * @param status
      * @return this
      */
-    public @NonNull FilterListBuilder isMemberOf(final @NonNull Unit unit, final @NonNull Status... status) {
+    public FilterListBuilder isMemberOf(final Unit unit, final Status... status) {
         final var all = new OrGroupPeopleFilter(
                 List.of(status)
                         .stream()
@@ -111,8 +110,8 @@ public class FilterListBuilder {
      * @param integrationTypes
      * @return this
      */
-    public @NonNull FilterListBuilder isIntegrantOf(final @NonNull Department department,
-            final @NonNull IntegrationType... integrationTypes) {
+    public FilterListBuilder isIntegrantOf(final Department department,
+            final IntegrationType... integrationTypes) {
         final var all = new OrGroupPeopleFilter(
                 List.of(integrationTypes)
                         .stream()
@@ -129,7 +128,7 @@ public class FilterListBuilder {
      * 
      * @return
      */
-    public @NonNull List<PeopleFilter> getFiltersList() {
+    public List<PeopleFilter> getFiltersList() {
         return filters;
     }
 

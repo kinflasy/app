@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,14 +45,14 @@ public class UserController {
     @PostMapping
     @Transactional
     @Operation(summary = "Cadastrar", description = "Cadastrar um novo usuário ativo.")
-    public ResponseEntity<UserDTO> create(@RequestBody @Valid final @NonNull CreateUser form) {
+    public ResponseEntity<UserDTO> create(@RequestBody @Valid final CreateUser form) {
         final User savedItem = service.create(form.toUser());
         return new ResponseEntity<>(UserDTO.ofNullable(savedItem), HttpStatus.CREATED);
     }
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar um usuário ativo pelo ID.")
-    public ResponseEntity<UserDTO> getById(@PathVariable("id") final @NonNull Integer id) {
+    public ResponseEntity<UserDTO> getById(@PathVariable("id") final Integer id) {
         try {
             return new ResponseEntity<>(UserDTO.ofNullable(service.findById(id)), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
@@ -64,8 +63,8 @@ public class UserController {
     @PutMapping("{id}")
     @Transactional
     @Operation(summary = "Editar", description = "Editar os dados de um usuário ativo.")
-    public ResponseEntity<UserDTO> update(@PathVariable("id") final @NonNull Integer id,
-            @RequestBody @Valid final @NonNull UpdateUser form) {
+    public ResponseEntity<UserDTO> update(@PathVariable("id") final Integer id,
+            @RequestBody @Valid final UpdateUser form) {
         try {
             final var existingItem = service.findById(id);
             return new ResponseEntity<>(UserDTO.ofNullable(service.update(form.update(existingItem))),
@@ -78,7 +77,7 @@ public class UserController {
     @DeleteMapping("{id}")
     @Transactional
     @Operation(summary = "Excluir", description = "Descadastrar um usuário ativo, removendo-o do sistema.")
-    public ResponseEntity<HttpStatus> delete(@PathVariable("id") final @NonNull Integer id) {
+    public ResponseEntity<HttpStatus> delete(@PathVariable("id") final Integer id) {
         try {
             service.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
