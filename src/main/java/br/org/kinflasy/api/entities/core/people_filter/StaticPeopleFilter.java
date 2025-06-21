@@ -30,7 +30,7 @@ public class StaticPeopleFilter extends PeopleFilter {
 
     @Override
     public Predicate<Person> getPredicate() {
-        return characteristic.getFilter();
+        return characteristic.getPredicate();
     }
 
     @Override
