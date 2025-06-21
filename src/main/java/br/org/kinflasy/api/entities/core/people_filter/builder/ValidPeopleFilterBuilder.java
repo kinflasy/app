@@ -1,9 +1,9 @@
-package br.org.kinflasy.api.entities.core.peoplefilter.builder;
+package br.org.kinflasy.api.entities.core.people_filter.builder;
 
 import org.springframework.lang.NonNull;
 
-import br.org.kinflasy.api.entities.core.peoplefilter.GroupablePeopleFilter;
-import br.org.kinflasy.api.entities.core.peoplefilter.PeopleFilter;
+import br.org.kinflasy.api.entities.core.people_filter.GroupablePeopleFilter;
+import br.org.kinflasy.api.entities.core.people_filter.PeopleFilter;
 
 public abstract class ValidPeopleFilterBuilder {
 

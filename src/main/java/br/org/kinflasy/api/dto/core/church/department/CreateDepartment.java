@@ -3,7 +3,7 @@ package br.org.kinflasy.api.dto.core.church.department;
 import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.church.department.Department;
-import br.org.kinflasy.api.entities.core.peoplefilter.StaticPeopleFilter;
+import br.org.kinflasy.api.entities.core.people_filter.StaticPeopleFilter;
 import br.org.kinflasy.api.utils.enums.core.PersonCharacteristic;
 import br.org.kinflasy.api.utils.enums.core.church.department.DepartmentType;
 import lombok.AllArgsConstructor;

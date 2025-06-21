@@ -1,13 +1,13 @@
-package br.org.kinflasy.api.entities.core.peoplefilter.builder;
+package br.org.kinflasy.api.entities.core.people_filter.builder;
 
 import java.util.List;
 import java.util.function.Function;
 
 import org.springframework.lang.NonNull;
 
-import br.org.kinflasy.api.entities.core.peoplefilter.AndGroupPeopleFilter;
-import br.org.kinflasy.api.entities.core.peoplefilter.OrGroupPeopleFilter;
-import br.org.kinflasy.api.entities.core.peoplefilter.PeopleFilter;
+import br.org.kinflasy.api.entities.core.people_filter.AndGroupPeopleFilter;
+import br.org.kinflasy.api.entities.core.people_filter.OrGroupPeopleFilter;
+import br.org.kinflasy.api.entities.core.people_filter.PeopleFilter;
 
 public class GroupedPeopleFilterBuilder extends ValidPeopleFilterBuilder {
 

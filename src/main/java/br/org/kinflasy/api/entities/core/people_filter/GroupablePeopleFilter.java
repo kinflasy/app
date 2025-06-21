@@ -1,4 +1,4 @@
-package br.org.kinflasy.api.entities.core.peoplefilter;
+package br.org.kinflasy.api.entities.core.people_filter;
 
 import java.util.List;
 

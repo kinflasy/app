@@ -1,13 +1,13 @@
-package br.org.kinflasy.api.services.core.peoplefilter;
+package br.org.kinflasy.api.services.core.people_filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
-import br.org.kinflasy.api.dto.core.peoplefilter.StaticPeopleFilterDTO;
-import br.org.kinflasy.api.entities.core.peoplefilter.StaticPeopleFilter;
-import br.org.kinflasy.api.repositories.core.peoplefilter.StaticPeopleFilterRepository;
+import br.org.kinflasy.api.dto.core.people_filter.StaticPeopleFilterDTO;
+import br.org.kinflasy.api.entities.core.people_filter.StaticPeopleFilter;
+import br.org.kinflasy.api.repositories.core.people_filter.StaticPeopleFilterRepository;
 import br.org.kinflasy.api.services.BaseService;
 
 @Service

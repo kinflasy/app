@@ -1,11 +1,11 @@
-package br.org.kinflasy.api.entities.core.peoplefilter;
+package br.org.kinflasy.api.entities.core.people_filter;
 
 import java.util.function.Function;
 
 import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.Person;
-import br.org.kinflasy.api.entities.core.church.Church;
+import br.org.kinflasy.api.entities.core.church.Unit;
 import br.org.kinflasy.api.utils.enums.core.church.membership.Status;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,18 +20,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "church_membership_people_filters", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "church_id", "status" })
+@Table(name = "unit_membership_people_filters", uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "unit_id", "status" })
 })
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(callSuper = false)
-public class ChurchMembershipFilter extends PeopleFilter {
+public class UnitMembershipFilter extends PeopleFilter {
 
     @ManyToOne
-    @JoinColumn(name = "church_id", nullable = false)
-    private @NonNull Church church;
+    @JoinColumn(name = "unit_id", nullable = false)
+    private @NonNull Unit unit;
 
     @Enumerated
     @Column(name = "status")
@@ -40,13 +40,13 @@ public class ChurchMembershipFilter extends PeopleFilter {
     @Override
     public @NonNull Function<Person, Boolean> getFilter() {
         return (person -> person.getMemberships().stream()
-                .anyMatch(membership -> membership.getUnit().getChurch().equals(church)
+                .anyMatch(membership -> membership.getUnit().equals(unit)
                         && membership.getStatus() == status));
     }
 
     @Override
     public @NonNull String toString() {
-        return "is " + status.toString() + " of the church " + church.getName() + " (#" + church.getId() + ")";
+        return "is " + status.toString() + " of the unit " + unit.getName() + " (#" + unit.getId() + ")";
     }
 
 }

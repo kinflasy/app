@@ -1,4 +1,4 @@
-package br.org.kinflasy.api.entities.core.peoplefilter;
+package br.org.kinflasy.api.entities.core.people_filter;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -9,7 +9,7 @@ import br.org.kinflasy.api.entities.core.User;
 import br.org.kinflasy.api.entities.core.church.Church;
 import br.org.kinflasy.api.entities.core.church.Unit;
 import br.org.kinflasy.api.entities.core.church.department.Department;
-import br.org.kinflasy.api.entities.core.peoplefilter.builder.PeopleFilterBuilder;
+import br.org.kinflasy.api.entities.core.people_filter.builder.PeopleFilterBuilder;
 import br.org.kinflasy.api.utils.enums.core.PersonCharacteristic;
 import br.org.kinflasy.api.utils.enums.core.church.department.IntegrationType;
 import br.org.kinflasy.api.utils.enums.core.church.membership.Status;

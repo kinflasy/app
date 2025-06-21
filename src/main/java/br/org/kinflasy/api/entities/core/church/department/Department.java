@@ -5,7 +5,7 @@ import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.User;
 import br.org.kinflasy.api.entities.core.church.Unit;
-import br.org.kinflasy.api.entities.core.peoplefilter.PeopleFilter;
+import br.org.kinflasy.api.entities.core.people_filter.PeopleFilter;
 import br.org.kinflasy.api.utils.enums.core.church.department.DepartmentType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

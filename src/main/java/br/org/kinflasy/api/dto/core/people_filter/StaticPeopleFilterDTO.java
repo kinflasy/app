@@ -1,9 +1,9 @@
-package br.org.kinflasy.api.dto.core.peoplefilter;
+package br.org.kinflasy.api.dto.core.people_filter;
 
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import br.org.kinflasy.api.entities.core.peoplefilter.StaticPeopleFilter;
+import br.org.kinflasy.api.entities.core.people_filter.StaticPeopleFilter;
 import br.org.kinflasy.api.utils.enums.core.PersonCharacteristic;
 
 public record StaticPeopleFilterDTO(
