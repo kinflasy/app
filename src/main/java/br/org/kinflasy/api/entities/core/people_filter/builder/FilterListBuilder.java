@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.entities.core.church.Church;
 import br.org.kinflasy.api.entities.core.church.Unit;
@@ -20,7 +19,6 @@ import br.org.kinflasy.api.entities.core.people_filter.UnitMembershipFilter;
 import br.org.kinflasy.api.utils.enums.core.PersonCharacteristic;
 import br.org.kinflasy.api.utils.enums.core.church.department.IntegrationType;
 import br.org.kinflasy.api.utils.enums.core.church.membership.Status;
-import jakarta.annotation.Nonnull;
 
 public class FilterListBuilder {
 
@@ -35,8 +33,7 @@ public class FilterListBuilder {
     FilterListBuilder() {
     }
 
-    public @Nonnull FilterListBuilder not(
-            final Function<PeopleFilterBuilder, ValidPeopleFilterBuilder> filter) {
+    public FilterListBuilder not(final Function<PeopleFilterBuilder, ValidPeopleFilterBuilder> filter) {
         final var not = new NegativeFilter(filter.apply(PeopleFilterBuilder.thePerson()).filter);
         filters.add(not);
 

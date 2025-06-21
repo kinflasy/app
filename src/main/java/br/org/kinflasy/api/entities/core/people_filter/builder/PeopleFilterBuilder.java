@@ -2,7 +2,7 @@ package br.org.kinflasy.api.entities.core.people_filter.builder;
 
 import java.util.List;
 import java.util.function.Function;
-
+import java.util.function.UnaryOperator;
 
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.entities.core.church.Church;
@@ -20,7 +20,6 @@ import br.org.kinflasy.api.entities.core.people_filter.UnitMembershipFilter;
 import br.org.kinflasy.api.utils.enums.core.PersonCharacteristic;
 import br.org.kinflasy.api.utils.enums.core.church.department.IntegrationType;
 import br.org.kinflasy.api.utils.enums.core.church.membership.Status;
-import jakarta.annotation.Nonnull;
 
 public class PeopleFilterBuilder {
 
@@ -33,8 +32,7 @@ public class PeopleFilterBuilder {
         return new PeopleFilterBuilder();
     }
 
-    public @Nonnull SinglyPeopleFilterBuilder not(
-            final Function<PeopleFilterBuilder, ValidPeopleFilterBuilder> filter) {
+    public SinglyPeopleFilterBuilder not(final Function<PeopleFilterBuilder, ValidPeopleFilterBuilder> filter) {
         final var not = new NegativeFilter(filter.apply(this).filter);
         return new SinglyPeopleFilterBuilder(not);
     }
@@ -45,8 +43,7 @@ public class PeopleFilterBuilder {
      * @param list
      * @return SinglyPeopleFilterBuilder
      */
-    public SinglyPeopleFilterBuilder matchesAll(
-            final Function<FilterListBuilder, FilterListBuilder> list) {
+    public SinglyPeopleFilterBuilder matchesAll(final UnaryOperator<FilterListBuilder> list) {
         final var listed = list.apply(new FilterListBuilder());
         final var and = new AndGroupPeopleFilter(listed.getFiltersList());
         return new SinglyPeopleFilterBuilder(and);
@@ -58,8 +55,7 @@ public class PeopleFilterBuilder {
      * @param list
      * @return SinglyPeopleFilterBuilder
      */
-    public SinglyPeopleFilterBuilder matchesOneOf(
-            final Function<FilterListBuilder, FilterListBuilder> list) {
+    public SinglyPeopleFilterBuilder matchesOneOf(final UnaryOperator<FilterListBuilder> list) {
         final var listed = list.apply(new FilterListBuilder());
         final var or = new OrGroupPeopleFilter(listed.getFiltersList());
         return new SinglyPeopleFilterBuilder(or);
