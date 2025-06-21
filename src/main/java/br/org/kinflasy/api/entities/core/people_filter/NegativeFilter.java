@@ -22,17 +22,17 @@ import lombok.NoArgsConstructor;
 public class NegativeFilter extends PeopleFilter {
 
     @ManyToOne(optional = false)
-    private PeopleFilter filter;
+    private PeopleFilter baseFilter;
 
     @Override
     public Predicate<Person> getPredicate() {
         // Negar resultado do filtro base
-        return (person -> !filter.getPredicate().test(person));
+        return baseFilter.getPredicate().negate();
     }
 
     @Override
     public @NonNull String toString() {
-        return "not " + filter.toString();
+        return "not " + baseFilter.toString();
     }
 
 }

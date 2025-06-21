@@ -1,29 +1,20 @@
 package br.org.kinflasy.api.entities.core.people_filter;
 
-import java.util.List;
 import java.util.function.Predicate;
 
 import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.Person;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "or_group_people_filters")
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class OrGroupPeopleFilter extends GroupablePeopleFilter {
-
-    @ManyToMany
-    private List<PeopleFilter> filters;
 
     @Override
     public Predicate<Person> getPredicate() {
@@ -32,7 +23,7 @@ public class OrGroupPeopleFilter extends GroupablePeopleFilter {
             var result = false;
 
             // Apicar cada filtro
-            for (final var filter : filters) {
+            for (final var filter : getFilters()) {
                 result |= filter.getPredicate().test(person);
             }
 
@@ -45,7 +36,7 @@ public class OrGroupPeopleFilter extends GroupablePeopleFilter {
     public @NonNull String toString() {
         final var result = new StringBuilder("matches at least one:\n");
 
-        final var textList = filters.stream()
+        final var textList = getFilters().stream()
                 .map(filter -> "  - " + filter.toString().replace("\n", "\n  "))
                 .toList();
 

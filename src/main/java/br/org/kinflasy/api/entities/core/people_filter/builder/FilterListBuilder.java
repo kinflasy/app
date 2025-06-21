@@ -70,9 +70,8 @@ public class FilterListBuilder {
      * @return this
      */
     public FilterListBuilder isMemberOf(final Church church, final Status... status) {
-        final var all = new OrGroupPeopleFilter(
-                List.of(status)
-                        .stream()
+        final var all = new OrGroupPeopleFilter()
+                .setFilters(List.of(status).stream()
                         .distinct()
                         .map(stt -> (PeopleFilter) new ChurchMembershipFilter(church, stt))
                         .toList());
@@ -89,9 +88,8 @@ public class FilterListBuilder {
      * @return this
      */
     public FilterListBuilder isMemberOf(final Unit unit, final Status... status) {
-        final var all = new OrGroupPeopleFilter(
-                List.of(status)
-                        .stream()
+        final var all = new OrGroupPeopleFilter()
+                .setFilters(List.of(status).stream()
                         .distinct()
                         .map(stt -> (PeopleFilter) new UnitMembershipFilter(unit, stt))
                         .toList());
@@ -109,8 +107,8 @@ public class FilterListBuilder {
      */
     public FilterListBuilder isIntegrantOf(final Department department,
             final IntegrationType... integrationTypes) {
-        final var all = new OrGroupPeopleFilter(
-                List.of(integrationTypes)
+        final var all = new OrGroupPeopleFilter()
+                .setFilters(List.of(integrationTypes)
                         .stream()
                         .distinct()
                         .map(type -> (PeopleFilter) new DepartmentIntegrationFilter(department, type))

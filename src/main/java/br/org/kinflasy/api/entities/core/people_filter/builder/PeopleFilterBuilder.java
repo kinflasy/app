@@ -45,7 +45,7 @@ public class PeopleFilterBuilder {
      */
     public SinglyPeopleFilterBuilder matchesAll(final UnaryOperator<FilterListBuilder> list) {
         final var listed = list.apply(new FilterListBuilder());
-        final var and = new AndGroupPeopleFilter(listed.getFiltersList());
+        final var and = new AndGroupPeopleFilter().setFilters(listed.getFiltersList());
         return new SinglyPeopleFilterBuilder(and);
     }
 
@@ -57,7 +57,7 @@ public class PeopleFilterBuilder {
      */
     public SinglyPeopleFilterBuilder matchesOneOf(final UnaryOperator<FilterListBuilder> list) {
         final var listed = list.apply(new FilterListBuilder());
-        final var or = new OrGroupPeopleFilter(listed.getFiltersList());
+        final var or = new OrGroupPeopleFilter().setFilters(listed.getFiltersList());
         return new SinglyPeopleFilterBuilder(or);
     }
 
@@ -90,9 +90,8 @@ public class PeopleFilterBuilder {
      */
     public SinglyPeopleFilterBuilder isMemberOf(final Church church,
             final Status... status) {
-        final var all = new OrGroupPeopleFilter(
-                List.of(status)
-                        .stream()
+        final var all = new OrGroupPeopleFilter()
+                .setFilters(List.of(status).stream()
                         .distinct()
                         .map(stt -> (PeopleFilter) new ChurchMembershipFilter(church, stt))
                         .toList());
@@ -108,9 +107,8 @@ public class PeopleFilterBuilder {
      * @return SinglyPeopleFilterBuilder
      */
     public SinglyPeopleFilterBuilder isMemberOf(final Unit unit, final Status... status) {
-        final var all = new OrGroupPeopleFilter(
-                List.of(status)
-                        .stream()
+        final var all = new OrGroupPeopleFilter()
+                .setFilters(List.of(status).stream()
                         .distinct()
                         .map(stt -> (PeopleFilter) new UnitMembershipFilter(unit, stt))
                         .toList());
@@ -127,9 +125,8 @@ public class PeopleFilterBuilder {
      */
     public SinglyPeopleFilterBuilder isIntegrantOf(final Department department,
             final IntegrationType... integrationTypes) {
-        final var all = new OrGroupPeopleFilter(
-                List.of(integrationTypes)
-                        .stream()
+        final var all = new OrGroupPeopleFilter()
+                .setFilters(List.of(integrationTypes).stream()
                         .distinct()
                         .map(type -> (PeopleFilter) new DepartmentIntegrationFilter(department, type))
                         .toList());
