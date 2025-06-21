@@ -1,6 +1,6 @@
 package br.org.kinflasy.api.entities.core.people_filter;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.springframework.lang.NonNull;
 
@@ -34,7 +34,7 @@ public class DepartmentIntegrationFilter extends PeopleFilter {
     private IntegrationType type = IntegrationType.INTEGRANT;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
+    public Predicate<Person> getPredicate() {
         return (person -> person.getIntegrations().stream()
                 .anyMatch(integration -> integration.getDepartment().equals(department)
                         && integration.getType() == type));

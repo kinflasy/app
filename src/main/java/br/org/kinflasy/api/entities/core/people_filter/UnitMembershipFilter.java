@@ -1,6 +1,6 @@
 package br.org.kinflasy.api.entities.core.people_filter;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.springframework.lang.NonNull;
 
@@ -36,7 +36,7 @@ public class UnitMembershipFilter extends PeopleFilter {
     private Status status;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
+    public Predicate<Person> getPredicate() {
         return (person -> person.getMemberships().stream()
                 .anyMatch(membership -> membership.getUnit().equals(unit)
                         && membership.getStatus() == status));

@@ -1,6 +1,6 @@
 package br.org.kinflasy.api.entities.core.people_filter;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.springframework.lang.NonNull;
 
@@ -29,7 +29,7 @@ public class StaticPeopleFilter extends PeopleFilter {
     private PersonCharacteristic characteristic;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
+    public Predicate<Person> getPredicate() {
         return characteristic.getFilter();
     }
 

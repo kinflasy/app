@@ -1,7 +1,7 @@
 package br.org.kinflasy.api.entities.core.people_filter;
 
 import java.util.UUID;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
@@ -26,6 +26,6 @@ public abstract class PeopleFilter extends AbstractAuditable<User, UUID> {
     @GeneratedValue(strategy = GenerationType.UUID)
     protected UUID id;
 
-    public abstract Function<Person, Boolean> getFilter();
+    public abstract Predicate<Person> getPredicate();
 
 }

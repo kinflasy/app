@@ -1,6 +1,6 @@
 package br.org.kinflasy.api.entities.core.people_filter;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.springframework.lang.NonNull;
 
@@ -25,9 +25,9 @@ public class NegativeFilter extends PeopleFilter {
     private PeopleFilter filter;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
+    public Predicate<Person> getPredicate() {
         // Negar resultado do filtro base
-        return (person -> !filter.getFilter().apply(person));
+        return (person -> !filter.getPredicate().test(person));
     }
 
     @Override

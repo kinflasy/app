@@ -1,6 +1,6 @@
 package br.org.kinflasy.api.entities.core.people_filter;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.springframework.lang.NonNull;
 
@@ -25,7 +25,7 @@ public class IdentityFilter extends PeopleFilter {
     private Person person;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
+    public Predicate<Person> getPredicate() {
         return (p -> p.equals(this.person));
     }
 

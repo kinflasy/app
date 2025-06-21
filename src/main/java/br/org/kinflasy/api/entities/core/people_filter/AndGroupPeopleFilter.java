@@ -1,7 +1,7 @@
 package br.org.kinflasy.api.entities.core.people_filter;
 
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 import org.springframework.lang.NonNull;
 
@@ -26,14 +26,14 @@ public class AndGroupPeopleFilter extends GroupablePeopleFilter {
     private List<PeopleFilter> filters;
 
     @Override
-    public Function<Person, Boolean> getFilter() {
+    public Predicate<Person> getPredicate() {
         return (person -> {
             // Iniciar com true (valor neutro do AND)
             var result = true;
 
             // Apicar cada filtro
             for (final var filter : filters) {
-                result &= filter.getFilter().apply(person);
+                result &= filter.getPredicate().test(person);
             }
 
             // Retornar
