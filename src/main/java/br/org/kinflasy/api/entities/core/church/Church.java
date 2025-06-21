@@ -18,10 +18,12 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Entity
 @Table(name = "churches")
 @Data
+@Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
 public class Church extends AbstractAuditable<User, UUID> implements Emailable {
 

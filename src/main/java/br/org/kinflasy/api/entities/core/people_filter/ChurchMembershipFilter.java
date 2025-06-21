@@ -6,7 +6,7 @@ import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.api.entities.core.Person;
 import br.org.kinflasy.api.entities.core.church.Church;
-import br.org.kinflasy.api.utils.enums.core.church.membership.Status;
+import br.org.kinflasy.api.utils.enums.core.church.membership.Affiliation;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
@@ -33,7 +33,7 @@ public class ChurchMembershipFilter extends PeopleFilter {
 
     @Enumerated
     @Column
-    private Status status;
+    private Affiliation status;
 
     @Override
     public Predicate<Person> getPredicate() {

@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "negative_group_people_filters")
+@Table(name = "negative_filters")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

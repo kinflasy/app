@@ -20,10 +20,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Entity
 @Table(name = "departments")
 @Data
+@Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
 public class Department extends AbstractAuditable<User, UUID> {
 
@@ -37,12 +39,12 @@ public class Department extends AbstractAuditable<User, UUID> {
     @Column(nullable = false)
     private String slug;
 
-    @ManyToOne(optional = false)
-    private Unit unit;
-
     @Enumerated(EnumType.ORDINAL)
     @Column(nullable = false)
     private DepartmentType type;
+
+    @ManyToOne(optional = false)
+    private Unit unit;
 
     @ManyToOne(cascade = { CascadeType.PERSIST }, optional = false)
     private PeopleFilter visibilityFilter;

@@ -19,7 +19,7 @@ import br.org.kinflasy.api.entities.core.people_filter.StaticPeopleFilter;
 import br.org.kinflasy.api.entities.core.people_filter.UnitMembershipFilter;
 import br.org.kinflasy.api.utils.enums.core.PersonCharacteristic;
 import br.org.kinflasy.api.utils.enums.core.church.department.IntegrationType;
-import br.org.kinflasy.api.utils.enums.core.church.membership.Status;
+import br.org.kinflasy.api.utils.enums.core.church.membership.Affiliation;
 
 public class PeopleFilterBuilder {
 
@@ -89,7 +89,7 @@ public class PeopleFilterBuilder {
      * @return SinglyPeopleFilterBuilder
      */
     public SinglyPeopleFilterBuilder isMemberOf(final Church church,
-            final Status... status) {
+            final Affiliation... status) {
         final var all = new OrGroupPeopleFilter()
                 .setFilters(List.of(status).stream()
                         .distinct()
@@ -106,7 +106,7 @@ public class PeopleFilterBuilder {
      * @param status
      * @return SinglyPeopleFilterBuilder
      */
-    public SinglyPeopleFilterBuilder isMemberOf(final Unit unit, final Status... status) {
+    public SinglyPeopleFilterBuilder isMemberOf(final Unit unit, final Affiliation... status) {
         final var all = new OrGroupPeopleFilter()
                 .setFilters(List.of(status).stream()
                         .distinct()

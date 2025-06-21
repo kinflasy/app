@@ -25,6 +25,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Entity
 @Table(name = "units", uniqueConstraints = {
@@ -32,6 +33,7 @@ import lombok.EqualsAndHashCode;
                 @UniqueConstraint(columnNames = { "church_id", "slug" })
 })
 @Data
+@Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
 public class Unit extends AbstractAuditable<User, UUID> implements Emailable {
 

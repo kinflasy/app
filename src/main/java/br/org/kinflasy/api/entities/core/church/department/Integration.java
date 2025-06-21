@@ -17,27 +17,28 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Entity
 @Table(name = "integrations", uniqueConstraints = {
         @UniqueConstraint(columnNames = { "department_id", "person_id" })
 })
 @Data
+@Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
 public class Integration extends AbstractAuditable<User, UUID> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column
     private UUID id;
+
+    @Column(nullable = false)
+    private IntegrationType type = IntegrationType.INTEGRANT;
 
     @ManyToOne(optional = false)
     private Department department;
 
     @ManyToOne(optional = false)
     private Person person;
-
-    @Column(nullable = false)
-    private IntegrationType type = IntegrationType.INTEGRANT;
 
 }

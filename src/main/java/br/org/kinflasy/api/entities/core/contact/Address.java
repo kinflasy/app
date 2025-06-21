@@ -14,40 +14,42 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Entity
 @Table(name = "addresses")
 @Immutable
 @Data
+@Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
 public class Address extends AbstractAuditable<User, UUID> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    
-    @Column 
+
+    @Column
     private String zip;
 
-    @Column 
+    @Column
     private String country;
 
-    @Column 
+    @Column
     private String state;
 
-    @Column 
+    @Column
     private String city;
 
-    @Column 
+    @Column
     private String neighborhood;
 
-    @Column 
+    @Column
     private String street;
 
-    @Column 
+    @Column
     private String number;
 
-    @Column 
+    @Column
     private String reference;
-    
+
 }

@@ -18,10 +18,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Entity
 @Table(name = "entries")
 @Data
+@Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
 public class Entry extends AbstractAuditable<User, UUID> {
 
@@ -29,13 +31,14 @@ public class Entry extends AbstractAuditable<User, UUID> {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(optional = false)
-    private Membership membership;
-
     @Enumerated(EnumType.ORDINAL)
     @Column(nullable = false)
     private EntryType type;
 
     @Column(nullable = false)
     private LocalDate date;
+
+    @ManyToOne(optional = false)
+    private Membership membership;
+
 }

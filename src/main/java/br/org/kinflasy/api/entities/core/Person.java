@@ -25,11 +25,13 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Entity
 @Table(name = "people")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
+@Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
 public abstract class Person extends AbstractAuditable<User, UUID> implements Emailable {
 

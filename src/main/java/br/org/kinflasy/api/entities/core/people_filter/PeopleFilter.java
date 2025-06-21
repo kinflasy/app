@@ -15,10 +15,12 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Data
+@Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
 public abstract class PeopleFilter extends AbstractAuditable<User, UUID> {
 

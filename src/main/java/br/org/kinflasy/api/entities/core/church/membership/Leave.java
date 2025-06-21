@@ -18,19 +18,18 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Entity
 @Table(name = "leaves")
 @Data
+@Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
 public class Leave extends AbstractAuditable<User, UUID> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-
-    @ManyToOne(optional = false)
-    private Membership membership;
 
     @Enumerated(EnumType.ORDINAL)
     @Column(nullable = false)
@@ -41,5 +40,8 @@ public class Leave extends AbstractAuditable<User, UUID> {
 
     @Column
     private String note;
+
+    @ManyToOne(optional = false)
+    private Membership membership;
 
 }
