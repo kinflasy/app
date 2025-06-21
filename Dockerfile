@@ -1,15 +1,6 @@
-# Usar a imagem oficial do Ubuntu como base
-FROM openjdk:17-jdk-alpine
 
-# Criar diretório de trabalho
-WORKDIR /app
+FROM eclipse-temurin:21-alpine-3.21
 
-COPY .mvn/ .mvn
-COPY pom.xml .
-
-RUN apk add maven
-RUN mvn dependency:go-offline -B
-
-COPY src ./src
-
-CMD ["mvn", "spring-boot:run"]
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+ENTRYPOINT ["java","-jar","/app.jar"]
