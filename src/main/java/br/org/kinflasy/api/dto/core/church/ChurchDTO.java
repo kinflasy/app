@@ -3,7 +3,7 @@ package br.org.kinflasy.api.dto.core.church;
 
 import java.util.UUID;
 
-import br.org.kinflasy.api.entities.core.church.Church;
+import br.org.kinflasy.api.apis.churches.entities.Church;
 
 public record ChurchDTO(
         UUID id,

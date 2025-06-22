@@ -1,7 +1,7 @@
 package br.org.kinflasy.api.dto.core.church;
 
 
-import br.org.kinflasy.api.entities.core.church.Church;
+import br.org.kinflasy.api.apis.churches.entities.Church;
 
 public record UpdateChurch(
         String name,

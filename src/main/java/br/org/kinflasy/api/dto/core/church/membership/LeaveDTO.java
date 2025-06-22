@@ -3,8 +3,8 @@ package br.org.kinflasy.api.dto.core.church.membership;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import br.org.kinflasy.api.entities.core.church.membership.Leave;
-import br.org.kinflasy.api.utils.enums.core.church.membership.LeaveType;
+import br.org.kinflasy.api.apis.churches.entities.membership.Leave;
+import br.org.kinflasy.api.libs.churches.enums.membership.LeaveType;
 
 public record LeaveDTO(
         UUID id,

@@ -1,10 +1,10 @@
 package br.org.kinflasy.api.dto.core.church;
 
 
+import br.org.kinflasy.api.apis.churches.entities.Church;
+import br.org.kinflasy.api.apis.churches.entities.Unit;
 import br.org.kinflasy.api.dto.core.contact.CreateAddress;
-import br.org.kinflasy.api.entities.core.church.Church;
-import br.org.kinflasy.api.entities.core.church.Unit;
-import br.org.kinflasy.api.utils.enums.core.church.UnitType;
+import br.org.kinflasy.api.libs.churches.enums.UnitType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

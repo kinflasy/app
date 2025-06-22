@@ -2,10 +2,9 @@ package br.org.kinflasy.api.dto.core;
 
 import java.time.LocalDate;
 
-
+import br.org.kinflasy.api.apis.people.entities.User;
 import br.org.kinflasy.api.dto.core.contact.CreateAddress;
-import br.org.kinflasy.api.entities.core.User;
-import br.org.kinflasy.api.utils.enums.core.Gender;
+import br.org.kinflasy.api.libs.people.enums.Gender;
 import lombok.Getter;
 
 @Getter

@@ -1,10 +1,10 @@
 package br.org.kinflasy.api.dto.core.church.department;
 
 
-import br.org.kinflasy.api.entities.core.church.department.Department;
-import br.org.kinflasy.api.entities.core.people_filter.StaticPeopleFilter;
-import br.org.kinflasy.api.utils.enums.core.PersonCharacteristic;
-import br.org.kinflasy.api.utils.enums.core.church.department.DepartmentType;
+import br.org.kinflasy.api.apis.churches.entities.department.Department;
+import br.org.kinflasy.api.apis.people_filters.entities.StaticPeopleFilter;
+import br.org.kinflasy.api.libs.churches.enums.department.DepartmentType;
+import br.org.kinflasy.api.libs.people_filters.enums.PersonCharacteristic;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

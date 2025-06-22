@@ -3,10 +3,10 @@ package br.org.kinflasy.api.dto.core.church.membership;
 
 import java.util.UUID;
 
+import br.org.kinflasy.api.apis.churches.entities.membership.Membership;
 import br.org.kinflasy.api.dto.core.InactivePersonDTO;
 import br.org.kinflasy.api.dto.core.church.UnitDTO;
-import br.org.kinflasy.api.entities.core.church.membership.Membership;
-import br.org.kinflasy.api.utils.enums.core.church.membership.Affiliation;
+import br.org.kinflasy.api.libs.churches.enums.membership.Affiliation;
 
 public record MembershipDTO(
         UUID id,

@@ -1,7 +1,7 @@
 package br.org.kinflasy.api.dto.core.contact;
 
 
-import br.org.kinflasy.api.entities.core.contact.Address;
+import br.org.kinflasy.api.apis.contacts.entities.Address;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

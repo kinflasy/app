@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import br.org.kinflasy.api.entities.core.church.Church;
+import br.org.kinflasy.api.apis.churches.entities.Church;
 
 public record StarterChurchDTO(
         UUID id,

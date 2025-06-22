@@ -2,9 +2,9 @@ package br.org.kinflasy.api.dto.core.church.department;
 
 import java.util.UUID;
 
+import br.org.kinflasy.api.apis.churches.entities.department.Integration;
 import br.org.kinflasy.api.dto.core.InactivePersonDTO;
-import br.org.kinflasy.api.entities.core.church.department.Integration;
-import br.org.kinflasy.api.utils.enums.core.church.department.IntegrationType;
+import br.org.kinflasy.api.libs.churches.enums.department.IntegrationType;
 
 public record IntegrationDTO(
         UUID id,

@@ -3,7 +3,7 @@ package br.org.kinflasy.api.dto.core.contact;
 
 import java.util.UUID;
 
-import br.org.kinflasy.api.entities.core.contact.Address;
+import br.org.kinflasy.api.apis.contacts.entities.Address;
 
 public record AddressDTO(
         UUID id,

@@ -2,10 +2,10 @@ package br.org.kinflasy.api.dto.core.church.department;
 
 import java.util.UUID;
 
+import br.org.kinflasy.api.apis.churches.entities.department.Department;
+import br.org.kinflasy.api.apis.people_filters.entities.PeopleFilter;
 import br.org.kinflasy.api.dto.core.church.UnitDTO;
-import br.org.kinflasy.api.entities.core.church.department.Department;
-import br.org.kinflasy.api.entities.core.people_filter.PeopleFilter;
-import br.org.kinflasy.api.utils.enums.core.church.department.DepartmentType;
+import br.org.kinflasy.api.libs.churches.enums.department.DepartmentType;
 
 public record DepartmentDTO(
         UUID id,

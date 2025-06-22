@@ -1,0 +1,16 @@
+package br.org.kinflasy.api.apis.people_filters.entities;
+
+import java.util.List;
+
+import jakarta.persistence.ManyToMany;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@Data
+@EqualsAndHashCode(callSuper = true)
+public abstract class GroupablePeopleFilter extends PeopleFilter {
+
+    @ManyToMany
+    private List<PeopleFilter> filters;
+
+}

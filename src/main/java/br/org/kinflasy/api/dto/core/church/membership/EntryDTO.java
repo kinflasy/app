@@ -3,8 +3,8 @@ package br.org.kinflasy.api.dto.core.church.membership;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import br.org.kinflasy.api.entities.core.church.membership.Entry;
-import br.org.kinflasy.api.utils.enums.core.church.membership.EntryType;
+import br.org.kinflasy.api.apis.churches.entities.membership.Entry;
+import br.org.kinflasy.api.libs.churches.enums.membership.EntryType;
 
 public record EntryDTO(
         UUID id,

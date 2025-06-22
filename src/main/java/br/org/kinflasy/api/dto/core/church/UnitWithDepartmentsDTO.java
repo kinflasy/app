@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import br.org.kinflasy.api.apis.churches.entities.Unit;
 import br.org.kinflasy.api.dto.core.church.department.CleanDepartmentDTO;
 import br.org.kinflasy.api.dto.core.contact.AddressDTO;
-import br.org.kinflasy.api.entities.core.church.Unit;
-import br.org.kinflasy.api.utils.enums.core.church.UnitType;
+import br.org.kinflasy.api.libs.churches.enums.UnitType;
 
 public record UnitWithDepartmentsDTO(
         UUID id,
