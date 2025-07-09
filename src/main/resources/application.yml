@@ -15,12 +15,17 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+    properties:
+      "[hibernate.format_sql]": true
 
   # Configurações do DevTools
   devtools:
+    livereload:
+      enabled: true
     restart:
       enabled: false
 
 springdoc:
   api-docs:
     path: /api-docs
+  use-fqn: true
