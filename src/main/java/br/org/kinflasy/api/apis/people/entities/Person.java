@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.jpa.domain.AbstractAuditable;
 
 import br.org.kinflasy.api.apis.churches.entities.department.Integration;
@@ -28,6 +29,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 @Entity
+@DynamicUpdate
 @Table(name = "people")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data

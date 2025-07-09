@@ -28,3 +28,4 @@ spring:
 springdoc:
   api-docs:
     path: /api-docs
+  use-fqn: true

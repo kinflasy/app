@@ -3,7 +3,7 @@ package br.org.kinflasy.api.libs.people.dto;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import br.org.kinflasy.api.libs.contacts.dto.AddressDto;
+import br.org.kinflasy.api.libs.contacts.dto.AddressRequest;
 import br.org.kinflasy.api.libs.people.enums.Gender;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,15 +21,15 @@ public interface PersonRequest {
         private @NotNull Gender gender;
         private @NotNull LocalDate birthDate;
         private String phone;
-        private AddressDto address;
+        private AddressRequest.Create address;
     }
 
     @Data
     @NoArgsConstructor
     @EqualsAndHashCode(callSuper = true)
     public abstract class Update extends Create {
-        @NotNull
-        private UUID id;
+        private @NotNull UUID id;
+        private AddressRequest.Update address;
     }
 
 }

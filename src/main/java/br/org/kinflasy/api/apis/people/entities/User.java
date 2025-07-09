@@ -2,6 +2,8 @@ package br.org.kinflasy.api.apis.people.entities;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -10,6 +12,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 @Entity
+@DynamicUpdate
 @Table(name = "users")
 @Data
 @Accessors(chain = false)

@@ -2,7 +2,6 @@ package br.org.kinflasy.api.apis.churches.controllers.department;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,28 +14,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.api.apis.churches.services.department.DepartmentService;
-import br.org.kinflasy.api.dto.core.church.department.DepartmentDTO;
-import br.org.kinflasy.api.dto.core.church.department.UpdateDepartment;
+import br.org.kinflasy.api.libs.churches.dto.departments.DepartmentDto;
+import br.org.kinflasy.api.libs.churches.dto.departments.DepartmentRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("v1/core/church/unit/departments")
 @Tag(name = "Department")
+@AllArgsConstructor
 public class DepartmentController {
 
     private final DepartmentService service;
 
-    public DepartmentController(@Autowired final DepartmentService service) {
-        this.service = service;
-    }
-
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar um departamento pelo ID.")
-    public ResponseEntity<DepartmentDTO> getById(@PathVariable("id") final UUID id) {
+    public ResponseEntity<DepartmentDto> getById(@PathVariable("id") final UUID id) {
         try {
-            return new ResponseEntity<>(service.dto().findById(id), HttpStatus.OK);
+            return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -45,11 +42,10 @@ public class DepartmentController {
     @PutMapping("{id}")
     @Transactional
     @Operation(summary = "Editar", description = "Editar os dados de um departamento.")
-    public ResponseEntity<DepartmentDTO> update(@PathVariable("id") final UUID id,
-            @RequestBody final UpdateDepartment form) {
+    public ResponseEntity<DepartmentDto> update(@PathVariable("id") final UUID id,
+            @RequestBody final DepartmentRequest.Update form) {
         try {
-            final var existingItem = service.findById(id);
-            return new ResponseEntity<>(service.dto().update(form.update(existingItem)), HttpStatus.OK);
+            return new ResponseEntity<>(service.update(form), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

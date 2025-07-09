@@ -3,44 +3,56 @@ package br.org.kinflasy.api.apis.churches.services;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.org.kinflasy.api.apis.churches.entities.Unit;
-import br.org.kinflasy.api.apis.churches.entities.department.Department;
+import br.org.kinflasy.api.apis.churches.converters.UnitConverter;
+import br.org.kinflasy.api.apis.churches.converters.department.DepartmentConverter;
 import br.org.kinflasy.api.apis.churches.repositories.UnitRepository;
-import br.org.kinflasy.api.apis.churches.services.department.DepartmentService;
-import br.org.kinflasy.api.dto.core.church.UnitDTO;
-import br.org.kinflasy.api.services.BaseService;
+import br.org.kinflasy.api.libs.churches.dto.UnitDto;
+import br.org.kinflasy.api.libs.churches.dto.UnitRequest;
+import br.org.kinflasy.api.libs.churches.dto.departments.DepartmentDto;
+import lombok.AllArgsConstructor;
 
 @Service
-public class UnitService extends BaseService<UnitRepository, UnitDTO, Unit, UUID> {
+@AllArgsConstructor
+public class UnitService {
 
-    private final DepartmentService departmentService;
+    private final UnitRepository repository;
+    private final UnitConverter converter;
+    private final DepartmentConverter departmentConverter;
 
-    protected UnitService(@Autowired final UnitRepository repository, @Autowired final DepartmentService departmentService) {
-        super(repository);
-        this.departmentService = departmentService;
+    public List<UnitDto> findAll() {
+        return repository.findAll().stream()
+                .map(converter::toDto)
+                .toList();
     }
 
-    @Override
-    public UUID getId(final Unit unit) {
-        return unit.getId();
+    public UnitDto create(final UnitRequest.Create form) {
+        final var entity = converter.toEntity(form);
+        repository.save(entity);
+        return converter.toDto(entity);
     }
 
-    @Override
-    public UnitDTO toDto(final Unit unit) {
-        return UnitDTO.ofNonNull(unit);
+    public UnitDto findById(final UUID id) {
+        final var entity = repository.findById(id);
+        return converter.toDto(entity);
     }
 
-    public List<Department> getDepartments(final UUID id) {
-        return findById(id).getDepartments();
+    public UnitDto update(final UnitRequest.Update form) {
+        final var entity = converter.toEntity(form);
+        repository.save(entity);
+        return converter.toDto(entity);
     }
 
-    public Department createDepartment(final UUID id, final Department department) {
-        department.setUnit(findById(id));
-        return departmentService.create(department);
+    public void delete(final UUID id) {
+        repository.deleteById(id);
     }
 
+    public List<DepartmentDto> getDepartments(final UUID id) {
+        return repository.findById(id).orElseThrow()
+                .getDepartments().stream()
+                .map(departmentConverter::toDto)
+                .toList();
+    }
 
 }
