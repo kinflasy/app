@@ -34,7 +34,7 @@ public class AddressController {
 
     @GetMapping
     @Operation(summary = "Listar todos", description = "Listar todos os endereços cadastrados.")
-    public ResponseEntity<List<AddressDto>> getAll() {
+    public ResponseEntity<List<AddressDto>> listAll() {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
