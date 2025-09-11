@@ -1,5 +1,6 @@
 package br.org.kinflasy.apis.churches.services.department;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -19,6 +20,25 @@ public class DepartmentService {
 
     private final DepartmentRepository repository;
     private final DepartmentConverter converter;
+
+    public List<DepartmentDto> listByUnitId(final UUID unitId) {
+        return repository.findByUnitId(unitId).stream()
+                .map(converter::toDto)
+                .toList();
+    }
+
+    public DepartmentDto create(final UUID unitId, final DepartmentRequest request) {
+        // Construir departamento
+        final var department = converter.toEntity(request);
+
+        // Associar unidade
+        department.setUnitId(unitId);
+
+        // Salvar
+        final var created = repository.save(department);
+
+        return converter.toDto(created);
+    }
 
     public DepartmentDto findById(final UUID id) {
         final var entity = repository.findById(id);

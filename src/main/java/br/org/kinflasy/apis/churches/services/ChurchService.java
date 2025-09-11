@@ -54,6 +54,11 @@ public class ChurchService {
     }
 
     public void delete(final UUID id) {
+        // Excluir unidades
+        unitService.listByChurchId(id)
+                .forEach(unit -> unitService.delete(unit.getId()));
+
+        // Excluir igreja
         repository.deleteById(id);
     }
 

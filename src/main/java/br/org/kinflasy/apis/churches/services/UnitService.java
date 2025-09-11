@@ -6,9 +6,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.converters.UnitConverter;
-import br.org.kinflasy.apis.churches.converters.department.DepartmentConverter;
 import br.org.kinflasy.apis.churches.repositories.UnitRepository;
-import br.org.kinflasy.apis.churches.repositories.department.DepartmentRepository;
+import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.clients.AddressClient;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
@@ -27,8 +26,7 @@ public class UnitService {
     private final UnitConverter converter;
 
     private final AddressClient addressClient;
-    private final DepartmentConverter departmentConverter;
-    private final DepartmentRepository departmentRepository;
+    private final DepartmentService departmentService;
 
     public List<UnitDto> listByChurchId(final UUID churchId) {
         return repository.findByChurchId(churchId).stream()
@@ -74,34 +72,30 @@ public class UnitService {
 
     public void delete(final UUID id) {
         repository.findById(id)
-                .ifPresent(unit -> {
-                    addressClient.delete(unit.getAddressId());
-                    repository.delete(unit);
-                });
+                .ifPresentOrElse(
+                        unit -> {
+                            // Excluir departamentos
+                            departmentService.listByUnitId(id)
+                                    .forEach(department -> departmentService.delete(department.getId()));
+
+                            // Excluir endereço
+                            addressClient.delete(unit.getAddressId());
+
+                            // Excluir unidade
+                            repository.delete(unit);
+                        },
+                        () -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
     public List<DepartmentDto> listDepartments(final UUID id) {
         return repository.findById(id)
-                .map(unit -> unit.getDepartments().stream()
-                        .map(departmentConverter::toDto)
-                        .toList())
+                .map(ignoredUnit -> departmentService.listByUnitId(id))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
     public DepartmentDto createDepartment(final UUID id, final DepartmentRequest request) {
         return repository.findById(id)
-                .map(unit -> {
-                    // Construir departamento
-                    final var department = departmentConverter.toEntity(request);
-
-                    // Associar unidade
-                    department.setUnit(unit);
-
-                    // Salvar
-                    final var created = departmentRepository.save(department);
-
-                    return departmentConverter.toDto(created);
-                })
+                .map(ignoredUnit -> departmentService.create(id, request))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 

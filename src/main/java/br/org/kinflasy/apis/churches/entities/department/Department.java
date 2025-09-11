@@ -2,7 +2,6 @@ package br.org.kinflasy.apis.churches.entities.department;
 
 import java.util.UUID;
 
-import br.org.kinflasy.apis.churches.entities.Unit;
 import br.org.kinflasy.libs.api_utils.AbstractSimpleAuditable;
 import br.org.kinflasy.libs.churches.enums.department.DepartmentType;
 import jakarta.persistence.Column;
@@ -12,7 +11,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
@@ -42,7 +40,7 @@ public class Department extends AbstractSimpleAuditable<UUID> {
     @Column(nullable = false)
     private DepartmentType type;
 
-    @ManyToOne(optional = false)
-    private Unit unit;
+    @Column(nullable = false)
+    private UUID unitId;
 
 }
