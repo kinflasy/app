@@ -13,6 +13,6 @@ public class MembershipSimpleDto {
     private UUID id;
     private UUID unitId;
     private UUID personId;
-    private Affiliation status;
+    private Affiliation affiliation;
 
 }

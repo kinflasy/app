@@ -12,12 +12,16 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 @Entity
-@DynamicUpdate
 @Table(name = "users")
+@DynamicUpdate
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = true)
 public class User extends Person {
+
+    /*
+     * Dados primitivos
+     */
 
     @Column(nullable = false, unique = true)
     private String username;

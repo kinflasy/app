@@ -3,6 +3,8 @@ package br.org.kinflasy.apis.churches.entities;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import br.org.kinflasy.libs.api_utils.AbstractSimpleAuditable;
 import br.org.kinflasy.libs.contacts.contracts.Emailable;
 import jakarta.persistence.Column;
@@ -16,15 +18,24 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 @Entity
+@DynamicUpdate
 @Table(name = "churches")
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
 public class Church extends AbstractSimpleAuditable<UUID> implements Emailable {
 
+    /*
+     * Chave primária
+     */
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    /*
+     * Dados primitivos
+     */
 
     @Column(nullable = false)
     private String name;

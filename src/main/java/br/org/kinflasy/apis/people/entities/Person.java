@@ -10,6 +10,7 @@ import br.org.kinflasy.libs.contacts.contracts.Emailable;
 import br.org.kinflasy.libs.people.enums.Gender;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,11 +30,38 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 public abstract class Person extends AbstractAuditable<User, UUID> implements Emailable {
 
+    /*
+     * Constantes
+     */
+
     public static final Integer ADULT_AGE = 18;
+
+    /*
+     * Chave primária
+     */
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    /*
+     * Chaves "estrangeiras" (referência)
+     */
+
+    @Column
+    private UUID addressId;
+
+    /*
+     * Enumerações
+     */
+
+    @Enumerated
+    @Column(nullable = false)
+    private Gender gender;
+
+    /*
+     * Dados primitivos
+     */
 
     @Column(nullable = false)
     private String fullName;
@@ -42,15 +70,9 @@ public abstract class Person extends AbstractAuditable<User, UUID> implements Em
     private String nickname;
 
     @Column(nullable = false)
-    private Gender gender;
-
-    @Column(nullable = false)
     private LocalDate birthDate;
 
     @Column
     private String phone;
-
-    @Column
-    private UUID addressId;
 
 }

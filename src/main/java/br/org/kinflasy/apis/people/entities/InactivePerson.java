@@ -17,6 +17,10 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 public class InactivePerson extends Person {
 
+    /*
+     * Dados primitivos
+     */
+
     @Column
     private String email;
 

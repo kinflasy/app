@@ -2,6 +2,8 @@ package br.org.kinflasy.apis.churches.entities;
 
 import java.util.UUID;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import br.org.kinflasy.libs.api_utils.AbstractSimpleAuditable;
 import br.org.kinflasy.libs.churches.enums.UnitType;
 import br.org.kinflasy.libs.contacts.contracts.Emailable;
@@ -19,6 +21,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 @Entity
+@DynamicUpdate
 @Table(name = "units", uniqueConstraints = {
         @UniqueConstraint(columnNames = { "church_id", "name" }),
         @UniqueConstraint(columnNames = { "church_id", "slug" })
@@ -28,9 +31,35 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 public class Unit extends AbstractSimpleAuditable<UUID> implements Emailable {
 
+    /*
+     * Chave primária
+     */
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+
+    /*
+     * Chaves "estrangeiras" (referências)
+     */
+
+    @Column(nullable = false)
+    private UUID churchId;
+
+    @Column(nullable = false)
+    private UUID addressId;
+
+    /*
+     * Enumerações
+     */
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.ORDINAL)
+    private UnitType type;
+
+    /*
+     * Dados primitivos
+     */
 
     @Column(nullable = false)
     private String name;
@@ -43,15 +72,5 @@ public class Unit extends AbstractSimpleAuditable<UUID> implements Emailable {
 
     @Column(nullable = false)
     private String phone;
-
-    @Enumerated(EnumType.ORDINAL)
-    @Column(nullable = false)
-    private UnitType type;
-
-    @Column(nullable = false)
-    private UUID addressId;
-
-    @Column(nullable = false)
-    private UUID churchId;
 
 }

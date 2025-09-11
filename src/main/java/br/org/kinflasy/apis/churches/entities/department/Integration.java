@@ -2,6 +2,8 @@ package br.org.kinflasy.apis.churches.entities.department;
 
 import java.util.UUID;
 
+import org.hibernate.annotations.DynamicUpdate;
+
 import br.org.kinflasy.libs.api_utils.AbstractSimpleAuditable;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import jakarta.persistence.Column;
@@ -17,6 +19,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 @Entity
+@DynamicUpdate
 @Table(name = "integrations", uniqueConstraints = {
         @UniqueConstraint(columnNames = { "department_id", "person_id" })
 })

@@ -14,6 +14,6 @@ public class MembershipDto {
     private UUID id;
     private UnitDto unit;
     private PersonSimpleDto person;
-    private Affiliation status;
+    private Affiliation affiliation;
 
 }
