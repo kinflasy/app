@@ -30,6 +30,29 @@ public class UnitService {
     private final DepartmentConverter departmentConverter;
     private final DepartmentRepository departmentRepository;
 
+    public List<UnitDto> listByChurchId(final UUID churchId) {
+        return repository.findByChurchId(churchId).stream()
+                .map(converter::toDto)
+                .toList();
+    }
+
+    public UnitDto create(final UUID churchId, final UnitRequest request) {
+        // Construir unidade
+        final var unit = converter.toEntity(request);
+
+        // Criar e associar endereço
+        final var address = addressClient.create(request.getAddress());
+        unit.setAddressId(address.getId());
+
+        // Associar Igreja
+        unit.setChurchId(churchId);
+
+        // Salvar
+        final var created = repository.save(unit);
+
+        return converter.toDto(created);
+    }
+
     public UnitDto findById(final UUID id) {
         return repository.findById(id).map(converter::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));

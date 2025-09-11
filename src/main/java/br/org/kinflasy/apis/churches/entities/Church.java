@@ -1,18 +1,15 @@
 package br.org.kinflasy.apis.churches.entities;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 import br.org.kinflasy.libs.api_utils.AbstractSimpleAuditable;
 import br.org.kinflasy.libs.contacts.contracts.Emailable;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -46,8 +43,5 @@ public class Church extends AbstractSimpleAuditable<UUID> implements Emailable {
 
     @Column
     private LocalDateTime emailVerifiedAt;
-
-    @OneToMany(mappedBy = "church", cascade = CascadeType.ALL)
-    private List<Unit> units;
 
 }

@@ -6,10 +6,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.converters.ChurchConverter;
-import br.org.kinflasy.apis.churches.converters.UnitConverter;
 import br.org.kinflasy.apis.churches.repositories.ChurchRepository;
-import br.org.kinflasy.apis.churches.repositories.UnitRepository;
-import br.org.kinflasy.clients.AddressClient;
 import br.org.kinflasy.libs.churches.dto.ChurchDto;
 import br.org.kinflasy.libs.churches.dto.ChurchRequest;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
@@ -26,9 +23,7 @@ public class ChurchService {
     private final ChurchRepository repository;
     private final ChurchConverter converter;
 
-    private final AddressClient addressClient;
-    private final UnitConverter unitConverter;
-    private final UnitRepository unitRepository;
+    private final UnitService unitService;
 
     public List<ChurchDto> findAll() {
         return repository.findAll().stream()
@@ -43,7 +38,8 @@ public class ChurchService {
     }
 
     public ChurchDto findById(final UUID id) {
-        return repository.findById(id).map(converter::toDto).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+        return repository.findById(id).map(converter::toDto)
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
     public ChurchDto update(final UUID id, final ChurchRequest request) {
@@ -63,30 +59,13 @@ public class ChurchService {
 
     public List<UnitDto> listUnits(final UUID id) {
         return repository.findById(id)
-                .map(church -> church.getUnits().stream()
-                        .map(unitConverter::toDto)
-                        .toList())
+                .map(church -> unitService.listByChurchId(id))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
     public UnitDto createUnit(final UUID id, final UnitRequest request) {
         return repository.findById(id)
-                .map(church -> {
-                    // Construir unidade
-                    final var unit = unitConverter.toEntity(request);
-
-                    // Criar e associar endereço
-                    final var address = addressClient.create(request.getAddress());
-                    unit.setAddressId(address.getId());
-
-                    // Associar Igreja
-                    unit.setChurch(church);
-
-                    // Salvar
-                    final var created = unitRepository.save(unit);
-
-                    return unitConverter.toDto(created);
-                })
+                .map(ignoredChurch -> unitService.create(id, request))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 

@@ -15,7 +15,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -56,8 +55,8 @@ public class Unit extends AbstractSimpleAuditable<UUID> implements Emailable {
     @Column(nullable = false)
     private UUID addressId;
 
-    @ManyToOne(optional = false)
-    private Church church;
+    @Column(nullable = false)
+    private UUID churchId;
 
     @OneToMany(cascade = { CascadeType.PERSIST, CascadeType.REMOVE }, mappedBy = "unit")
     private List<Department> departments;
