@@ -31,7 +31,7 @@ public class DepartmentController {
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar um departamento pelo ID.")
-    public ResponseEntity<DepartmentDto> getById(@PathVariable final UUID id) {
+    public ResponseEntity<DepartmentDto> findById(@PathVariable final UUID id) {
         try {
             return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {

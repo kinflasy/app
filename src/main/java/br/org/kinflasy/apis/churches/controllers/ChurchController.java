@@ -36,7 +36,7 @@ public class ChurchController {
 
     @GetMapping
     @Operation(summary = "Listar todos", description = "Listar todas as igrejas cadastradas.")
-    public ResponseEntity<List<ChurchDto>> getAll() {
+    public ResponseEntity<List<ChurchDto>> listAll() {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 

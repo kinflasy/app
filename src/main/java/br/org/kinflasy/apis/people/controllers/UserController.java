@@ -34,7 +34,7 @@ public class UserController {
 
     @GetMapping
     @Operation(summary = "Listar todos", description = "Listar todos os usuários ativos cadastrados.")
-    public ResponseEntity<List<UserDto>> getAll() {
+    public ResponseEntity<List<UserDto>> listAll() {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
@@ -47,7 +47,7 @@ public class UserController {
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar um usuário ativo pelo ID.")
-    public ResponseEntity<UserDto> getById(@PathVariable final UUID id) {
+    public ResponseEntity<UserDto> findById(@PathVariable final UUID id) {
         try {
             return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {

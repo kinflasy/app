@@ -29,13 +29,13 @@ public class PersonController {
 
     @GetMapping
     @Operation(summary = "Listar todos", description = "Listar todas as pessoas cadastradas.")
-    public ResponseEntity<List<PersonDto>> getAll() {
+    public ResponseEntity<List<PersonDto>> listAll() {
         return new ResponseEntity<>(service.findAll().stream().map(converter::toDto).toList(), HttpStatus.OK);
     }
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma pessoa pelo ID.")
-    public ResponseEntity<PersonDto> getById(@PathVariable("id") final UUID id) {
+    public ResponseEntity<PersonDto> findById(@PathVariable("id") final UUID id) {
         try {
             final var entity = service.findById(id);
             final var dto = converter.toDto(entity);

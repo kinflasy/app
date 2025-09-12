@@ -36,7 +36,7 @@ public class UnitController {
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma unidade pelo ID.")
-    public ResponseEntity<UnitDto> getById(@PathVariable final UUID id) {
+    public ResponseEntity<UnitDto> findById(@PathVariable final UUID id) {
         try {
             return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {

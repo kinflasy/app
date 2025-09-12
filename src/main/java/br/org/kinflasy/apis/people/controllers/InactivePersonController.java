@@ -34,7 +34,7 @@ public class InactivePersonController {
 
     @GetMapping
     @Operation(summary = "Listar todos", description = "Listar todas as pessoas inativas cadastradas.")
-    public ResponseEntity<List<InactivePersonDto>> getAll() {
+    public ResponseEntity<List<InactivePersonDto>> listAll() {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
@@ -47,7 +47,7 @@ public class InactivePersonController {
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma pessoa inativa pelo ID.")
-    public ResponseEntity<InactivePersonDto> getById(@PathVariable final UUID id) {
+    public ResponseEntity<InactivePersonDto> findById(@PathVariable final UUID id) {
         try {
             return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
