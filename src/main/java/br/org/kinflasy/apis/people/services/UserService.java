@@ -34,8 +34,15 @@ public class UserService {
     }
 
     public UserDto findById(final UUID id) {
-        final var entity = repository.findById(id);
-        return converter.toDto(entity);
+        return repository.findById(id)
+                .map(converter::toDto)
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+    }
+
+    public UserDto findByUsername(final String username) {
+        return repository.findByUsername(username)
+                .map(converter::toDto)
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
     public UserDto update(final UUID id, final UserRequest form) {

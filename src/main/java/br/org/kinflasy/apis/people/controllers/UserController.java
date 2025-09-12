@@ -55,6 +55,16 @@ public class UserController {
         }
     }
 
+    @GetMapping("{username}")
+    @Operation(summary = "Buscar por username", description = "Buscar um usuário ativo pelo username.")
+    public ResponseEntity<UserDto> findByUsername(@PathVariable final String username) {
+        try {
+            return new ResponseEntity<>(service.findByUsername(username), HttpStatus.OK);
+        } catch (final EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PutMapping("{id}")
     @Transactional
     @Operation(summary = "Editar", description = "Editar os dados de um usuário ativo.")

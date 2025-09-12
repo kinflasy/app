@@ -33,6 +33,11 @@ public class UserLocalClient implements UserClient {
     }
 
     @Override
+    public UserDto findByUsername(String username) {
+        return controller.findByUsername(username).getBody();
+    }
+
+    @Override
     public UserDto update(UUID id, UserRequest request) {
         return controller.update(id, request).getBody();
     }
