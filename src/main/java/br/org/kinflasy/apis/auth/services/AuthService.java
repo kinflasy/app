@@ -22,12 +22,7 @@ public class AuthService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
         final var userDto = userClient.findByUsername(username);
-        log.info("user found:\nusername:{}, password:{}", userDto.getUsername(), userDto.getPassword());
-
-        final var userDto2 = mapper.map(userDto, AuthUser.class);
-        log.info("user cast:\nusername:{}, password:{}, type:{}", userDto2.getUsername(), userDto2.getPassword(),
-                userDto2.getClass().getName());
-        return userDto2;
+        return mapper.map(userDto, AuthUser.class);
     }
 
 }

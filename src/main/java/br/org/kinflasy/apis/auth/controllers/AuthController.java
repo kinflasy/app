@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import br.org.kinflasy.apis.auth.dto.LoginRequest;
 import br.org.kinflasy.clients.UserClient;
 import br.org.kinflasy.libs.people.dto.UserDto;
@@ -32,7 +30,7 @@ public class AuthController {
     private PasswordEncoder encoder;
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody @Valid LoginRequest request) throws JsonProcessingException {
+    public ResponseEntity<Void> login(@RequestBody @Valid LoginRequest request) {
         final var usernamePassword = new UsernamePasswordAuthenticationToken(request.getUsername(),
                 request.getPassword());
 
