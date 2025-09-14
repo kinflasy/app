@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.jpa.domain.AbstractAuditable;
 
+import br.org.kinflasy.libs.api_utils.AbstractSimpleAuditable;
 import br.org.kinflasy.libs.contacts.contracts.Emailable;
 import br.org.kinflasy.libs.people.enums.Gender;
 import jakarta.persistence.Column;
@@ -28,13 +28,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
-public abstract class Person extends AbstractAuditable<User, UUID> implements Emailable {
-
-    /*
-     * Constantes
-     */
-
-    public static final Integer ADULT_AGE = 18;
+public abstract class Person extends AbstractSimpleAuditable<UUID> implements Emailable {
 
     /*
      * Chave primária
