@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.org.kinflasy.apis.auth.dto.AuthUser;
 import br.org.kinflasy.apis.auth.dto.LoginRequest;
+import br.org.kinflasy.apis.auth.dto.LoginResponse;
+import br.org.kinflasy.apis.auth.services.TokenService;
 import br.org.kinflasy.clients.UserClient;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
@@ -28,15 +31,18 @@ public class AuthController {
     private AuthenticationManager manager;
     private UserClient client;
     private PasswordEncoder encoder;
+    private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody @Valid LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
         final var usernamePassword = new UsernamePasswordAuthenticationToken(request.getUsername(),
                 request.getPassword());
 
-        manager.authenticate(usernamePassword);
+        final var authentication = manager.authenticate(usernamePassword);
+        final var token = tokenService.generateToken((AuthUser) authentication.getPrincipal());
+        final var response = new LoginResponse().setToken(token);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/register")
