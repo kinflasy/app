@@ -3,12 +3,14 @@ package br.org.kinflasy.apis.people.services;
 import java.util.List;
 import java.util.UUID;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.people.converters.UserConverter;
 import br.org.kinflasy.apis.people.repositories.UserRepository;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
+import br.org.kinflasy.libs.people.dto.UserWithPasswordDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
@@ -20,6 +22,8 @@ public class UserService {
 
     private final UserRepository repository;
     private final UserConverter converter;
+
+    private final ModelMapper mapper;
 
     public List<UserDto> findAll() {
         return repository.findAll().stream()
@@ -39,9 +43,9 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
-    public UserDto findByUsername(final String username) {
+    public UserWithPasswordDto findByUsernameWithPassword(final String username) {
         return repository.findByUsername(username)
-                .map(converter::toDto)
+                .map(user -> mapper.map(user, UserWithPasswordDto.class))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 

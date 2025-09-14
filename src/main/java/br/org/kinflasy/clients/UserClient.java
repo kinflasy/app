@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
+import br.org.kinflasy.libs.people.dto.UserWithPasswordDto;
 
 @Component
 public interface UserClient {
@@ -17,8 +18,8 @@ public interface UserClient {
 
     UserDto findById(UUID id);
 
-    UserDto findByUsername(String username);
-    
+    UserWithPasswordDto findByUsernameWithPassword(String username);
+
     UserDto update(UUID id, UserRequest request);
 
     void delete(UUID id);

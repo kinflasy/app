@@ -9,6 +9,7 @@ import br.org.kinflasy.apis.people.controllers.UserController;
 import br.org.kinflasy.clients.UserClient;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
+import br.org.kinflasy.libs.people.dto.UserWithPasswordDto;
 import lombok.AllArgsConstructor;
 
 @Component
@@ -33,7 +34,7 @@ public class UserLocalClient implements UserClient {
     }
 
     @Override
-    public UserDto findByUsername(String username) {
+    public UserWithPasswordDto findByUsernameWithPassword(String username) {
         return controller.findByUsername(username).getBody();
     }
 

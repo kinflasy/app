@@ -14,6 +14,5 @@ public class UserDto extends PersonDto {
     private String username;
     private String email;
     private LocalDateTime emailVerifiedAt;
-    private String password;
 
 }

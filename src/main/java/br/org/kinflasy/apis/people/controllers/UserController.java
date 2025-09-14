@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.org.kinflasy.apis.people.services.UserService;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
+import br.org.kinflasy.libs.people.dto.UserWithPasswordDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -57,9 +58,9 @@ public class UserController {
 
     @GetMapping("{username}")
     @Operation(summary = "Buscar por username", description = "Buscar um usuário ativo pelo username.")
-    public ResponseEntity<UserDto> findByUsername(@PathVariable final String username) {
+    public ResponseEntity<UserWithPasswordDto> findByUsername(@PathVariable final String username) {
         try {
-            return new ResponseEntity<>(service.findByUsername(username), HttpStatus.OK);
+            return new ResponseEntity<>(service.findByUsernameWithPassword(username), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

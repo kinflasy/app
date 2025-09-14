@@ -3,14 +3,12 @@ package br.org.kinflasy.config;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import br.org.kinflasy.apis.auth.dto.AuthUser;
 import br.org.kinflasy.apis.auth.services.TokenService;
 import br.org.kinflasy.clients.UserClient;
 import jakarta.servlet.FilterChain;
@@ -23,7 +21,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
 
-    private ModelMapper mapper;
     private TokenService tokenService;
     private UserClient userClient;
 
@@ -34,7 +31,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         recoverToken(request)
                 .ifPresent(token -> {
                     final var username = tokenService.validateToken(token);
-                    final var user = mapper.map(userClient.findByUsername(username), AuthUser.class);
+                    final var user = userClient.findByUsernameWithPassword(username);
 
                     final var authentication = new UsernamePasswordAuthenticationToken(user, null,
                             user.getAuthorities());

@@ -1,4 +1,4 @@
-package br.org.kinflasy.apis.auth.dto;
+package br.org.kinflasy.libs.people.dto;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -6,9 +6,16 @@ import java.util.Collections;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import br.org.kinflasy.libs.people.dto.UserDto;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-public class AuthUser extends UserDto implements UserDetails {
+@Data
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
+public class UserWithPasswordDto extends UserDto implements UserDetails {
+
+    private String password;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

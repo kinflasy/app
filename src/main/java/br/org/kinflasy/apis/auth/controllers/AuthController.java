@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.org.kinflasy.apis.auth.dto.AuthUser;
 import br.org.kinflasy.apis.auth.dto.LoginRequest;
 import br.org.kinflasy.apis.auth.dto.LoginResponse;
 import br.org.kinflasy.apis.auth.services.TokenService;
@@ -39,7 +38,7 @@ public class AuthController {
                 request.getPassword());
 
         final var authentication = manager.authenticate(usernamePassword);
-        final var token = tokenService.generateToken((AuthUser) authentication.getPrincipal());
+        final var token = tokenService.generateToken((UserDto) authentication.getPrincipal());
         final var response = new LoginResponse().setToken(token);
 
         return ResponseEntity.ok(response);
