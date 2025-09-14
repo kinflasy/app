@@ -47,8 +47,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(@RequestBody UserRequest request) {
-        // TODO: incluir lógica para identificar se usuário já é cadastrado
-
         // Criptografar a senha
         final var encrypted = encoder.encode(request.getPassword());
         request.setPassword(encrypted);
