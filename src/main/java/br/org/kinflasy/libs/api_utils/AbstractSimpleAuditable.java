@@ -1,26 +1,46 @@
 package br.org.kinflasy.libs.api_utils;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-import jakarta.persistence.Column;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import br.org.kinflasy.libs.people.dto.UserDto;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import lombok.Data;
 
 @Data
 @MappedSuperclass
-public abstract class AbstractSimpleAuditable<I extends Serializable> {
+public abstract class AbstractSimpleAuditable {
 
-    @Column
-    private I createdBy;
+    @CreatedBy
+    private UUID createdBy;
 
-    @Column
+    @CreatedDate
     private LocalDateTime createdDate;
 
-    @Column
-    private I lastModifiedBy;
+    @LastModifiedBy
+    private UUID lastModifiedBy;
 
-    @Column
+    @LastModifiedDate
     private LocalDateTime lastModifiedDate;
+
+    @PrePersist
+    protected void onPreCreate() {
+        final var user = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        setCreatedBy(user.getId());
+        setCreatedDate(LocalDateTime.now());
+    }
+
+    @PreUpdate
+    protected void onPreUpdate() {
+        setLastModifiedDate(LocalDateTime.now());
+    }
 
 }

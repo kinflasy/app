@@ -26,7 +26,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
-public class Integration extends AbstractSimpleAuditable<UUID> {
+public class Integration extends AbstractSimpleAuditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

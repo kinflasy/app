@@ -28,7 +28,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
-public abstract class Person extends AbstractSimpleAuditable<UUID> implements Emailable {
+public abstract class Person extends AbstractSimpleAuditable implements Emailable {
 
     /*
      * Chave primária

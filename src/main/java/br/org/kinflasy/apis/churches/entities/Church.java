@@ -23,7 +23,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
-public class Church extends AbstractSimpleAuditable<UUID> implements Emailable {
+public class Church extends AbstractSimpleAuditable implements Emailable {
 
     /*
      * Chave primária

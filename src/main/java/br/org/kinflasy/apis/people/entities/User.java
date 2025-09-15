@@ -6,6 +6,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -34,5 +35,12 @@ public class User extends Person {
 
     @Column(nullable = false)
     private String password;
+
+    @Override
+    @PrePersist
+    protected void onPreCreate() {
+        setCreatedBy(getId());
+        setCreatedDate(LocalDateTime.now());
+    }
 
 }

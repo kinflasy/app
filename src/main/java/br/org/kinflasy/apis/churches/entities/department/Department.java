@@ -27,7 +27,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
-public class Department extends AbstractSimpleAuditable<UUID> {
+public class Department extends AbstractSimpleAuditable {
 
     /*
      * Chave primária
