@@ -20,12 +20,10 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
-public abstract class PeopleFilter extends AbstractSimpleAuditable<UUID> {
+public abstract class PeopleFilter extends AbstractSimpleAuditable<UUID> implements Predicate<PersonDto> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     protected UUID id;
-
-    public abstract Predicate<PersonDto> getPredicate();
 
 }

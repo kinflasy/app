@@ -1,7 +1,5 @@
 package br.org.kinflasy.apis.people_filters.entities;
 
-import java.util.function.Predicate;
-
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -23,9 +21,9 @@ public class NegativeFilter extends PeopleFilter {
     private PeopleFilter baseFilter;
 
     @Override
-    public Predicate<PersonDto> getPredicate() {
+    public boolean test(final PersonDto person) {
         // Negar resultado do filtro base
-        return baseFilter.getPredicate().negate();
+        return baseFilter.negate().test(person);
     }
 
     @Override

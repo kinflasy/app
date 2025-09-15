@@ -1,7 +1,6 @@
 package br.org.kinflasy.apis.people_filters.entities;
 
 import java.util.UUID;
-import java.util.function.Predicate;
 
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.people.dto.PersonDto;
@@ -33,9 +32,9 @@ public class ChurchMembershipFilter extends PeopleFilter {
     private Affiliation status;
 
     @Override
-    public Predicate<PersonDto> getPredicate() {
+    public boolean test(final PersonDto person) {
         // TODO implementar filtro
-        return p -> false;
+        return false;
     }
 
 }

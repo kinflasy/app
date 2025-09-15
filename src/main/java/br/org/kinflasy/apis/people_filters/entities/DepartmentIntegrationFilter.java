@@ -1,7 +1,6 @@
 package br.org.kinflasy.apis.people_filters.entities;
 
 import java.util.UUID;
-import java.util.function.Predicate;
 
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.people.dto.PersonDto;
@@ -31,9 +30,9 @@ public class DepartmentIntegrationFilter extends PeopleFilter {
     private IntegrationType type = IntegrationType.INTEGRANT;
 
     @Override
-    public Predicate<PersonDto> getPredicate() {
+    public boolean test(final PersonDto person) {
         // TODO implementar filtro
-        return p -> false;
+        return false;
     }
 
 }

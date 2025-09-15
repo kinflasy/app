@@ -1,7 +1,5 @@
 package br.org.kinflasy.apis.people_filters.entities;
 
-import java.util.function.Predicate;
-
 import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.libs.people.dto.PersonDto;
@@ -17,11 +15,11 @@ import lombok.EqualsAndHashCode;
 public class OrGroupPeopleFilter extends GroupablePeopleFilter {
 
     @Override
-    public Predicate<PersonDto> getPredicate() {
-        return person -> getFilters().stream()
+    public boolean test(final PersonDto person) {
+        return getFilters().stream()
 
                 // Combinar todos os predicados com OR (lista vazia retorna false)
-                .anyMatch(filter -> filter.getPredicate().test(person));
+                .anyMatch(filter -> filter.test(person));
     }
 
     @Override

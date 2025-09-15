@@ -1,7 +1,5 @@
 package br.org.kinflasy.apis.people_filters.entities;
 
-import java.util.function.Predicate;
-
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -15,11 +13,11 @@ import lombok.EqualsAndHashCode;
 public class AndGroupPeopleFilter extends GroupablePeopleFilter {
 
     @Override
-    public Predicate<PersonDto> getPredicate() {
-        return person -> getFilters().stream()
+    public boolean test(final PersonDto person) {
+        return getFilters().stream()
 
                 // Combinar todos os predicados com AND (lista vazia retorna true)
-                .allMatch(filter -> filter.getPredicate().test(person));
+                .allMatch(filter -> filter.test(person));
     }
 
     @Override

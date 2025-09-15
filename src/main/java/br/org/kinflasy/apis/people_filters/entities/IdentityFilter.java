@@ -1,7 +1,6 @@
 package br.org.kinflasy.apis.people_filters.entities;
 
 import java.util.UUID;
-import java.util.function.Predicate;
 
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import jakarta.persistence.Column;
@@ -24,8 +23,8 @@ public class IdentityFilter extends PeopleFilter {
     private UUID personId;
 
     @Override
-    public Predicate<PersonDto> getPredicate() {
-        return (p -> p.getId().equals(personId));
+    public boolean test(final PersonDto person) {
+        return person.getId().equals(personId);
     }
 
 }

@@ -1,7 +1,5 @@
 package br.org.kinflasy.apis.people_filters.entities;
 
-import java.util.function.Predicate;
-
 import org.springframework.lang.NonNull;
 
 import br.org.kinflasy.libs.people.dto.PersonDto;
@@ -29,8 +27,8 @@ public class StaticPeopleFilter extends PeopleFilter {
     private PersonCharacteristic characteristic;
 
     @Override
-    public Predicate<PersonDto> getPredicate() {
-        return characteristic.getPredicate();
+    public boolean test(final PersonDto person) {
+        return characteristic.getPredicate().test(person);
     }
 
     @Override
