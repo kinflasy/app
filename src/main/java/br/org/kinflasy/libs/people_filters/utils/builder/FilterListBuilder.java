@@ -45,7 +45,7 @@ public class FilterListBuilder {
      * @return this
      */
     public FilterListBuilder is(final PersonDto person) {
-        filters.add(new IdentityFilter(person));
+        filters.add(new IdentityFilter(person.getId()));
         return this;
     }
 

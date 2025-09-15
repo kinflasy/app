@@ -25,6 +25,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class ChurchMembershipFilter extends PeopleFilter {
 
+    @Column(nullable = false)
     private UUID churchId;
 
     @Column

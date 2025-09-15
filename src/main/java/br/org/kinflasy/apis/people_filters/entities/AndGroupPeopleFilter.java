@@ -2,8 +2,6 @@ package br.org.kinflasy.apis.people_filters.entities;
 
 import java.util.function.Predicate;
 
-import org.springframework.lang.NonNull;
-
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -25,7 +23,7 @@ public class AndGroupPeopleFilter extends GroupablePeopleFilter {
     }
 
     @Override
-    public @NonNull String toString() {
+    public String toString() {
         final var result = new StringBuilder("matches all:\n");
 
         final var textList = getFilters().stream()

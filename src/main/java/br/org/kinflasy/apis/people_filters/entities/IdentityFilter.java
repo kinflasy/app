@@ -1,12 +1,11 @@
 package br.org.kinflasy.apis.people_filters.entities;
 
+import java.util.UUID;
 import java.util.function.Predicate;
 
-import org.springframework.lang.NonNull;
-
 import br.org.kinflasy.libs.people.dto.PersonDto;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,17 +20,12 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class IdentityFilter extends PeopleFilter {
 
-    @OneToOne(optional = false)
-    private PersonDto person;
+    @Column(nullable = false)
+    private UUID personId;
 
     @Override
     public Predicate<PersonDto> getPredicate() {
-        return (p -> p.equals(this.person));
-    }
-
-    @Override
-    public @NonNull String toString() {
-        return "is " + person.getFullName() + " (#" + person.getId() + ")";
+        return (p -> p.getId().equals(personId));
     }
 
 }

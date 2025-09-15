@@ -66,7 +66,7 @@ public class PeopleFilterBuilder {
      * @return SinglyPeopleFilterBuilder
      */
     public SinglyPeopleFilterBuilder is(final PersonDto person) {
-        return new SinglyPeopleFilterBuilder(new IdentityFilter(person));
+        return new SinglyPeopleFilterBuilder(new IdentityFilter(person.getId()));
     }
 
     /**

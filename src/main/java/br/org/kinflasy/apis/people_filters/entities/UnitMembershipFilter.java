@@ -8,7 +8,6 @@ import br.org.kinflasy.libs.people.dto.PersonDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -26,11 +25,11 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class UnitMembershipFilter extends PeopleFilter {
 
-    @ManyToOne(optional = false)
+    @Column(nullable = false)
     private UUID unitId;
 
-    @Enumerated
     @Column
+    @Enumerated
     private Affiliation status;
 
     @Override

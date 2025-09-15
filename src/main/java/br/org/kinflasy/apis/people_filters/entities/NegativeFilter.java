@@ -2,8 +2,6 @@ package br.org.kinflasy.apis.people_filters.entities;
 
 import java.util.function.Predicate;
 
-import org.springframework.lang.NonNull;
-
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -31,7 +29,7 @@ public class NegativeFilter extends PeopleFilter {
     }
 
     @Override
-    public @NonNull String toString() {
+    public String toString() {
         return "not " + baseFilter.toString();
     }
 

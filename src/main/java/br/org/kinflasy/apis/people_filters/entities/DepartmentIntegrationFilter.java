@@ -7,7 +7,6 @@ import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -25,7 +24,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class DepartmentIntegrationFilter extends PeopleFilter {
 
-    @ManyToOne(optional = false)
+    @Column(nullable = false)
     private UUID departmentId;
 
     @Column
