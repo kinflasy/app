@@ -2,35 +2,35 @@ package br.org.kinflasy.libs.people_filters.utils.builder;
 
 import java.util.Objects;
 
-import br.org.kinflasy.apis.people_filters.entities.GroupablePeopleFilter;
-import br.org.kinflasy.apis.people_filters.entities.PeopleFilter;
+import br.org.kinflasy.apis.people_filters.entities.ConditionGroup;
+import br.org.kinflasy.apis.people_filters.entities.Condition;
 
 public abstract class ValidPeopleFilterBuilder {
 
     /**
      * Main filter
      */
-    protected PeopleFilter filter;
+    protected Condition filter;
 
     /**
      * Package restricted constructor
      * 
      * @param filter
      */
-    ValidPeopleFilterBuilder(final PeopleFilter filter) {
+    ValidPeopleFilterBuilder(final Condition filter) {
         this.filter = filter;
     }
 
     private void simplify() {
-        if (filter instanceof GroupablePeopleFilter groupablePeopleFilter) {
+        if (filter instanceof ConditionGroup groupablePeopleFilter) {
             filter = simplifyGroup(groupablePeopleFilter);
         }
     }
 
-    private PeopleFilter simplifyGroup(final GroupablePeopleFilter group) {
+    private Condition simplifyGroup(final ConditionGroup group) {
         final var simplifiedFilters = group.getFilters().stream()
                 .map(node -> {
-                    if (node instanceof GroupablePeopleFilter innerGroup) {
+                    if (node instanceof ConditionGroup innerGroup) {
                         return simplifyGroup(innerGroup);
                     }
                     return node;
@@ -59,7 +59,7 @@ public abstract class ValidPeopleFilterBuilder {
      * 
      * @return PeopleFilter
      */
-    public PeopleFilter build() {
+    public Condition build() {
         simplify();
         return filter;
     }

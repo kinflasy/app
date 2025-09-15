@@ -2,11 +2,10 @@ package br.org.kinflasy.apis.people_filters.entities;
 
 import java.util.UUID;
 
-import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
+import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
@@ -15,21 +14,20 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "unit_membership_people_filters", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "unit_id", "status" })
+@Table(name = "conditions_department", uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "department_id", "type" })
 })
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class UnitMembershipFilter extends PeopleFilter {
+public class DepartmentIntegrationCondition extends Condition {
 
     @Column(nullable = false)
-    private UUID unitId;
+    private UUID departmentId;
 
     @Column
-    @Enumerated
-    private Affiliation status;
+    private IntegrationType type = IntegrationType.INTEGRANT;
 
     @Override
     public boolean test(final PersonDto person) {

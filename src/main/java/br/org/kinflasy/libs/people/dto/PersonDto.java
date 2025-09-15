@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class PersonDto {
+public abstract class PersonDto {
 
     private UUID id;
     private String fullName;

@@ -12,12 +12,12 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "is_people_filters")
+@Table(name = "conditions_identity")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class IdentityFilter extends PeopleFilter {
+public class IdentityCondition extends Condition {
 
     @Column(nullable = false)
     private UUID personId;

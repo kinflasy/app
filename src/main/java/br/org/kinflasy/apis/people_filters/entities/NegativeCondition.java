@@ -10,15 +10,15 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "negative_filters")
+@Table(name = "conditions_negative")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class NegativeFilter extends PeopleFilter {
+public class NegativeCondition extends Condition {
 
     @ManyToOne(optional = false)
-    private PeopleFilter baseFilter;
+    private Condition baseFilter;
 
     @Override
     public boolean test(final PersonDto person) {

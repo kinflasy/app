@@ -8,9 +8,9 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public abstract class GroupablePeopleFilter extends PeopleFilter {
+public abstract class ConditionGroup extends Condition {
 
     @ManyToMany
-    private List<PeopleFilter> filters;
+    private List<Condition> filters;
 
 }

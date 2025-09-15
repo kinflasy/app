@@ -15,12 +15,12 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "static_people_filters")
+@Table(name = "conditions_characteristic")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class StaticPeopleFilter extends PeopleFilter {
+public class CharacteristicCondition extends Condition {
 
     @Enumerated(EnumType.ORDINAL)
     @Column(unique = true)
@@ -28,7 +28,7 @@ public class StaticPeopleFilter extends PeopleFilter {
 
     @Override
     public boolean test(final PersonDto person) {
-        return characteristic.getPredicate().test(person);
+        return characteristic.test(person);
     }
 
     @Override

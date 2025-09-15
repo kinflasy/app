@@ -15,21 +15,21 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "church_membership_people_filters", uniqueConstraints = {
+@Table(name = "conditions_church_membership", uniqueConstraints = {
         @UniqueConstraint(columnNames = { "church_id", "status" })
 })
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class ChurchMembershipFilter extends PeopleFilter {
+public class ChurchMembershipCondition extends Condition {
 
     @Column(nullable = false)
     private UUID churchId;
 
     @Column
     @Enumerated
-    private Affiliation status;
+    private Affiliation affiliation;
 
     @Override
     public boolean test(final PersonDto person) {
