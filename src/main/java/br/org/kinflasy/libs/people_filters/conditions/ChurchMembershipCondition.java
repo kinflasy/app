@@ -2,6 +2,8 @@ package br.org.kinflasy.libs.people_filters.conditions;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import lombok.AllArgsConstructor;
@@ -13,14 +15,16 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class ChurchMembershipCondition extends Condition {
 
+    @JsonIgnore
+    private final ConditionTester tester;
+
     private final UUID churchId;
 
     private final Affiliation affiliation;
 
     @Override
     public boolean test(final PersonDto person) {
-        // TODO implementar filtro
-        return false;
+        return tester.isMemberOfChurch(this, person);
     }
 
 }

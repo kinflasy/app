@@ -8,6 +8,7 @@ import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.people_filters.conditions.CharacteristicCondition;
 import br.org.kinflasy.libs.people_filters.conditions.ChurchMembershipCondition;
 import br.org.kinflasy.libs.people_filters.conditions.Condition;
+import br.org.kinflasy.libs.people_filters.conditions.ConditionTester;
 import br.org.kinflasy.libs.people_filters.conditions.DepartmentIntegrationCondition;
 import br.org.kinflasy.libs.people_filters.conditions.IdentityCondition;
 import br.org.kinflasy.libs.people_filters.conditions.NegativeCondition;
@@ -18,8 +19,12 @@ import br.org.kinflasy.libs.people_filters.utils.builder.contracts.MultipleCondi
 import br.org.kinflasy.libs.people_filters.utils.builder.contracts.OngoingConditionBuilder;
 import br.org.kinflasy.libs.people_filters.utils.builder.contracts.ReadyConditionBuilder;
 import br.org.kinflasy.libs.people_filters.utils.builder.contracts.SingleConditionBuilder;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class ConcreteOngoingConditionBuilder implements OngoingConditionBuilder<Condition> {
+
+    private final ConditionTester tester;
 
     @Override
     public Condition not(Function<SingleConditionBuilder, ReadyConditionBuilder> thePerson) {
@@ -49,17 +54,17 @@ public class ConcreteOngoingConditionBuilder implements OngoingConditionBuilder<
 
     @Override
     public Condition isMemberOfChurch(UUID churchId, Affiliation affiliation) {
-        return new ChurchMembershipCondition(churchId, affiliation);
+        return new ChurchMembershipCondition(tester, churchId, affiliation);
     }
 
     @Override
     public Condition isMemberOfUnit(UUID unitId, Affiliation affiliation) {
-        return new UnitMembershipCondition(unitId, affiliation);
+        return new UnitMembershipCondition(tester, unitId, affiliation);
     }
 
     @Override
     public Condition isIntegrantOfDepartment(UUID departmentId, IntegrationType integrationType) {
-        return new DepartmentIntegrationCondition(departmentId, integrationType);
+        return new DepartmentIntegrationCondition(tester, departmentId, integrationType);
     }
 
 }
