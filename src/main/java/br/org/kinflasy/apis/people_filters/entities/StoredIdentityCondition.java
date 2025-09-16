@@ -2,7 +2,6 @@ package br.org.kinflasy.apis.people_filters.entities;
 
 import java.util.UUID;
 
-import br.org.kinflasy.libs.people.dto.PersonDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -21,10 +20,5 @@ public class StoredIdentityCondition extends StoredCondition {
 
     @Column(nullable = false)
     private UUID personId;
-
-    @Override
-    public boolean test(final PersonDto person) {
-        return person.getId().equals(personId);
-    }
 
 }

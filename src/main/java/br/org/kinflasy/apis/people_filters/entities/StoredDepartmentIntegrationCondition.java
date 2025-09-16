@@ -3,7 +3,6 @@ package br.org.kinflasy.apis.people_filters.entities;
 import java.util.UUID;
 
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
-import br.org.kinflasy.libs.people.dto.PersonDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -28,11 +27,5 @@ public class StoredDepartmentIntegrationCondition extends StoredCondition {
 
     @Column
     private IntegrationType type = IntegrationType.INTEGRANT;
-
-    @Override
-    public boolean test(final PersonDto person) {
-        // TODO implementar filtro
-        return false;
-    }
 
 }
