@@ -21,10 +21,10 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
     public GroupedPeopleFilterBuilder andMatchesAll(final UnaryOperator<FilterListBuilder> person) {
         // Criar builder com filtros adicionais
         final var listed = person.apply(new FilterListBuilder());
-        final var and = new StoredAndConditionGroup().setFilters(listed.getFiltersList());
+        final var and = new StoredAndConditionGroup().setConditions(listed.getConditionsList());
 
         // Substituir filtro principal pelo atual && adicionais
-        filter = new StoredAndConditionGroup().setFilters(List.of(filter, and));
+        filter = new StoredAndConditionGroup().setConditions(List.of(filter, and));
 
         // Transformar-se em Grouped
         return new GroupedPeopleFilterBuilder(filter);
@@ -33,10 +33,10 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
     public GroupedPeopleFilterBuilder andMatchesOneOf(final UnaryOperator<FilterListBuilder> person) {
         // Criar builder com filtros adicionais
         final var listed = person.apply(new FilterListBuilder());
-        final var or = new StoredOrConditionGroup().setFilters(listed.getFiltersList());
+        final var or = new StoredOrConditionGroup().setConditions(listed.getConditionsList());
 
         // Substituir filtro principal pelo atual && adicionais
-        filter = new StoredAndConditionGroup().setFilters(List.of(filter, or));
+        filter = new StoredAndConditionGroup().setConditions(List.of(filter, or));
 
         // Transformar-se em Grouped
         return new GroupedPeopleFilterBuilder(filter);
@@ -45,10 +45,10 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
     public GroupedPeopleFilterBuilder orMatchesAll(final UnaryOperator<FilterListBuilder> person) {
         // Criar builder com filtros adicionais
         final var listed = person.apply(new FilterListBuilder());
-        final var and = new StoredAndConditionGroup().setFilters(listed.getFiltersList());
+        final var and = new StoredAndConditionGroup().setConditions(listed.getConditionsList());
 
         // Substituir filtro principal pelo atual || adicionais
-        filter = new StoredOrConditionGroup().setFilters(List.of(filter, and));
+        filter = new StoredOrConditionGroup().setConditions(List.of(filter, and));
 
         // Transformar-se em Grouped
         return new GroupedPeopleFilterBuilder(filter);
@@ -57,10 +57,10 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
     public GroupedPeopleFilterBuilder orMatchesOneOf(final UnaryOperator<FilterListBuilder> person) {
         // Criar builder com filtros adicionais
         final var listed = person.apply(new FilterListBuilder());
-        final var or = new StoredOrConditionGroup().setFilters(listed.getFiltersList());
+        final var or = new StoredOrConditionGroup().setConditions(listed.getConditionsList());
 
         // Substituir filtro principal pelo atual || adicionais
-        filter = new StoredOrConditionGroup().setFilters(List.of(filter, or));
+        filter = new StoredOrConditionGroup().setConditions(List.of(filter, or));
 
         // Transformar-se em Grouped
         return new GroupedPeopleFilterBuilder(filter);

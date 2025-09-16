@@ -11,6 +11,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public abstract class ConditionGroup extends Condition {
 
-    private final List<Condition> filters;
+    private final List<Condition> conditions;
 
 }

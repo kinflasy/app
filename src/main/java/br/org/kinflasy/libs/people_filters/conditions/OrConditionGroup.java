@@ -12,13 +12,13 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class OrConditionGroup extends ConditionGroup {
 
-    public OrConditionGroup(final List<Condition> filters) {
-        super(filters);
+    public OrConditionGroup(final List<Condition> conditions) {
+        super(conditions);
     }
 
     @Override
     public boolean test(final PersonDto person) {
-        return getFilters().stream()
+        return getConditions().stream()
 
                 // Combinar todos os predicados com OR (lista vazia retorna false)
                 .anyMatch(filter -> filter.test(person));
@@ -28,7 +28,7 @@ public class OrConditionGroup extends ConditionGroup {
     public @NonNull String toString() {
         final var result = new StringBuilder("matches any:\n");
 
-        final var textList = getFilters().stream()
+        final var textList = getConditions().stream()
                 .map(filter -> "  - " + filter.toString().replace("\n", "\n  "))
                 .toList();
 

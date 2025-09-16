@@ -43,7 +43,7 @@ public class PeopleFilterBuilder {
      */
     public SinglyPeopleFilterBuilder matchesAll(final UnaryOperator<FilterListBuilder> list) {
         final var listed = list.apply(new FilterListBuilder());
-        final var and = new StoredAndConditionGroup().setFilters(listed.getFiltersList());
+        final var and = new StoredAndConditionGroup().setConditions(listed.getConditionsList());
         return new SinglyPeopleFilterBuilder(and);
     }
 
@@ -55,7 +55,7 @@ public class PeopleFilterBuilder {
      */
     public SinglyPeopleFilterBuilder matchesOneOf(final UnaryOperator<FilterListBuilder> list) {
         final var listed = list.apply(new FilterListBuilder());
-        final var or = new StoredOrConditionGroup().setFilters(listed.getFiltersList());
+        final var or = new StoredOrConditionGroup().setConditions(listed.getConditionsList());
         return new SinglyPeopleFilterBuilder(or);
     }
 
@@ -88,7 +88,7 @@ public class PeopleFilterBuilder {
      */
     public SinglyPeopleFilterBuilder isMemberOfChurch(final UUID churchId, final Affiliation... affiliation) {
         final var all = new StoredOrConditionGroup()
-                .setFilters(List.of(affiliation).stream()
+                .setConditions(List.of(affiliation).stream()
                         .distinct()
                         .map(stt -> (StoredCondition) new StoredChurchMembershipCondition(churchId, stt))
                         .toList());
@@ -105,7 +105,7 @@ public class PeopleFilterBuilder {
      */
     public SinglyPeopleFilterBuilder isMemberOfUnit(final UUID unitId, final Affiliation... affiliation) {
         final var all = new StoredOrConditionGroup()
-                .setFilters(List.of(affiliation).stream()
+                .setConditions(List.of(affiliation).stream()
                         .distinct()
                         .map(stt -> (StoredCondition) new StoredUnitMembershipCondition(unitId, stt))
                         .toList());
@@ -123,7 +123,7 @@ public class PeopleFilterBuilder {
     public SinglyPeopleFilterBuilder isIntegrantOfDepartment(final UUID departmentId,
             final IntegrationType... integrationTypes) {
         final var all = new StoredOrConditionGroup()
-                .setFilters(List.of(integrationTypes).stream()
+                .setConditions(List.of(integrationTypes).stream()
                         .distinct()
                         .map(type -> (StoredCondition) new StoredDepartmentIntegrationCondition(departmentId, type))
                         .toList());

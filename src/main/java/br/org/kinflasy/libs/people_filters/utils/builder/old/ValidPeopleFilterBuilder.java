@@ -28,7 +28,7 @@ public abstract class ValidPeopleFilterBuilder {
     }
 
     private StoredCondition simplifyGroup(final StoredConditionGroup group) {
-        final var simplifiedFilters = group.getFilters().stream()
+        final var simplifiedConditions = group.getConditions().stream()
                 .map(node -> {
                     if (node instanceof StoredConditionGroup innerGroup) {
                         return simplifyGroup(innerGroup);
@@ -39,16 +39,16 @@ public abstract class ValidPeopleFilterBuilder {
                 .distinct()
                 .toList();
 
-        if (simplifiedFilters.isEmpty()) {
+        if (simplifiedConditions.isEmpty()) {
             // Delete empty group
             return null;
-        } else if (simplifiedFilters.size() == 1) {
+        } else if (simplifiedConditions.size() == 1) {
             // Promote the only child
-            return simplifiedFilters.getFirst();
+            return simplifiedConditions.getFirst();
         }
 
-        // Replace the filters
-        group.setFilters(simplifiedFilters);
+        // Replace the conditions
+        group.setConditions(simplifiedConditions);
 
         // Return self
         return group;

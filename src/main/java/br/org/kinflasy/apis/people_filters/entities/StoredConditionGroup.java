@@ -11,6 +11,6 @@ import lombok.EqualsAndHashCode;
 public abstract class StoredConditionGroup extends StoredCondition {
 
     @ManyToMany
-    private List<StoredCondition> filters;
+    private List<StoredCondition> conditions;
 
 }

@@ -23,7 +23,7 @@ public class FilterListBuilder {
     /**
      * Filter list
      */
-    private final List<StoredCondition> filters = new ArrayList<>();
+    private final List<StoredCondition> conditions = new ArrayList<>();
 
     /**
      * Package restricted constructor
@@ -33,7 +33,7 @@ public class FilterListBuilder {
 
     public FilterListBuilder not(final Function<PeopleFilterBuilder, ValidPeopleFilterBuilder> filter) {
         final var not = new StoredNegativeCondition(filter.apply(PeopleFilterBuilder.thePerson()).filter);
-        filters.add(not);
+        conditions.add(not);
 
         return this;
     }
@@ -45,7 +45,7 @@ public class FilterListBuilder {
      * @return this
      */
     public FilterListBuilder is(final PersonDto person) {
-        filters.add(new StoredIdentityCondition(person.getId()));
+        conditions.add(new StoredIdentityCondition(person.getId()));
         return this;
     }
 
@@ -56,7 +56,7 @@ public class FilterListBuilder {
      * @return this
      */
     public FilterListBuilder is(final PersonCharacteristic characteristic) {
-        filters.add(new StoredCharacteristicCondition(characteristic));
+        conditions.add(new StoredCharacteristicCondition(characteristic));
         return this;
     }
 
@@ -69,12 +69,12 @@ public class FilterListBuilder {
      */
     public FilterListBuilder isMemberOfChurch(final UUID churchId, final Affiliation... affiliation) {
         final var all = new StoredOrConditionGroup()
-                .setFilters(List.of(affiliation).stream()
+                .setConditions(List.of(affiliation).stream()
                         .distinct()
                         .map(stt -> (StoredCondition) new StoredChurchMembershipCondition(churchId, stt))
                         .toList());
 
-        filters.add(all);
+        conditions.add(all);
         return this;
     }
 
@@ -87,12 +87,12 @@ public class FilterListBuilder {
      */
     public FilterListBuilder isMemberOfUnit(final UUID unitId, final Affiliation... affiliation) {
         final var all = new StoredOrConditionGroup()
-                .setFilters(List.of(affiliation).stream()
+                .setConditions(List.of(affiliation).stream()
                         .distinct()
                         .map(stt -> (StoredCondition) new StoredUnitMembershipCondition(unitId, stt))
                         .toList());
 
-        filters.add(all);
+        conditions.add(all);
         return this;
     }
 
@@ -106,23 +106,23 @@ public class FilterListBuilder {
     public FilterListBuilder isIntegrantOfDepartment(final UUID departmentId,
             final IntegrationType... integrationTypes) {
         final var all = new StoredOrConditionGroup()
-                .setFilters(List.of(integrationTypes)
+                .setConditions(List.of(integrationTypes)
                         .stream()
                         .distinct()
                         .map(type -> (StoredCondition) new StoredDepartmentIntegrationCondition(departmentId, type))
                         .toList());
 
-        filters.add(all);
+        conditions.add(all);
         return this;
     }
 
     /**
-     * Get sequence of filters as a list
+     * Get sequence of conditions as a list
      * 
      * @return
      */
-    public List<StoredCondition> getFiltersList() {
-        return filters;
+    public List<StoredCondition> getConditionsList() {
+        return conditions;
     }
 
 }

@@ -10,13 +10,13 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class AndConditionGroup extends ConditionGroup {
 
-    public AndConditionGroup(final List<Condition> filters) {
-        super(filters);
+    public AndConditionGroup(final List<Condition> conditions) {
+        super(conditions);
     }
 
     @Override
     public boolean test(final PersonDto person) {
-        return getFilters().stream()
+        return getConditions().stream()
 
                 // Combinar todos os predicados com AND (lista vazia retorna true)
                 .allMatch(filter -> filter.test(person));
@@ -26,7 +26,7 @@ public class AndConditionGroup extends ConditionGroup {
     public String toString() {
         final var result = new StringBuilder("matches all:\n");
 
-        final var textList = getFilters().stream()
+        final var textList = getConditions().stream()
                 .map(filter -> "  - " + filter.toString().replace("\n", "\n  "))
                 .toList();
 
