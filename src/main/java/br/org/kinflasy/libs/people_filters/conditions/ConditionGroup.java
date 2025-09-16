@@ -1,16 +1,16 @@
-package br.org.kinflasy.apis.people_filters.entities;
+package br.org.kinflasy.libs.people_filters.conditions;
 
 import java.util.List;
 
-import jakarta.persistence.ManyToMany;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public abstract class ConditionGroup extends Condition {
 
-    @ManyToMany
-    private List<Condition> filters;
+    private final List<Condition> filters;
 
 }

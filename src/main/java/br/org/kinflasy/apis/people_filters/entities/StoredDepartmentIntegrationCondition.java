@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class DepartmentIntegrationCondition extends Condition {
+public class StoredDepartmentIntegrationCondition extends StoredCondition {
 
     @Column(nullable = false)
     private UUID departmentId;

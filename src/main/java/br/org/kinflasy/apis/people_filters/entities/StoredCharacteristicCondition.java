@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class CharacteristicCondition extends Condition {
+public class StoredCharacteristicCondition extends StoredCondition {
 
     @Enumerated(EnumType.ORDINAL)
     @Column(unique = true)

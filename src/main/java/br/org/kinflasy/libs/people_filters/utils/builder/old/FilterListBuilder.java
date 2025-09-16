@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
-import br.org.kinflasy.apis.people_filters.entities.CharacteristicCondition;
-import br.org.kinflasy.apis.people_filters.entities.ChurchMembershipCondition;
-import br.org.kinflasy.apis.people_filters.entities.Condition;
-import br.org.kinflasy.apis.people_filters.entities.DepartmentIntegrationCondition;
-import br.org.kinflasy.apis.people_filters.entities.IdentityCondition;
-import br.org.kinflasy.apis.people_filters.entities.NegativeCondition;
-import br.org.kinflasy.apis.people_filters.entities.OrConditionGroup;
-import br.org.kinflasy.apis.people_filters.entities.UnitMembershipCondition;
+import br.org.kinflasy.apis.people_filters.entities.StoredCharacteristicCondition;
+import br.org.kinflasy.apis.people_filters.entities.StoredChurchMembershipCondition;
+import br.org.kinflasy.apis.people_filters.entities.StoredCondition;
+import br.org.kinflasy.apis.people_filters.entities.StoredDepartmentIntegrationCondition;
+import br.org.kinflasy.apis.people_filters.entities.StoredIdentityCondition;
+import br.org.kinflasy.apis.people_filters.entities.StoredNegativeCondition;
+import br.org.kinflasy.apis.people_filters.entities.StoredOrConditionGroup;
+import br.org.kinflasy.apis.people_filters.entities.StoredUnitMembershipCondition;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.people.dto.PersonDto;
@@ -23,7 +23,7 @@ public class FilterListBuilder {
     /**
      * Filter list
      */
-    private final List<Condition> filters = new ArrayList<>();
+    private final List<StoredCondition> filters = new ArrayList<>();
 
     /**
      * Package restricted constructor
@@ -32,7 +32,7 @@ public class FilterListBuilder {
     }
 
     public FilterListBuilder not(final Function<PeopleFilterBuilder, ValidPeopleFilterBuilder> filter) {
-        final var not = new NegativeCondition(filter.apply(PeopleFilterBuilder.thePerson()).filter);
+        final var not = new StoredNegativeCondition(filter.apply(PeopleFilterBuilder.thePerson()).filter);
         filters.add(not);
 
         return this;
@@ -45,7 +45,7 @@ public class FilterListBuilder {
      * @return this
      */
     public FilterListBuilder is(final PersonDto person) {
-        filters.add(new IdentityCondition(person.getId()));
+        filters.add(new StoredIdentityCondition(person.getId()));
         return this;
     }
 
@@ -56,7 +56,7 @@ public class FilterListBuilder {
      * @return this
      */
     public FilterListBuilder is(final PersonCharacteristic characteristic) {
-        filters.add(new CharacteristicCondition(characteristic));
+        filters.add(new StoredCharacteristicCondition(characteristic));
         return this;
     }
 
@@ -68,10 +68,10 @@ public class FilterListBuilder {
      * @return this
      */
     public FilterListBuilder isMemberOfChurch(final UUID churchId, final Affiliation... affiliation) {
-        final var all = new OrConditionGroup()
+        final var all = new StoredOrConditionGroup()
                 .setFilters(List.of(affiliation).stream()
                         .distinct()
-                        .map(stt -> (Condition) new ChurchMembershipCondition(churchId, stt))
+                        .map(stt -> (StoredCondition) new StoredChurchMembershipCondition(churchId, stt))
                         .toList());
 
         filters.add(all);
@@ -86,10 +86,10 @@ public class FilterListBuilder {
      * @return this
      */
     public FilterListBuilder isMemberOfUnit(final UUID unitId, final Affiliation... affiliation) {
-        final var all = new OrConditionGroup()
+        final var all = new StoredOrConditionGroup()
                 .setFilters(List.of(affiliation).stream()
                         .distinct()
-                        .map(stt -> (Condition) new UnitMembershipCondition(unitId, stt))
+                        .map(stt -> (StoredCondition) new StoredUnitMembershipCondition(unitId, stt))
                         .toList());
 
         filters.add(all);
@@ -105,11 +105,11 @@ public class FilterListBuilder {
      */
     public FilterListBuilder isIntegrantOfDepartment(final UUID departmentId,
             final IntegrationType... integrationTypes) {
-        final var all = new OrConditionGroup()
+        final var all = new StoredOrConditionGroup()
                 .setFilters(List.of(integrationTypes)
                         .stream()
                         .distinct()
-                        .map(type -> (Condition) new DepartmentIntegrationCondition(departmentId, type))
+                        .map(type -> (StoredCondition) new StoredDepartmentIntegrationCondition(departmentId, type))
                         .toList());
 
         filters.add(all);
@@ -121,7 +121,7 @@ public class FilterListBuilder {
      * 
      * @return
      */
-    public List<Condition> getFiltersList() {
+    public List<StoredCondition> getFiltersList() {
         return filters;
     }
 

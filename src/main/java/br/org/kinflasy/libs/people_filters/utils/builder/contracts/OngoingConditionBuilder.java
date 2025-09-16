@@ -7,22 +7,22 @@ import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.people_filters.enums.PersonCharacteristic;
 
-public interface OngoingConditionBuilder<T extends ConditionBuilder> extends ConditionBuilder {
+public interface OngoingConditionBuilder<T> {
 
-    T not(Function<SingleConditionBuilder, ReadyConditionBuilder> condition);
+    T not(Function<SingleConditionBuilder, ReadyConditionBuilder> thePerson);
 
-    T matchesAllConditions(Function<MultipleConditionBuilder, AccumulatedConditionBuilder> conditions);
+    T matchesAllConditions(Function<MultipleConditionBuilder, AccumulatedConditionBuilder> thePerson);
 
-    T matchesAnyCondition(Function<MultipleConditionBuilder, AccumulatedConditionBuilder> conditions);
+    T matchesAnyCondition(Function<MultipleConditionBuilder, AccumulatedConditionBuilder> thePerson);
 
     T is(UUID personId);
 
     T is(PersonCharacteristic characteristic);
 
-    T isMemberOfChurch(UUID churchId, Affiliation... affiliation);
+    T isMemberOfChurch(UUID churchId, Affiliation affiliation);
 
-    T isMemberOfUnit(UUID unitId, Affiliation... affiliation);
+    T isMemberOfUnit(UUID unitId, Affiliation affiliation);
 
-    T isIntegrantOfDepartment(UUID departmentId, IntegrationType... integrationTypes);
+    T isIntegrantOfDepartment(UUID departmentId, IntegrationType integrationType);
 
 }

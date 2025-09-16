@@ -3,9 +3,9 @@ package br.org.kinflasy.libs.people_filters.utils.builder.old;
 import java.util.List;
 import java.util.function.UnaryOperator;
 
-import br.org.kinflasy.apis.people_filters.entities.AndConditionGroup;
-import br.org.kinflasy.apis.people_filters.entities.OrConditionGroup;
-import br.org.kinflasy.apis.people_filters.entities.Condition;
+import br.org.kinflasy.apis.people_filters.entities.StoredAndConditionGroup;
+import br.org.kinflasy.apis.people_filters.entities.StoredOrConditionGroup;
+import br.org.kinflasy.apis.people_filters.entities.StoredCondition;
 
 public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
 
@@ -14,17 +14,17 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
      * 
      * @param filter
      */
-    SinglyPeopleFilterBuilder(final Condition filter) {
+    SinglyPeopleFilterBuilder(final StoredCondition filter) {
         super(filter);
     }
 
     public GroupedPeopleFilterBuilder andMatchesAll(final UnaryOperator<FilterListBuilder> person) {
         // Criar builder com filtros adicionais
         final var listed = person.apply(new FilterListBuilder());
-        final var and = new AndConditionGroup().setFilters(listed.getFiltersList());
+        final var and = new StoredAndConditionGroup().setFilters(listed.getFiltersList());
 
         // Substituir filtro principal pelo atual && adicionais
-        filter = new AndConditionGroup().setFilters(List.of(filter, and));
+        filter = new StoredAndConditionGroup().setFilters(List.of(filter, and));
 
         // Transformar-se em Grouped
         return new GroupedPeopleFilterBuilder(filter);
@@ -33,10 +33,10 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
     public GroupedPeopleFilterBuilder andMatchesOneOf(final UnaryOperator<FilterListBuilder> person) {
         // Criar builder com filtros adicionais
         final var listed = person.apply(new FilterListBuilder());
-        final var or = new OrConditionGroup().setFilters(listed.getFiltersList());
+        final var or = new StoredOrConditionGroup().setFilters(listed.getFiltersList());
 
         // Substituir filtro principal pelo atual && adicionais
-        filter = new AndConditionGroup().setFilters(List.of(filter, or));
+        filter = new StoredAndConditionGroup().setFilters(List.of(filter, or));
 
         // Transformar-se em Grouped
         return new GroupedPeopleFilterBuilder(filter);
@@ -45,10 +45,10 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
     public GroupedPeopleFilterBuilder orMatchesAll(final UnaryOperator<FilterListBuilder> person) {
         // Criar builder com filtros adicionais
         final var listed = person.apply(new FilterListBuilder());
-        final var and = new AndConditionGroup().setFilters(listed.getFiltersList());
+        final var and = new StoredAndConditionGroup().setFilters(listed.getFiltersList());
 
         // Substituir filtro principal pelo atual || adicionais
-        filter = new OrConditionGroup().setFilters(List.of(filter, and));
+        filter = new StoredOrConditionGroup().setFilters(List.of(filter, and));
 
         // Transformar-se em Grouped
         return new GroupedPeopleFilterBuilder(filter);
@@ -57,10 +57,10 @@ public class SinglyPeopleFilterBuilder extends ValidPeopleFilterBuilder {
     public GroupedPeopleFilterBuilder orMatchesOneOf(final UnaryOperator<FilterListBuilder> person) {
         // Criar builder com filtros adicionais
         final var listed = person.apply(new FilterListBuilder());
-        final var or = new OrConditionGroup().setFilters(listed.getFiltersList());
+        final var or = new StoredOrConditionGroup().setFilters(listed.getFiltersList());
 
         // Substituir filtro principal pelo atual || adicionais
-        filter = new OrConditionGroup().setFilters(List.of(filter, or));
+        filter = new StoredOrConditionGroup().setFilters(List.of(filter, or));
 
         // Transformar-se em Grouped
         return new GroupedPeopleFilterBuilder(filter);

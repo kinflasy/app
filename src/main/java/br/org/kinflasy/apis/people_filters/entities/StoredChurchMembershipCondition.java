@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class ChurchMembershipCondition extends Condition {
+public class StoredChurchMembershipCondition extends StoredCondition {
 
     @Column(nullable = false)
     private UUID churchId;

@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
-public abstract class Condition extends AbstractSimpleAuditable implements Predicate<PersonDto> {
+public abstract class StoredCondition extends AbstractSimpleAuditable implements Predicate<PersonDto> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
