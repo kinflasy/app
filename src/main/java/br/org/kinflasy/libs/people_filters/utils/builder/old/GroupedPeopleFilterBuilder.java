@@ -1,4 +1,4 @@
-package br.org.kinflasy.libs.people_filters.utils.builder;
+package br.org.kinflasy.libs.people_filters.utils.builder.old;
 
 import java.util.List;
 import java.util.function.UnaryOperator;
