@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.apis.churches.services.ChurchService;
+import br.org.kinflasy.apis.churches.services.ChurchUseCaseService;
 import br.org.kinflasy.libs.churches.dto.ChurchDto;
 import br.org.kinflasy.libs.churches.dto.ChurchRequest;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
@@ -33,6 +34,7 @@ import lombok.AllArgsConstructor;
 public class ChurchController {
 
     private final ChurchService service;
+    private final ChurchUseCaseService useCaseService;
 
     @GetMapping
     @Operation(summary = "Listar todos", description = "Listar todas as igrejas cadastradas.")
@@ -45,6 +47,13 @@ public class ChurchController {
     @Operation(summary = "Cadastrar", description = "Cadastrar uma igreja.")
     public ResponseEntity<ChurchDto> create(@RequestBody @Valid final ChurchRequest request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/starter")
+    @Transactional
+    @Operation(summary = "Cadastrar combo inicial", description = "Cadastrar uma igreja e sua primeira unidade.")
+    public ResponseEntity<ChurchDto.Starter> createStarter(@RequestBody @Valid final ChurchRequest.Starter request) {
+        return new ResponseEntity<>(useCaseService.createStarter(request), HttpStatus.CREATED);
     }
 
     @GetMapping("{id}")
