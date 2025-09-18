@@ -11,7 +11,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
@@ -33,10 +32,10 @@ public class Integration extends AbstractSimpleAuditable {
     private UUID id;
 
     @Column(nullable = false)
-    private IntegrationType type = IntegrationType.INTEGRANT;
+    private IntegrationType type;
 
-    @ManyToOne(optional = false)
-    private Department department;
+    @Column(nullable = false)
+    private UUID departmentId;
 
     @Column(nullable = false)
     private UUID personId;

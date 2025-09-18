@@ -15,6 +15,8 @@ public interface AddressClient {
 
     AddressDto create(AddressRequest request);
 
+    AddressDto create(AddressRequest request, UUID createdBy);
+
     AddressDto findById(UUID id);
 
     AddressDto update(UUID id, AddressRequest request);

@@ -28,6 +28,11 @@ public class AddressLocalClient implements AddressClient {
     }
 
     @Override
+    public AddressDto create(AddressRequest request, UUID createdBy) {
+        return controller.create(request, createdBy).getBody();
+    }
+
+    @Override
     public AddressDto findById(UUID id) {
         return controller.findById(id).getBody();
     }

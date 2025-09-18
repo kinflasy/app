@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.people.converters.UserConverter;
 import br.org.kinflasy.apis.people.repositories.UserRepository;
+import br.org.kinflasy.clients.AddressClient;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
 import br.org.kinflasy.libs.people.dto.UserWithPasswordDto;
@@ -20,10 +21,12 @@ public class UserService {
 
     private static final String NOT_FOUND_MESSAGE = "Usuário não encontrado.";
 
+    private final ModelMapper mapper;
+
     private final UserRepository repository;
     private final UserConverter converter;
 
-    private final ModelMapper mapper;
+    private final AddressClient addressClient;
 
     public List<UserDto> findAll() {
         return repository.findAll().stream()
@@ -31,9 +34,17 @@ public class UserService {
                 .toList();
     }
 
-    public UserDto create(final UserRequest form) {
-        final var entity = converter.toEntity(form);
-        repository.save(entity);
+    public UserDto create(final UserRequest request) {
+        // Salvar usuário
+        final var entity = converter.toEntity(request);
+        final var savedUser = repository.save(entity);
+
+        // Salvar endereço
+        final var address = addressClient.create(request.getAddress(), savedUser.getId());
+
+        // Referenciar endereço
+        savedUser.setAddressId(address.getId());
+
         return converter.toDto(entity);
     }
 

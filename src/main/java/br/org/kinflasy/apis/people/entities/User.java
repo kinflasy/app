@@ -7,11 +7,14 @@ import org.hibernate.annotations.DynamicUpdate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Entity
 @Table(name = "users")
 @DynamicUpdate
@@ -41,6 +44,17 @@ public class User extends Person {
     protected void onPreCreate() {
         setCreatedBy(getId());
         setCreatedDate(LocalDateTime.now());
+    }
+
+    @Override
+    @PreUpdate
+    protected void onPreUpdate() {
+        if (getLastModifiedBy() == null) {
+            setLastModifiedBy(getId());
+            setLastModifiedDate(LocalDateTime.now());
+        } else {
+            super.onPreUpdate();
+        }
     }
 
 }

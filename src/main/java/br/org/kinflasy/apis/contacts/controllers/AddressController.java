@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.apis.contacts.services.AddressService;
@@ -43,6 +44,14 @@ public class AddressController {
     @Operation(summary = "Cadastrar", description = "Cadastrar um endereço.")
     public ResponseEntity<AddressDto> create(@RequestBody @Valid final AddressRequest form) {
         return new ResponseEntity<>(service.create(form), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/register")
+    @Transactional
+    @Operation(summary = "Cadastrar durante cadastro de usuário", description = "Cadastrar um endereço enquanto um novo usuário está sendo criado.")
+    public ResponseEntity<AddressDto> create(@RequestBody @Valid final AddressRequest form,
+            @RequestParam final UUID createdBy) {
+        return new ResponseEntity<>(service.create(form, createdBy), HttpStatus.CREATED);
     }
 
     @GetMapping("{id}")

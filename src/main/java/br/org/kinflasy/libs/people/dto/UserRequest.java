@@ -1,7 +1,5 @@
 package br.org.kinflasy.libs.people.dto;
 
-import java.time.LocalDateTime;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -15,7 +13,6 @@ public class UserRequest extends PersonRequest {
 
     private @NotBlank String username;
     private @NotBlank @Email String email;
-    private LocalDateTime emailVerifiedAt;
     private @NotBlank String password;
 
 }

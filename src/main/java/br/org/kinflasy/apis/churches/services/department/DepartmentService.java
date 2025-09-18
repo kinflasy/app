@@ -35,7 +35,7 @@ public class DepartmentService {
         department.setUnitId(unitId);
 
         // Salvar
-        final var created = repository.save(department);
+        final var created = repository.saveAndFlush(department);
 
         return converter.toDto(created);
     }

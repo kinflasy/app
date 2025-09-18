@@ -33,6 +33,13 @@ public class AddressService {
         return converter.toDto(entity);
     }
 
+    public AddressDto create(final AddressRequest form, final UUID createdBy) {
+        final var entity = converter.toEntity(form);
+        entity.setCreatedBy(createdBy);
+        repository.save(entity);
+        return converter.toDto(entity);
+    }
+
     public AddressDto findById(final UUID id) {
         return repository.findById(id).map(converter::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));

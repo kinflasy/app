@@ -33,15 +33,19 @@ public abstract class AbstractSimpleAuditable {
 
     @PrePersist
     protected void onPreCreate() {
-        final var user = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        setCreatedBy(user.getId());
+        if (createdBy == null) {
+            final var user = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            setCreatedBy(user.getId());
+        }
         setCreatedDate(LocalDateTime.now());
     }
 
     @PreUpdate
     protected void onPreUpdate() {
-        final var user = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        setLastModifiedBy(user.getId());
+        if (lastModifiedBy == null) {
+            final var user = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            setLastModifiedBy(user.getId());
+        }
         setLastModifiedDate(LocalDateTime.now());
     }
 

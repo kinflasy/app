@@ -12,8 +12,9 @@ import lombok.NoArgsConstructor;
 public class ChurchRequest {
 
     @Data
+    @NoArgsConstructor
     @EqualsAndHashCode(callSuper = true)
-    public class Starter extends ChurchRequest {
+    public static class Starter extends ChurchRequest {
         private @NotNull UnitRequest unit;
     }
 

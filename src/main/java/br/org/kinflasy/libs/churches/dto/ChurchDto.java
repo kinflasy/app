@@ -11,8 +11,9 @@ import lombok.NoArgsConstructor;
 public class ChurchDto {
 
     @Data
+    @NoArgsConstructor
     @EqualsAndHashCode(callSuper = true)
-    public class Starter extends ChurchDto {
+    public static class Starter extends ChurchDto {
         private UnitDto unit;
     }
 

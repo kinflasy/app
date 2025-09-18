@@ -22,7 +22,7 @@ public class InactivePersonService {
     private final InactivePersonRepository repository;
     private final InactivePersonConverter converter;
 
-    private final AddressClient addressService;
+    private final AddressClient addressClient;
 
     public List<InactivePersonDto> findAll() {
         return repository.findAll().stream()
@@ -32,7 +32,7 @@ public class InactivePersonService {
 
     public InactivePersonDto create(final InactivePersonRequest request) {
         // Salvar endereço
-        final var address = addressService.create(request.getAddress());
+        final var address = addressClient.create(request.getAddress());
 
         // Salvar pessoa
         final var entity = converter.toEntity(request);
@@ -54,7 +54,7 @@ public class InactivePersonService {
         repository.save(modified);
 
         // Atualizar endereço
-        addressService.update(original.getAddressId(), request.getAddress());
+        addressClient.update(original.getAddressId(), request.getAddress());
 
         return converter.toDto(modified);
     }
@@ -63,7 +63,7 @@ public class InactivePersonService {
         final var original = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
 
         repository.delete(original);
-        addressService.delete(original.getAddressId());
+        addressClient.delete(original.getAddressId());
     }
 
 }
