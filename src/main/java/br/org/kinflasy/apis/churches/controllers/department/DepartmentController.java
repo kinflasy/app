@@ -90,10 +90,11 @@ public class DepartmentController {
     }
 
     @DeleteMapping("{id}/extensions")
-    public ResponseEntity<ExtensionSubscriptionDto> dissociateExtension(@PathVariable final UUID id,
+    public ResponseEntity<Void> dissociateExtension(@PathVariable final UUID id,
             @RequestBody ExtensionSubscriptionRequest request) {
         try {
-            return new ResponseEntity<>(service.associateExtension(id, request), HttpStatus.OK);
+            service.dissociateExtension(id, request);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (final EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
