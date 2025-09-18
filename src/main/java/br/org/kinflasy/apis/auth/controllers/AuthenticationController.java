@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Tag(name = "Auth")
 @RequestMapping("auth")
 @AllArgsConstructor
-public class AuthController {
+public class AuthenticationController {
 
     private AuthenticationManager manager;
     private UserClient client;

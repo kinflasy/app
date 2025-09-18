@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class AuthService implements UserDetailsService {
+public class AuthenticationService implements UserDetailsService {
 
     private final UserClient userClient;
 
