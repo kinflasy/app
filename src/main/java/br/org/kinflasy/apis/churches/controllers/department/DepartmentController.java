@@ -1,5 +1,6 @@
 package br.org.kinflasy.apis.churches.controllers.department;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
+import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionDto;
+import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionRequest;
+import br.org.kinflasy.libs.churches.enums.department.Extension;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -62,6 +67,35 @@ public class DepartmentController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (final Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @GetMapping("{id}/extensions")
+    public ResponseEntity<List<Extension>> listExtensions(@PathVariable final UUID id) {
+        try {
+            return new ResponseEntity<>(service.listExtensions(id), HttpStatus.OK);
+        } catch (final EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("{id}/extensions")
+    public ResponseEntity<ExtensionSubscriptionDto> associateExtension(@PathVariable final UUID id,
+            @RequestBody ExtensionSubscriptionRequest request) {
+        try {
+            return new ResponseEntity<>(service.associateExtension(id, request), HttpStatus.OK);
+        } catch (final EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("{id}/extensions")
+    public ResponseEntity<ExtensionSubscriptionDto> dissociateExtension(@PathVariable final UUID id,
+            @RequestBody ExtensionSubscriptionRequest request) {
+        try {
+            return new ResponseEntity<>(service.associateExtension(id, request), HttpStatus.OK);
+        } catch (final EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

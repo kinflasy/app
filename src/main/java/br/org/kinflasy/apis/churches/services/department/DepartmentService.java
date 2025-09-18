@@ -3,12 +3,18 @@ package br.org.kinflasy.apis.churches.services.department;
 import java.util.List;
 import java.util.UUID;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.converters.department.DepartmentConverter;
+import br.org.kinflasy.apis.churches.entities.department.ExtensionSubscription;
 import br.org.kinflasy.apis.churches.repositories.department.DepartmentRepository;
+import br.org.kinflasy.apis.churches.repositories.department.ExtensionSubscriptionRepository;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
+import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionDto;
+import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionRequest;
+import br.org.kinflasy.libs.churches.enums.department.Extension;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
@@ -18,8 +24,12 @@ public class DepartmentService {
 
     private static final String NOT_FOUND_MESSAGE = "Departamento não encontrado";
 
+    private final ModelMapper mapper;
+
     private final DepartmentRepository repository;
     private final DepartmentConverter converter;
+
+    private final ExtensionSubscriptionRepository subscriptionRepository;
 
     public List<DepartmentDto> listByUnitId(final UUID unitId) {
         return repository.findByUnitId(unitId).stream()
@@ -55,6 +65,26 @@ public class DepartmentService {
 
     public void delete(final UUID id) {
         repository.deleteById(id);
+    }
+
+    public List<Extension> listExtensions(final UUID id) {
+        return subscriptionRepository.findByDepartmentId(id).stream()
+                .map(ExtensionSubscription::getExtension)
+                .toList();
+    }
+
+    public ExtensionSubscriptionDto associateExtension(final UUID id, final ExtensionSubscriptionRequest request) {
+        final var entity = mapper.map(request, ExtensionSubscription.class);
+        entity.setDepartmentId(id);
+
+        final var saved = subscriptionRepository.save(entity);
+
+        return mapper.map(saved, ExtensionSubscriptionDto.class);
+    }
+
+    public void dissociateExtension(final UUID id, final ExtensionSubscriptionRequest request) {
+        subscriptionRepository.findByDepartmentIdAndExtension(id, request.getExtension())
+                .ifPresent(subscriptionRepository::delete);
     }
 
 }
