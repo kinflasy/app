@@ -3,12 +3,17 @@ package br.org.kinflasy.apis.churches.services;
 import java.util.List;
 import java.util.UUID;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.converters.UnitConverter;
+import br.org.kinflasy.apis.churches.entities.Membership;
+import br.org.kinflasy.apis.churches.repositories.MembershipRepository;
 import br.org.kinflasy.apis.churches.repositories.UnitRepository;
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.clients.AddressClient;
+import br.org.kinflasy.libs.churches.dto.MembershipRequest;
+import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
@@ -22,11 +27,14 @@ public class UnitService {
 
     private static final String NOT_FOUND_MESSAGE = "Unidade não encontrada";
 
+    private final ModelMapper mapper;
+
     private final UnitRepository repository;
     private final UnitConverter converter;
 
     private final AddressClient addressClient;
     private final DepartmentService departmentService;
+    private final MembershipRepository membershipRepository;
 
     public List<UnitDto> listByChurchId(final UUID churchId) {
         return repository.findByChurchId(churchId).stream()
@@ -97,6 +105,31 @@ public class UnitService {
         return repository.findById(id)
                 .map(ignoredUnit -> departmentService.create(id, request))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+    }
+
+    public List<MembershipSimpleDto> listMembers(final UUID id) {
+        return membershipRepository.findByUnitId(id).stream()
+                .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
+                .toList();
+    }
+
+    public MembershipSimpleDto addMember(final UUID id, final MembershipRequest request) {
+        final var entity = mapper.map(request, Membership.class);
+        entity.setId(null);
+        entity.setUnitId(id);
+
+        final var saved = membershipRepository.save(entity);
+
+        return mapper.map(saved, MembershipSimpleDto.class);
+    }
+
+    public void removeMember(final UUID id, final UUID personId) {
+        membershipRepository.findByUnitIdAndPersonId(id, personId)
+                .forEach(membership -> {
+                    if (membership.getLeaveDate() != null) {
+                        membershipRepository.delete(membership);
+                    }
+                });
     }
 
 }
