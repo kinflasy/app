@@ -5,14 +5,13 @@ import java.util.function.Function;
 
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
-import br.org.kinflasy.libs.people_filters.conditions.CharacteristicCondition;
-import br.org.kinflasy.libs.people_filters.conditions.ChurchMembershipCondition;
-import br.org.kinflasy.libs.people_filters.conditions.Condition;
-import br.org.kinflasy.libs.people_filters.conditions.ConditionTester;
-import br.org.kinflasy.libs.people_filters.conditions.DepartmentIntegrationCondition;
-import br.org.kinflasy.libs.people_filters.conditions.IdentityCondition;
-import br.org.kinflasy.libs.people_filters.conditions.NegativeCondition;
-import br.org.kinflasy.libs.people_filters.conditions.UnitMembershipCondition;
+import br.org.kinflasy.libs.people_filters.contracts.business.CharacteristicContract;
+import br.org.kinflasy.libs.people_filters.contracts.business.ChurchMembershipContract;
+import br.org.kinflasy.libs.people_filters.contracts.business.DepartmentIntegrationContract;
+import br.org.kinflasy.libs.people_filters.contracts.business.IdentityContract;
+import br.org.kinflasy.libs.people_filters.contracts.business.UnitMembershipContract;
+import br.org.kinflasy.libs.people_filters.contracts.logical.NegativeContract;
+import br.org.kinflasy.libs.people_filters.contracts.structure.ConditionContract;
 import br.org.kinflasy.libs.people_filters.enums.PersonCharacteristic;
 import br.org.kinflasy.libs.people_filters.utils.builder.contracts.AccumulatedConditionBuilder;
 import br.org.kinflasy.libs.people_filters.utils.builder.contracts.MultipleConditionBuilder;
@@ -22,49 +21,47 @@ import br.org.kinflasy.libs.people_filters.utils.builder.contracts.SingleConditi
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class ConcreteOngoingConditionBuilder implements OngoingConditionBuilder<Condition> {
-
-    private final ConditionTester tester;
+public class ConcreteOngoingConditionBuilder implements OngoingConditionBuilder<ConditionContract> {
 
     @Override
-    public Condition not(Function<SingleConditionBuilder, ReadyConditionBuilder> thePerson) {
+    public ConditionContract not(Function<SingleConditionBuilder, ReadyConditionBuilder> thePerson) {
         final var baseCondition = thePerson.apply(new StarterConditionBuilder(this)).build();
-        return new NegativeCondition(baseCondition);
+        return new NegativeContract(baseCondition);
     }
 
     @Override
-    public Condition matchesAllConditions(Function<MultipleConditionBuilder, AccumulatedConditionBuilder> thePerson) {
+    public ConditionContract matchesAllConditions(Function<MultipleConditionBuilder, AccumulatedConditionBuilder> thePerson) {
         return thePerson.apply(new AndConditionBuilder(this)).join().build();
     }
 
     @Override
-    public Condition matchesAnyCondition(Function<MultipleConditionBuilder, AccumulatedConditionBuilder> thePerson) {
+    public ConditionContract matchesAnyCondition(Function<MultipleConditionBuilder, AccumulatedConditionBuilder> thePerson) {
         return thePerson.apply(new OrConditionBuilder(this)).join().build();
     }
 
     @Override
-    public Condition is(UUID personId) {
-        return new IdentityCondition(personId);
+    public ConditionContract is(UUID personId) {
+        return new IdentityContract(personId);
     }
 
     @Override
-    public Condition is(PersonCharacteristic characteristic) {
-        return new CharacteristicCondition(characteristic);
+    public ConditionContract is(PersonCharacteristic characteristic) {
+        return new CharacteristicContract(characteristic);
     }
 
     @Override
-    public Condition isMemberOfChurch(UUID churchId, Affiliation affiliation) {
-        return new ChurchMembershipCondition(tester, churchId, affiliation);
+    public ConditionContract isMemberOfChurch(UUID churchId, Affiliation affiliation) {
+        return new ChurchMembershipContract(churchId, affiliation);
     }
 
     @Override
-    public Condition isMemberOfUnit(UUID unitId, Affiliation affiliation) {
-        return new UnitMembershipCondition(tester, unitId, affiliation);
+    public ConditionContract isMemberOfUnit(UUID unitId, Affiliation affiliation) {
+        return new UnitMembershipContract(unitId, affiliation);
     }
 
     @Override
-    public Condition isIntegrantOfDepartment(UUID departmentId, IntegrationType integrationType) {
-        return new DepartmentIntegrationCondition(tester, departmentId, integrationType);
+    public ConditionContract isIntegrantOfDepartment(UUID departmentId, IntegrationType integrationType) {
+        return new DepartmentIntegrationContract(departmentId, integrationType);
     }
 
 }

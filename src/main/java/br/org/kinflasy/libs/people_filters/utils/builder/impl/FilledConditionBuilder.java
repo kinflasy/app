@@ -1,16 +1,16 @@
 package br.org.kinflasy.libs.people_filters.utils.builder.impl;
 
-import br.org.kinflasy.libs.people_filters.conditions.Condition;
+import br.org.kinflasy.libs.people_filters.contracts.structure.ConditionContract;
 import br.org.kinflasy.libs.people_filters.utils.builder.contracts.ReadyConditionBuilder;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class FilledConditionBuilder implements ReadyConditionBuilder {
 
-    private final Condition condition;
+    private final ConditionContract condition;
 
     @Override
-    public Condition build() {
+    public ConditionContract build() {
         return condition;
     }
 

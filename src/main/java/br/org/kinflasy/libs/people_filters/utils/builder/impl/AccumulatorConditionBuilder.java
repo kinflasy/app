@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
-import br.org.kinflasy.libs.people_filters.conditions.Condition;
+import br.org.kinflasy.libs.people_filters.contracts.structure.ConditionContract;
 import br.org.kinflasy.libs.people_filters.enums.PersonCharacteristic;
 import br.org.kinflasy.libs.people_filters.utils.builder.contracts.AccumulatedConditionBuilder;
 import br.org.kinflasy.libs.people_filters.utils.builder.contracts.MultipleConditionBuilder;
@@ -20,7 +20,7 @@ public abstract class AccumulatorConditionBuilder implements MultipleConditionBu
 
     private final ConcreteOngoingConditionBuilder concrete;
 
-    protected final List<Condition> conditions = new ArrayList<>();
+    protected final List<ConditionContract> conditions = new ArrayList<>();
 
     @Override
     public AccumulatedConditionBuilder not(final Function<SingleConditionBuilder, ReadyConditionBuilder> thePerson) {
