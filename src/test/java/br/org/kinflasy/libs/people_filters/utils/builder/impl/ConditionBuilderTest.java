@@ -1,7 +1,5 @@
 package br.org.kinflasy.libs.people_filters.utils.builder.impl;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.time.LocalDate;
 import java.util.UUID;
 
