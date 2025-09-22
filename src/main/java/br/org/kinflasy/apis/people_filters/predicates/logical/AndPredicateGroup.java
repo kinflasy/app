@@ -2,6 +2,8 @@ package br.org.kinflasy.apis.people_filters.predicates.logical;
 
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicate;
 import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicateGroup;
 import br.org.kinflasy.libs.people.dto.PersonDto;
@@ -10,6 +12,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@Component
 public class AndPredicateGroup extends ConditionPredicateGroup {
 
     public AndPredicateGroup(final List<ConditionPredicate> conditions) {

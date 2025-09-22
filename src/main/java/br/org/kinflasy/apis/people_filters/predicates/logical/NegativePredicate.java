@@ -1,5 +1,7 @@
 package br.org.kinflasy.apis.people_filters.predicates.logical;
 
+import org.springframework.stereotype.Component;
+
 import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicate;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import lombok.AllArgsConstructor;
@@ -9,6 +11,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Component
 public class NegativePredicate extends ConditionPredicate {
 
     private final ConditionPredicate basePredicate;

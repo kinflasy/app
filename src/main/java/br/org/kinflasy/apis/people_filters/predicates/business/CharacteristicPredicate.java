@@ -1,6 +1,7 @@
 package br.org.kinflasy.apis.people_filters.predicates.business;
 
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Component;
 
 import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicate;
 import br.org.kinflasy.libs.people.dto.PersonDto;
@@ -12,6 +13,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Component
 public class CharacteristicPredicate extends ConditionPredicate {
 
     private final PersonCharacteristic characteristic;
