@@ -1,4 +1,4 @@
-package br.org.kinflasy.libs.people_filters.utils.builder.impl;
+package br.org.kinflasy.libs.people_filters.builder.impl;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

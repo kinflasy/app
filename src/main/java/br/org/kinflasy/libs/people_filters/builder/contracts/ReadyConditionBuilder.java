@@ -1,4 +1,4 @@
-package br.org.kinflasy.libs.people_filters.utils.builder.contracts;
+package br.org.kinflasy.libs.people_filters.builder.contracts;
 
 import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
 

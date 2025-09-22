@@ -1,4 +1,4 @@
-package br.org.kinflasy.libs.people_filters.utils.builder.impl;
+package br.org.kinflasy.libs.people_filters.builder.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,12 +7,12 @@ import java.util.function.Function;
 
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
+import br.org.kinflasy.libs.people_filters.builder.contracts.AccumulatedConditionBuilder;
+import br.org.kinflasy.libs.people_filters.builder.contracts.MultipleConditionBuilder;
+import br.org.kinflasy.libs.people_filters.builder.contracts.ReadyConditionBuilder;
+import br.org.kinflasy.libs.people_filters.builder.contracts.SingleConditionBuilder;
 import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
 import br.org.kinflasy.libs.people_filters.enums.PersonCharacteristic;
-import br.org.kinflasy.libs.people_filters.utils.builder.contracts.AccumulatedConditionBuilder;
-import br.org.kinflasy.libs.people_filters.utils.builder.contracts.MultipleConditionBuilder;
-import br.org.kinflasy.libs.people_filters.utils.builder.contracts.ReadyConditionBuilder;
-import br.org.kinflasy.libs.people_filters.utils.builder.contracts.SingleConditionBuilder;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
