@@ -1,9 +1,9 @@
-package br.org.kinflasy.libs.people_filters.contracts.logical;
+package br.org.kinflasy.libs.people_filters.conditions.logical;
 
 import java.util.List;
 
-import br.org.kinflasy.libs.people_filters.contracts.structure.Condition;
-import br.org.kinflasy.libs.people_filters.contracts.structure.ConditionGroup;
+import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
+import br.org.kinflasy.libs.people_filters.conditions.structure.ConditionGroup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

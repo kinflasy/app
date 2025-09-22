@@ -1,6 +1,6 @@
-package br.org.kinflasy.libs.people_filters.contracts.business;
+package br.org.kinflasy.libs.people_filters.conditions.business;
 
-import br.org.kinflasy.libs.people_filters.contracts.structure.Condition;
+import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
 import br.org.kinflasy.libs.people_filters.enums.PersonCharacteristic;
 import lombok.AllArgsConstructor;
 import lombok.Data;

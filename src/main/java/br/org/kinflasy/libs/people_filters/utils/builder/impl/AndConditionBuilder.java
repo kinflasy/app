@@ -1,6 +1,6 @@
 package br.org.kinflasy.libs.people_filters.utils.builder.impl;
 
-import br.org.kinflasy.libs.people_filters.contracts.logical.AndConditionGroup;
+import br.org.kinflasy.libs.people_filters.conditions.logical.AndConditionGroup;
 import br.org.kinflasy.libs.people_filters.utils.builder.contracts.ReadyConditionBuilder;
 
 public class AndConditionBuilder extends AccumulatorConditionBuilder {
