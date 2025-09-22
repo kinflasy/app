@@ -1,9 +1,9 @@
 package br.org.kinflasy.libs.people_filters.utils.builder.contracts;
 
-import br.org.kinflasy.libs.people_filters.contracts.structure.ConditionContract;
+import br.org.kinflasy.libs.people_filters.contracts.structure.Condition;
 
 public interface ReadyConditionBuilder {
 
-    ConditionContract build();
+    Condition build();
 
 }

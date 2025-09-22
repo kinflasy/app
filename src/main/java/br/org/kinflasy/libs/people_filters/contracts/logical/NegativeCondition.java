@@ -1,6 +1,6 @@
 package br.org.kinflasy.libs.people_filters.contracts.logical;
 
-import br.org.kinflasy.libs.people_filters.contracts.structure.ConditionContract;
+import br.org.kinflasy.libs.people_filters.contracts.structure.Condition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,8 +8,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class NegativeContract extends ConditionContract {
+public class NegativeCondition extends Condition {
 
-    private final ConditionContract baseFilter;
+    private final Condition baseFilter;
 
 }

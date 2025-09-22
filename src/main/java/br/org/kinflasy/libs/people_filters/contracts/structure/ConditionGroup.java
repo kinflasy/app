@@ -9,8 +9,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public abstract class ConditionContractGroup extends ConditionContract {
+public abstract class ConditionGroup extends Condition {
 
-    private final List<ConditionContract> conditions;
+    private final List<Condition> conditions;
 
 }

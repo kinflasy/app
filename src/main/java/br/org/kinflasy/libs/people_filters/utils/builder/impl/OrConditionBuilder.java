@@ -1,6 +1,6 @@
 package br.org.kinflasy.libs.people_filters.utils.builder.impl;
 
-import br.org.kinflasy.libs.people_filters.contracts.logical.OrContractGroup;
+import br.org.kinflasy.libs.people_filters.contracts.logical.OrConditionGroup;
 import br.org.kinflasy.libs.people_filters.utils.builder.contracts.ReadyConditionBuilder;
 
 public class OrConditionBuilder extends AccumulatorConditionBuilder {
@@ -11,7 +11,7 @@ public class OrConditionBuilder extends AccumulatorConditionBuilder {
 
     @Override
     public ReadyConditionBuilder join() {
-        return new FilledConditionBuilder(new OrContractGroup(conditions));
+        return new FilledConditionBuilder(new OrConditionGroup(conditions));
     }
 
 }
