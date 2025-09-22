@@ -1,7 +1,7 @@
-package br.org.kinflasy.libs.people_filters.conditions.logical;
+package br.org.kinflasy.apis.people_filters.conditions.logical;
 
+import br.org.kinflasy.apis.people_filters.conditions.structure.Condition;
 import br.org.kinflasy.libs.people.dto.PersonDto;
-import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

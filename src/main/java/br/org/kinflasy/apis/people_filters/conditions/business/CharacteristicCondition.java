@@ -1,9 +1,9 @@
-package br.org.kinflasy.libs.people_filters.conditions.business;
+package br.org.kinflasy.apis.people_filters.conditions.business;
 
 import org.springframework.lang.NonNull;
 
+import br.org.kinflasy.apis.people_filters.conditions.structure.Condition;
 import br.org.kinflasy.libs.people.dto.PersonDto;
-import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
 import br.org.kinflasy.libs.people_filters.enums.PersonCharacteristic;
 import lombok.AllArgsConstructor;
 import lombok.Data;
