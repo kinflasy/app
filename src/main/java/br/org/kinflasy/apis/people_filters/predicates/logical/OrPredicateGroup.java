@@ -1,26 +1,26 @@
-package br.org.kinflasy.apis.people_filters.conditions.logical;
+package br.org.kinflasy.apis.people_filters.predicates.logical;
 
 import java.util.List;
 
 import org.springframework.lang.NonNull;
 
-import br.org.kinflasy.apis.people_filters.conditions.structure.Condition;
-import br.org.kinflasy.apis.people_filters.conditions.structure.ConditionGroup;
+import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicate;
+import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicateGroup;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class OrConditionGroup extends ConditionGroup {
+public class OrPredicateGroup extends ConditionPredicateGroup {
 
-    public OrConditionGroup(final List<Condition> conditions) {
+    public OrPredicateGroup(final List<ConditionPredicate> conditions) {
         super(conditions);
     }
 
     @Override
     public boolean test(final PersonDto person) {
-        return getConditions().stream()
+        return getPredicates().stream()
 
                 // Combinar todos os predicados com OR (lista vazia retorna false)
                 .anyMatch(filter -> filter.test(person));
@@ -30,7 +30,7 @@ public class OrConditionGroup extends ConditionGroup {
     public @NonNull String toString() {
         final var result = new StringBuilder("matches any:\n");
 
-        final var textList = getConditions().stream()
+        final var textList = getPredicates().stream()
                 .map(filter -> "  - " + filter.toString().replace("\n", "\n  "))
                 .toList();
 

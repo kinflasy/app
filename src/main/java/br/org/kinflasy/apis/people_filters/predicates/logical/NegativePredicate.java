@@ -1,6 +1,6 @@
-package br.org.kinflasy.apis.people_filters.conditions.logical;
+package br.org.kinflasy.apis.people_filters.predicates.logical;
 
-import br.org.kinflasy.apis.people_filters.conditions.structure.Condition;
+import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicate;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,19 +9,19 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class NegativeCondition extends Condition {
+public class NegativePredicate extends ConditionPredicate {
 
-    private final Condition baseFilter;
+    private final ConditionPredicate basePredicate;
 
     @Override
     public boolean test(final PersonDto person) {
         // Negar resultado do filtro base
-        return baseFilter.negate().test(person);
+        return basePredicate.negate().test(person);
     }
 
     @Override
     public String toString() {
-        return "not " + baseFilter.toString();
+        return "not " + basePredicate.toString();
     }
 
 }

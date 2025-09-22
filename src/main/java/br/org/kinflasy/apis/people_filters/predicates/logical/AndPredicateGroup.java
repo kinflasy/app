@@ -1,24 +1,24 @@
-package br.org.kinflasy.apis.people_filters.conditions.logical;
+package br.org.kinflasy.apis.people_filters.predicates.logical;
 
 import java.util.List;
 
-import br.org.kinflasy.apis.people_filters.conditions.structure.Condition;
-import br.org.kinflasy.apis.people_filters.conditions.structure.ConditionGroup;
+import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicate;
+import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicateGroup;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class AndConditionGroup extends ConditionGroup {
+public class AndPredicateGroup extends ConditionPredicateGroup {
 
-    public AndConditionGroup(final List<Condition> conditions) {
+    public AndPredicateGroup(final List<ConditionPredicate> conditions) {
         super(conditions);
     }
 
     @Override
     public boolean test(final PersonDto person) {
-        return getConditions().stream()
+        return getPredicates().stream()
 
                 // Combinar todos os predicados com AND (lista vazia retorna true)
                 .allMatch(filter -> filter.test(person));
@@ -28,7 +28,7 @@ public class AndConditionGroup extends ConditionGroup {
     public String toString() {
         final var result = new StringBuilder("matches all:\n");
 
-        final var textList = getConditions().stream()
+        final var textList = getPredicates().stream()
                 .map(filter -> "  - " + filter.toString().replace("\n", "\n  "))
                 .toList();
 

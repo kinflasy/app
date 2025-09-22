@@ -1,8 +1,8 @@
-package br.org.kinflasy.apis.people_filters.conditions.business;
+package br.org.kinflasy.apis.people_filters.predicates.business;
 
 import org.springframework.lang.NonNull;
 
-import br.org.kinflasy.apis.people_filters.conditions.structure.Condition;
+import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicate;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people_filters.enums.PersonCharacteristic;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class CharacteristicCondition extends Condition {
+public class CharacteristicPredicate extends ConditionPredicate {
 
     private final PersonCharacteristic characteristic;
 
