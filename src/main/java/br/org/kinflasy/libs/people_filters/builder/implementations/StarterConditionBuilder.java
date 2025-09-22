@@ -1,4 +1,4 @@
-package br.org.kinflasy.libs.people_filters.builder.impl;
+package br.org.kinflasy.libs.people_filters.builder.implementations;
 
 import java.util.UUID;
 import java.util.function.Function;

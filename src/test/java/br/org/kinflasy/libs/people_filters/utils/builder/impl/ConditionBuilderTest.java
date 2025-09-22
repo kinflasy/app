@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.enums.Gender;
-import br.org.kinflasy.libs.people_filters.builder.impl.ConditionBuilder;
+import br.org.kinflasy.libs.people_filters.builder.implementations.ConditionBuilder;
 import br.org.kinflasy.libs.people_filters.enums.PersonCharacteristic;
 import lombok.extern.slf4j.Slf4j;
 
