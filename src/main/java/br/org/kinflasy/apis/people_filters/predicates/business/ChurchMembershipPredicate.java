@@ -3,22 +3,17 @@ package br.org.kinflasy.apis.people_filters.predicates.business;
 import org.springframework.stereotype.Component;
 
 import br.org.kinflasy.apis.churches.services.ChurchService;
-import br.org.kinflasy.apis.churches.services.UnitService;
 import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicate;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people_filters.conditions.business.ChurchMembershipCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.UnitMembershipCondition;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 @Component
 public class ChurchMembershipPredicate implements ConditionPredicate<ChurchMembershipCondition> {
 
     private final ChurchService service;
-    private final UnitService unitService;
-
     private final UnitMembershipPredicate unitMembershipPredicate;
 
     @Override
