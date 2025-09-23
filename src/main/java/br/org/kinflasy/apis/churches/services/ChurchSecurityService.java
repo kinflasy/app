@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.clients.PeopleFilterClient;
+import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.people.dto.PersonDto;
@@ -43,6 +44,28 @@ public class ChurchSecurityService {
         final var condition = ConditionBuilder
                 .thePerson()
                 .isIntegrantOfDepartment(departmentId, integrationType)
+                .build();
+
+        final var request = new PeopleFilterTestRequest(condition, person);
+        return client.test(request);
+    }
+
+    public boolean isIntegrantOfSomaInChurch(final UUID churchId, final IntegrationType integrationType,
+            final PersonDto person) {
+        final var condition = ConditionBuilder
+                .thePerson()
+                .isIntegrantOfExtensionInChurch(churchId, Extension.SOMA, integrationType)
+                .build();
+
+        final var request = new PeopleFilterTestRequest(condition, person);
+        return client.test(request);
+    }
+
+    public boolean isIntegrantOfSomaInUnit(final UUID unitId, final IntegrationType integrationType,
+            final PersonDto person) {
+        final var condition = ConditionBuilder
+                .thePerson()
+                .isIntegrantOfExtensionInUnit(unitId, Extension.SOMA, integrationType)
                 .build();
 
         final var request = new PeopleFilterTestRequest(condition, person);
