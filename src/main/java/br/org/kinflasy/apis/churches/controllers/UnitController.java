@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.apis.churches.services.UnitService;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
+import br.org.kinflasy.libs.churches.dto.MembershipRequest;
+import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
@@ -88,6 +90,20 @@ public class UnitController {
     @Operation(summary = "Listar membros", description = "Listar os membros de uma unidade.")
     public ResponseEntity<List<MembershipDto>> listMembers(@PathVariable final UUID id) {
         return new ResponseEntity<>(service.listMembersWithDetails(id), HttpStatus.OK);
+    }
+
+    @PostMapping("{id}/members")
+    @Operation(summary = "Associar membros", description = "Adicionar pessoas pré-existentes como membros de uma unidade.")
+    public ResponseEntity<List<MembershipSimpleDto>> associateMembers(@PathVariable final UUID id,
+            @RequestBody @Valid final List<MembershipRequest> request) {
+        return new ResponseEntity<>(service.addMembers(id, request), HttpStatus.OK);
+    }
+
+    @PostMapping("{id}/members/register")
+    @Operation(summary = "Cadastrar membros", description = "Cadastrar novas pessoas inativas e associá-las como membros de uma unidade.")
+    public ResponseEntity<List<MembershipSimpleDto>> registerMembers(@PathVariable final UUID id,
+            @RequestBody final List<MembershipRequest.Register> request) {
+        return new ResponseEntity<>(service.registerMembers(id, request), HttpStatus.OK);
     }
 
 }
