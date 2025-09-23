@@ -1,6 +1,7 @@
 package br.org.kinflasy.apis.churches.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
@@ -111,6 +112,13 @@ public class UnitService {
         return membershipRepository.findByUnitId(id).stream()
                 .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
                 .toList();
+    }
+
+    public Optional<MembershipSimpleDto> findActiveMembership(final UUID id, final UUID personId) {
+        return membershipRepository.findByUnitIdAndPersonId(id, personId).stream()
+                .filter(membership -> membership.getLeaveDate() == null)
+                .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
+                .findFirst();
     }
 
     public MembershipSimpleDto addMember(final UUID id, final MembershipRequest request) {

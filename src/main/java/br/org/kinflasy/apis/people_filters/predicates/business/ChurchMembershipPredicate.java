@@ -2,9 +2,12 @@ package br.org.kinflasy.apis.people_filters.predicates.business;
 
 import org.springframework.stereotype.Component;
 
+import br.org.kinflasy.apis.churches.services.ChurchService;
+import br.org.kinflasy.apis.churches.services.UnitService;
 import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicate;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people_filters.conditions.business.ChurchMembershipCondition;
+import br.org.kinflasy.libs.people_filters.conditions.business.UnitMembershipCondition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -13,10 +16,23 @@ import lombok.Data;
 @Component
 public class ChurchMembershipPredicate implements ConditionPredicate<ChurchMembershipCondition> {
 
+    private final ChurchService service;
+    private final UnitService unitService;
+
+    private final UnitMembershipPredicate unitMembershipPredicate;
+
     @Override
     public boolean test(final ChurchMembershipCondition condition, final PersonDto person) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'test'");
+        // Listar todas as unidades de uma Igreja
+        final var units = service.listUnits(condition.getChurchId());
+
+        // Testar se uma delas possui a membresia em questão
+        return units.stream()
+                .anyMatch(unit -> {
+                    final var unitMembershipCondition = new UnitMembershipCondition(unit.getId(),
+                            condition.getAffiliation());
+                    return unitMembershipPredicate.test(unitMembershipCondition, person);
+                });
     }
 
 }
