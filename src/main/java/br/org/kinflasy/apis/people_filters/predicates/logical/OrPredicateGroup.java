@@ -1,15 +1,16 @@
 package br.org.kinflasy.apis.people_filters.predicates.logical;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import br.org.kinflasy.apis.people_filters.factories.ConditionPredicateFactory;
 import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicateGroup;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people_filters.conditions.logical.OrConditionGroup;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 
-@Data
 @Component
+@AllArgsConstructor(onConstructor = @__(@Lazy))
 public class OrPredicateGroup implements ConditionPredicateGroup<OrConditionGroup> {
 
     private ConditionPredicateFactory factory;
