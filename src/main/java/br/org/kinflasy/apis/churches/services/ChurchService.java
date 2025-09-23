@@ -3,6 +3,7 @@ package br.org.kinflasy.apis.churches.services;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.converters.ChurchConverter;
@@ -37,11 +38,13 @@ public class ChurchService {
         return converter.toDto(entity);
     }
 
+    @PreAuthorize("@churchSecurityService.isMemberOfChurch(#id, null, principal)")
     public ChurchDto findById(final UUID id) {
         return repository.findById(id).map(converter::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
+    @PreAuthorize("@churchSecurityService.isMemberOfChurch(#id, null, principal)")
     public ChurchDto update(final UUID id, final ChurchRequest request) {
         return repository.findById(id)
                 .map(original -> {
