@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class MembershipDto {
 
     private UUID id;
-    private UnitDto unit;
+    private UUID unitId;
     private PersonSimpleDto person;
     private Affiliation affiliation;
 

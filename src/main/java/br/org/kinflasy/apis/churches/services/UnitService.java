@@ -131,7 +131,6 @@ public class UnitService {
     public List<MembershipDto> listMembersWithDetails(final UUID id) {
         return listMembers(id).stream()
                 .map(simpleDto -> mapper.map(simpleDto, MembershipDto.class)
-                        .setUnit(findById(id))
                         .setPerson(personService.findById(simpleDto.getPersonId())
                                 .map(personDto -> mapper.map(personDto, PersonSimpleDto.class))
                                 .get()))
