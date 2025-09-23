@@ -5,14 +5,13 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.clients.PeopleFilterClient;
+import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people_filters.builder.implementations.ConditionBuilder;
 import br.org.kinflasy.libs.people_filters.dto.PeopleFilterTestRequest;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Service
 @AllArgsConstructor
 public class ChurchSecurityService {
@@ -20,18 +19,34 @@ public class ChurchSecurityService {
     private final PeopleFilterClient client;
 
     public boolean isMemberOfChurch(final UUID churchId, final Affiliation affiliation, final PersonDto person) {
-        log.info("ENTROU");
-        final var condition = ConditionBuilder.thePerson()
-                .not(thePerson -> thePerson
-                        .isMemberOfChurch(churchId, affiliation))
+        final var condition = ConditionBuilder
+                .thePerson()
+                .isMemberOfChurch(churchId, affiliation)
                 .build();
 
         final var request = new PeopleFilterTestRequest(condition, person);
-        boolean result = client.test(request);
+        return client.test(request);
+    }
 
-        log.info("Resultado: {}", result);
+    public boolean isMemberOfUnit(final UUID unitId, final Affiliation affiliation, final PersonDto person) {
+        final var condition = ConditionBuilder
+                .thePerson()
+                .isMemberOfUnit(unitId, affiliation)
+                .build();
 
-        return result;
+        final var request = new PeopleFilterTestRequest(condition, person);
+        return client.test(request);
+    }
+
+    public boolean isIntegrantOfDepartment(final UUID departmentId, final IntegrationType integrationType,
+            final PersonDto person) {
+        final var condition = ConditionBuilder
+                .thePerson()
+                .isIntegrantOfDepartment(departmentId, integrationType)
+                .build();
+
+        final var request = new PeopleFilterTestRequest(condition, person);
+        return client.test(request);
     }
 
 }
