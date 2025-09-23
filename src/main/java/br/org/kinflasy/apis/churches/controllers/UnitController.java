@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.apis.churches.services.UnitService;
+import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
@@ -72,7 +73,7 @@ public class UnitController {
 
     @GetMapping("{id}/departments")
     @Operation(summary = "Listar departamentos", description = "Listar os departamentos de uma unidade.")
-    public ResponseEntity<List<DepartmentDto>> getDepartments(@PathVariable final UUID id) {
+    public ResponseEntity<List<DepartmentDto>> listDepartments(@PathVariable final UUID id) {
         return new ResponseEntity<>(service.listDepartments(id), HttpStatus.OK);
     }
 
@@ -81,6 +82,12 @@ public class UnitController {
     public ResponseEntity<DepartmentDto> createDepartment(@PathVariable final UUID id,
             @RequestBody @Valid final DepartmentRequest request) {
         return new ResponseEntity<>(service.createDepartment(id, request), HttpStatus.CREATED);
+    }
+
+    @GetMapping("{id}/members")
+    @Operation(summary = "Listar membros", description = "Listar os membros de uma unidade.")
+    public ResponseEntity<List<MembershipDto>> listMembers(@PathVariable final UUID id) {
+        return new ResponseEntity<>(service.listMembersWithDetails(id), HttpStatus.OK);
     }
 
 }

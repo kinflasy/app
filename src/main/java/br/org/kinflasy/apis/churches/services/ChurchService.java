@@ -38,13 +38,12 @@ public class ChurchService {
         return converter.toDto(entity);
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInChurch(#id, null, principal)")
     public ChurchDto findById(final UUID id) {
         return repository.findById(id).map(converter::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInChurch(#id, null, principal)")
+    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInChurch(#id, principal)")
     public ChurchDto update(final UUID id, final ChurchRequest request) {
         return repository.findById(id)
                 .map(original -> {
@@ -56,7 +55,7 @@ public class ChurchService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInChurch(#id, integrationType.LEADER, principal)")
+    @PreAuthorize("@churchSecurityService.isLeaderOfSomaInChurch(#id, principal)")
     public void delete(final UUID id) {
         // Excluir unidades
         unitService.listByChurchId(id)
@@ -72,6 +71,7 @@ public class ChurchService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
+    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInChurch(#id, principal)")
     public UnitDto createUnit(final UUID id, final UnitRequest request) {
         return repository.findById(id)
                 .map(ignoredChurch -> unitService.create(id, request))

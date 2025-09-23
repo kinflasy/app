@@ -50,22 +50,40 @@ public class ChurchSecurityService {
         return client.test(request);
     }
 
-    public boolean isIntegrantOfSomaInChurch(final UUID churchId, final IntegrationType integrationType,
-            final PersonDto person) {
+    public boolean isIntegrantOfSomaInChurch(final UUID churchId, final PersonDto person) {
         final var condition = ConditionBuilder
                 .thePerson()
-                .isIntegrantOfExtensionInChurch(churchId, Extension.SOMA, integrationType)
+                .isIntegrantOfExtensionInChurch(churchId, Extension.SOMA, null)
                 .build();
 
         final var request = new PeopleFilterTestRequest(condition, person);
         return client.test(request);
     }
 
-    public boolean isIntegrantOfSomaInUnit(final UUID unitId, final IntegrationType integrationType,
-            final PersonDto person) {
+    public boolean isIntegrantOfSomaInUnit(final UUID unitId, final PersonDto person) {
         final var condition = ConditionBuilder
                 .thePerson()
-                .isIntegrantOfExtensionInUnit(unitId, Extension.SOMA, integrationType)
+                .isIntegrantOfExtensionInUnit(unitId, Extension.SOMA, null)
+                .build();
+
+        final var request = new PeopleFilterTestRequest(condition, person);
+        return client.test(request);
+    }
+
+    public boolean isLeaderOfSomaInChurch(final UUID churchId, final PersonDto person) {
+        final var condition = ConditionBuilder
+                .thePerson()
+                .isIntegrantOfExtensionInChurch(churchId, Extension.SOMA, IntegrationType.LEADER)
+                .build();
+
+        final var request = new PeopleFilterTestRequest(condition, person);
+        return client.test(request);
+    }
+
+    public boolean isLeaderOfSomaInUnit(final UUID unitId, final PersonDto person) {
+        final var condition = ConditionBuilder
+                .thePerson()
+                .isIntegrantOfExtensionInUnit(unitId, Extension.SOMA, IntegrationType.LEADER)
                 .build();
 
         final var request = new PeopleFilterTestRequest(condition, person);
