@@ -70,7 +70,8 @@ public class StarterConditionBuilder implements SingleConditionBuilder {
     @Override
     public ReadyConditionBuilder isIntegrantOfExtensionInChurch(final UUID churchId, final Extension extension,
             final IntegrationType integrationType) {
-        return new FilledConditionBuilder(concrete.isIntegrantOfExtensionInUnit(churchId, extension, integrationType));
+        return new FilledConditionBuilder(
+                concrete.isIntegrantOfExtensionInChurch(churchId, extension, integrationType));
     }
 
 }

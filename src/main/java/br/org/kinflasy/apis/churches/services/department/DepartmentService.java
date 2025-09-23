@@ -51,9 +51,9 @@ public class DepartmentService {
         return converter.toDto(created);
     }
 
-    public DepartmentDto findById(final UUID id) {
-        final var entity = repository.findById(id);
-        return converter.toDto(entity);
+    public Optional<DepartmentDto> findById(final UUID id) {
+        return repository.findById(id)
+                .map(converter::toDto);
     }
 
     public DepartmentDto update(final UUID id, final DepartmentRequest request) {

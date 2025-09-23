@@ -8,7 +8,9 @@ import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrantInChurchCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrantInUnitCondition;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Data
 @Component
 public class ExtensionIntegrantInChurchPredicate implements ConditionPredicate<ExtensionIntegrantInChurchCondition> {

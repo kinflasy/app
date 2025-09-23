@@ -11,7 +11,6 @@ import br.org.kinflasy.apis.churches.entities.department.Integration;
 import br.org.kinflasy.apis.churches.repositories.department.IntegrationRepository;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationRequest;
-import br.org.kinflasy.libs.churches.dto.departments.IntegrationSimpleDto;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,10 +47,10 @@ public class IntegrationService {
         return mapper.map(saved, IntegrationDto.class);
     }
 
-    public Optional<IntegrationSimpleDto> findIntegration(final UUID departmentId, final UUID personId) {
+    public Optional<IntegrationDto> findIntegration(final UUID departmentId, final UUID personId) {
         return repository.findByDepartmentIdAndPersonId(departmentId, personId).stream()
                 .findFirst()
-                .map(integration -> mapper.map(integration, IntegrationSimpleDto.class));
+                .map(integration -> mapper.map(integration, IntegrationDto.class));
     }
 
 }

@@ -1,5 +1,7 @@
 package br.org.kinflasy.apis.people_filters.predicates.business;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Component;
 
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
@@ -8,7 +10,9 @@ import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredica
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrantInUnitCondition;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Data
 @Component
 public class ExtensionIntegrantInUnitPredicate implements ConditionPredicate<ExtensionIntegrantInUnitCondition> {
@@ -19,28 +23,25 @@ public class ExtensionIntegrantInUnitPredicate implements ConditionPredicate<Ext
     @Override
     public boolean test(final ExtensionIntegrantInUnitCondition condition, final PersonDto person) {
         return service.listByPerson(person.getId()).stream()
-                .anyMatch(integration -> {
-                    // Se o departamento for desta unidade
-                    if (integration.getDepartment().getUnitId().equals(condition.getUnitId())) {
+                .anyMatch(integration -> Optional
+                        // Verificar integração da pessoa com o departamento
+                        .ofNullable(condition.getType())
+                        .map(conditionType -> conditionType.equals(integration.getType()))
+                        // Se o tipo for nulo na condição, todos os tipos de integração têm acesso
+                        .or(() -> Optional.of(true))
+                        // Avançar só se o resultado for positivo
+                        .filter(sameTypeOrAny -> sameTypeOrAny)
 
-                        // Se contiver a extensão
-                        return departmentService
-                                .findExtension(integration.getDepartment().getId(), condition.getExtension())
-                                .map(ignoredSubscription -> {
+                        // Verificar se o departamento é desta unidade
+                        .flatMap(ignore -> departmentService.findById(integration.getDepartmentId()))
+                        .filter(department -> department.getUnitId().equals(condition.getUnitId()))
 
-                                    // Se a pessoa tiver o tipo de integração pedido (ou não for pedido nenhum
-                                    // específico)
-                                    if (condition.getType() != null) {
-                                        return condition.getType().equals(integration.getType());
-                                    } else {
-                                        return true;
-                                    }
-                                })
-                                .orElse(false);
-                    } else {
-                        return false;
-                    }
-                });
+                        // Verificar se o departamento possui a extensão
+                        .flatMap(department -> departmentService
+                                .findExtension(department.getId(), condition.getExtension()))
+
+                        // Obter resultado
+                        .isPresent());
     }
 
 }
