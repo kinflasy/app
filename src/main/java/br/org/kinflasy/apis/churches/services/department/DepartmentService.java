@@ -1,6 +1,7 @@
 package br.org.kinflasy.apis.churches.services.department;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
@@ -80,6 +81,11 @@ public class DepartmentService {
         final var saved = subscriptionRepository.save(entity);
 
         return mapper.map(saved, ExtensionSubscriptionDto.class);
+    }
+
+    public Optional<ExtensionSubscriptionDto> findExtension(final UUID id, final Extension extension) {
+        return subscriptionRepository.findByDepartmentIdAndExtension(id, extension)
+                .map(subscription -> mapper.map(subscription, ExtensionSubscriptionDto.class));
     }
 
     public void dissociateExtension(final UUID id, final ExtensionSubscriptionRequest request) {
