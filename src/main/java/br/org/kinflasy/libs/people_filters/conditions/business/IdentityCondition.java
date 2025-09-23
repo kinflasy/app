@@ -5,12 +5,10 @@ import java.util.UUID;
 import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class IdentityCondition extends Condition {
+public class IdentityCondition implements Condition {
 
     private final UUID personId;
 

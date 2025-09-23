@@ -6,12 +6,10 @@ import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class DepartmentIntegrationCondition extends Condition {
+public class DepartmentIntegrationCondition implements Condition {
 
     private final UUID departmentId;
     private final IntegrationType type;

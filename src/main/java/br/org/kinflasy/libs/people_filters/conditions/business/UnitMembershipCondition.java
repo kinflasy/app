@@ -6,12 +6,10 @@ import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
-public class UnitMembershipCondition extends Condition {
+public class UnitMembershipCondition implements Condition {
 
     private final UUID unitId;
     private final Affiliation affiliation;
