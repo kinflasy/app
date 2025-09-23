@@ -12,7 +12,7 @@ import lombok.Data;
 @Component
 public class AndPredicateGroup implements ConditionPredicateGroup<AndConditionGroup> {
 
-    private final ConditionPredicateFactory factory;
+    private ConditionPredicateFactory factory;
 
     @Override
     public boolean test(final AndConditionGroup condition, final PersonDto person) {

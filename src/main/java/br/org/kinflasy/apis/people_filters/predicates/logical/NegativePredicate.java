@@ -6,15 +6,13 @@ import br.org.kinflasy.apis.people_filters.factories.ConditionPredicateFactory;
 import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicate;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people_filters.conditions.logical.NegativeCondition;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 @Component
 public class NegativePredicate implements ConditionPredicate<NegativeCondition> {
 
-    private final ConditionPredicateFactory factory;
+    private ConditionPredicateFactory factory;
 
     @Override
     public boolean test(final NegativeCondition condition, final PersonDto person) {
