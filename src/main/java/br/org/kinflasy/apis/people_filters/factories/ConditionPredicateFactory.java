@@ -1,8 +1,8 @@
 package br.org.kinflasy.apis.people_filters.factories;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
@@ -24,32 +24,44 @@ import br.org.kinflasy.libs.people_filters.conditions.logical.AndConditionGroup;
 import br.org.kinflasy.libs.people_filters.conditions.logical.NegativeCondition;
 import br.org.kinflasy.libs.people_filters.conditions.logical.OrConditionGroup;
 import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
+import lombok.Value;
 
 @Component
 public class ConditionPredicateFactory {
 
-    private final Map<Class<? extends Condition>, ConditionPredicate> map;
+    @Value
+    private class ConditionEntry<C extends Condition> {
+        private Class<C> conditionClass;
+        private ConditionPredicate<C> predicate;
+    }
 
-    public ConditionPredicateFactory(final List<ConditionPredicate> predicates) {
-        // Inicializar mapa de chave-valor
-        map = new HashMap<>();
+    private final Set<ConditionEntry<? extends Condition>> entrySet = new HashSet<>();
 
+    public ConditionPredicateFactory(final List<ConditionPredicate<?>> predicates) {
         // Associar condições lógicas a seus predicados
-        map.put(AndConditionGroup.class, findCondition(predicates, AndPredicateGroup.class));
-        map.put(OrConditionGroup.class, findCondition(predicates, OrPredicateGroup.class));
-        map.put(NegativeCondition.class, findCondition(predicates, NegativePredicate.class));
+        entrySet.add(new ConditionEntry<>(AndConditionGroup.class,
+                findPredicate(predicates, AndPredicateGroup.class)));
+        entrySet.add(new ConditionEntry<>(OrConditionGroup.class,
+                findPredicate(predicates, OrPredicateGroup.class)));
+        entrySet.add(new ConditionEntry<>(NegativeCondition.class,
+                findPredicate(predicates, NegativePredicate.class)));
 
         // Associar condições de negócio a seus predicados
-        map.put(CharacteristicCondition.class, findCondition(predicates, CharacteristicPredicate.class));
-        map.put(IdentityCondition.class, findCondition(predicates, IdentityPredicate.class));
-        map.put(ChurchMembershipCondition.class, findCondition(predicates, ChurchMembershipPredicate.class));
-        map.put(UnitMembershipCondition.class, findCondition(predicates, UnitMembershipPredicate.class));
-        map.put(DepartmentIntegrationCondition.class, findCondition(predicates, DepartmentIntegrationPredicate.class));
+        entrySet.add(new ConditionEntry<>(CharacteristicCondition.class,
+                findPredicate(predicates, CharacteristicPredicate.class)));
+        entrySet.add(new ConditionEntry<>(IdentityCondition.class,
+                findPredicate(predicates, IdentityPredicate.class)));
+        entrySet.add(new ConditionEntry<>(ChurchMembershipCondition.class,
+                findPredicate(predicates, ChurchMembershipPredicate.class)));
+        entrySet.add(new ConditionEntry<>(UnitMembershipCondition.class,
+                findPredicate(predicates, UnitMembershipPredicate.class)));
+        entrySet.add(new ConditionEntry<>(DepartmentIntegrationCondition.class,
+                findPredicate(predicates, DepartmentIntegrationPredicate.class)));
     }
 
     @SuppressWarnings("unchecked")
-    private <P extends ConditionPredicate> P findCondition(List<ConditionPredicate> predicates,
-            Class<P> predicateClass) {
+    private <C extends Condition, P extends ConditionPredicate<C>> P findPredicate(
+            List<ConditionPredicate<?>> predicates, Class<P> predicateClass) {
         return predicates.stream()
                 .filter(conditionPredicate -> conditionPredicate.getClass().equals(predicateClass))
                 .findFirst()
@@ -58,18 +70,15 @@ public class ConditionPredicateFactory {
                         () -> new IllegalStateException("Condition not found for class: " + predicateClass.getName()));
     }
 
-    public ConditionPredicate getCondition(Condition contract) {
-        final var condition = map.get(contract.getClass());
-        if (condition == null) {
-            throw new IllegalArgumentException("No condition found for contract: " + contract.getClass().getName());
-        }
-        // Aqui você 'transforma' o contract em uma condition
-        // return condition.withContract(contract);
-        // Você pode ter um método na
-        // interface Condition para injetar os dados
-        // do contract
-
-        return null;
+    @SuppressWarnings("unchecked")
+    public <C extends Condition> ConditionPredicate<C> getPredicate(final C condition) {
+        return entrySet
+                .stream()
+                .filter(entry -> entry.getConditionClass().equals(condition.getClass()))
+                .findFirst()
+                .map(entry -> ((ConditionEntry<C>) entry).getPredicate())
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "No condition found for contract: " + condition.getClass().getName()));
     }
 
 }

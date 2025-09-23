@@ -1,19 +1,18 @@
 package br.org.kinflasy.apis.people_filters.predicates.structure;
 
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
+import br.org.kinflasy.libs.people_filters.conditions.structure.ConditionGroup;
+import lombok.Value;
 
-@Data
-@AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Component
-public abstract class ConditionPredicateGroup extends ConditionPredicate {
+public interface ConditionPredicateGroup<C extends ConditionGroup> extends ConditionPredicate<C> {
 
-    private final List<ConditionPredicate> predicates;
+    @Value
+    class Tuple <C extends Condition> {
+        private final C condition;
+        private final ConditionPredicate<C> predicate;
+    }
 
 }

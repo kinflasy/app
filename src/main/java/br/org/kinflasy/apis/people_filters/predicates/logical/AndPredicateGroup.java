@@ -1,45 +1,29 @@
 package br.org.kinflasy.apis.people_filters.predicates.logical;
 
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
-import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicate;
+import br.org.kinflasy.apis.people_filters.factories.ConditionPredicateFactory;
 import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicateGroup;
 import br.org.kinflasy.libs.people.dto.PersonDto;
+import br.org.kinflasy.libs.people_filters.conditions.logical.AndConditionGroup;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @Component
-public class AndPredicateGroup extends ConditionPredicateGroup {
+public class AndPredicateGroup implements ConditionPredicateGroup<AndConditionGroup> {
 
-    public AndPredicateGroup(final List<ConditionPredicate> conditions) {
-        super(conditions);
-    }
+    private final ConditionPredicateFactory factory;
 
     @Override
-    public boolean test(final PersonDto person) {
-        return getPredicates().stream()
+    public boolean test(final AndConditionGroup condition, final PersonDto person) {
+        return condition.getConditions().stream()
+
+                // Obter predicate e mapear para tupla
+                .map(innerCondition -> new ConditionPredicateGroup.Tuple<>(innerCondition,
+                        factory.getPredicate(innerCondition)))
 
                 // Combinar todos os predicados com AND (lista vazia retorna true)
-                .allMatch(filter -> filter.test(person));
-    }
-
-    @Override
-    public String toString() {
-        final var result = new StringBuilder("matches all:\n");
-
-        final var textList = getPredicates().stream()
-                .map(filter -> "  - " + filter.toString().replace("\n", "\n  "))
-                .toList();
-
-        final var text = String.join("\n", textList);
-
-        result.append(text);
-
-        return result.toString();
+                .allMatch(tuple -> tuple.getPredicate().test(tuple.getCondition(), person));
     }
 
 }

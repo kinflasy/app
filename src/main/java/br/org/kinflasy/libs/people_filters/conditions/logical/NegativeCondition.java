@@ -10,6 +10,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class NegativeCondition extends Condition {
 
-    private final Condition baseFilter;
+    private final Condition baseCondition;
 
 }
