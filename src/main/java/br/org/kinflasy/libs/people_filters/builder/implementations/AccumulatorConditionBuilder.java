@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
+import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.people_filters.builder.contracts.AccumulatedConditionBuilder;
@@ -70,6 +71,20 @@ public abstract class AccumulatorConditionBuilder implements MultipleConditionBu
     public AccumulatedConditionBuilder isIntegrantOfDepartment(final UUID departmentId,
             final IntegrationType integrationType) {
         conditions.add(concrete.isIntegrantOfDepartment(departmentId, integrationType));
+        return this;
+    }
+
+    @Override
+    public AccumulatedConditionBuilder isIntegrantOfExtensionInChurch(final UUID churchId, final Extension extension,
+            final IntegrationType integrationType) {
+        conditions.add(concrete.isIntegrantOfExtensionInChurch(churchId, extension, integrationType));
+        return this;
+    }
+
+    @Override
+    public AccumulatedConditionBuilder isIntegrantOfExtensionInUnit(final UUID unitId, final Extension extension,
+            final IntegrationType integrationType) {
+        conditions.add(concrete.isIntegrantOfExtensionInUnit(unitId, extension, integrationType));
         return this;
     }
 

@@ -3,6 +3,7 @@ package br.org.kinflasy.libs.people_filters.builder.implementations;
 import java.util.UUID;
 import java.util.function.Function;
 
+import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.people_filters.builder.contracts.AccumulatedConditionBuilder;
@@ -58,6 +59,18 @@ public class StarterConditionBuilder implements SingleConditionBuilder {
     public ReadyConditionBuilder isIntegrantOfDepartment(final UUID departmentId,
             final IntegrationType integrationType) {
         return new FilledConditionBuilder(concrete.isIntegrantOfDepartment(departmentId, integrationType));
+    }
+
+    @Override
+    public ReadyConditionBuilder isIntegrantOfExtensionInUnit(final UUID unitId, final Extension extension,
+            final IntegrationType integrationType) {
+        return new FilledConditionBuilder(concrete.isIntegrantOfExtensionInUnit(unitId, extension, integrationType));
+    }
+
+    @Override
+    public ReadyConditionBuilder isIntegrantOfExtensionInChurch(final UUID churchId, final Extension extension,
+            final IntegrationType integrationType) {
+        return new FilledConditionBuilder(concrete.isIntegrantOfExtensionInUnit(churchId, extension, integrationType));
     }
 
 }

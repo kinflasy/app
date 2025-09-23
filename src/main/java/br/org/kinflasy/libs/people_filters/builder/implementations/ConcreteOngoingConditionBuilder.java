@@ -3,6 +3,7 @@ package br.org.kinflasy.libs.people_filters.builder.implementations;
 import java.util.UUID;
 import java.util.function.Function;
 
+import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.people_filters.builder.contracts.AccumulatedConditionBuilder;
@@ -13,6 +14,8 @@ import br.org.kinflasy.libs.people_filters.builder.contracts.SingleConditionBuil
 import br.org.kinflasy.libs.people_filters.conditions.business.CharacteristicCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.ChurchMembershipCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.DepartmentIntegrationCondition;
+import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrantInChurchCondition;
+import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrantInUnitCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.IdentityCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.UnitMembershipCondition;
 import br.org.kinflasy.libs.people_filters.conditions.logical.NegativeCondition;
@@ -24,44 +27,58 @@ import lombok.AllArgsConstructor;
 public class ConcreteOngoingConditionBuilder implements OngoingConditionBuilder<Condition> {
 
     @Override
-    public Condition not(Function<SingleConditionBuilder, ReadyConditionBuilder> thePerson) {
+    public Condition not(final Function<SingleConditionBuilder, ReadyConditionBuilder> thePerson) {
         final var baseCondition = thePerson.apply(new StarterConditionBuilder(this)).build();
         return new NegativeCondition(baseCondition);
     }
 
     @Override
-    public Condition matchesAllConditions(Function<MultipleConditionBuilder, AccumulatedConditionBuilder> thePerson) {
+    public Condition matchesAllConditions(
+            final Function<MultipleConditionBuilder, AccumulatedConditionBuilder> thePerson) {
         return thePerson.apply(new AndConditionBuilder(this)).join().build();
     }
 
     @Override
-    public Condition matchesAnyCondition(Function<MultipleConditionBuilder, AccumulatedConditionBuilder> thePerson) {
+    public Condition matchesAnyCondition(
+            final Function<MultipleConditionBuilder, AccumulatedConditionBuilder> thePerson) {
         return thePerson.apply(new OrConditionBuilder(this)).join().build();
     }
 
     @Override
-    public Condition is(UUID personId) {
+    public Condition is(final UUID personId) {
         return new IdentityCondition(personId);
     }
 
     @Override
-    public Condition is(PersonCharacteristic characteristic) {
+    public Condition is(final PersonCharacteristic characteristic) {
         return new CharacteristicCondition(characteristic);
     }
 
     @Override
-    public Condition isMemberOfChurch(UUID churchId, Affiliation affiliation) {
+    public Condition isMemberOfChurch(final UUID churchId, final Affiliation affiliation) {
         return new ChurchMembershipCondition(churchId, affiliation);
     }
 
     @Override
-    public Condition isMemberOfUnit(UUID unitId, Affiliation affiliation) {
+    public Condition isMemberOfUnit(final UUID unitId, final Affiliation affiliation) {
         return new UnitMembershipCondition(unitId, affiliation);
     }
 
     @Override
-    public Condition isIntegrantOfDepartment(UUID departmentId, IntegrationType integrationType) {
+    public Condition isIntegrantOfDepartment(final UUID departmentId, final IntegrationType integrationType) {
         return new DepartmentIntegrationCondition(departmentId, integrationType);
+    }
+
+    @Override
+    public Condition isIntegrantOfExtensionInUnit(final UUID unitId, final Extension extension,
+            final IntegrationType integrationType) {
+        return new ExtensionIntegrantInUnitCondition(unitId, extension, integrationType);
+    }
+
+    @Override
+    public Condition isIntegrantOfExtensionInChurch(final UUID churchId, final Extension extension,
+            final IntegrationType integrationType) {
+        return new ExtensionIntegrantInChurchCondition(churchId, extension, integrationType);
     }
 
 }
