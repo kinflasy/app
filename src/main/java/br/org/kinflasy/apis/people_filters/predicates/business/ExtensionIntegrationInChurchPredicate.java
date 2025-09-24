@@ -5,24 +5,24 @@ import org.springframework.stereotype.Component;
 import br.org.kinflasy.apis.churches.services.ChurchService;
 import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicate;
 import br.org.kinflasy.libs.people.dto.PersonDto;
-import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrantInChurchCondition;
-import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrantInUnitCondition;
+import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrationInChurchCondition;
+import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrationInUnitCondition;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Data
 @Component
-public class ExtensionIntegrantInChurchPredicate implements ConditionPredicate<ExtensionIntegrantInChurchCondition> {
+public class ExtensionIntegrationInChurchPredicate implements ConditionPredicate<ExtensionIntegrationInChurchCondition> {
 
     private final ChurchService service;
-    private final ExtensionIntegrantInUnitPredicate extensionIntegrantInUnitPredicate;
+    private final ExtensionIntegrationInUnitPredicate extensionIntegrantInUnitPredicate;
 
     @Override
-    public boolean test(final ExtensionIntegrantInChurchCondition condition, final PersonDto person) {
+    public boolean test(final ExtensionIntegrationInChurchCondition condition, final PersonDto person) {
         return service.listUnits(condition.getChurchId()).stream()
                 .anyMatch(unit -> {
-                    final var unitCondition = new ExtensionIntegrantInUnitCondition(unit.getId(),
+                    final var unitCondition = new ExtensionIntegrationInUnitCondition(unit.getId(),
                             condition.getExtension(), condition.getType());
 
                     return extensionIntegrantInUnitPredicate.test(unitCondition, person);

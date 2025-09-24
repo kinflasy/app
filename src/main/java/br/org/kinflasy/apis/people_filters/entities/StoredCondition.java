@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 @Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)

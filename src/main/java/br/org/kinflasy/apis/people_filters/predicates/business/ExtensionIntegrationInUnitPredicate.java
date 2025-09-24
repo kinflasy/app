@@ -8,20 +8,20 @@ import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.apis.churches.services.department.IntegrationService;
 import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicate;
 import br.org.kinflasy.libs.people.dto.PersonDto;
-import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrantInUnitCondition;
+import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrationInUnitCondition;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Data
 @Component
-public class ExtensionIntegrantInUnitPredicate implements ConditionPredicate<ExtensionIntegrantInUnitCondition> {
+public class ExtensionIntegrationInUnitPredicate implements ConditionPredicate<ExtensionIntegrationInUnitCondition> {
 
     private final IntegrationService service;
     private final DepartmentService departmentService;
 
     @Override
-    public boolean test(final ExtensionIntegrantInUnitCondition condition, final PersonDto person) {
+    public boolean test(final ExtensionIntegrationInUnitCondition condition, final PersonDto person) {
         return service.listByPerson(person.getId()).stream()
                 .anyMatch(integration -> Optional
                         // Verificar integração da pessoa com o departamento

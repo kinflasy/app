@@ -14,8 +14,8 @@ import br.org.kinflasy.libs.people_filters.builder.contracts.SingleConditionBuil
 import br.org.kinflasy.libs.people_filters.conditions.business.CharacteristicCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.ChurchMembershipCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.DepartmentIntegrationCondition;
-import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrantInChurchCondition;
-import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrantInUnitCondition;
+import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrationInChurchCondition;
+import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrationInUnitCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.IdentityCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.UnitMembershipCondition;
 import br.org.kinflasy.libs.people_filters.conditions.logical.NegativeCondition;
@@ -72,13 +72,13 @@ public class ConcreteOngoingConditionBuilder implements OngoingConditionBuilder<
     @Override
     public Condition isIntegrantOfExtensionInUnit(final UUID unitId, final Extension extension,
             final IntegrationType integrationType) {
-        return new ExtensionIntegrantInUnitCondition(unitId, extension, integrationType);
+        return new ExtensionIntegrationInUnitCondition(unitId, extension, integrationType);
     }
 
     @Override
     public Condition isIntegrantOfExtensionInChurch(final UUID churchId, final Extension extension,
             final IntegrationType integrationType) {
-        return new ExtensionIntegrantInChurchCondition(churchId, extension, integrationType);
+        return new ExtensionIntegrationInChurchCondition(churchId, extension, integrationType);
     }
 
 }

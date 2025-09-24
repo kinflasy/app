@@ -8,9 +8,9 @@ import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
 import lombok.Value;
 
 @Value
-public class ExtensionIntegrantInChurchCondition implements Condition {
+public class ExtensionIntegrationInUnitCondition implements Condition {
 
-    private final UUID churchId;
+    private final UUID unitId;
     private final Extension extension;
     private final IntegrationType type;
 
