@@ -16,7 +16,6 @@ import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.apis.people.services.InactivePersonService;
 import br.org.kinflasy.apis.people.services.PersonService;
 import br.org.kinflasy.clients.AddressClient;
-import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.MembershipRequest;
 import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto;
@@ -47,8 +46,6 @@ public class UnitService {
     private final DepartmentService departmentService;
     private final MembershipRepository membershipRepository;
 
-    private final AuthUtils authUtils;
-
     public List<UnitDto> listByChurchId(final UUID churchId) {
         return repository.findByChurchId(churchId).stream()
                 .map(converter::toDto)
@@ -57,22 +54,20 @@ public class UnitService {
 
     @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInChurch(#churchId, principal)")
     public UnitDto create(final UUID churchId, final UnitRequest request) {
-        return authUtils.runAsSystem(() -> {
-            // Construir unidade
-            final var unit = converter.toEntity(request);
+        // Construir unidade
+        final var unit = converter.toEntity(request);
 
-            // Criar e associar endereço
-            final var address = addressClient.create(request.getAddress());
-            unit.setAddressId(address.getId());
+        // Criar e associar endereço
+        final var address = addressClient.create(request.getAddress());
+        unit.setAddressId(address.getId());
 
-            // Associar Igreja
-            unit.setChurchId(churchId);
+        // Associar Igreja
+        unit.setChurchId(churchId);
 
-            // Salvar
-            final var created = repository.save(unit);
+        // Salvar
+        final var created = repository.save(unit);
 
-            return converter.toDto(created);
-        });
+        return converter.toDto(created);
     }
 
     public UnitDto findById(final UUID id) {
