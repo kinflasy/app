@@ -2,10 +2,12 @@ package br.org.kinflasy.libs.people_filters.builder.implementations;
 
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
+import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people_filters.builder.contracts.AccumulatedConditionBuilder;
 import br.org.kinflasy.libs.people_filters.builder.contracts.MultipleConditionBuilder;
 import br.org.kinflasy.libs.people_filters.builder.contracts.ReadyConditionBuilder;
@@ -21,6 +23,11 @@ public class StarterConditionBuilder implements SingleConditionBuilder {
     @Override
     public ReadyConditionBuilder not(final Function<SingleConditionBuilder, ReadyConditionBuilder> thePerson) {
         return new FilledConditionBuilder(concrete.not(thePerson));
+    }
+
+    @Override
+    public ReadyConditionBuilder matches(final Predicate<PersonDto> predicate) {
+        return new FilledConditionBuilder(concrete.matches(predicate));
     }
 
     @Override

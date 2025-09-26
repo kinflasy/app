@@ -2,15 +2,19 @@ package br.org.kinflasy.libs.people_filters.builder.contracts;
 
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
+import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people_filters.enums.PersonCharacteristic;
 
 public interface OngoingConditionBuilder<T> {
 
     T not(Function<SingleConditionBuilder, ReadyConditionBuilder> thePerson);
+
+    T matches(Predicate<PersonDto> thePerson);
 
     T matchesAllConditions(Function<MultipleConditionBuilder, AccumulatedConditionBuilder> thePerson);
 

@@ -2,10 +2,12 @@ package br.org.kinflasy.libs.people_filters.builder.implementations;
 
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
+import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people_filters.builder.contracts.AccumulatedConditionBuilder;
 import br.org.kinflasy.libs.people_filters.builder.contracts.MultipleConditionBuilder;
 import br.org.kinflasy.libs.people_filters.builder.contracts.OngoingConditionBuilder;
@@ -16,6 +18,7 @@ import br.org.kinflasy.libs.people_filters.conditions.business.ChurchMembershipC
 import br.org.kinflasy.libs.people_filters.conditions.business.DepartmentIntegrationCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrationInChurchCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrationInUnitCondition;
+import br.org.kinflasy.libs.people_filters.conditions.business.FunctionalCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.IdentityCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.UnitMembershipCondition;
 import br.org.kinflasy.libs.people_filters.conditions.logical.NegativeCondition;
@@ -30,6 +33,11 @@ public class ConcreteOngoingConditionBuilder implements OngoingConditionBuilder<
     public Condition not(final Function<SingleConditionBuilder, ReadyConditionBuilder> thePerson) {
         final var baseCondition = thePerson.apply(new StarterConditionBuilder(this)).build();
         return new NegativeCondition(baseCondition);
+    }
+
+    @Override
+    public Condition matches(final Predicate<PersonDto> predicate) {
+        return new FunctionalCondition(predicate);
     }
 
     @Override

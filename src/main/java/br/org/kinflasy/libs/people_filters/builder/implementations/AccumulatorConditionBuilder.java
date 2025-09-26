@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
+import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people_filters.builder.contracts.AccumulatedConditionBuilder;
 import br.org.kinflasy.libs.people_filters.builder.contracts.MultipleConditionBuilder;
 import br.org.kinflasy.libs.people_filters.builder.contracts.ReadyConditionBuilder;
@@ -26,6 +28,12 @@ public abstract class AccumulatorConditionBuilder implements MultipleConditionBu
     @Override
     public AccumulatedConditionBuilder not(final Function<SingleConditionBuilder, ReadyConditionBuilder> thePerson) {
         conditions.add(concrete.not(thePerson));
+        return this;
+    }
+
+    @Override
+    public AccumulatedConditionBuilder matches(final Predicate<PersonDto> predicate) {
+        conditions.add(concrete.matches(predicate));
         return this;
     }
 

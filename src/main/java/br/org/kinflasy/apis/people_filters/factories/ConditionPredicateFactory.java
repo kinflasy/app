@@ -22,6 +22,7 @@ import br.org.kinflasy.apis.people_filters.predicates.business.ChurchMembershipP
 import br.org.kinflasy.apis.people_filters.predicates.business.DepartmentIntegrationPredicate;
 import br.org.kinflasy.apis.people_filters.predicates.business.ExtensionIntegrationInChurchPredicate;
 import br.org.kinflasy.apis.people_filters.predicates.business.ExtensionIntegrationInUnitPredicate;
+import br.org.kinflasy.apis.people_filters.predicates.business.FunctionalConditionPredicate;
 import br.org.kinflasy.apis.people_filters.predicates.business.IdentityPredicate;
 import br.org.kinflasy.apis.people_filters.predicates.business.UnitMembershipPredicate;
 import br.org.kinflasy.apis.people_filters.predicates.logical.AndPredicateGroup;
@@ -33,6 +34,7 @@ import br.org.kinflasy.libs.people_filters.conditions.business.ChurchMembershipC
 import br.org.kinflasy.libs.people_filters.conditions.business.DepartmentIntegrationCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrationInChurchCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrationInUnitCondition;
+import br.org.kinflasy.libs.people_filters.conditions.business.FunctionalCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.IdentityCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.UnitMembershipCondition;
 import br.org.kinflasy.libs.people_filters.conditions.logical.AndConditionGroup;
@@ -69,6 +71,10 @@ public class ConditionPredicateFactory {
                 findPredicateInstance(predicates, NegativePredicate.class)));
 
         // Associar condições de negócio a seus predicados
+        entrySet.add(new ConditionEntry<>(
+                FunctionalCondition.class,
+                null,
+                findPredicateInstance(predicates, FunctionalConditionPredicate.class)));
         entrySet.add(new ConditionEntry<>(
                 CharacteristicCondition.class,
                 StoredCharacteristicCondition.class,
