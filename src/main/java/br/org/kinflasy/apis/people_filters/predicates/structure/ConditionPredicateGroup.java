@@ -10,7 +10,7 @@ import lombok.Value;
 public interface ConditionPredicateGroup<C extends ConditionGroup> extends ConditionPredicate<C> {
 
     @Value
-    class Tuple <C extends Condition> {
+    class Tuple<C extends Condition> {
         private final C condition;
         private final ConditionPredicate<C> predicate;
     }

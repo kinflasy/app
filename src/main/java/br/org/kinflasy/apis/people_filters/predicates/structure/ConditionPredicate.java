@@ -10,6 +10,6 @@ import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
 @Component
 public interface ConditionPredicate<C extends Condition> extends BiPredicate<C, PersonDto> {
 
-    public abstract boolean test(final C condition, final PersonDto person);
+    boolean test(final C condition, final PersonDto person);
 
 }
