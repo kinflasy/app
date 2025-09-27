@@ -26,7 +26,9 @@ import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import br.org.kinflasy.libs.people.dto.PersonSimpleDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class UnitService {
@@ -52,8 +54,10 @@ public class UnitService {
                 .toList();
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInChurch(#churchId, principal)")
+    @PreAuthorize("@churchSecurityService.canCreateUnit(#churchId, principal)")
     public UnitDto create(final UUID churchId, final UnitRequest request) {
+        log.info("Criando unidade /{}...", request.getSlug());
+
         // Construir unidade
         final var unit = converter.toEntity(request);
 
@@ -63,6 +67,7 @@ public class UnitService {
 
         // Associar Igreja
         unit.setChurchId(churchId);
+        log.info("Unidade /{} criada", request.getSlug());
 
         // Salvar
         final var created = repository.save(unit);
@@ -70,13 +75,14 @@ public class UnitService {
         return converter.toDto(created);
     }
 
-    public UnitDto findById(final UUID id) {
-        return repository.findById(id).map(converter::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+    public Optional<UnitDto> findById(final UUID id) {
+        log.info("Buscando unidade de id {}...", id);
+        return repository.findById(id).map(converter::toDto);
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
+    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInChurch(#churchId, principal)")
     public UnitDto update(final UUID id, final UnitRequest request) {
+        log.info("Atualizando unidade /{} (id {})...", request.getSlug(), id);
         return repository.findById(id)
                 .map(original -> {
                     final var modified = converter.toEntity(request, original);
@@ -91,6 +97,7 @@ public class UnitService {
     }
 
     public void delete(final UUID id) {
+        log.info("Deletando unidade de id {}...", id);
         repository.findById(id)
                 .ifPresentOrElse(
                         unit -> {
@@ -108,6 +115,7 @@ public class UnitService {
     }
 
     public List<DepartmentDto> listDepartments(final UUID id) {
+        log.info("Listando todos os departamentos da unidade de id {}...", id);
         return repository.findById(id)
                 .map(ignoredUnit -> departmentService.listByUnitId(id))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
@@ -147,11 +155,13 @@ public class UnitService {
 
     @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
     public MembershipSimpleDto addMember(final UUID id, final MembershipRequest request) {
+        log.info("Adicionando membro de id {} à unidade de id {}...", request.getPersonId(), id);
         final var entity = mapper.map(request, Membership.class);
         entity.setId(null);
         entity.setUnitId(id);
 
         final var saved = membershipRepository.save(entity);
+        log.info("Membro de id {} adicionado à unidade de id {}", request.getPersonId(), id);
 
         return mapper.map(saved, MembershipSimpleDto.class);
     }

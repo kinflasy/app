@@ -40,11 +40,9 @@ public class UnitController {
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma unidade pelo ID.")
     public ResponseEntity<UnitDto> findById(@PathVariable final UUID id) {
-        try {
-            return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
-        } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return service.findById(id)
+                .map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PutMapping("{id}")

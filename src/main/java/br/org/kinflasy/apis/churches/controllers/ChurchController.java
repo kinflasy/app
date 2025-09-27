@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.apis.churches.services.ChurchService;
 import br.org.kinflasy.apis.churches.services.ChurchUseCaseService;
+import br.org.kinflasy.apis.churches.services.UnitService;
 import br.org.kinflasy.libs.churches.dto.ChurchDto;
 import br.org.kinflasy.libs.churches.dto.ChurchRequest;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
@@ -34,6 +35,7 @@ import lombok.AllArgsConstructor;
 public class ChurchController {
 
     private final ChurchService service;
+    private final UnitService unitService;
     private final ChurchUseCaseService useCaseService;
 
     @GetMapping
@@ -59,11 +61,9 @@ public class ChurchController {
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma igreja pelo ID.")
     public ResponseEntity<ChurchDto> findById(@PathVariable final UUID id) {
-        try {
-            return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
-        } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return service.findById(id)
+                .map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PutMapping("{id}")
@@ -99,7 +99,7 @@ public class ChurchController {
     @Operation(summary = "Cadastrar unidade", description = "Cadastrar uma nova unidade em uma igreja.")
     public ResponseEntity<UnitDto> createUnit(@PathVariable final UUID id,
             @RequestBody @Valid final UnitRequest request) {
-        return new ResponseEntity<>(service.createUnit(id, request), HttpStatus.CREATED);
+        return new ResponseEntity<>(unitService.create(id, request), HttpStatus.CREATED);
     }
 
 }

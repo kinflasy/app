@@ -12,10 +12,14 @@ import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people_filters.builder.implementations.ConditionBuilder;
 import br.org.kinflasy.libs.people_filters.dto.PeopleFilterTestRequest;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class ChurchSecurityService {
+
+    private final ChurchService churchService;
 
     private final PeopleFilterClient client;
 
@@ -84,6 +88,28 @@ public class ChurchSecurityService {
         final var condition = ConditionBuilder
                 .thePerson()
                 .isIntegrantOfExtensionInUnit(unitId, Extension.SOMA, IntegrationType.LEADER)
+                .build();
+
+        final var request = new PeopleFilterTestRequest(condition, person);
+        return client.test(request);
+    }
+
+    public boolean canCreateUnit(final UUID churchId, final PersonDto person) {
+        final var condition = ConditionBuilder
+                .thePerson()
+                .matchesAnyCondition(thePerson -> thePerson
+
+                        // Ou a Igreja e a unidade estão sendo criadas agora
+                        .matches(ignoredPerson -> churchService.findById(churchId)
+
+                                // Se a Igreja estiver persistida, certificar-se de que ela está sem unidades
+                                .map(ignoredChurch -> churchService.listUnits(churchId).isEmpty())
+
+                                // Se não for encontrada, permitir o acesso
+                                .orElse(true))
+
+                        // Ou o usuário é integrante de um departamento SOMA
+                        .isIntegrantOfExtensionInChurch(churchId, Extension.SOMA, null))
                 .build();
 
         final var request = new PeopleFilterTestRequest(condition, person);

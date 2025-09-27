@@ -1,6 +1,7 @@
 package br.org.kinflasy.apis.churches.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +15,9 @@ import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class ChurchService {
@@ -27,24 +30,30 @@ public class ChurchService {
     private final UnitService unitService;
 
     public List<ChurchDto> findAll() {
+        log.info("Listando todas as Igrejas...");
         return repository.findAll().stream()
                 .map(converter::toDto)
                 .toList();
     }
 
     public ChurchDto create(final ChurchRequest request) {
+        log.info("Criando Igreja @{}...", request.getSlug());
+
         final var entity = converter.toEntity(request);
         repository.save(entity);
+        log.info("Igreja @{} criada", request.getSlug());
+
         return converter.toDto(entity);
     }
 
-    public ChurchDto findById(final UUID id) {
-        return repository.findById(id).map(converter::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+    public Optional<ChurchDto> findById(final UUID id) {
+        log.info("Buscando Igreja de id {}...", id);
+        return repository.findById(id).map(converter::toDto);
     }
 
     @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInChurch(#id, principal)")
     public ChurchDto update(final UUID id, final ChurchRequest request) {
+        log.info("Atualizando Igreja @{} (id {})...", request.getSlug(), id);
         return repository.findById(id)
                 .map(original -> {
                     final var modified = converter.toEntity(request, original);
@@ -57,6 +66,8 @@ public class ChurchService {
 
     @PreAuthorize("@churchSecurityService.isLeaderOfSomaInChurch(#id, principal)")
     public void delete(final UUID id) {
+        log.info("Deletando Igreja de id {}...", id);
+
         // Excluir unidades
         unitService.listByChurchId(id)
                 .forEach(unit -> unitService.delete(unit.getId()));
@@ -66,6 +77,7 @@ public class ChurchService {
     }
 
     public List<UnitDto> listUnits(final UUID id) {
+        log.info("Listando todas as unidades da Igreja de id {}...", id);
         return repository.findById(id)
                 .map(church -> unitService.listByChurchId(id))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
