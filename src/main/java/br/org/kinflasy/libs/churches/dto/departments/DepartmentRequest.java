@@ -1,6 +1,7 @@
 package br.org.kinflasy.libs.churches.dto.departments;
 
 import br.org.kinflasy.libs.churches.enums.department.DepartmentType;
+import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -13,5 +14,6 @@ public class DepartmentRequest {
     private @NotBlank String name;
     private @NotBlank String slug;
     private @NotNull DepartmentType type;
+    private Condition visibility;
 
 }

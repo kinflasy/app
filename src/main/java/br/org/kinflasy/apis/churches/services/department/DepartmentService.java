@@ -39,6 +39,8 @@ public class DepartmentService {
     }
 
     public DepartmentDto create(final UUID unitId, final DepartmentRequest request) {
+        
+
         // Construir departamento
         final var department = converter.toEntity(request);
 

@@ -14,6 +14,7 @@ public class DepartmentDto {
     private String name;
     private String slug;
     private UUID unitId;
+    private UUID visibilityId;
     private DepartmentType type;
 
 }
