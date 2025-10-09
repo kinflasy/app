@@ -96,6 +96,12 @@
 			<artifactId>spring-security-test</artifactId>
 			<version>6.5.1</version>
 		</dependency>
+		<dependency>
+			<!-- Banco de Dados H2 em memória -->
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 

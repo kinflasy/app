@@ -17,6 +17,6 @@ import lombok.NoArgsConstructor;
 public class StoredNegativeCondition extends StoredCondition {
 
     @ManyToOne(optional = false)
-    private StoredCondition baseFilter;
+    private StoredCondition baseCondition;
 
 }

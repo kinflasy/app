@@ -43,6 +43,9 @@ public class Department extends AbstractSimpleAuditable {
 
     @Column(nullable = false)
     private UUID unitId;
+    
+    @Column(nullable = true)
+    private UUID visibilityId;
 
     /*
      * Enumerações

@@ -11,7 +11,10 @@ public class AndConditionBuilder extends AccumulatorConditionBuilder {
 
     @Override
     public ReadyConditionBuilder join() {
-        return new FilledConditionBuilder(new AndConditionGroup(conditions));
+        final var conditionGroup = new AndConditionGroup();
+        conditionGroup.getConditions().addAll(conditions);
+
+        return new FilledConditionBuilder(conditionGroup);
     }
 
 }

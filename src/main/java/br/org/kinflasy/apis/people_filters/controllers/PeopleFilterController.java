@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.org.kinflasy.apis.people_filters.factories.ConditionPredicateFactory;
+import br.org.kinflasy.apis.people_filters.factories.ConditionFactory;
 import br.org.kinflasy.libs.people_filters.dto.PeopleFilterTestRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -17,10 +17,18 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class PeopleFilterController {
 
-    private final ConditionPredicateFactory factory;
+    private final ConditionFactory factory;
 
     @PostMapping("test")
     public ResponseEntity<Boolean> test(@RequestBody PeopleFilterTestRequest request) {
+        final var result = factory.getPredicate(request.getCondition()).test(request.getCondition(),
+                request.getPerson());
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping()
+    public ResponseEntity<Boolean> create(@RequestBody PeopleFilterTestRequest request) {
         final var result = factory.getPredicate(request.getCondition()).test(request.getCondition(),
                 request.getPerson());
 

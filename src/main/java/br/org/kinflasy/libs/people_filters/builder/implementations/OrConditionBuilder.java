@@ -11,7 +11,10 @@ public class OrConditionBuilder extends AccumulatorConditionBuilder {
 
     @Override
     public ReadyConditionBuilder join() {
-        return new FilledConditionBuilder(new OrConditionGroup(conditions));
+        final var conditionGroup = new OrConditionGroup();
+        conditionGroup.getConditions().addAll(conditions);
+
+        return new FilledConditionBuilder(conditionGroup);
     }
 
 }

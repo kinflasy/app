@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import br.org.kinflasy.apis.people_filters.entities.StoredAndConditionGroup;
@@ -44,7 +45,7 @@ import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
 import lombok.Value;
 
 @Component
-public class ConditionPredicateFactory {
+public class ConditionFactory {
 
     @Value
     private class ConditionEntry<C extends Condition> {
@@ -53,9 +54,12 @@ public class ConditionPredicateFactory {
         private ConditionPredicate<C> predicate;
     }
 
+    private final ModelMapper mapper;
     private final Set<ConditionEntry<? extends Condition>> entrySet = new HashSet<>();
 
-    public ConditionPredicateFactory(final List<ConditionPredicate<?>> predicates) {
+    public ConditionFactory(final List<ConditionPredicate<?>> predicates, final ModelMapper mapper) {
+        this.mapper = mapper;
+
         // Associar condições lógicas a seus predicados
         entrySet.add(new ConditionEntry<>(
                 AndConditionGroup.class,
@@ -121,7 +125,7 @@ public class ConditionPredicateFactory {
     public <C extends Condition> Class<C> getConditionClass(final Class<? extends StoredCondition> entityClass) {
         return entrySet
                 .stream()
-                .filter(entry -> entry.getEntityClass().equals(entityClass))
+                .filter(entry -> entityClass.equals(entry.getEntityClass()))
                 .findFirst()
                 .map(entry -> ((ConditionEntry<C>) entry).getConditionClass())
                 .orElseThrow(() -> new IllegalArgumentException(
@@ -136,7 +140,14 @@ public class ConditionPredicateFactory {
                 .findFirst()
                 .map(entry -> ((ConditionEntry<C>) entry).getEntityClass())
                 .orElseThrow(() -> new IllegalArgumentException(
-                        "No entity class found for condition: " + conditionClass.getClass().getName()));
+                        "No entity class found for condition: "
+                                + conditionClass.getClass().getName()));
+    }
+
+    @SuppressWarnings("unchecked")
+    public <E extends StoredCondition> E toEntity(final Condition condition) {
+        final var entityClass = (Class<E>) getEntityClass(condition.getClass());
+        return mapper.map(condition, entityClass);
     }
 
     @SuppressWarnings("unchecked")
@@ -147,7 +158,8 @@ public class ConditionPredicateFactory {
                 .findFirst()
                 .map(conditionPredicate -> (P) conditionPredicate)
                 .orElseThrow(
-                        () -> new IllegalStateException("Condition not found for class: " + predicateClass.getName()));
+                        () -> new IllegalStateException("Condition not found for class: "
+                                + predicateClass.getName()));
     }
 
 }
