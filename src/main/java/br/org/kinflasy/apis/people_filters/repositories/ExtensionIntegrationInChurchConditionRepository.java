@@ -10,7 +10,8 @@ import br.org.kinflasy.apis.people_filters.entities.StoredExtensionIntegrationIn
 
 @Repository
 public interface ExtensionIntegrationInChurchConditionRepository
-        extends JpaRepository<StoredExtensionIntegrationInChurchCondition, UUID> {
+        extends ConditionRepository<StoredExtensionIntegrationInChurchCondition>,
+        JpaRepository<StoredExtensionIntegrationInChurchCondition, UUID> {
 
     default StoredExtensionIntegrationInChurchCondition findOrCreate(
             final StoredExtensionIntegrationInChurchCondition condition) {

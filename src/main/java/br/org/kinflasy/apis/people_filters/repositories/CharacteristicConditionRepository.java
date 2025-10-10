@@ -10,7 +10,8 @@ import br.org.kinflasy.apis.people_filters.entities.StoredCharacteristicConditio
 import br.org.kinflasy.libs.people_filters.enums.PersonCharacteristic;
 
 @Repository
-public interface CharacteristicConditionRepository extends JpaRepository<StoredCharacteristicCondition, UUID> {
+public interface CharacteristicConditionRepository
+        extends ConditionRepository<StoredCharacteristicCondition>, JpaRepository<StoredCharacteristicCondition, UUID> {
 
     Optional<StoredCharacteristicCondition> findByCharacteristic(PersonCharacteristic characteristic);
 

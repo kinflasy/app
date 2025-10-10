@@ -10,7 +10,8 @@ import br.org.kinflasy.apis.people_filters.entities.StoredChurchMembershipCondit
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 
 @Repository
-public interface ChurchMembershipConditionRepository extends JpaRepository<StoredChurchMembershipCondition, UUID> {
+public interface ChurchMembershipConditionRepository extends ConditionRepository<StoredChurchMembershipCondition>,
+        JpaRepository<StoredChurchMembershipCondition, UUID> {
 
     Optional<StoredChurchMembershipCondition> findByChurchIdAndAffiliation(UUID churchId, Affiliation affiliation);
 

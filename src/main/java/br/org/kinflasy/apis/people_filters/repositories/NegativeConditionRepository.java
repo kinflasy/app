@@ -10,7 +10,8 @@ import br.org.kinflasy.apis.people_filters.entities.StoredCondition;
 import br.org.kinflasy.apis.people_filters.entities.StoredNegativeCondition;
 
 @Repository
-public interface NegativeConditionRepository extends JpaRepository<StoredNegativeCondition, UUID> {
+public interface NegativeConditionRepository
+        extends ConditionRepository<StoredNegativeCondition>, JpaRepository<StoredNegativeCondition, UUID> {
 
     Optional<StoredNegativeCondition> findByBaseCondition(StoredCondition baseCondition);
 

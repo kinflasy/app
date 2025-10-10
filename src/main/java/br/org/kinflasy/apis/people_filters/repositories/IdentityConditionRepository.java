@@ -9,7 +9,8 @@ import org.springframework.stereotype.Repository;
 import br.org.kinflasy.apis.people_filters.entities.StoredIdentityCondition;
 
 @Repository
-public interface IdentityConditionRepository extends JpaRepository<StoredIdentityCondition, UUID> {
+public interface IdentityConditionRepository
+        extends ConditionRepository<StoredIdentityCondition>, JpaRepository<StoredIdentityCondition, UUID> {
 
     Optional<StoredIdentityCondition> findByPersonId(UUID personId);
 

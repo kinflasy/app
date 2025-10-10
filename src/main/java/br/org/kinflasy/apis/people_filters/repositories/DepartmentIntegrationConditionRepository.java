@@ -11,13 +11,15 @@ import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 
 @Repository
 public interface DepartmentIntegrationConditionRepository
-        extends JpaRepository<StoredDepartmentIntegrationCondition, UUID> {
+        extends ConditionRepository<StoredDepartmentIntegrationCondition>,
+        JpaRepository<StoredDepartmentIntegrationCondition, UUID> {
 
-    Optional<StoredDepartmentIntegrationCondition> findByDepartmentIdAndIntegrationType(UUID departmentId,
+    Optional<StoredDepartmentIntegrationCondition> findByDepartmentIdAndType(UUID departmentId,
             IntegrationType type);
 
-    default StoredDepartmentIntegrationCondition findOrCreate(final StoredDepartmentIntegrationCondition condition) {
-        return findByDepartmentIdAndIntegrationType(condition.getDepartmentId(), condition.getType())
+    default StoredDepartmentIntegrationCondition findOrCreate(
+            final StoredDepartmentIntegrationCondition condition) {
+        return findByDepartmentIdAndType(condition.getDepartmentId(), condition.getType())
                 .orElseGet(() -> save(condition));
     }
 
