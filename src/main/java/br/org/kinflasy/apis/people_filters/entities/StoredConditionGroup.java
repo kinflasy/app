@@ -1,9 +1,7 @@
 package br.org.kinflasy.apis.people_filters.entities;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.ManyToMany;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,7 +9,6 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public abstract class StoredConditionGroup extends StoredCondition {
 
-    @ManyToMany
-    private List<StoredCondition> conditions = new ArrayList<>();
+    public abstract List<StoredCondition> getConditions();
 
 }

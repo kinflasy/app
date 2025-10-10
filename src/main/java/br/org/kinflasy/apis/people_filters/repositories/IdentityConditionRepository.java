@@ -14,9 +14,9 @@ public interface IdentityConditionRepository
 
     Optional<StoredIdentityCondition> findByPersonId(UUID personId);
 
-    default StoredIdentityCondition findOrCreate(final StoredIdentityCondition filter) {
-        return findByPersonId(filter.getPersonId())
-                .orElseGet(() -> save(filter));
+    default StoredIdentityCondition findOrCreate(final StoredIdentityCondition condition) {
+        return findByPersonId(condition.getPersonId())
+                .orElseGet(() -> saveAndFlush(condition));
     }
 
 }

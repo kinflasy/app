@@ -31,11 +31,11 @@ public class PeopleFilterController {
         return ResponseEntity.ok(result);
     }
 
-    // @PostMapping
-    // public ResponseEntity<Condition> create(@RequestBody ConditionRequest request) {
-    //     final var result = service.findOrCreate(request.getCondition());
+    @PostMapping
+    public ResponseEntity<Condition> create(@RequestBody ConditionRequest request) {
+        final var result = service.findOrCreate(request.getCondition());
 
-    //     return ResponseEntity.ok(result);
-    // }
+        return ResponseEntity.ok(result);
+    }
 
 }

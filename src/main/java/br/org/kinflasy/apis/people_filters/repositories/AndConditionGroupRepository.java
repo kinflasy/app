@@ -11,8 +11,8 @@ import br.org.kinflasy.apis.people_filters.entities.StoredAndConditionGroup;
 public interface AndConditionGroupRepository
         extends ConditionRepository<StoredAndConditionGroup>, JpaRepository<StoredAndConditionGroup, UUID> {
 
-    default StoredAndConditionGroup findOrCreate(final StoredAndConditionGroup filter) {
-        return save(filter);
+    default StoredAndConditionGroup findOrCreate(final StoredAndConditionGroup condition) {
+        return saveAndFlush(condition);
     }
 
 }

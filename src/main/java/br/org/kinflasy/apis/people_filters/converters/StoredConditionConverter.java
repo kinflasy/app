@@ -62,7 +62,9 @@ public class StoredConditionConverter {
 
         // Fluxo para quando a condição não for lógica
         final var entityClass = (Class<E>) factory.getEntityClass(source.getClass());
-        return mapper.map(source, entityClass);
+        final var entity = mapper.map(source, entityClass);
+        entity.setId(null);
+        return entity;
     }
 
     @SuppressWarnings("unchecked")

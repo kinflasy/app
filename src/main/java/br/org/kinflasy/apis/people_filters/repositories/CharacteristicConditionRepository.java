@@ -15,9 +15,9 @@ public interface CharacteristicConditionRepository
 
     Optional<StoredCharacteristicCondition> findByCharacteristic(PersonCharacteristic characteristic);
 
-    default StoredCharacteristicCondition findOrCreate(final StoredCharacteristicCondition filter) {
-        return findByCharacteristic(filter.getCharacteristic())
-                .orElseGet(() -> save(filter));
+    default StoredCharacteristicCondition findOrCreate(final StoredCharacteristicCondition condition) {
+        return findByCharacteristic(condition.getCharacteristic())
+                .orElseGet(() -> saveAndFlush(condition));
     }
 
 }
