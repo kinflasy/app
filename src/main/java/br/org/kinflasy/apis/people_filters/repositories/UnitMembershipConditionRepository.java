@@ -14,9 +14,9 @@ public interface UnitMembershipConditionRepository extends JpaRepository<StoredU
 
     Optional<StoredUnitMembershipCondition> findByUnitIdAndAffiliation(UUID unitId, Affiliation affiliation);
 
-    default StoredUnitMembershipCondition findOrCreate(final StoredUnitMembershipCondition filter) {
-        return findByUnitIdAndAffiliation(filter.getUnitId(), filter.getAffiliation())
-                .orElseGet(() -> save(filter));
+    default StoredUnitMembershipCondition findOrCreate(final StoredUnitMembershipCondition condition) {
+        return findByUnitIdAndAffiliation(condition.getUnitId(), condition.getAffiliation())
+                .orElseGet(() -> save(condition));
     }
 
 }

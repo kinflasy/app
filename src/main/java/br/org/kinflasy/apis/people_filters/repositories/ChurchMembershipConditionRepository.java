@@ -14,9 +14,9 @@ public interface ChurchMembershipConditionRepository extends JpaRepository<Store
 
     Optional<StoredChurchMembershipCondition> findByChurchIdAndAffiliation(UUID churchId, Affiliation affiliation);
 
-    default StoredChurchMembershipCondition findOrCreate(final StoredChurchMembershipCondition filter) {
-        return findByChurchIdAndAffiliation(filter.getChurchId(), filter.getAffiliation())
-                .orElseGet(() -> save(filter));
+    default StoredChurchMembershipCondition findOrCreate(final StoredChurchMembershipCondition conditions) {
+        return findByChurchIdAndAffiliation(conditions.getChurchId(), conditions.getAffiliation())
+                .orElseGet(() -> save(conditions));
     }
 
 }

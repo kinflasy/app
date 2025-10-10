@@ -16,9 +16,9 @@ public interface DepartmentIntegrationConditionRepository
     Optional<StoredDepartmentIntegrationCondition> findByDepartmentIdAndIntegrationType(UUID departmentId,
             IntegrationType type);
 
-    default StoredDepartmentIntegrationCondition findOrCreate(final StoredDepartmentIntegrationCondition filter) {
-        return findByDepartmentIdAndIntegrationType(filter.getDepartmentId(), filter.getType())
-                .orElseGet(() -> save(filter));
+    default StoredDepartmentIntegrationCondition findOrCreate(final StoredDepartmentIntegrationCondition condition) {
+        return findByDepartmentIdAndIntegrationType(condition.getDepartmentId(), condition.getType())
+                .orElseGet(() -> save(condition));
     }
 
 }
