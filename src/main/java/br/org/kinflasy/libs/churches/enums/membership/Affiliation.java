@@ -1,9 +1,21 @@
 package br.org.kinflasy.libs.churches.enums.membership;
 
-public enum Affiliation {
+import java.util.Set;
+
+import br.org.kinflasy.libs.lib_utils.contracts.HierarchyEnum;
+import lombok.Getter;
+
+@Getter
+public enum Affiliation implements HierarchyEnum<Affiliation> {
 
     VISITOR,
-    CONGREGATED,
-    MEMBER;
+    CONGREGATED(VISITOR),
+    MEMBER(CONGREGATED);
+
+    private final Set<Affiliation> includedValues;
+
+    private Affiliation(final Affiliation... values) {
+        this.includedValues = flatIncludedValues(values);
+    }
 
 }

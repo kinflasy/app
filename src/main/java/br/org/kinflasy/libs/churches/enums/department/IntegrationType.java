@@ -1,11 +1,23 @@
 package br.org.kinflasy.libs.churches.enums.department;
 
-public enum IntegrationType {
+import java.util.Set;
 
-    LEADER,
-    ASSISTANT,
-    INTEGRANT,
-    CONSULTANT,
-    OBSERVER;
+import br.org.kinflasy.libs.lib_utils.contracts.HierarchyEnum;
+import lombok.Getter;
+
+@Getter
+public enum IntegrationType implements HierarchyEnum<IntegrationType> {
+
+    OBSERVER,
+    CONSULTANT(OBSERVER),
+    INTEGRANT(OBSERVER),
+    ASSISTANT(INTEGRANT),
+    LEADER(ASSISTANT);
+
+    private final Set<IntegrationType> includedValues;
+
+    private IntegrationType(final IntegrationType... values) {
+        this.includedValues = flatIncludedValues(values);
+    }
 
 }
