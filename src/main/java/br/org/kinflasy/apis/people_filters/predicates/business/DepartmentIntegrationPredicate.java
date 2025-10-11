@@ -19,7 +19,7 @@ public class DepartmentIntegrationPredicate implements ConditionPredicate<Depart
         return service.findIntegration(condition.getDepartmentId(), person.getId())
                 .map(integration -> {
                     if (condition.getType() != null) {
-                        return condition.getType().equals(integration.getType());
+                        return integration.getType().includes(condition.getType());
                     } else {
                         return true;
                     }

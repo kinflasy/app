@@ -19,7 +19,7 @@ public class UnitMembershipPredicate implements ConditionPredicate<UnitMembershi
         return service.findActiveMembership(condition.getUnitId(), person.getId())
                 .map(membership -> {
                     if (condition.getAffiliation() != null) {
-                        return condition.getAffiliation().equals(membership.getAffiliation());
+                        return membership.getAffiliation().includes(condition.getAffiliation());
                     } else {
                         return true;
                     }
