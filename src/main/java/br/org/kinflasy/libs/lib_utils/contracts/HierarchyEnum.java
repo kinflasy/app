@@ -1,5 +1,6 @@
 package br.org.kinflasy.libs.lib_utils.contracts;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -12,7 +13,7 @@ public interface HierarchyEnum<E extends Enum<E> & HierarchyEnum<E>> {
     }
 
     default Set<E> flatIncludedValues(final E[] values) {
-        final var includedValues = Set.of(values);
+        final var includedValues = new HashSet<>(Set.of(values));
 
         Stream.of(values)
                 .forEach(value -> includedValues.addAll(value.getIncludedValues()));
