@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -115,6 +116,7 @@ public class UnitService {
                         () -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
+    @PostFilter("@churchSecurityService.matchesCondition(filterObject.getVisibilityId(), principal)")
     public List<DepartmentDto> listDepartments(final UUID id) {
         log.info("Listando todos os departamentos da unidade de id {}...", id);
         return repository.findById(id)

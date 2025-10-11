@@ -94,6 +94,10 @@ public class ChurchSecurityService {
         return client.test(request);
     }
 
+    public boolean matchesCondition(final UUID storedConditionId, final PersonDto person) {
+        return client.test(storedConditionId, person);
+    }
+
     public boolean canCreateUnit(final UUID churchId, final PersonDto person) {
         final var condition = ConditionBuilder
                 .thePerson()

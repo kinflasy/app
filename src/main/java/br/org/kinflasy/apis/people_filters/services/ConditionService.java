@@ -1,6 +1,8 @@
 package br.org.kinflasy.apis.people_filters.services;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 
 import org.springframework.stereotype.Service;
@@ -10,6 +12,7 @@ import br.org.kinflasy.apis.people_filters.entities.StoredCondition;
 import br.org.kinflasy.apis.people_filters.entities.StoredConditionGroup;
 import br.org.kinflasy.apis.people_filters.entities.StoredNegativeCondition;
 import br.org.kinflasy.apis.people_filters.factories.ConditionFactory;
+import br.org.kinflasy.apis.people_filters.repositories.GeneralConditionRepository;
 import br.org.kinflasy.libs.people_filters.conditions.logical.NegativeCondition;
 import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
 import br.org.kinflasy.libs.people_filters.conditions.structure.ConditionGroup;
@@ -19,6 +22,8 @@ import lombok.AllArgsConstructor;
 @Service
 @AllArgsConstructor
 public class ConditionService {
+
+    private final GeneralConditionRepository generalRepository;
 
     private final ConditionFactory factory;
     private final StoredConditionConverter converter;
@@ -37,7 +42,7 @@ public class ConditionService {
                     .map((Function<Condition, StoredCondition>) this::processFindOrCreate)
                     .toList();
 
-            final var entity = (StoredConditionGroup) converter.toEntity(condition);
+            final StoredConditionGroup entity = converter.toEntity(condition);
             entity.getConditions().clear();
             entity.getConditions().addAll(savedInner);
 
@@ -55,6 +60,10 @@ public class ConditionService {
 
         final var entity = converter.toEntity(condition);
         return (E) repository.findOrCreate(entity);
+    }
+
+    public <C extends Condition> Optional<C> findById(final UUID id) {
+        return generalRepository.findById(id).map(converter::toDto);
     }
 
 }

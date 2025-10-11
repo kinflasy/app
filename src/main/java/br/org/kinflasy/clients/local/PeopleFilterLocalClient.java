@@ -1,6 +1,7 @@
 package br.org.kinflasy.clients.local;
 
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 
 import org.springframework.context.annotation.Lazy;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import br.org.kinflasy.apis.people_filters.controllers.PeopleFilterController;
 import br.org.kinflasy.clients.PeopleFilterClient;
+import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people_filters.builder.contracts.ReadyConditionBuilder;
 import br.org.kinflasy.libs.people_filters.builder.implementations.ConditionBuilder;
 import br.org.kinflasy.libs.people_filters.builder.implementations.StarterConditionBuilder;
@@ -29,8 +31,14 @@ public class PeopleFilterLocalClient implements PeopleFilterClient {
                 .orElse(false);
     }
 
+    @Override
+    public boolean test(UUID id, PersonDto person) {
+        return Optional.ofNullable(controller.test(id, person).getBody())
+                .orElse(false);
+    }
+
     public StoredConditionDto<Condition> findOrCreate(final ConditionRequest request) {
-        return controller.create(request).getBody();
+        return controller.findOrCreate(request).getBody();
     }
 
     @Override
