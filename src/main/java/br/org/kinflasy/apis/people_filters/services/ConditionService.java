@@ -13,6 +13,7 @@ import br.org.kinflasy.apis.people_filters.factories.ConditionFactory;
 import br.org.kinflasy.libs.people_filters.conditions.logical.NegativeCondition;
 import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
 import br.org.kinflasy.libs.people_filters.conditions.structure.ConditionGroup;
+import br.org.kinflasy.libs.people_filters.dto.StoredConditionDto;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -22,9 +23,9 @@ public class ConditionService {
     private final ConditionFactory factory;
     private final StoredConditionConverter converter;
 
-    public <C extends Condition> C findOrCreate(final C condition) {
+    public <C extends Condition> StoredConditionDto<C> findOrCreate(final C condition) {
         final var saved = processFindOrCreate(condition);
-        return converter.toDto(saved);
+        return new StoredConditionDto<>(saved.getId(), condition);
     }
 
     @SuppressWarnings("unchecked")

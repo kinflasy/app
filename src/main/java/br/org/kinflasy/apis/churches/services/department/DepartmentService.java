@@ -5,12 +5,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.converters.department.DepartmentConverter;
 import br.org.kinflasy.apis.churches.entities.department.ExtensionSubscription;
 import br.org.kinflasy.apis.churches.repositories.department.DepartmentRepository;
 import br.org.kinflasy.apis.churches.repositories.department.ExtensionSubscriptionRepository;
+import br.org.kinflasy.clients.PeopleFilterClient;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionDto;
@@ -20,7 +22,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor = @__(@Lazy))
 public class DepartmentService {
 
     private static final String NOT_FOUND_MESSAGE = "Departamento não encontrado";
@@ -32,6 +34,8 @@ public class DepartmentService {
 
     private final ExtensionSubscriptionRepository subscriptionRepository;
 
+    private final PeopleFilterClient peopleFilterClient;
+
     public List<DepartmentDto> listByUnitId(final UUID unitId) {
         return repository.findByUnitId(unitId).stream()
                 .map(converter::toDto)
@@ -39,10 +43,12 @@ public class DepartmentService {
     }
 
     public DepartmentDto create(final UUID unitId, final DepartmentRequest request) {
-        
+        // Salvar regra de visibilidade
+        final var visibility = peopleFilterClient.findOrCreate(request.getVisibility());
 
         // Construir departamento
         final var department = converter.toEntity(request);
+        department.setVisibilityId(visibility.getId());
 
         // Associar unidade
         department.setUnitId(unitId);

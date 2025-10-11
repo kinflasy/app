@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import br.org.kinflasy.apis.people_filters.entities.StoredAndConditionGroup;
@@ -71,6 +72,7 @@ public class ConditionFactory {
     private final ModelMapper mapper;
     private final Set<ConditionEntry<? extends Condition>> entrySet = new HashSet<>();
 
+    @Lazy
     public ConditionFactory(final List<ConditionRepository<?>> repositories,
             final List<ConditionPredicate<?>> predicates, final ModelMapper mapper) {
         this.mapper = mapper;

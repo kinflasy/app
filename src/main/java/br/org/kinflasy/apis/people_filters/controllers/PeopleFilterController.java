@@ -1,5 +1,6 @@
 package br.org.kinflasy.apis.people_filters.controllers;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,13 +12,14 @@ import br.org.kinflasy.apis.people_filters.services.ConditionService;
 import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
 import br.org.kinflasy.libs.people_filters.dto.ConditionRequest;
 import br.org.kinflasy.libs.people_filters.dto.PeopleFilterTestRequest;
+import br.org.kinflasy.libs.people_filters.dto.StoredConditionDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("v1/core/people-filters")
 @Tag(name = "People Filter")
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor = @__(@Lazy))
 public class PeopleFilterController {
 
     private final ConditionFactory factory;
@@ -32,7 +34,7 @@ public class PeopleFilterController {
     }
 
     @PostMapping
-    public ResponseEntity<Condition> create(@RequestBody ConditionRequest request) {
+    public ResponseEntity<StoredConditionDto<Condition>> create(@RequestBody ConditionRequest request) {
         final var result = service.findOrCreate(request.getCondition());
 
         return ResponseEntity.ok(result);
