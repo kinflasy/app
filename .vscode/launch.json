@@ -6,11 +6,11 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Spring Boot-MainApplication<api>",
+            "name": "Spring Boot-MainApplication<app>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
             "mainClass": "br.org.kinflasy.MainApplication",
-            "projectName": "api",
+            "projectName": "app",
             "args": "",
             "envFile": "${workspaceFolder}/.env",
             "vmArgs": "-Dspring.profiles.active=dev"

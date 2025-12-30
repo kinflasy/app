@@ -3,6 +3,7 @@ package br.org.kinflasy.apis.churches.controllers.department;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,10 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
+import br.org.kinflasy.apis.churches.services.department.IntegrationService;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionDto;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionRequest;
+import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
+import br.org.kinflasy.libs.churches.dto.departments.IntegrationRequest;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,6 +37,7 @@ import lombok.AllArgsConstructor;
 public class DepartmentController {
 
     private final DepartmentService service;
+    private final IntegrationService integrationService;
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar um departamento pelo ID.")
@@ -96,6 +101,24 @@ public class DepartmentController {
         } catch (final EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("{id}/integrants")
+    public ResponseEntity<List<IntegrationDto>> listIntegrants(@PathVariable final UUID id) {
+        return ResponseEntity.ok(integrationService.listByDepartment(id));
+    }
+
+    @PostMapping("{id}/integrants")
+    public ResponseEntity<IntegrationDto> addIntegrant(@PathVariable final UUID id,
+            @RequestBody IntegrationRequest request) {
+        return ResponseEntity.ok(integrationService.create(id, request));
+    }
+
+    @DeleteMapping("{id}/integrants")
+    public ResponseEntity<Void> removeIntegrant(@PathVariable final UUID id,
+            @RequestBody IntegrationRequest request) {
+        throw new NotImplementedException();
+        // return ResponseEntity.noContent().build();
     }
 
 }

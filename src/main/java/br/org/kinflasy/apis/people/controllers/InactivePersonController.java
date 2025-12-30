@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.org.kinflasy.apis.people.services.ActivationUseCaseService;
 import br.org.kinflasy.apis.people.services.InactivePersonService;
+import br.org.kinflasy.libs.people.dto.ActivationRequest;
 import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
+import br.org.kinflasy.libs.people.dto.UserSimpleDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,6 +34,7 @@ import lombok.AllArgsConstructor;
 public class InactivePersonController {
 
     private final InactivePersonService service;
+    private final ActivationUseCaseService activationUseCaseService;
 
     @GetMapping
     @Operation(summary = "Listar todos", description = "Listar todas as pessoas inativas cadastradas.")
@@ -48,11 +52,9 @@ public class InactivePersonController {
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma pessoa inativa pelo ID.")
     public ResponseEntity<InactivePersonDto> findById(@PathVariable final UUID id) {
-        try {
-            return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
-        } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return service.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PutMapping("{id}")
@@ -77,6 +79,12 @@ public class InactivePersonController {
         } catch (final Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
+    }
+
+    @PostMapping("{id}/activate")
+    public ResponseEntity<UserSimpleDto> activate(@PathVariable final UUID id,
+            @RequestBody final ActivationRequest request) {
+        return ResponseEntity.ok(activationUseCaseService.activate(id, request.getUserId()));
     }
 
 }

@@ -15,6 +15,8 @@ import br.org.kinflasy.apis.auth.services.TokenService;
 import br.org.kinflasy.clients.UserClient;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -32,7 +34,9 @@ public class AuthenticationController {
     private PasswordEncoder encoder;
     private TokenService tokenService;
 
+    @SecurityRequirements
     @PostMapping("/login")
+    @Operation(summary = "Fazer login")
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
         final var usernamePassword = new UsernamePasswordAuthenticationToken(request.getUsername(),
                 request.getPassword());
@@ -44,7 +48,9 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
+    @SecurityRequirements
     @PostMapping("/register")
+    @Operation(summary = "Cadastrar-se")
     public ResponseEntity<UserDto> register(@RequestBody UserRequest request) {
         // Criptografar a senha
         final var encrypted = encoder.encode(request.getPassword());

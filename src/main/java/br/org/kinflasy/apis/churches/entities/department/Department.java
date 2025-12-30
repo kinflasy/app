@@ -52,7 +52,7 @@ public class Department extends AbstractSimpleAuditable {
      */
 
     @Column(nullable = false)
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private DepartmentType type;
 
     /*

@@ -1,13 +1,14 @@
 package br.org.kinflasy.apis.people.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import br.org.kinflasy.clients.AddressClient;
 import br.org.kinflasy.apis.people.converters.InactivePersonConverter;
 import br.org.kinflasy.apis.people.repositories.InactivePersonRepository;
+import br.org.kinflasy.clients.AddressClient;
 import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import jakarta.persistence.EntityNotFoundException;
@@ -42,9 +43,8 @@ public class InactivePersonService {
         return converter.toDto(entity);
     }
 
-    public InactivePersonDto findById(final UUID id) {
-        final var entity = repository.findById(id);
-        return converter.toDto(entity);
+    public Optional<InactivePersonDto> findById(final UUID id) {
+        return repository.findById(id).map(converter::toDto);
     }
 
     public InactivePersonDto update(final UUID id, final InactivePersonRequest request) {

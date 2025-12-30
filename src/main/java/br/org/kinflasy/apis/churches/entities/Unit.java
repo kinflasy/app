@@ -54,7 +54,7 @@ public class Unit extends AbstractSimpleAuditable implements Emailable {
      */
 
     @Column(nullable = false)
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private UnitType type;
 
     /*

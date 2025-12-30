@@ -10,6 +10,7 @@ import br.org.kinflasy.libs.contacts.contracts.Emailable;
 import br.org.kinflasy.libs.people.enums.Gender;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -49,7 +50,7 @@ public abstract class Person extends AbstractSimpleAuditable implements Emailabl
      * Enumerações
      */
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Gender gender;
 

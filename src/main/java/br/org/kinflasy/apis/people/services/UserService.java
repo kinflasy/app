@@ -1,6 +1,7 @@
 package br.org.kinflasy.apis.people.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
@@ -48,10 +49,9 @@ public class UserService {
         return converter.toDto(entity);
     }
 
-    public UserDto findById(final UUID id) {
+    public Optional<UserDto> findById(final UUID id) {
         return repository.findById(id)
-                .map(converter::toDto)
-                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+                .map(converter::toDto);
     }
 
     public UserWithPasswordDto findByUsernameWithPassword(final String username) {

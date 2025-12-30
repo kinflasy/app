@@ -51,14 +51,14 @@ public class Membership extends AbstractSimpleAuditable {
      * Enumerações
      */
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Affiliation affiliation;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private EntryMode entryMode;
 
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private LeaveMode leaveMode;
 
     /*

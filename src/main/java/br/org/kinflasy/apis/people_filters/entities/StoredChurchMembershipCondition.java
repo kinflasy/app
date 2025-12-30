@@ -5,6 +5,7 @@ import java.util.UUID;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -27,7 +28,7 @@ public class StoredChurchMembershipCondition extends StoredCondition {
     private UUID churchId;
 
     @Column
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Affiliation affiliation;
 
 }

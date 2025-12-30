@@ -49,11 +49,9 @@ public class UserController {
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar um usuário ativo pelo ID.")
     public ResponseEntity<UserDto> findById(@PathVariable final UUID id) {
-        try {
-            return new ResponseEntity<>(service.findById(id), HttpStatus.OK);
-        } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return service.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping("{username}")
