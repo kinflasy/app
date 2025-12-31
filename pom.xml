@@ -49,6 +49,11 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 		</dependency>
+		<dependency>
+			<!-- JPA Model Gen -->
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-jpamodelgen</artifactId>
+		</dependency>
 
 		<!-- Dependências de utilitários -->
 		<dependency>
