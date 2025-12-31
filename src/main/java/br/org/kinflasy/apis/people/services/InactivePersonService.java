@@ -31,12 +31,13 @@ public class InactivePersonService {
                 .toList();
     }
 
-    public InactivePersonDto create(final InactivePersonRequest request) {
+    public InactivePersonDto create(final InactivePersonRequest.WithChurch request) {
         // Salvar endereço
         final var address = addressClient.create(request.getAddress());
 
         // Salvar pessoa
         final var entity = converter.toEntity(request);
+        entity.setId(null);
         entity.setAddressId(address.getId());
         repository.save(entity);
 

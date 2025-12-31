@@ -13,7 +13,12 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 public class InactivePersonRequest extends PersonRequest {
 
-    private @NotNull UUID churchId;
+    @Data
+    @EqualsAndHashCode(callSuper = true)
+    public static class WithChurch extends InactivePersonRequest {
+        private @NotNull UUID churchId;
+    }
+
     private @Email String email;
 
 }

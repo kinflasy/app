@@ -1,5 +1,6 @@
 package br.org.kinflasy.apis.churches.services;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,6 +26,7 @@ import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
+import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import br.org.kinflasy.libs.people.dto.PersonSimpleDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -189,24 +191,36 @@ public class UnitService {
 
     @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
     public List<MembershipSimpleDto> registerMembers(final UUID id, final List<MembershipRequest.Register> request) {
-        final var entities = request.stream()
-                .map(member -> {
-                    final var savedPerson = inactivePersonService.create(member.getPerson());
+        // Obter dados da unidade
+        return repository.findById(id)
+                .map(unit -> {
+                    final var entities = request.stream()
 
-                    final var entity = mapper.map(member, Membership.class);
-                    entity.setId(null);
-                    entity.setUnitId(id);
-                    entity.setPersonId(savedPerson.getId());
+                            // Para cada membro...
+                            .map(member -> {
+                                // ... criar pessoa inativa
+                                final var personRequest = mapper
+                                        .map(member.getPerson(), InactivePersonRequest.WithChurch.class)
+                                        .setChurchId(unit.getChurchId());
+                                final var savedPerson = inactivePersonService.create(personRequest);
 
-                    return entity;
+                                // ... criar vínculo de membresia
+                                final var entity = mapper.map(member, Membership.class);
+                                entity.setId(null);
+                                entity.setUnitId(id);
+                                entity.setPersonId(savedPerson.getId());
+
+                                return entity;
+                            })
+                            .toList();
+
+                    final var saved = membershipRepository.saveAll(entities);
+                    return saved.stream()
+                            .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
+                            .toList();
                 })
-                .toList();
+                .orElseGet(Collections::emptyList);
 
-        final var saved = membershipRepository.saveAll(entities);
-
-        return saved.stream()
-                .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
-                .toList();
     }
 
     @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
