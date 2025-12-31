@@ -1,5 +1,7 @@
 package br.org.kinflasy.apis.people.entities;
 
+import java.util.UUID;
+
 import org.hibernate.annotations.DynamicUpdate;
 
 import jakarta.persistence.Column;
@@ -16,6 +18,12 @@ import lombok.experimental.Accessors;
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = true)
 public class InactivePerson extends Person {
+
+    /*
+     * Chaves estrangeiras
+     */
+    @Column(nullable = false)
+    private UUID churchId;
 
     /*
      * Dados primitivos

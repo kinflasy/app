@@ -189,16 +189,17 @@ public class UnitService {
 
     @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
     public List<MembershipSimpleDto> registerMembers(final UUID id, final List<MembershipRequest.Register> request) {
-        final var entities = request.stream().map(member -> {
-            final var savedPerson = inactivePersonService.create(member.getPerson());
+        final var entities = request.stream()
+                .map(member -> {
+                    final var savedPerson = inactivePersonService.create(member.getPerson());
 
-            final var entity = mapper.map(member, Membership.class);
-            entity.setId(null);
-            entity.setUnitId(id);
-            entity.setPersonId(savedPerson.getId());
+                    final var entity = mapper.map(member, Membership.class);
+                    entity.setId(null);
+                    entity.setUnitId(id);
+                    entity.setPersonId(savedPerson.getId());
 
-            return entity;
-        })
+                    return entity;
+                })
                 .toList();
 
         final var saved = membershipRepository.saveAll(entities);

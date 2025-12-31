@@ -1,5 +1,7 @@
 package br.org.kinflasy.libs.people.dto;
 
+import java.util.UUID;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -8,5 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class InactivePersonSimpleDto extends PersonSimpleDto {
+
+    private UUID churchId;
 
 }
