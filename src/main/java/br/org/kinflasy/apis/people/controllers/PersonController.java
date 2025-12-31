@@ -27,8 +27,8 @@ public class PersonController {
     private final PersonService service;
     private final PersonConverter converter;
 
-    @GetMapping
-    @Operation(summary = "Listar todos", description = "Listar todas as pessoas cadastradas.")
+    @GetMapping("admin")
+    @Operation(summary = "ADMIN - Listar todos", description = "Listar todas as pessoas cadastradas.")
     public ResponseEntity<List<PersonDto>> listAll() {
         return new ResponseEntity<>(service.findAll().stream().map(converter::toDto).toList(), HttpStatus.OK);
     }

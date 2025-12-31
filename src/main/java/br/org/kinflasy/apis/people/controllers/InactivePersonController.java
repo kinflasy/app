@@ -36,13 +36,13 @@ public class InactivePersonController {
     private final InactivePersonService service;
     private final ActivationUseCaseService activationUseCaseService;
 
-    @GetMapping
-    @Operation(summary = "Listar todos", description = "Listar todas as pessoas inativas cadastradas.")
+    @GetMapping("admin")
+    @Operation(summary = "ADMIN - Listar todos", description = "Listar todas as pessoas inativas cadastradas.")
     public ResponseEntity<List<InactivePersonDto>> listAll() {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("admin")
     @Transactional
     @Operation(summary = "ADMIN - Cadastrar", description = "Cadastrar uma nova pessoa inativa.")
     public ResponseEntity<InactivePersonDto> create(

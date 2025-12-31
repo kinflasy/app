@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.apis.people.services.UserService;
+import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
 import br.org.kinflasy.libs.people.dto.UserWithPasswordDto;
@@ -32,16 +33,17 @@ import lombok.AllArgsConstructor;
 public class UserController {
 
     private final UserService service;
+    private final AuthUtils authUtils;
 
-    @GetMapping
-    @Operation(summary = "Listar todos", description = "Listar todos os usuários ativos cadastrados.")
+    @GetMapping("admin")
+    @Operation(summary = "ADMIN - Listar todos", description = "Listar todos os usuários ativos cadastrados.")
     public ResponseEntity<List<UserDto>> listAll() {
         return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
     }
 
-    @PostMapping
+    @PostMapping("admin")
     @Transactional
-    @Operation(summary = "Cadastrar", description = "Cadastrar um novo usuário ativo.")
+    @Operation(summary = "ADMIN - Cadastrar", description = "Cadastrar um novo usuário ativo.")
     public ResponseEntity<UserDto> create(@RequestBody @Valid final UserRequest request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
@@ -64,9 +66,21 @@ public class UserController {
         }
     }
 
-    @PutMapping("{id}")
+    @PutMapping
     @Transactional
-    @Operation(summary = "Editar", description = "Editar os dados de um usuário ativo.")
+    @Operation(summary = "Editar", description = "Editar os dados do usuário logado.")
+    public ResponseEntity<UserDto> update(@RequestBody @Valid final UserRequest request) {
+        try {
+            final var loggedUser = authUtils.getLoggedUser();
+            return new ResponseEntity<>(service.update(loggedUser.getId(), request), HttpStatus.OK);
+        } catch (final EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("admin/{id}")
+    @Transactional
+    @Operation(summary = "ADMIN - Editar", description = "Editar os dados de um usuário ativo.")
     public ResponseEntity<UserDto> update(@PathVariable final UUID id, @RequestBody @Valid final UserRequest request) {
         try {
             return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
@@ -75,9 +89,22 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping
     @Transactional
-    @Operation(summary = "Excluir", description = "Descadastrar um usuário ativo, removendo-o do sistema.")
+    @Operation(summary = "ADMIN - Excluir", description = "Descadastrar usuário logado, removendo-o do sistema.")
+    public ResponseEntity<HttpStatus> delete() {
+        try {
+            final var loggedUser = authUtils.getLoggedUser();
+            service.delete(loggedUser.getId());
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (final Exception e) {
+            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+        }
+    }
+
+    @DeleteMapping("admin/{id}")
+    @Transactional
+    @Operation(summary = "ADMIN - Excluir", description = "Descadastrar um usuário ativo, removendo-o do sistema.")
     public ResponseEntity<HttpStatus> delete(@PathVariable final UUID id) {
         try {
             service.delete(id);
