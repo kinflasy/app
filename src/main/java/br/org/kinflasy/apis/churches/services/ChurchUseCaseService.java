@@ -91,7 +91,7 @@ public class ChurchUseCaseService {
         // Adicionar usuário logado à secretaria
         final var integration = new Integration();
         integration.setDepartmentId(createdSecretariat.getId());
-        integration.setPersonId(loggedUser.getId());
+        integration.setMembershipId(loggedUser.getId());
         integration.setType(IntegrationType.LEADER);
         integrationRepository.save(integration);
 

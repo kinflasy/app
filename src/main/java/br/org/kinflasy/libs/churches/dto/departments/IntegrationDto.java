@@ -12,7 +12,7 @@ public class IntegrationDto {
 
     private UUID id;
     private UUID departmentId;
-    private UUID personId;
+    private UUID membershipId;
     private IntegrationType type;
 
 }

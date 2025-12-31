@@ -29,7 +29,7 @@ public class IntegrationService {
     }
 
     public List<IntegrationDto> listByPerson(final UUID personId) {
-        return repository.findByPersonId(personId).stream()
+        return repository.findByMembershipId(personId).stream()
                 .map(integration -> mapper.map(integration, IntegrationDto.class))
                 .toList();
     }
@@ -48,7 +48,7 @@ public class IntegrationService {
     }
 
     public Optional<IntegrationDto> findIntegration(final UUID departmentId, final UUID personId) {
-        return repository.findByDepartmentIdAndPersonId(departmentId, personId).stream()
+        return repository.findByDepartmentIdAndMembershipId(departmentId, personId).stream()
                 .findFirst()
                 .map(integration -> mapper.map(integration, IntegrationDto.class));
     }

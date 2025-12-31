@@ -31,8 +31,8 @@ public class ActivationUseCaseService {
                             membershipRepository.findByPersonId(inactivePersonId)
                                     .forEach(membership -> membership.setPersonId(userId));
 
-                            integrationRepository.findByPersonId(inactivePersonId)
-                                    .forEach(integration -> integration.setPersonId(userId));
+                            integrationRepository.findByMembershipId(inactivePersonId)
+                                    .forEach(integration -> integration.setMembershipId(userId));
 
                             identityConditionRepository.findByPersonId(inactivePersonId)
                                     .ifPresent(condition -> condition.setPersonId(userId));

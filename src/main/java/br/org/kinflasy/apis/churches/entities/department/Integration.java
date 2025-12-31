@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 @Entity
 @DynamicUpdate
 @Table(name = "integrations", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "department_id", "person_id" })
+        @UniqueConstraint(columnNames = { Integration_.DEPARTMENT_ID, Integration_.MEMBERSHIP_ID })
 })
 @Data
 @Accessors(chain = false)
@@ -38,6 +38,6 @@ public class Integration extends AbstractSimpleAuditable {
     private UUID departmentId;
 
     @Column(nullable = false)
-    private UUID personId;
+    private UUID membershipId;
 
 }
