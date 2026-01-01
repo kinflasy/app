@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.apis.people.services.ActivationUseCaseService;
 import br.org.kinflasy.apis.people.services.InactivePersonService;
+import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.people.dto.ActivationRequest;
 import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
-import br.org.kinflasy.libs.people.dto.UserSimpleDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -83,7 +83,7 @@ public class InactivePersonController {
     }
 
     @PostMapping("{id}/activate")
-    public ResponseEntity<UserSimpleDto> activate(@PathVariable final UUID id,
+    public ResponseEntity<List<MembershipDto>> activate(@PathVariable final UUID id,
             @RequestBody final ActivationRequest request) {
         return ResponseEntity.ok(activationUseCaseService.activate(id, request.getUserId()));
     }

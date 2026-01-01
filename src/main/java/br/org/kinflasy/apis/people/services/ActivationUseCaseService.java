@@ -1,14 +1,13 @@
 package br.org.kinflasy.apis.people.services;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.repositories.MembershipRepository;
-import br.org.kinflasy.apis.churches.repositories.department.IntegrationRepository;
-import br.org.kinflasy.apis.people_filters.repositories.IdentityConditionRepository;
-import br.org.kinflasy.libs.people.dto.UserSimpleDto;
+import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -19,26 +18,36 @@ public class ActivationUseCaseService {
     private final UserService userService;
 
     private final MembershipRepository membershipRepository;
-    private final IntegrationRepository integrationRepository;
-    private final IdentityConditionRepository identityConditionRepository;
 
     private final ModelMapper mapper;
 
-    public UserSimpleDto activate(final UUID inactivePersonId, final UUID userId) {
+    public List<MembershipDto> activate(final UUID inactivePersonId, final UUID userId) {
+        // Obter dados do usuário ativo
         return userService.findById(userId)
-                .flatMap(user -> inactivePersonService.findById(inactivePersonId)
-                        .map(inactivePerson -> {
-                            membershipRepository.findByPersonId(inactivePersonId)
-                                    .forEach(membership -> membership.setPersonId(userId));
 
-                            integrationRepository.findByMembershipId(inactivePersonId)
-                                    .forEach(integration -> integration.setMembershipId(userId));
+                // Obter dados da pessoa inativa
+                .flatMap(user -> inactivePersonService.findById(inactivePersonId))
 
-                            identityConditionRepository.findByPersonId(inactivePersonId)
-                                    .ifPresent(condition -> condition.setPersonId(userId));
+                .map(inactivePerson -> {
+                    // Buscar membresias da pessoa inativa
+                    final var memberships = membershipRepository.findByPersonId(inactivePersonId).stream()
 
-                            return mapper.map(user, UserSimpleDto.class);
-                        }))
+                            // Substituir pessoa pelo usuário ativo
+                            .map(membership -> {
+                                membership.setPersonId(userId);
+                                membershipRepository.save(membership);
+
+                                return mapper.map(membership, MembershipDto.class);
+                            })
+                            .toList();
+
+                    // Excluir pessoa inativa
+                    inactivePersonService.delete(inactivePersonId);
+
+                    return memberships;
+                })
+
+                // Caso não encontre alguma das pessoas, lança exceção
                 .orElseThrow();
     }
 
