@@ -1,4 +1,4 @@
-package br.org.kinflasy.libs.people_filters.conditions.structure;
+package br.org.kinflasy.libs.base_conditions.conditions.structure;
 
 import java.util.ArrayList;
 import java.util.List;

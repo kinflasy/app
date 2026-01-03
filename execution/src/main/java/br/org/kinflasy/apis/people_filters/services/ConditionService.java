@@ -13,10 +13,10 @@ import br.org.kinflasy.apis.people_filters.entities.StoredConditionGroup;
 import br.org.kinflasy.apis.people_filters.entities.StoredNegativeCondition;
 import br.org.kinflasy.apis.people_filters.factories.ConditionFactory;
 import br.org.kinflasy.apis.people_filters.repositories.GeneralConditionRepository;
-import br.org.kinflasy.libs.people_filters.conditions.logical.NegativeCondition;
-import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
-import br.org.kinflasy.libs.people_filters.conditions.structure.ConditionGroup;
-import br.org.kinflasy.libs.people_filters.dto.StoredConditionDto;
+import br.org.kinflasy.libs.base_conditions.conditions.logical.NegativeCondition;
+import br.org.kinflasy.libs.base_conditions.conditions.structure.Condition;
+import br.org.kinflasy.libs.base_conditions.conditions.structure.ConditionGroup;
+import br.org.kinflasy.libs.base_conditions.dto.StoredConditionDto;
 import lombok.AllArgsConstructor;
 
 @Service

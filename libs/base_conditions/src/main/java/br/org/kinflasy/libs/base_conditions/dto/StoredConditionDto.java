@@ -1,8 +1,8 @@
-package br.org.kinflasy.libs.people_filters.dto;
+package br.org.kinflasy.libs.base_conditions.dto;
 
 import java.util.UUID;
 
-import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
+import br.org.kinflasy.libs.base_conditions.conditions.structure.Condition;
 import lombok.Value;
 
 @Value

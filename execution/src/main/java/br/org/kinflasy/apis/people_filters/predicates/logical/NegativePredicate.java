@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import br.org.kinflasy.apis.people_filters.factories.ConditionFactory;
 import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicate;
 import br.org.kinflasy.libs.people.dto.PersonDto;
-import br.org.kinflasy.libs.people_filters.conditions.logical.NegativeCondition;
+import br.org.kinflasy.libs.base_conditions.conditions.logical.NegativeCondition;
 import lombok.AllArgsConstructor;
 
 @Component

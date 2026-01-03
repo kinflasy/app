@@ -1,7 +1,7 @@
 package br.org.kinflasy.libs.churches.dto.departments;
 
+import br.org.kinflasy.libs.base_conditions.dto.ConditionRequest;
 import br.org.kinflasy.libs.churches.enums.department.DepartmentType;
-import br.org.kinflasy.libs.people_filters.dto.ConditionRequest;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

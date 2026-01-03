@@ -50,10 +50,10 @@ import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrat
 import br.org.kinflasy.libs.people_filters.conditions.business.FunctionalCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.IdentityCondition;
 import br.org.kinflasy.libs.people_filters.conditions.business.UnitMembershipCondition;
-import br.org.kinflasy.libs.people_filters.conditions.logical.AndConditionGroup;
-import br.org.kinflasy.libs.people_filters.conditions.logical.NegativeCondition;
-import br.org.kinflasy.libs.people_filters.conditions.logical.OrConditionGroup;
-import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
+import br.org.kinflasy.libs.base_conditions.conditions.logical.AndConditionGroup;
+import br.org.kinflasy.libs.base_conditions.conditions.logical.NegativeCondition;
+import br.org.kinflasy.libs.base_conditions.conditions.logical.OrConditionGroup;
+import br.org.kinflasy.libs.base_conditions.conditions.structure.Condition;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 

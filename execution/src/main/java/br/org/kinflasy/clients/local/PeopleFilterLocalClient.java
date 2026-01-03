@@ -9,14 +9,14 @@ import org.springframework.stereotype.Component;
 
 import br.org.kinflasy.apis.people_filters.controllers.PeopleFilterController;
 import br.org.kinflasy.clients.PeopleFilterClient;
+import br.org.kinflasy.libs.base_conditions.conditions.structure.Condition;
+import br.org.kinflasy.libs.base_conditions.dto.ConditionRequest;
+import br.org.kinflasy.libs.base_conditions.dto.StoredConditionDto;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people_filters.builder.contracts.ReadyConditionBuilder;
 import br.org.kinflasy.libs.people_filters.builder.implementations.ConditionBuilder;
 import br.org.kinflasy.libs.people_filters.builder.implementations.StarterConditionBuilder;
-import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
-import br.org.kinflasy.libs.people_filters.dto.ConditionRequest;
 import br.org.kinflasy.libs.people_filters.dto.PeopleFilterTestRequest;
-import br.org.kinflasy.libs.people_filters.dto.StoredConditionDto;
 import lombok.AllArgsConstructor;
 
 @Component

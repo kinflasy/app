@@ -16,7 +16,7 @@
 
     <!-- Informações do Projeto -->
     <name>Biblioteca de Filtros de Pessoas</name>
-    <description>Biblioteca de binários de Filtros de Pessoas Projeto Kinflasy</description>
+    <description>Biblioteca de binários de Filtros de Pessoas do Projeto Kinflasy</description>
 
     <!-- Informações do Artefato -->
     <groupId>br.org.kinflasy.libs</groupId>
@@ -26,6 +26,11 @@
     <!-- Dependências -->
     <dependencies>
         <!-- Dependências do Projeto Kinflasy -->
+        <dependency>
+            <groupId>br.org.kinflasy.libs</groupId>
+            <artifactId>base_conditions</artifactId>
+            <version>0.0.1-SNAPSHOT-001</version>
+        </dependency>
         <dependency>
             <groupId>br.org.kinflasy.libs</groupId>
             <artifactId>people</artifactId>

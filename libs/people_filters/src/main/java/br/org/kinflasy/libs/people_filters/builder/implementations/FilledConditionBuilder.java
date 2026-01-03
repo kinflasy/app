@@ -1,7 +1,7 @@
 package br.org.kinflasy.libs.people_filters.builder.implementations;
 
 import br.org.kinflasy.libs.people_filters.builder.contracts.ReadyConditionBuilder;
-import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
+import br.org.kinflasy.libs.base_conditions.conditions.structure.Condition;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

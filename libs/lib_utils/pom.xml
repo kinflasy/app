@@ -15,33 +15,16 @@
     </parent>
 
     <!-- Informações do Projeto -->
-    <name>Biblioteca de Igrejas</name>
-    <description>Biblioteca de binários de Igrejas Projeto Kinflasy</description>
+    <name>Biblioteca de Utilitários para Libs</name>
+    <description>Biblioteca de binários de Utilitários para outras Bibliotecas no Projeto Kinflasy</description>
 
     <!-- Informações do Artefato -->
     <groupId>br.org.kinflasy.libs</groupId>
-    <artifactId>churches</artifactId>
+    <artifactId>lib_utils</artifactId>
     <version>0.0.1-SNAPSHOT-001</version>
 
     <!-- Dependências -->
     <dependencies>
-        <!-- Dependências do Projeto Kinflasy -->
-        <dependency>
-            <groupId>br.org.kinflasy.libs</groupId>
-            <artifactId>people</artifactId>
-            <version>0.0.1-SNAPSHOT-001</version>
-        </dependency>
-        <dependency>
-            <groupId>br.org.kinflasy.libs</groupId>
-            <artifactId>lib_utils</artifactId>
-            <version>0.0.1-SNAPSHOT-001</version>
-        </dependency>
-        <dependency>
-            <groupId>br.org.kinflasy.libs</groupId>
-            <artifactId>base_conditions</artifactId>
-            <version>0.0.1-SNAPSHOT-001</version>
-        </dependency>
-
         <!-- Dependências do Spring Boot -->
         <dependency>
             <!-- Spring Security -->

@@ -2,8 +2,8 @@ package br.org.kinflasy.libs.people_filters.conditions.business;
 
 import java.util.UUID;
 
+import br.org.kinflasy.libs.base_conditions.conditions.structure.Condition;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
-import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
 import lombok.Value;
 
 @Value

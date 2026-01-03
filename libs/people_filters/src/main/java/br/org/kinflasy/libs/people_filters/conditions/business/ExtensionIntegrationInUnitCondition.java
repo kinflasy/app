@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
-import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
+import br.org.kinflasy.libs.base_conditions.conditions.structure.Condition;
 import lombok.Value;
 
 @Value

@@ -1,6 +1,6 @@
-package br.org.kinflasy.libs.people_filters.dto;
+package br.org.kinflasy.libs.base_conditions.dto;
 
-import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
+import br.org.kinflasy.libs.base_conditions.conditions.structure.Condition;
 import jakarta.validation.constraints.NotNull;
 import lombok.Value;
 

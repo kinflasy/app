@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 import br.org.kinflasy.apis.people_filters.entities.StoredCondition;
 import br.org.kinflasy.apis.people_filters.factories.ConditionFactory;
-import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
+import br.org.kinflasy.libs.base_conditions.conditions.structure.Condition;
 import lombok.AllArgsConstructor;
 
 @Component

@@ -1,6 +1,6 @@
-package br.org.kinflasy.libs.people_filters.conditions.logical;
+package br.org.kinflasy.libs.base_conditions.conditions.logical;
 
-import br.org.kinflasy.libs.people_filters.conditions.structure.ConditionGroup;
+import br.org.kinflasy.libs.base_conditions.conditions.structure.ConditionGroup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

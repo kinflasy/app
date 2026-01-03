@@ -2,8 +2,8 @@ package br.org.kinflasy.apis.people_filters.predicates.structure;
 
 import org.springframework.stereotype.Component;
 
-import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
-import br.org.kinflasy.libs.people_filters.conditions.structure.ConditionGroup;
+import br.org.kinflasy.libs.base_conditions.conditions.structure.Condition;
+import br.org.kinflasy.libs.base_conditions.conditions.structure.ConditionGroup;
 import lombok.Value;
 
 @Component

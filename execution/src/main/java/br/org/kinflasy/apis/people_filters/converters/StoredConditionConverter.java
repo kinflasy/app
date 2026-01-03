@@ -11,11 +11,11 @@ import br.org.kinflasy.apis.people_filters.entities.StoredConditionGroup;
 import br.org.kinflasy.apis.people_filters.entities.StoredNegativeCondition;
 import br.org.kinflasy.apis.people_filters.entities.StoredOrConditionGroup;
 import br.org.kinflasy.apis.people_filters.factories.ConditionFactory;
-import br.org.kinflasy.libs.people_filters.conditions.logical.AndConditionGroup;
-import br.org.kinflasy.libs.people_filters.conditions.logical.NegativeCondition;
-import br.org.kinflasy.libs.people_filters.conditions.logical.OrConditionGroup;
-import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
-import br.org.kinflasy.libs.people_filters.conditions.structure.ConditionGroup;
+import br.org.kinflasy.libs.base_conditions.conditions.logical.AndConditionGroup;
+import br.org.kinflasy.libs.base_conditions.conditions.logical.NegativeCondition;
+import br.org.kinflasy.libs.base_conditions.conditions.logical.OrConditionGroup;
+import br.org.kinflasy.libs.base_conditions.conditions.structure.Condition;
+import br.org.kinflasy.libs.base_conditions.conditions.structure.ConditionGroup;
 import lombok.AllArgsConstructor;
 
 @Component

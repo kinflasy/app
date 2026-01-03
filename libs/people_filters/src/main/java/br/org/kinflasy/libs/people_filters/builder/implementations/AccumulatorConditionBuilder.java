@@ -14,7 +14,7 @@ import br.org.kinflasy.libs.people_filters.builder.contracts.AccumulatedConditio
 import br.org.kinflasy.libs.people_filters.builder.contracts.MultipleConditionBuilder;
 import br.org.kinflasy.libs.people_filters.builder.contracts.ReadyConditionBuilder;
 import br.org.kinflasy.libs.people_filters.builder.contracts.SingleConditionBuilder;
-import br.org.kinflasy.libs.people_filters.conditions.structure.Condition;
+import br.org.kinflasy.libs.base_conditions.conditions.structure.Condition;
 import br.org.kinflasy.libs.people_filters.enums.PersonCharacteristic;
 import lombok.AllArgsConstructor;
 
