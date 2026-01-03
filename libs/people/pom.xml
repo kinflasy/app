@@ -25,7 +25,27 @@
 
     <!-- Dependências -->
     <dependencies>
-        <!-- Nenhuma -->
+        <!-- Dependências do Projeto Kinflasy -->
+        <dependency>
+            <groupId>br.org.kinflasy.libs</groupId>
+            <artifactId>contacts</artifactId>
+            <version>0.0.1-SNAPSHOT-001</version>
+        </dependency>
+
+        <!-- Dependências do Spring Boot -->
+        <dependency>
+            <!-- Spring Security -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- Dependências de utilitários -->
+        <dependency>
+            <!-- Open API -->
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.8.6</version>
+        </dependency>
     </dependencies>
 
 </project>
