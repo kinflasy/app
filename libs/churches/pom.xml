@@ -31,6 +31,11 @@
             <artifactId>contacts</artifactId>
             <version>0.0.1-SNAPSHOT-001</version>
         </dependency>
+        <dependency>
+            <groupId>br.org.kinflasy.libs</groupId>
+            <artifactId>people_filters</artifactId>
+            <version>0.0.1-SNAPSHOT-001</version>
+        </dependency>
 
         <!-- Dependências do Spring Boot -->
         <dependency>
