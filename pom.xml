@@ -29,6 +29,7 @@
 		<module>execution</module>
 		<module>libs/contacts</module>
 		<module>libs/people</module>
+		<module>libs/churches</module>
 	</modules>
 
 	<!-- Propriedades -->
