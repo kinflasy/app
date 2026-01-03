@@ -25,20 +25,7 @@
 
     <!-- Dependências -->
     <dependencies>
-        <!-- Dependências do Spring Boot -->
-        <dependency>
-            <!-- Spring Security -->
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
-        <!-- Dependências de utilitários -->
-        <dependency>
-            <!-- Open API -->
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.8.6</version>
-        </dependency>
+        <!-- Nenhuma -->
     </dependencies>
 
 </project>

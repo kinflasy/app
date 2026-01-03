@@ -25,13 +25,6 @@
 
     <!-- Dependências -->
     <dependencies>
-        <!-- Dependências do Spring Boot -->
-        <dependency>
-            <!-- Spring Security -->
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
         <!-- Dependências de utilitários -->
         <dependency>
             <!-- Open API -->
