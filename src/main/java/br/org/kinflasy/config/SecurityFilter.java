@@ -3,7 +3,6 @@ package br.org.kinflasy.config;
 import java.io.IOException;
 import java.util.Optional;
 
-import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -25,9 +24,8 @@ public class SecurityFilter extends OncePerRequestFilter {
     private UserClient userClient;
 
     @Override
-    protected void doFilterInternal(final @NonNull HttpServletRequest request,
-            final @NonNull HttpServletResponse response, final @NonNull FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
+            final FilterChain filterChain) throws ServletException, IOException {
         recoverToken(request)
                 .ifPresent(token -> {
                     final var username = tokenService.validateToken(token);
