@@ -23,6 +23,13 @@
 
     <!-- Dependências -->
     <dependencies>
+        <!-- Dependências do Projeto Kinflasy -->
+        <dependency>
+            <groupId>br.org.kinflasy.libs</groupId>
+            <artifactId>contacts</artifactId>
+            <version>0.0.1-SNAPSHOT-001</version>
+        </dependency>
+
         <!-- Dependências do Spring Boot -->
         <dependency>
             <!-- Starter Web -->
@@ -59,12 +66,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <!-- Lombok -->
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -106,5 +107,40 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <!-- Informações de Build -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </path>
+                        <path>
+                            <groupId>org.hibernate.orm</groupId>
+                            <artifactId>hibernate-jpamodelgen</artifactId>
+                            <version>7.0.2.Final</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
