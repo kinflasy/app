@@ -26,6 +26,11 @@
         <!-- Dependências do Projeto Kinflasy -->
         <dependency>
             <groupId>br.org.kinflasy.libs</groupId>
+            <artifactId>api_utils</artifactId>
+            <version>0.0.1-SNAPSHOT-001</version>
+        </dependency>
+        <dependency>
+            <groupId>br.org.kinflasy.libs</groupId>
             <artifactId>people</artifactId>
             <version>0.0.1-SNAPSHOT-001</version>
         </dependency>
