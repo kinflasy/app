@@ -30,6 +30,7 @@
 		<module>libs/contacts</module>
 		<module>libs/people</module>
 		<module>libs/churches</module>
+		<module>libs/people_filters</module>
 	</modules>
 
 	<!-- Propriedades -->
