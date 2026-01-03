@@ -28,6 +28,7 @@
 	<modules>
 		<module>execution</module>
 		<module>libs/contacts</module>
+		<module>libs/people</module>
 	</modules>
 
 	<!-- Propriedades -->

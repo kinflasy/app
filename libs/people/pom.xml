@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Definições -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Base -->
+    <parent>
+        <groupId>br.org.kinflasy</groupId>
+        <artifactId>app</artifactId>
+        <version>0.0.1-SNAPSHOT-001</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <!-- Informações do Projeto -->
+    <name>Biblioteca de Pessoas</name>
+    <description>Biblioteca de binários de Pessoas Projeto Kinflasy</description>
+
+    <!-- Informações do Artefato -->
+    <groupId>br.org.kinflasy.libs</groupId>
+    <artifactId>people</artifactId>
+    <version>0.0.1-SNAPSHOT-001</version>
+
+    <!-- Dependências -->
+    <dependencies>
+        <!-- Nenhuma -->
+    </dependencies>
+
+</project>
