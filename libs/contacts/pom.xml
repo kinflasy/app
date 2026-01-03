@@ -23,4 +23,9 @@
     <artifactId>contacts</artifactId>
     <version>0.0.1-SNAPSHOT-001</version>
 
+    <!-- Dependências -->
+    <dependencies>
+        <!-- Nenhuma -->
+    </dependencies>
+
 </project>
