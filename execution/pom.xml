@@ -13,6 +13,10 @@
         <version>0.0.1-SNAPSHOT-001</version>
     </parent>
 
+    <!-- Informações do Projeto -->
+    <name>Executável</name>
+    <description>Ponto de entrada do Projeto Kinflasy</description>
+
     <!-- Informações do Artefato -->
     <artifactId>execution</artifactId>
     <version>0.0.1-SNAPSHOT-001</version>
