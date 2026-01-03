@@ -27,6 +27,7 @@
 	<!-- Módulos -->
 	<modules>
 		<module>execution</module>
+		<module>libs/contacts</module>
 	</modules>
 
 	<!-- Propriedades -->
