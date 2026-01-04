@@ -15,12 +15,12 @@
     </parent>
 
     <!-- Informações do Projeto -->
-    <name>Biblioteca de Utilitários para APIs</name>
-    <description>Biblioteca de binários de Utilitários para APIs no Projeto Kinflasy</description>
+    <name>API de Pessoas</name>
+    <description>API de Pessoas no Projeto Kinflasy</description>
 
     <!-- Informações do Artefato -->
-    <groupId>br.org.kinflasy.libs</groupId>
-    <artifactId>api_utils</artifactId>
+    <groupId>br.org.kinflasy.apis</groupId>
+    <artifactId>people</artifactId>
     <version>0.0.1-SNAPSHOT-001</version>
 
     <!-- Dependências -->
@@ -28,18 +28,18 @@
         <!-- Dependências do Projeto Kinflasy -->
         <dependency>
             <groupId>br.org.kinflasy.libs</groupId>
+            <artifactId>api_utils</artifactId>
+            <version>0.0.1-SNAPSHOT-001</version>
+        </dependency>
+        <dependency>
+            <groupId>br.org.kinflasy.libs</groupId>
             <artifactId>people</artifactId>
             <version>0.0.1-SNAPSHOT-001</version>
         </dependency>
-
-        <!-- Dependências do Spring Boot -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+            <groupId>br.org.kinflasy.libs</groupId>
+            <artifactId>churches</artifactId>
+            <version>0.0.1-SNAPSHOT-001</version>
         </dependency>
 
         <!-- Dependências de banco de dados -->
@@ -58,16 +58,4 @@
         </dependency>
     </dependencies>
 
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>2025.1.0</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>

@@ -35,6 +35,7 @@
 		<module>libs/base_conditions</module>
 		<module>libs/api_utils</module>
 		<module>apis/contacts</module>
+		<module>apis/people</module>
 	</modules>
 
 	<!-- Propriedades -->

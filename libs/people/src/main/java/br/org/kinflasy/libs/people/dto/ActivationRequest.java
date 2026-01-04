@@ -8,6 +8,7 @@ import lombok.Value;
 @Value
 public class ActivationRequest {
 
+    private @NotBlank UUID inactivePersonId;
     private @NotBlank UUID userId;
 
 }

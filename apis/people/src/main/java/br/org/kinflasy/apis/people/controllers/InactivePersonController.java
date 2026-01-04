@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.org.kinflasy.apis.people.services.ActivationUseCaseService;
 import br.org.kinflasy.apis.people.services.InactivePersonService;
-import br.org.kinflasy.libs.churches.dto.MembershipDto;
-import br.org.kinflasy.libs.people.dto.ActivationRequest;
 import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,7 +31,6 @@ import lombok.AllArgsConstructor;
 public class InactivePersonController {
 
     private final InactivePersonService service;
-    private final ActivationUseCaseService activationUseCaseService;
 
     @GetMapping("admin")
     @Operation(summary = "ADMIN - Listar todos", description = "Listar todas as pessoas inativas cadastradas.")
@@ -80,12 +76,6 @@ public class InactivePersonController {
         } catch (final Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
-    }
-
-    @PostMapping("{id}/activate")
-    public ResponseEntity<List<MembershipDto>> activate(@PathVariable final UUID id,
-            @RequestBody final ActivationRequest request) {
-        return ResponseEntity.ok(activationUseCaseService.activate(id, request.getUserId()));
     }
 
 }

@@ -1,4 +1,4 @@
-package br.org.kinflasy.apis.people.services;
+package br.org.kinflasy.apis.churches.services;
 
 import java.util.List;
 import java.util.UUID;
@@ -7,6 +7,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.repositories.MembershipRepository;
+import br.org.kinflasy.apis.people.services.InactivePersonService;
+import br.org.kinflasy.apis.people.services.UserService;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import lombok.AllArgsConstructor;
 

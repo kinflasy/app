@@ -7,9 +7,9 @@ import java.util.UUID;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.apis.people.clients.AddressClient;
 import br.org.kinflasy.apis.people.converters.UserConverter;
 import br.org.kinflasy.apis.people.repositories.UserRepository;
-import br.org.kinflasy.clients.AddressClient;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
 import br.org.kinflasy.libs.people.dto.UserWithPasswordDto;

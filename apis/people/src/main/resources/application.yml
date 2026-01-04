@@ -1,0 +1,7 @@
+spring:
+  cloud:
+    openfeign:
+      client:
+        config:
+          address-api:
+            url: ${ADDRESS_API_URL}

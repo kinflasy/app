@@ -6,9 +6,9 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.apis.people.clients.AddressClient;
 import br.org.kinflasy.apis.people.converters.InactivePersonConverter;
 import br.org.kinflasy.apis.people.repositories.InactivePersonRepository;
-import br.org.kinflasy.clients.AddressClient;
 import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import jakarta.persistence.EntityNotFoundException;

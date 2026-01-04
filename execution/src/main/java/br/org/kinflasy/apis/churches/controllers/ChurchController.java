@@ -15,13 +15,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.org.kinflasy.apis.churches.services.ActivationUseCaseService;
 import br.org.kinflasy.apis.churches.services.ChurchService;
 import br.org.kinflasy.apis.churches.services.ChurchUseCaseService;
 import br.org.kinflasy.apis.churches.services.UnitService;
 import br.org.kinflasy.libs.churches.dto.ChurchDto;
 import br.org.kinflasy.libs.churches.dto.ChurchRequest;
+import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
+import br.org.kinflasy.libs.people.dto.ActivationRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -37,6 +40,7 @@ public class ChurchController {
     private final ChurchService service;
     private final UnitService unitService;
     private final ChurchUseCaseService useCaseService;
+    private final ActivationUseCaseService activationUseCaseService;
 
     @GetMapping
     @Operation(summary = "Listar todos", description = "Listar todas as igrejas cadastradas.")
@@ -100,6 +104,12 @@ public class ChurchController {
     public ResponseEntity<UnitDto> createUnit(@PathVariable final UUID id,
             @RequestBody @Valid final UnitRequest request) {
         return new ResponseEntity<>(unitService.create(id, request), HttpStatus.CREATED);
+    }
+
+    @PostMapping("activate-member")
+    @Operation(summary = "Ativar membro", description = "Substituir pessoa inativa por usuário ativo em todas as unidades.")
+    public ResponseEntity<List<MembershipDto>> activateMember(@RequestBody final ActivationRequest request) {
+        return ResponseEntity.ok(activationUseCaseService.activate(request.getInactivePersonId(), request.getUserId()));
     }
 
 }
