@@ -44,12 +44,22 @@
             <artifactId>people_filters</artifactId>
             <version>0.0.1-SNAPSHOT-001</version>
         </dependency>
+        <dependency>
+            <groupId>br.org.kinflasy.apis</groupId>
+            <artifactId>contacts</artifactId>
+            <version>0.0.1-SNAPSHOT-001</version>
+        </dependency>
 
         <!-- Dependências do Spring Boot -->
         <dependency>
             <!-- Starter Web -->
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <!-- Spring Security -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
         <!-- Dependências de banco de dados -->
