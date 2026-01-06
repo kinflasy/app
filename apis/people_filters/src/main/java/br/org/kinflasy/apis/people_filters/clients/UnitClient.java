@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.MembershipRequest;
@@ -22,41 +21,40 @@ import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import jakarta.validation.Valid;
 
-@FeignClient("church-base-api")
-@RequestMapping("units")
+@FeignClient(value = "church-base-api", contextId = "people-filters.church-base-api.units", path = "units")
 public interface UnitClient {
 
     @GetMapping("{id}")
-    public UnitDto findById(@PathVariable final UUID id);
+    UnitDto findById(@PathVariable final UUID id);
 
     @PutMapping("{id}")
-    public UnitDto update(@PathVariable final UUID id, @RequestBody final UnitRequest request);
+    UnitDto update(@PathVariable final UUID id, @RequestBody final UnitRequest request);
 
     @DeleteMapping("{id}")
-    public HttpStatus delete(@PathVariable final UUID id);
+    HttpStatus delete(@PathVariable final UUID id);
 
     @GetMapping("{id}/departments")
-    public List<DepartmentDto> listDepartments(@PathVariable final UUID id);
+    List<DepartmentDto> listDepartments(@PathVariable final UUID id);
 
     @PostMapping("{id}/departments")
-    public DepartmentDto createDepartment(@PathVariable final UUID id,
+    DepartmentDto createDepartment(@PathVariable final UUID id,
             @RequestBody @Valid final DepartmentRequest request);
 
     @GetMapping("{id}/members")
-    public List<MembershipDto> listMembers(@PathVariable final UUID id);
+    List<MembershipDto> listMembers(@PathVariable final UUID id);
 
     @GetMapping("{id}/members-and-ex-members")
-    public List<MembershipDto> listMembersAndExMembers(@PathVariable final UUID id);
+    List<MembershipDto> listMembersAndExMembers(@PathVariable final UUID id);
 
     @GetMapping("{id}/membership/{personId}")
-    public MembershipSimpleDto findActiveMembership(@PathVariable final UUID id, @PathVariable final UUID personId);
+    MembershipSimpleDto findActiveMembership(@PathVariable final UUID id, @PathVariable final UUID personId);
 
     @PostMapping("{id}/members")
-    public List<MembershipSimpleDto> associateMembers(@PathVariable final UUID id,
+    List<MembershipSimpleDto> associateMembers(@PathVariable final UUID id,
             @RequestBody @Valid final List<MembershipRequest> request);
 
     @PostMapping("{id}/members/register")
-    public List<MembershipSimpleDto> registerMembers(@PathVariable final UUID id,
+    List<MembershipSimpleDto> registerMembers(@PathVariable final UUID id,
             @RequestBody final List<MembershipRequest.Register> request);
 
 }

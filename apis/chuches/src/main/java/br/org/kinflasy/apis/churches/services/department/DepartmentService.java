@@ -8,11 +8,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.apis.churches.clients.PeopleFilterClient;
 import br.org.kinflasy.apis.churches.converters.department.DepartmentConverter;
 import br.org.kinflasy.apis.churches.entities.department.ExtensionSubscription;
 import br.org.kinflasy.apis.churches.repositories.department.DepartmentRepository;
 import br.org.kinflasy.apis.churches.repositories.department.ExtensionSubscriptionRepository;
-import br.org.kinflasy.clients.PeopleFilterClient;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionDto;

@@ -11,14 +11,14 @@ import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.apis.churches.clients.AddressClient;
+import br.org.kinflasy.apis.churches.clients.InactivePersonClient;
+import br.org.kinflasy.apis.churches.clients.PersonClient;
 import br.org.kinflasy.apis.churches.converters.UnitConverter;
 import br.org.kinflasy.apis.churches.entities.Membership;
 import br.org.kinflasy.apis.churches.repositories.MembershipRepository;
 import br.org.kinflasy.apis.churches.repositories.UnitRepository;
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
-import br.org.kinflasy.apis.people.services.InactivePersonService;
-import br.org.kinflasy.apis.people.services.PersonService;
-import br.org.kinflasy.clients.AddressClient;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.MembershipRequest;
 import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto;
@@ -44,9 +44,8 @@ public class UnitService {
     private final UnitRepository repository;
     private final UnitConverter converter;
 
-    // TODO trocar por client
-    private final PersonService personService;
-    private final InactivePersonService inactivePersonService;
+    private final PersonClient personClient;
+    private final InactivePersonClient inactivePersonClient;
 
     private final AddressClient addressClient;
     private final DepartmentService departmentService;
@@ -144,9 +143,7 @@ public class UnitService {
     public List<MembershipDto> listMembersAndExMembersWithDetails(final UUID id) {
         return listMembersAndExMembers(id).stream()
                 .map(simpleDto -> mapper.map(simpleDto, MembershipDto.class)
-                        .setPerson(personService.findById(simpleDto.getPersonId())
-                                .map(personDto -> mapper.map(personDto, PersonSimpleDto.class))
-                                .get()))
+                        .setPerson(mapper.map(personClient.findById(simpleDto.getPersonId()), PersonSimpleDto.class)))
                 .toList();
     }
 
@@ -168,9 +165,7 @@ public class UnitService {
     public List<MembershipDto> listMembersWithDetails(final UUID id) {
         return listMembers(id).stream()
                 .map(simpleDto -> mapper.map(simpleDto, MembershipDto.class)
-                        .setPerson(personService.findById(simpleDto.getPersonId())
-                                .map(personDto -> mapper.map(personDto, PersonSimpleDto.class))
-                                .get()))
+                        .setPerson(mapper.map(personClient.findById(simpleDto.getPersonId()), PersonSimpleDto.class)))
                 .toList();
     }
 
@@ -218,7 +213,7 @@ public class UnitService {
                                 final var personRequest = mapper
                                         .map(member.getPerson(), InactivePersonRequest.WithChurch.class)
                                         .setChurchId(unit.getChurchId());
-                                final var savedPerson = inactivePersonService.create(personRequest);
+                                final var savedPerson = inactivePersonClient.create(personRequest);
 
                                 // ... criar vínculo de membresia
                                 final var entity = mapper.map(member, Membership.class);

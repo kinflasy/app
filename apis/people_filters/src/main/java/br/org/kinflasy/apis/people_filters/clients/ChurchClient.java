@@ -20,34 +20,34 @@ import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.people.dto.ActivationRequest;
 import jakarta.validation.Valid;
 
-@FeignClient("church-api")
+@FeignClient(value = "churches-api", contextId = "people-filters.churches-api")
 public interface ChurchClient {
 
     @GetMapping
-    public List<ChurchDto> listAll();
+    List<ChurchDto> listAll();
 
     @PostMapping
-    public ChurchDto create(@RequestBody @Valid final ChurchRequest request);
+    ChurchDto create(@RequestBody @Valid final ChurchRequest request);
 
     @PostMapping("/starter")
-    public ChurchDto.Starter createStarter(@RequestBody @Valid final ChurchRequest.Starter request);
+    ChurchDto.Starter createStarter(@RequestBody @Valid final ChurchRequest.Starter request);
 
     @GetMapping("{id}")
-    public ChurchDto findById(@PathVariable final UUID id);
+    ChurchDto findById(@PathVariable final UUID id);
 
     @PutMapping("{id}")
-    public ChurchDto update(@PathVariable final UUID id, @RequestBody final ChurchRequest request);
+    ChurchDto update(@PathVariable final UUID id, @RequestBody final ChurchRequest request);
 
     @DeleteMapping("{id}")
-    public HttpStatus delete(@PathVariable final UUID id);
+    HttpStatus delete(@PathVariable final UUID id);
 
     @GetMapping("{id}/units")
-    public List<UnitDto> listUnits(@PathVariable final UUID id);
+    List<UnitDto> listUnits(@PathVariable final UUID id);
 
     @PostMapping("{id}/units")
-    public UnitDto createUnit(@PathVariable final UUID id, @RequestBody @Valid final UnitRequest request);
+    UnitDto createUnit(@PathVariable final UUID id, @RequestBody @Valid final UnitRequest request);
 
     @PostMapping("activate-member")
-    public List<MembershipDto> activateMember(@RequestBody final ActivationRequest request);
+    List<MembershipDto> activateMember(@RequestBody final ActivationRequest request);
 
 }

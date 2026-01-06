@@ -3,6 +3,7 @@ package br.org.kinflasy.apis.churches.services;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.apis.churches.clients.PeopleFilterClient;
 import br.org.kinflasy.apis.churches.entities.Membership;
 import br.org.kinflasy.apis.churches.entities.department.Department;
 import br.org.kinflasy.apis.churches.entities.department.ExtensionSubscription;
@@ -11,7 +12,6 @@ import br.org.kinflasy.apis.churches.repositories.MembershipRepository;
 import br.org.kinflasy.apis.churches.repositories.department.DepartmentRepository;
 import br.org.kinflasy.apis.churches.repositories.department.ExtensionSubscriptionRepository;
 import br.org.kinflasy.apis.churches.repositories.department.IntegrationRepository;
-import br.org.kinflasy.clients.PeopleFilterClient;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.churches.dto.ChurchDto;
 import br.org.kinflasy.libs.churches.dto.ChurchRequest;

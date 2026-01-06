@@ -1,9 +1,13 @@
 spring:
+  config:
+    import:
+    - file:../../.env[.properties]
+
   cloud:
     openfeign:
       client:
         config:
-          church-api:
+          churches-api:
             url: ${CHURCHES_API_URL}
           church-base-api:
             url: ${CHURCH_BASE_API_URL}

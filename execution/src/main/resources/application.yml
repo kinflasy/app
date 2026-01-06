@@ -22,8 +22,14 @@ spring:
     openfeign:
       client:
         config:
+          address-api:
+            url: ${ADDRESS_API_URL}
           people-api:
             url: ${PEOPLE_API_URL}
+          inactive-people-api:
+            url: ${INACTIVE_PEOPLE_API_URL}
+          users-api:
+            url: ${USERS_API_URL}
           people-filter-api:
             url: ${PEOPLE_FILTER_API_URL}
 

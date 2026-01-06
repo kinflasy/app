@@ -1,4 +1,4 @@
-package br.org.kinflasy.clients;
+package br.org.kinflasy.apis.churches.clients;
 
 import java.util.UUID;
 import java.util.function.Function;
@@ -18,7 +18,7 @@ import br.org.kinflasy.libs.base_conditions.dto.ConditionRequest;
 import br.org.kinflasy.libs.people_filters.dto.PeopleFilterTestRequest;
 import br.org.kinflasy.libs.base_conditions.dto.StoredConditionDto;
 
-@FeignClient(value = "people-filter-api", contextId = "execution.people-filter-api")
+@FeignClient(value = "people-filter-api", contextId = "churches.people-filter-api")
 public interface PeopleFilterClient {
 
     @PostMapping("test")

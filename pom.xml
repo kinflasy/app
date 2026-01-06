@@ -37,6 +37,7 @@
 		<module>apis/contacts</module>
 		<module>apis/people</module>
 		<module>apis/people_filters</module>
+		<module>apis/chuches</module>
 	</modules>
 
 	<!-- Propriedades -->

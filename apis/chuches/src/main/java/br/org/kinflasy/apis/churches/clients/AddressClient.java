@@ -1,4 +1,4 @@
-package br.org.kinflasy.apis.people.clients;
+package br.org.kinflasy.apis.churches.clients;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,7 +16,7 @@ import br.org.kinflasy.libs.contacts.dto.AddressDto;
 import br.org.kinflasy.libs.contacts.dto.AddressRequest;
 import jakarta.validation.Valid;
 
-@FeignClient(value = "address-api", contextId = "people.address-api")
+@FeignClient(value = "address-api", contextId = "churches.address-api")
 public interface AddressClient {
 
     @GetMapping

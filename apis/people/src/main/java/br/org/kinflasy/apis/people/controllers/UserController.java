@@ -56,7 +56,7 @@ public class UserController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("{username}")
+    @GetMapping("@{username}")
     @Operation(summary = "Buscar por username", description = "Buscar um usuário ativo pelo username.")
     public ResponseEntity<UserWithPasswordDto> findByUsername(@PathVariable final String username) {
         try {
