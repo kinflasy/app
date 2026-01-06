@@ -28,8 +28,8 @@ public class IntegrationService {
                 .toList();
     }
 
-    public List<IntegrationDto> listByPerson(final UUID personId) {
-        return repository.findByMembershipId(personId).stream()
+    public List<IntegrationDto> listByMembership(final UUID membershipId) {
+        return repository.findByMembershipId(membershipId).stream()
                 .map(integration -> mapper.map(integration, IntegrationDto.class))
                 .toList();
     }

@@ -11,7 +11,7 @@ public interface IntegrationRepository extends JpaRepository<Integration, UUID> 
 
     List<Integration> findByDepartmentId(UUID departmentId);
 
-    List<Integration> findByMembershipId(UUID personId);
+    List<Integration> findByMembershipId(UUID membershipId);
 
     List<Integration> findByDepartmentIdAndMembershipId(UUID departmentId, UUID membershipId);
 

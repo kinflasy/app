@@ -36,6 +36,7 @@
 		<module>libs/api_utils</module>
 		<module>apis/contacts</module>
 		<module>apis/people</module>
+		<module>apis/people_filters</module>
 	</modules>
 
 	<!-- Propriedades -->

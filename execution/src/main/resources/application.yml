@@ -18,6 +18,15 @@ spring:
     properties:
       "[hibernate.format_sql]": true
 
+  cloud:
+    openfeign:
+      client:
+        config:
+          people-api:
+            url: ${PEOPLE_API_URL}
+          people-filter-api:
+            url: ${PEOPLE_FILTER_API_URL}
+
   # Configurações do DevTools
   devtools:
     livereload:

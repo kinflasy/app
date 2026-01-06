@@ -90,6 +90,20 @@ public class UnitController {
         return new ResponseEntity<>(service.listMembersWithDetails(id), HttpStatus.OK);
     }
 
+    @GetMapping("{id}/members-and-ex-members")
+    @Operation(summary = "Listar membros", description = "Listar os membros ativos de uma unidade.")
+    public ResponseEntity<List<MembershipDto>> listMembersAndExMembers(@PathVariable final UUID id) {
+        return new ResponseEntity<>(service.listMembersAndExMembersWithDetails(id), HttpStatus.OK);
+    }
+
+    @GetMapping("{id}/membership/{personId}")
+    public ResponseEntity<MembershipSimpleDto> findActiveMembership(@PathVariable final UUID id,
+            @PathVariable final UUID personId) {
+        return service.findActiveMembership(id, personId)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
+
     @PostMapping("{id}/members")
     @Operation(summary = "Associar membros", description = "Adicionar pessoas pré-existentes como membros de uma unidade.")
     public ResponseEntity<List<MembershipSimpleDto>> associateMembers(@PathVariable final UUID id,

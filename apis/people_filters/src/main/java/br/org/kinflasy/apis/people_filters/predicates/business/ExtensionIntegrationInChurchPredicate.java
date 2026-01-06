@@ -2,7 +2,7 @@ package br.org.kinflasy.apis.people_filters.predicates.business;
 
 import org.springframework.stereotype.Component;
 
-import br.org.kinflasy.apis.churches.services.ChurchService;
+import br.org.kinflasy.apis.people_filters.clients.ChurchClient;
 import br.org.kinflasy.apis.people_filters.predicates.structure.ConditionPredicate;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people_filters.conditions.business.ExtensionIntegrationInChurchCondition;
@@ -15,12 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class ExtensionIntegrationInChurchPredicate implements ConditionPredicate<ExtensionIntegrationInChurchCondition> {
 
-    private final ChurchService service;
+    private final ChurchClient client;
     private final ExtensionIntegrationInUnitPredicate extensionIntegrantInUnitPredicate;
 
     @Override
     public boolean test(final ExtensionIntegrationInChurchCondition condition, final PersonDto person) {
-        return service.listUnits(condition.getChurchId()).stream()
+        return client.listUnits(condition.getChurchId()).stream()
                 .anyMatch(unit -> {
                     final var unitCondition = new ExtensionIntegrationInUnitCondition(unit.getId(),
                             condition.getExtension(), condition.getType());

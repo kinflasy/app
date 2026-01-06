@@ -11,8 +11,12 @@ public interface MembershipRepository extends JpaRepository<Membership, UUID> {
 
     List<Membership> findByUnitId(UUID unitId);
 
+    List<Membership> findByUnitIdAndLeaveDateNull(UUID unitId);
+
     List<Membership> findByPersonId(UUID personId);
 
     List<Membership> findByUnitIdAndPersonId(UUID unitId, UUID personId);
+
+    List<Membership> findByUnitIdAndPersonIdAndLeaveDateNull(UUID unitId, UUID personId);
 
 }

@@ -7,7 +7,7 @@
             "request": "launch",
             "cwd": "${workspaceFolder}/execution",
             "mainClass": "br.org.kinflasy.MainApplication",
-            "projectName": "execution",
+            "projectName": "br.org.kinflasy-execution",
             "args": "",
             "envFile": "${workspaceFolder}/.env",
             "vmArgs": "-Dspring.profiles.active=dev"

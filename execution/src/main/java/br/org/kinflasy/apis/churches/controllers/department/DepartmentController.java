@@ -92,6 +92,14 @@ public class DepartmentController {
         }
     }
 
+    @GetMapping("{id}/extensions/{extension}")
+    public ResponseEntity<ExtensionSubscriptionDto> findExtension(@PathVariable final UUID id,
+            @PathVariable final Extension extension) {
+        return service.findExtension(id, extension)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
+
     @DeleteMapping("{id}/extensions")
     public ResponseEntity<Void> dissociateExtension(@PathVariable final UUID id,
             @RequestBody ExtensionSubscriptionRequest request) {
@@ -108,6 +116,14 @@ public class DepartmentController {
         return ResponseEntity.ok(integrationService.listByDepartment(id));
     }
 
+    @GetMapping("{id}/integration/{membershipId}")
+    public ResponseEntity<IntegrationDto> findIntegration(@PathVariable final UUID id,
+            @PathVariable final UUID membershipId) {
+        return integrationService.findIntegration(id, membershipId)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
+
     @PostMapping("{id}/integrants")
     public ResponseEntity<IntegrationDto> addIntegrant(@PathVariable final UUID id,
             @RequestBody IntegrationRequest request) {
@@ -117,8 +133,8 @@ public class DepartmentController {
     @DeleteMapping("{id}/integrants")
     public ResponseEntity<Void> removeIntegrant(@PathVariable final UUID id,
             @RequestBody IntegrationRequest request) {
+        // TODO implementar
         throw new NotImplementedException();
-        // return ResponseEntity.noContent().build();
     }
 
 }

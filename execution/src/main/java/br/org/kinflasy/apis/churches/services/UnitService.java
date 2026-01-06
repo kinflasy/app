@@ -134,8 +134,32 @@ public class UnitService {
     }
 
     @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
-    public List<MembershipSimpleDto> listMembers(final UUID id) {
+    public List<MembershipSimpleDto> listMembersAndExMembers(final UUID id) {
         return membershipRepository.findByUnitId(id).stream()
+                .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
+                .toList();
+    }
+
+    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
+    public List<MembershipDto> listMembersAndExMembersWithDetails(final UUID id) {
+        return listMembersAndExMembers(id).stream()
+                .map(simpleDto -> mapper.map(simpleDto, MembershipDto.class)
+                        .setPerson(personService.findById(simpleDto.getPersonId())
+                                .map(personDto -> mapper.map(personDto, PersonSimpleDto.class))
+                                .get()))
+                .toList();
+    }
+
+    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
+    public Optional<MembershipSimpleDto> findActiveMembership(final UUID id, final UUID personId) {
+        return membershipRepository.findByUnitIdAndPersonIdAndLeaveDateNull(id, personId).stream()
+                .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
+                .findFirst();
+    }
+
+    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
+    public List<MembershipSimpleDto> listMembers(final UUID id) {
+        return membershipRepository.findByUnitIdAndLeaveDateNull(id).stream()
                 .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
                 .toList();
     }
@@ -148,14 +172,6 @@ public class UnitService {
                                 .map(personDto -> mapper.map(personDto, PersonSimpleDto.class))
                                 .get()))
                 .toList();
-    }
-
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
-    public Optional<MembershipSimpleDto> findActiveMembership(final UUID id, final UUID personId) {
-        return membershipRepository.findByUnitIdAndPersonId(id, personId).stream()
-                .filter(membership -> membership.getLeaveDate() == null)
-                .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
-                .findFirst();
     }
 
     @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
