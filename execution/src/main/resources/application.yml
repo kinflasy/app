@@ -1,7 +1,7 @@
 spring:
   config:
     import:
-    - optional:file:../.env[.properties]
+    - file:../.env[.properties]
 
   # Configurações do DataSource
   datasource:
@@ -20,18 +20,34 @@ spring:
 
   cloud:
     openfeign:
+      oauth2:
+        enabled: true
       client:
         config:
-          address-api:
-            url: ${ADDRESS_API_URL}
-          people-api:
-            url: ${PEOPLE_API_URL}
-          inactive-people-api:
-            url: ${INACTIVE_PEOPLE_API_URL}
-          users-api:
+          execution-usersApi:
             url: ${USERS_API_URL}
-          people-filter-api:
+          auth-usersApi:
+            url: ${USERS_API_URL}
+          churches-addressesApi:
+            url: ${ADDRESS_API_URL}
+          churches-peopleApi:
+            url: ${PEOPLE_API_URL}
+          churches-inactivePeopleApi:
+            url: ${INACTIVE_PEOPLE_API_URL}
+          churches-usersApi:
+            url: ${USERS_API_URL}
+          churches-peopleFilterApi:
             url: ${PEOPLE_FILTER_API_URL}
+          people-addressesApi:
+            url: ${ADDRESS_API_URL}
+          peopleFilters-churchesApi:
+            url: ${CHURCHES_API_URL}
+          peopleFilters-churchBaseApi-units:
+            url: ${CHURCH_BASE_API_URL}
+          peopleFilters-churchBaseApi-memberships:
+            url: ${CHURCH_BASE_API_URL}
+          peopleFilters-churchBaseApi-departments:
+            url: ${CHURCH_BASE_API_URL}
 
   # Configurações do DevTools
   devtools:
@@ -39,6 +55,10 @@ spring:
       enabled: true
     restart:
       enabled: false
+
+logging:
+  level:
+    '[br.org.kinflasy.clients.UserClient]': DEBUG
 
 springdoc:
   api-docs:

@@ -18,7 +18,7 @@ import br.org.kinflasy.libs.base_conditions.dto.ConditionRequest;
 import br.org.kinflasy.libs.people_filters.dto.PeopleFilterTestRequest;
 import br.org.kinflasy.libs.base_conditions.dto.StoredConditionDto;
 
-@FeignClient(value = "people-filter-api", contextId = "churches.people-filter-api")
+@FeignClient(name = "peopleFilterApi", contextId = "churches-peopleFilterApi")
 public interface PeopleFilterClient {
 
     @PostMapping("test")

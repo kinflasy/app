@@ -1,27 +1,15 @@
 package br.org.kinflasy.clients;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.springframework.stereotype.Component;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import br.org.kinflasy.libs.people.dto.UserDto;
-import br.org.kinflasy.libs.people.dto.UserRequest;
-import br.org.kinflasy.libs.people.dto.UserWithPasswordDto;
 
-@Component
+@FeignClient(name = "usersApi", contextId = "execution-usersApi")
 public interface UserClient {
 
-    List<UserDto> listAll();
-
-    UserDto create(UserRequest request);
-
-    UserDto findById(UUID id);
-
-    UserWithPasswordDto findByUsernameWithPassword(String username);
-
-    UserDto update(UUID id, UserRequest request);
-
-    void delete(UUID id);
+    @GetMapping("@{username}")
+    UserDto findByUsername(@PathVariable String username);
 
 }

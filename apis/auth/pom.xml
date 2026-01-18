@@ -15,12 +15,12 @@
     </parent>
 
     <!-- Informações do Projeto -->
-    <name>Biblioteca de Filtros de Pessoas</name>
-    <description>Biblioteca de binários de Filtros de Pessoas do Projeto Kinflasy</description>
+    <name>API de Autenticação</name>
+    <description>API de Autenticação no Projeto Kinflasy</description>
 
     <!-- Informações do Artefato -->
-    <groupId>br.org.kinflasy.libs</groupId>
-    <artifactId>people_filters</artifactId>
+    <groupId>br.org.kinflasy.apis</groupId>
+    <artifactId>auth</artifactId>
     <version>0.0.1-SNAPSHOT-001</version>
 
     <!-- Dependências -->
@@ -28,8 +28,22 @@
         <!-- Dependências do Projeto Kinflasy -->
         <dependency>
             <groupId>br.org.kinflasy.libs</groupId>
-            <artifactId>churches</artifactId>
+            <artifactId>api_utils</artifactId>
             <version>0.0.1-SNAPSHOT-001</version>
+        </dependency>
+
+        <!-- Dependências do Spring Boot -->
+        <dependency>
+            <!-- Spring Security -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- Dependências de banco de dados -->
+        <dependency>
+            <!-- JPA -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
         <!-- Dependências de utilitários -->

@@ -33,15 +33,16 @@ public class PeopleFilterController {
     private final ConditionService service;
 
     @PostMapping("test")
-    public ResponseEntity<Boolean> test(@RequestBody PeopleFilterTestRequest request) {
-        final var result = factory.getPredicate(request.getCondition()).test(request.getCondition(),
-                request.getPerson());
+    public ResponseEntity<Boolean> test(@RequestBody final PeopleFilterTestRequest request) {
+        final var result = factory.getPredicate(request.getCondition())
+                .test(request.getCondition(), request.getPerson());
 
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("{id}/test")
-    public ResponseEntity<Boolean> test(@PathVariable @NotBlank UUID id, @RequestBody @NotNull PersonDto person) {
+    public ResponseEntity<Boolean> test(@PathVariable @NotBlank final UUID id,
+            @RequestBody @NotNull final PersonDto person) {
         return service.findById(id)
                 .map(condition -> {
                     final var request = new PeopleFilterTestRequest(condition, person);
@@ -51,7 +52,7 @@ public class PeopleFilterController {
     }
 
     @PostMapping
-    public ResponseEntity<StoredConditionDto<Condition>> findOrCreate(@RequestBody ConditionRequest request) {
+    public ResponseEntity<StoredConditionDto<Condition>> findOrCreate(@RequestBody final ConditionRequest request) {
         final var result = service.findOrCreate(request.getCondition());
         return ResponseEntity.ok(result);
     }

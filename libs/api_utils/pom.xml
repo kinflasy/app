@@ -31,6 +31,11 @@
             <artifactId>people</artifactId>
             <version>0.0.1-SNAPSHOT-001</version>
         </dependency>
+        <dependency>
+            <groupId>br.org.kinflasy.libs</groupId>
+            <artifactId>people_filters</artifactId>
+            <version>0.0.1-SNAPSHOT-001</version>
+        </dependency>
 
         <!-- Dependências do Spring Boot -->
         <dependency>
@@ -38,8 +43,12 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webmvc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-json</artifactId>
         </dependency>
 
         <!-- Dependências de banco de dados -->
@@ -56,8 +65,33 @@
             <artifactId>modelmapper</artifactId>
             <version>3.2.0</version>
         </dependency>
-    </dependencies>
+        <dependency>
+            <!-- JWT -->
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>4.5.0</version>
+        </dependency>
 
+        <!-- Dependências de Testes -->
+        <dependency>
+            <!-- Starter Test -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <!-- Security Test -->
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <version>6.5.1</version>
+        </dependency>
+        <dependency>
+            <!-- Banco de Dados H2 em memória -->
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <dependencyManagement>
         <dependencies>

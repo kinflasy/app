@@ -20,7 +20,7 @@ import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.people.dto.ActivationRequest;
 import jakarta.validation.Valid;
 
-@FeignClient(value = "churches-api", contextId = "people-filters.churches-api")
+@FeignClient(name = "churchesApi", contextId = "peopleFilters-churchesApi")
 public interface ChurchClient {
 
     @GetMapping

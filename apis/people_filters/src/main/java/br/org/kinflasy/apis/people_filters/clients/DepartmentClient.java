@@ -20,7 +20,7 @@ import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationRequest;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
 
-@FeignClient(value = "church-base-api", contextId = "people-filters.church-base-api.departments", path = "unit/departments")
+@FeignClient(name = "churchBaseApi", contextId = "peopleFilters-churchBaseApi-departments", path = "unit/departments")
 public interface DepartmentClient {
 
     @GetMapping("{id}")

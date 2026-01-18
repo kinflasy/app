@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.org.kinflasy.apis.auth.clients.UserClient;
 import br.org.kinflasy.apis.auth.dto.LoginRequest;
 import br.org.kinflasy.apis.auth.dto.LoginResponse;
 import br.org.kinflasy.apis.auth.services.TokenService;
-import br.org.kinflasy.clients.UserClient;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
 import io.swagger.v3.oas.annotations.Operation;

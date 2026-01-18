@@ -38,6 +38,7 @@
 		<module>apis/people</module>
 		<module>apis/people_filters</module>
 		<module>apis/chuches</module>
+		<module>apis/auth</module>
 	</modules>
 
 	<!-- Propriedades -->

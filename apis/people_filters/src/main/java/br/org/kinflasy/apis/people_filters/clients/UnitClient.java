@@ -21,7 +21,7 @@ import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import jakarta.validation.Valid;
 
-@FeignClient(value = "church-base-api", contextId = "people-filters.church-base-api.units", path = "units")
+@FeignClient(name = "churchBaseApi", contextId = "peopleFilters-churchBaseApi-units", path = "units")
 public interface UnitClient {
 
     @GetMapping("{id}")

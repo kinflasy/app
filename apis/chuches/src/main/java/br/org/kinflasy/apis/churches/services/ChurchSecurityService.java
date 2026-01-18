@@ -104,13 +104,17 @@ public class ChurchSecurityService {
                 .matchesAnyCondition(thePerson -> thePerson
 
                         // Ou a Igreja e a unidade estão sendo criadas agora
-                        .matches(ignoredPerson -> churchService.findById(churchId)
+                        .matches(ignoredPerson -> {
+                            return churchService.findById(churchId)
 
-                                // Se a Igreja estiver persistida, certificar-se de que ela está sem unidades
-                                .map(ignoredChurch -> churchService.listUnits(churchId).isEmpty())
+                                    // Se a Igreja estiver persistida, certificar-se de que ela está sem unidades
+                                    .map(ignoredChurch -> {
+                                        return churchService.listUnits(churchId).isEmpty();
+                                    })
 
-                                // Se não for encontrada, permitir o acesso
-                                .orElse(true))
+                                    // Se não for encontrada, permitir o acesso
+                                    .orElse(true);
+                        })
 
                         // Ou o usuário é integrante de um departamento SOMA
                         .isIntegrantOfExtensionInChurch(churchId, Extension.SOMA, null))

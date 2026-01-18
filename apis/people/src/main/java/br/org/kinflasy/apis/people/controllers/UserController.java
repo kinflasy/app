@@ -58,7 +58,17 @@ public class UserController {
 
     @GetMapping("@{username}")
     @Operation(summary = "Buscar por username", description = "Buscar um usuário ativo pelo username.")
-    public ResponseEntity<UserWithPasswordDto> findByUsername(@PathVariable final String username) {
+    public ResponseEntity<UserDto> findByUsername(@PathVariable final String username) {
+        try {
+            return new ResponseEntity<>(service.findByUsername(username), HttpStatus.OK);
+        } catch (final EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("@{username}/with-password")
+    @Operation(summary = "Buscar por username, trazendo senha", description = "Buscar um usuário ativo pelo username e traz a senha em hash.")
+    public ResponseEntity<UserWithPasswordDto> findByUsernameWithPassword(@PathVariable final String username) {
         try {
             return new ResponseEntity<>(service.findByUsernameWithPassword(username), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
 
-@FeignClient(value = "church-base-api", contextId = "people-filters.church-base-api.memberships", path = "unit/memberships")
+@FeignClient(name = "churchBaseApi", contextId = "peopleFilters-churchBaseApi-memberships", path = "unit/memberships")
 public interface MembershipClient {
 
     @GetMapping("{id}/integrations")

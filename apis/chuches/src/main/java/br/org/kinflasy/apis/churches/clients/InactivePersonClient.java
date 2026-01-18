@@ -15,16 +15,16 @@ import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import jakarta.validation.Valid;
 
-@FeignClient(value = "inactive-people-api", contextId = "churches.inactive-people-api")
+@FeignClient(name = "inactivePeopleApi", contextId = "churches-inactivePeopleApi")
 public interface InactivePersonClient {
 
     @PostMapping("admin")
-    InactivePersonDto create(@RequestBody @Valid final InactivePersonRequest.WithChurch request);
+    InactivePersonDto create(@RequestBody @Valid InactivePersonRequest.WithChurch request);
 
     @GetMapping("{id}")
-    InactivePersonDto findById(UUID id);
+    InactivePersonDto findById(@PathVariable UUID id);
 
     @DeleteMapping("{id}")
-    ResponseEntity<HttpStatus> delete(@PathVariable final UUID id);
+    ResponseEntity<HttpStatus> delete(@PathVariable UUID id);
 
 }
