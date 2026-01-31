@@ -7,6 +7,37 @@ spring:
         username: sa
         password: password
 
+    cloud:
+        openfeign:
+            oauth2:
+                enabled: true
+            client:
+                config:
+                    execution-usersApi:
+                        url: ${USERS_API_URL}
+                    auth-usersApi:
+                        url: ${USERS_API_URL}
+                    churches-addressesApi:
+                        url: ${ADDRESS_API_URL}
+                    churches-peopleApi:
+                        url: ${PEOPLE_API_URL}
+                    churches-inactivePeopleApi:
+                        url: ${INACTIVE_PEOPLE_API_URL}
+                    churches-usersApi:
+                        url: ${USERS_API_URL}
+                    churches-peopleFilterApi:
+                        url: ${PEOPLE_FILTER_API_URL}
+                    people-addressesApi:
+                        url: ${ADDRESS_API_URL}
+                    peopleFilters-churchesApi:
+                        url: ${CHURCHES_API_URL}
+                    peopleFilters-churchBaseApi-units:
+                        url: ${CHURCH_BASE_API_URL}
+                    peopleFilters-churchBaseApi-memberships:
+                        url: ${CHURCH_BASE_API_URL}
+                    peopleFilters-churchBaseApi-departments:
+                        url: ${CHURCH_BASE_API_URL}
+
     sql:
         init:
             platform: h2

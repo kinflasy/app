@@ -14,7 +14,8 @@ public class JacksonConfig {
     @Bean
     ObjectMapper customizeJackson() {
         return new ObjectMapper()
-                .addMixIn(Condition.class, SerializableCondition.class);
+                .addMixIn(Condition.class, SerializableCondition.class)
+                .addMixIn(SerializableCondition.class, Condition.class);
     }
 
 }
