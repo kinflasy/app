@@ -1,0 +1,75 @@
+model
+  schema 1.1
+
+type user
+
+type extension
+  relations
+    # Representa a extensão em si (ex: extension:soma)
+    define associated_subscription: [extension_subscription]
+
+type church
+  relations
+    # A Igreja "herda" seus admins de sua unidade sede (MAIN)
+    define admin: admin from main_unit
+    define main_unit: [unit]
+    define member: member from associated_units
+    define associated_units: [unit]
+
+type unit
+  relations
+    define parent_church: [church]
+    
+    define type: [unit_type] # Poderemos atribuir um objeto 'unit_type:main' ou 'unit_type:branch'
+    # Administradores da Igreja pai também mandam na Unidade
+    define admin: [user] or admin from parent_church
+    define member: [user] or member from parent_church
+
+type unit_type # Objeto auxiliar para identificar MAIN ou BRANCH
+
+type membership
+  relations
+    define context_unit: [unit]
+    define person_owner: [user]
+    # O membro em si ou o admin da unidade podem ver os detalhes da membresia
+    define can_view: person_owner or admin from context_unit
+
+type department
+  relations
+    define context_unit: [unit]
+
+    # Líder definido via Membership ou diretamente
+    define leader: [user, membership#person_owner]
+
+    # Quem manda na unidade, manda no departamento
+    define manager: [user] or admin from context_unit
+    define viewer: [user] or member from context_unit
+
+    # Se o departamento tem a extensão SOMA, ele reporta isso para a Unit
+    define has_soma: [extension_subscription]
+
+type extension_subscription
+  relations
+    define context_extension: [extension]
+    define context_department: [department]
+
+type integration
+  relations
+    define context_department: [department]
+    define target_membership: [membership]
+    # Permissão para gerenciar integrações
+    define can_manage: manager from context_department
+
+type person
+  relations
+    define owner: [user]
+    # Agora a pessoa pode estar ligada a múltiplas unidades via membresia
+    define associated_unit: [unit]
+    define can_view: owner or admin from associated_unit
+
+type address
+  relations
+    define context_person: [person]
+    define context_unit: [unit]
+    # Herdando permissões de quem é dono da pessoa ou admin da unidade
+    define can_view: can_view from context_person or admin from context_unit
