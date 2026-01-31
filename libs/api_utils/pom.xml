@@ -71,6 +71,12 @@
             <artifactId>java-jwt</artifactId>
             <version>4.5.0</version>
         </dependency>
+        <!-- OpenFGA -->
+        <dependency>
+            <groupId>dev.openfga</groupId>
+            <artifactId>openfga-spring-boot-starter</artifactId>
+            <version>0.3.0</version>
+        </dependency>
 
         <!-- Dependências de Testes -->
         <dependency>
