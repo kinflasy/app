@@ -4,6 +4,7 @@
     "java.dependency.packagePresentation": "hierarchical",
     "conventionalCommits.scopes": [
         "activation",
-        "modularization"
+        "modularization",
+        "openfga"
     ]
 }

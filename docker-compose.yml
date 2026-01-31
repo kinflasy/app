@@ -1,5 +1,7 @@
-services:
+networks:
+  openfga:
 
+services:
   # Serviço para a aplicação Spring Boot
   app:
     build: .
@@ -27,8 +29,49 @@ services:
       - POSTGRES_USER=${DATABASE_USER}
       - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
       - POSTGRES_DB=${DATABASE_NAME}
-#     volumes:
-#       - pg-data:/var/lib/postgresql/data
+    networks:
+      - openfga
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  #     volumes:
+  #       - pg-data:/var/lib/postgresql/data
+
+  migrate:
+    depends_on:
+      db:
+        condition: service_healthy
+    image: openfga/openfga:latest
+    container_name: migrate
+    command: migrate
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://${DATABASE_USER}:${DATABASE_PASSWORD}@db:5432/${DATABASE_NAME}?sslmode=disable
+    networks:
+      - openfga
+
+  openfga:
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    image: openfga/openfga:latest
+    container_name: openfga
+    environment:
+      - OPENFGA_DATASTORE_ENGINE=postgres
+      - OPENFGA_DATASTORE_URI=postgres://${DATABASE_USER}:${DATABASE_PASSWORD}@db:5432/${OPENFGA_DATABASE_NAME}?sslmode=disable
+      - OPENFGA_LOG_FORMAT=json
+    command: run
+    networks:
+      - openfga
+    ports:
+      # Needed for the http server
+      - "8090:8080"
+      # Needed for the grpc server (if used)
+      - "8081:8081"
+      # Needed for the playground (Do not enable in prod!)
+      - "3000:3000"
 
 # volumes:
 #   pg-data:
