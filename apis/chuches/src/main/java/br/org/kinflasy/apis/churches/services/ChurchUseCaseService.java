@@ -3,7 +3,6 @@ package br.org.kinflasy.apis.churches.services;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
-import br.org.kinflasy.apis.churches.clients.PeopleFilterClient;
 import br.org.kinflasy.apis.churches.entities.Membership;
 import br.org.kinflasy.apis.churches.entities.department.Department;
 import br.org.kinflasy.apis.churches.entities.department.ExtensionSubscription;
@@ -20,7 +19,6 @@ import br.org.kinflasy.libs.churches.enums.department.DepartmentType;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
-import br.org.kinflasy.libs.people_filters.enums.PersonCharacteristic;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -37,8 +35,6 @@ public class ChurchUseCaseService {
 
     private ChurchService churchService;
     private UnitService unitService;
-
-    private PeopleFilterClient peopleFilterClient;
 
     public ChurchDto.Starter createStarter(final ChurchRequest.Starter request) {
         // Criar igreja
@@ -59,10 +55,10 @@ public class ChurchUseCaseService {
         membershipRepository.save(membership);
 
         // Buscar/criar filtros de pessoas
-        final var everybody = peopleFilterClient
-                .findOrCreate(thePerson -> thePerson.is(PersonCharacteristic.EVERYBODY));
-        final var congregatedOfChurch = peopleFilterClient
-                .findOrCreate(thePerson -> thePerson.isMemberOfChurch(church.getId(), Affiliation.CONGREGATED));
+        // final var everybody = peopleFilterClient
+        //         .findOrCreate(thePerson -> thePerson.is(PersonCharacteristic.EVERYBODY));
+        // final var congregatedOfChurch = peopleFilterClient
+        //         .findOrCreate(thePerson -> thePerson.isMemberOfChurch(church.getId(), Affiliation.CONGREGATED));
 
         // Criar ministério pastoral
         final var pastorate = new Department();
@@ -70,7 +66,7 @@ public class ChurchUseCaseService {
         pastorate.setName("Ministério Pastoral");
         pastorate.setSlug("pastoral");
         pastorate.setType(DepartmentType.ADMINISTRATIVE);
-        pastorate.setVisibilityId(everybody.getId());
+        // pastorate.setVisibilityId(everybody.getId());
         departmentRepository.save(pastorate);
 
         // Criar secretaria
@@ -79,7 +75,7 @@ public class ChurchUseCaseService {
         secretariat.setName("Secretaria");
         secretariat.setSlug("secretaria");
         secretariat.setType(DepartmentType.ADMINISTRATIVE);
-        secretariat.setVisibilityId(congregatedOfChurch.getId());
+        // secretariat.setVisibilityId(congregatedOfChurch.getId());
         final var createdSecretariat = departmentRepository.save(secretariat);
 
         // Associar extensão SOMA à secretaria

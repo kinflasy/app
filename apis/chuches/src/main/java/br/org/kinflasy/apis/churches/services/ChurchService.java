@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.converters.ChurchConverter;
@@ -52,7 +51,6 @@ public class ChurchService {
         return repository.findById(id).map(converter::toDto);
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInChurch(#id, principal)")
     public ChurchDto update(final UUID id, final ChurchRequest request) {
         log.info("Atualizando Igreja @{} (id {})...", request.getSlug(), id);
         return repository.findById(id)
@@ -65,7 +63,6 @@ public class ChurchService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
-    @PreAuthorize("@churchSecurityService.isLeaderOfSomaInChurch(#id, principal)")
     public void delete(final UUID id) {
         log.info("Deletando Igreja de id {}...", id);
 
@@ -84,7 +81,6 @@ public class ChurchService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInChurch(#id, principal)")
     public UnitDto createUnit(final UUID id, final UnitRequest request) {
         return repository.findById(id)
                 .map(ignoredChurch -> unitService.create(id, request))

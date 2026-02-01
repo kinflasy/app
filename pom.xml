@@ -30,13 +30,10 @@
 		<module>libs/contacts</module>
 		<module>libs/people</module>
 		<module>libs/churches</module>
-		<module>libs/people_filters</module>
 		<module>libs/lib_utils</module>
-		<module>libs/base_conditions</module>
 		<module>libs/api_utils</module>
 		<module>apis/contacts</module>
 		<module>apis/people</module>
-		<module>apis/people_filters</module>
 		<module>apis/chuches</module>
 		<module>apis/auth</module>
 	</modules>

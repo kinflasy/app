@@ -8,7 +8,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import br.org.kinflasy.apis.churches.clients.PeopleFilterClient;
 import br.org.kinflasy.apis.churches.converters.department.DepartmentConverter;
 import br.org.kinflasy.apis.churches.entities.department.ExtensionSubscription;
 import br.org.kinflasy.apis.churches.repositories.department.DepartmentRepository;
@@ -34,8 +33,6 @@ public class DepartmentService {
 
     private final ExtensionSubscriptionRepository subscriptionRepository;
 
-    private final PeopleFilterClient peopleFilterClient;
-
     public List<DepartmentDto> listByUnitId(final UUID unitId) {
         return repository.findByUnitId(unitId).stream()
                 .map(converter::toDto)
@@ -44,11 +41,11 @@ public class DepartmentService {
 
     public DepartmentDto create(final UUID unitId, final DepartmentRequest request) {
         // Salvar regra de visibilidade
-        final var visibility = peopleFilterClient.findOrCreate(request.getVisibility());
+        // final var visibility = peopleFilterClient.findOrCreate(request.getVisibility());
 
         // Construir departamento
         final var department = converter.toEntity(request);
-        department.setVisibilityId(visibility.getId());
+        // department.setVisibilityId(visibility.getId());
 
         // Associar unidade
         department.setUnitId(unitId);

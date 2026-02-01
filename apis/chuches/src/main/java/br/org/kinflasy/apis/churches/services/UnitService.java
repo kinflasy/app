@@ -7,8 +7,6 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.access.prepost.PostFilter;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.clients.AddressClient;
@@ -57,7 +55,6 @@ public class UnitService {
                 .toList();
     }
 
-    @PreAuthorize("@churchSecurityService.canCreateUnit(#churchId, principal)")
     public UnitDto create(final UUID churchId, final UnitRequest request) {
         log.info("Criando unidade /{}...", request.getSlug());
 
@@ -83,7 +80,6 @@ public class UnitService {
         return repository.findById(id).map(converter::toDto);
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInChurch(#churchId, principal)")
     public UnitDto update(final UUID id, final UnitRequest request) {
         log.info("Atualizando unidade /{} (id {})...", request.getSlug(), id);
         return repository.findById(id)
@@ -117,7 +113,6 @@ public class UnitService {
                         () -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
-    @PostFilter("@churchSecurityService.matchesCondition(filterObject.getVisibilityId(), principal)")
     public List<DepartmentDto> listDepartments(final UUID id) {
         log.info("Listando todos os departamentos da unidade de id {}...", id);
         return repository.findById(id)
@@ -125,21 +120,18 @@ public class UnitService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
     public DepartmentDto createDepartment(final UUID id, final DepartmentRequest request) {
         return repository.findById(id)
                 .map(ignoredUnit -> departmentService.create(id, request))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
     public List<MembershipSimpleDto> listMembersAndExMembers(final UUID id) {
         return membershipRepository.findByUnitId(id).stream()
                 .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
                 .toList();
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
     public List<MembershipDto> listMembersAndExMembersWithDetails(final UUID id) {
         return listMembersAndExMembers(id).stream()
                 .map(simpleDto -> mapper.map(simpleDto, MembershipDto.class)
@@ -147,21 +139,18 @@ public class UnitService {
                 .toList();
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
     public Optional<MembershipSimpleDto> findActiveMembership(final UUID id, final UUID personId) {
         return membershipRepository.findByUnitIdAndPersonIdAndLeaveDateNull(id, personId).stream()
                 .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
                 .findFirst();
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
     public List<MembershipSimpleDto> listMembers(final UUID id) {
         return membershipRepository.findByUnitIdAndLeaveDateNull(id).stream()
                 .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
                 .toList();
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
     public List<MembershipDto> listMembersWithDetails(final UUID id) {
         return listMembers(id).stream()
                 .map(simpleDto -> mapper.map(simpleDto, MembershipDto.class)
@@ -169,7 +158,6 @@ public class UnitService {
                 .toList();
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
     public MembershipSimpleDto addMember(final UUID id, final MembershipRequest request) {
         log.info("Adicionando membro de id {} à unidade de id {}...", request.getPersonId(), id);
         final var entity = mapper.map(request, Membership.class);
@@ -182,7 +170,6 @@ public class UnitService {
         return mapper.map(saved, MembershipSimpleDto.class);
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
     public List<MembershipSimpleDto> addMembers(final UUID id, final List<MembershipRequest> request) {
         final var entities = request.stream().map(member -> {
             final var entity = mapper.map(member, Membership.class);
@@ -200,7 +187,6 @@ public class UnitService {
                 .toList();
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
     public List<MembershipSimpleDto> registerMembers(final UUID id, final List<MembershipRequest.Register> request) {
         // Obter dados da unidade
         return repository.findById(id)
@@ -234,7 +220,6 @@ public class UnitService {
 
     }
 
-    @PreAuthorize("@churchSecurityService.isIntegrantOfSomaInUnit(#id, principal)")
     public void removeMember(final UUID id, final UUID personId) {
         membershipRepository.findByUnitIdAndPersonId(id, personId)
                 .forEach(membership -> {
