@@ -55,8 +55,8 @@ springdoc:
     path: /api-docs
   use-fqn: true
 
-# openfga:
-#   api-url: https://${OPENFGA_HTTP_HOST}:${OPENFGA_HTTP_PORT}
+openfga:
+  api-url: https://${OPENFGA_HTTP_HOST}:${OPENFGA_HTTP_PORT}
 #   store-id: ${OPENFGA_STORE_ID}
 #   authorization-model-id: ${OPENFGA_AUTHORIZATION_MODEL_ID}
 

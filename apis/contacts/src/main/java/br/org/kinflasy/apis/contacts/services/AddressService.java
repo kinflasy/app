@@ -3,12 +3,14 @@ package br.org.kinflasy.apis.contacts.services;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.contacts.converters.AddressConverter;
 import br.org.kinflasy.apis.contacts.repositories.AddressRepository;
 import br.org.kinflasy.libs.contacts.dto.AddressDto;
 import br.org.kinflasy.libs.contacts.dto.AddressRequest;
+import dev.openfga.sdk.api.client.OpenFgaClient;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
@@ -20,6 +22,8 @@ public class AddressService {
 
     private final AddressRepository repository;
     private final AddressConverter converter;
+
+    // private final OpenFgaClient openFgaClient;
 
     public List<AddressDto> findAll() {
         return repository.findAll().stream()
@@ -40,6 +44,7 @@ public class AddressService {
         return converter.toDto(entity);
     }
 
+    @PreAuthorize("@fga.check('address', #id, 'reader', 'user')")
     public AddressDto findById(final UUID id) {
         return repository.findById(id).map(converter::toDto)
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
