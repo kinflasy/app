@@ -56,9 +56,9 @@ springdoc:
   use-fqn: true
 
 openfga:
-  api-url: https://${OPENFGA_HTTP_HOST}:${OPENFGA_HTTP_PORT}
-#   store-id: ${OPENFGA_STORE_ID}
-#   authorization-model-id: ${OPENFGA_AUTHORIZATION_MODEL_ID}
+  api-url: http://${OPENFGA_HTTP_HOST}:${OPENFGA_HTTP_PORT}
+  store-id: ${OPENFGA_STORE_ID}
+  authorization-model-id: ${OPENFGA_AUTHORIZATION_MODEL_ID}
 
 api:
   security:
