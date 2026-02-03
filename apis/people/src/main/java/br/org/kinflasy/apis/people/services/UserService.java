@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.people.clients.AddressClient;
@@ -13,6 +14,7 @@ import br.org.kinflasy.apis.people.repositories.UserRepository;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
 import br.org.kinflasy.libs.people.dto.UserWithPasswordDto;
+import br.org.kinflasy.libs.people.events.UserCreatedEvent;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
@@ -23,6 +25,7 @@ public class UserService {
     private static final String NOT_FOUND_MESSAGE = "Usuário não encontrado.";
 
     private final ModelMapper mapper;
+    private final ApplicationEventPublisher publisher;
 
     private final UserRepository repository;
     private final UserConverter converter;
@@ -46,7 +49,13 @@ public class UserService {
         // Referenciar endereço
         savedUser.setAddressId(address.getId());
 
-        return converter.toDto(entity);
+        // Gerar DTO
+        final var dto = converter.toDto(entity);
+
+        // Publicar evento
+        publisher.publishEvent(new UserCreatedEvent(dto));
+
+        return dto;
     }
 
     public Optional<UserDto> findById(final UUID id) {
