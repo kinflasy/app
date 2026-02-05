@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.people.clients.AddressClient;
@@ -13,11 +15,12 @@ import br.org.kinflasy.apis.people.converters.UserConverter;
 import br.org.kinflasy.apis.people.repositories.UserRepository;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
-import br.org.kinflasy.libs.people.dto.UserWithPasswordDto;
 import br.org.kinflasy.libs.people.events.UserCreatedEvent;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class UserService {
@@ -32,6 +35,7 @@ public class UserService {
 
     private final AddressClient addressClient;
 
+    @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
     public List<UserDto> findAll() {
         return repository.findAll().stream()
                 .map(converter::toDto)
@@ -58,23 +62,20 @@ public class UserService {
         return dto;
     }
 
+    @PreAuthorize("@fga.check('person_data', #id, 'can_view', 'user', principal.id)")
     public Optional<UserDto> findById(final UUID id) {
         return repository.findById(id)
                 .map(converter::toDto);
     }
 
+    @PostAuthorize("@fga.check('person_data', returnObject.id, 'can_view', 'user', principal.id)")
     public UserDto findByUsername(final String username) {
         return repository.findByUsername(username)
                 .map(user -> mapper.map(user, UserDto.class))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
-    public UserWithPasswordDto findByUsernameWithPassword(final String username) {
-        return repository.findByUsername(username)
-                .map(user -> mapper.map(user, UserWithPasswordDto.class))
-                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
-    }
-
+    @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
     public UserDto update(final UUID id, final UserRequest form) {
         final var original = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
         final var modified = converter.toEntity(form, original);
@@ -83,6 +84,7 @@ public class UserService {
         return converter.toDto(modified);
     }
 
+    @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
     public void delete(final UUID id) {
         repository.deleteById(id);
     }
