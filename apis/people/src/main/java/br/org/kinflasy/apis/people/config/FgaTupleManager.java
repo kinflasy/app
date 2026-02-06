@@ -23,6 +23,11 @@ public class FgaTupleManager {
 
     private final OpenFgaClient client;
 
+    /**
+     * Define o usuário como dono dos seus próprios dados
+     * 
+     * @param event
+     */
     @Async
     @EventListener
     @SneakyThrows

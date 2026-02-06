@@ -1,6 +1,5 @@
 package br.org.kinflasy.apis.people.services;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -100,18 +99,6 @@ public class UserService {
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
     public void delete(final UUID id) {
         repository.deleteById(id);
-    }
-
-    /*
-     * ACESSO DE ADMIN
-     * 
-     * TODO aplicar FGA
-     */
-
-    public List<UserDto> findAll() {
-        return repository.findAll().stream()
-                .map(converter::toDto)
-                .toList();
     }
 
 }

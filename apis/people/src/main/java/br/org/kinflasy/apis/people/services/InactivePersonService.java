@@ -1,6 +1,5 @@
 package br.org.kinflasy.apis.people.services;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -81,17 +80,6 @@ public class InactivePersonService {
 
         repository.delete(original);
         addressClient.delete(original.getAddressId());
-    }
-
-    /*
-     * ACESSO DE ADMIN
-     */
-
-    // TODO aplicar FGA
-    public List<InactivePersonDto> findAll() {
-        return repository.findAll().stream()
-                .map(converter::toDto)
-                .toList();
     }
 
 }

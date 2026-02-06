@@ -1,6 +1,5 @@
 package br.org.kinflasy.apis.people.controllers;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -38,6 +37,13 @@ public class UserController {
     /*
      * ACESSO PÚBLICO
      */
+
+    @PostMapping("admin")
+    @Transactional
+    @Operation(summary = "ADMIN - Cadastrar", description = "Cadastrar um novo usuário ativo.")
+    public ResponseEntity<UserDto> create(@RequestBody @Valid final UserRequest request) {
+        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
+    }
 
     @GetMapping("identify/{id}")
     @Operation(summary = "Buscar", description = "Buscar um usuário ativo pelo ID.")
@@ -81,7 +87,7 @@ public class UserController {
 
     @PutMapping
     @Transactional
-    @Operation(summary = "Editar", description = "Editar os dados do usuário logado.")
+    @Operation(summary = "Editar-se", description = "Editar os dados do usuário logado.")
     public ResponseEntity<UserDto> update(@RequestBody @Valid final UserRequest request) {
         try {
             final var loggedUser = authUtils.getLoggedUser();
@@ -104,7 +110,7 @@ public class UserController {
 
     @DeleteMapping
     @Transactional
-    @Operation(summary = "ADMIN - Excluir", description = "Descadastrar usuário logado, removendo-o do sistema.")
+    @Operation(summary = "Excluir-se", description = "Descadastrar usuário logado, removendo-o do sistema.")
     public ResponseEntity<HttpStatus> delete() {
         try {
             final var loggedUser = authUtils.getLoggedUser();
@@ -125,23 +131,6 @@ public class UserController {
         } catch (final Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
-    }
-
-    /*
-     * ACESSO DE ADMIN
-     */
-
-    @GetMapping("admin")
-    @Operation(summary = "ADMIN - Listar todos", description = "Listar todos os usuários ativos cadastrados.")
-    public ResponseEntity<List<UserDto>> listAll() {
-        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
-    }
-
-    @PostMapping("admin")
-    @Transactional
-    @Operation(summary = "ADMIN - Cadastrar", description = "Cadastrar um novo usuário ativo.")
-    public ResponseEntity<UserDto> create(@RequestBody @Valid final UserRequest request) {
-        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
 }

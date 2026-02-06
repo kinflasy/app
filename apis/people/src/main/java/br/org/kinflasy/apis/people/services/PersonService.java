@@ -1,6 +1,5 @@
 package br.org.kinflasy.apis.people.services;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -45,16 +44,6 @@ public class PersonService {
     public Optional<PersonDto> findById(final UUID id) throws EntityNotFoundException {
         return repository.findById(id)
                 .map(person -> mapper.map(person, PersonDto.class));
-    }
-
-    /*
-     * ACESSO DE ADMIN
-     * 
-     * TODO aplicar FGA
-     */
-
-    public List<Person> findAll() {
-        return repository.findAll();
     }
 
 }

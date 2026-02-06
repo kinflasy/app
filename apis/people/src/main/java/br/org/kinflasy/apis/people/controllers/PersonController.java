@@ -1,6 +1,5 @@
 package br.org.kinflasy.apis.people.controllers;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -26,12 +25,6 @@ public class PersonController {
 
     private final PersonService service;
     private final PersonConverter converter;
-
-    @GetMapping("admin")
-    @Operation(summary = "ADMIN - Listar todos", description = "Listar todas as pessoas cadastradas.")
-    public ResponseEntity<List<PersonDto>> listAll() {
-        return new ResponseEntity<>(service.findAll().stream().map(converter::toDto).toList(), HttpStatus.OK);
-    }
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma pessoa pelo ID.")

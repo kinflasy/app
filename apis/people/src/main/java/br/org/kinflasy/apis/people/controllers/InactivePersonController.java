@@ -1,6 +1,5 @@
 package br.org.kinflasy.apis.people.controllers;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -31,12 +30,6 @@ import lombok.AllArgsConstructor;
 public class InactivePersonController {
 
     private final InactivePersonService service;
-
-    @GetMapping("admin")
-    @Operation(summary = "ADMIN - Listar todos", description = "Listar todas as pessoas inativas cadastradas.")
-    public ResponseEntity<List<InactivePersonDto>> listAll() {
-        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
-    }
 
     @PostMapping("admin")
     @Transactional
