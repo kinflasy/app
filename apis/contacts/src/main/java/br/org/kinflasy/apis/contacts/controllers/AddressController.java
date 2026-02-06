@@ -1,6 +1,5 @@
 package br.org.kinflasy.apis.contacts.controllers;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -32,12 +31,6 @@ import lombok.AllArgsConstructor;
 public class AddressController {
 
     private final AddressService service;
-
-    @GetMapping
-    @Operation(summary = "Listar todos", description = "Listar todos os endereços cadastrados.")
-    public ResponseEntity<List<AddressDto>> listAll() {
-        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
-    }
 
     @PostMapping
     @Transactional

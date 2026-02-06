@@ -9,3 +9,10 @@ type person_data
 
     define can_edit: owner
     define can_view: can_edit
+
+type address
+  relations
+    define owner: [user]
+
+    define can_edit: owner
+    define can_view: can_edit

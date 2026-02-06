@@ -30,18 +30,29 @@ public class FgaTupleManager {
      */
     @Async
     @EventListener
-    @SneakyThrows
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleUserCreated(final UserCreatedEvent event) {
-        final var tuple = new ClientTupleKey()
-                .user("user:" + event.getPerson().getId())
-                .relation("owner")
-                ._object("person_data:" + event.getPerson().getId());
+        final var user = event.getPerson();
 
-        client.write(new ClientWriteRequest().writes(List.of(tuple)))
-                .thenAccept(response -> log.info("Tupla escrita: {}", response))
+        final var personDataOwnerTuple = new ClientTupleKey()
+                .user("user:" + user.getId())
+                .relation("owner")
+                ._object("person_data:" + user.getId());
+
+        final var addressOwnerTuple = new ClientTupleKey()
+                .user("user:" + user.getId())
+                .relation("owner")
+                ._object("address:" + user.getAddressId());
+
+        writeTuples(personDataOwnerTuple, addressOwnerTuple);
+    }
+
+    @SneakyThrows
+    private void writeTuples(final ClientTupleKey... tuples) {
+        client.write(new ClientWriteRequest().writes(List.of(tuples)))
+                .thenAccept(response -> log.info("Tuplas escritas: {}", response))
                 .exceptionally(e -> {
-                    log.error("Erro ao escrever tupla", e);
+                    log.error("Erro ao escrever tuplas", e);
                     return null;
                 });
     }
