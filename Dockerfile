@@ -1,6 +1,6 @@
 
 FROM eclipse-temurin:21-alpine-3.21
 
-ARG JAR_FILE=target/*.jar
+ARG JAR_FILE=execution/target/*.jar
 COPY ${JAR_FILE} app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]

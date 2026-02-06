@@ -20,24 +20,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  #     volumes:
-  #       - pg-data:/var/lib/postgresql/data
 
-  # Serviço para a aplicação Spring Boot
-  app:
-    build: .
-    container_name: app
-    restart: always
-    ports:
-      - "8080:8080"
-    depends_on:
-      - db
-    env_file:
-      - .env
-    environment:
-      DATABASE_HOST: db
-
-  # Serviço para o PostgreSQL
+  # Serviço para o PostgreSQL do OpenFGA
   openfga-db:
     image: postgres:17.5-alpine3.21
     container_name: openfga-db
@@ -57,9 +41,8 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-  #     volumes:
-  #       - pg-data:/var/lib/postgresql/data
 
+  # Serviço para a migração do OpenFGA
   migrate:
     depends_on:
       openfga-db:
@@ -73,6 +56,7 @@ services:
     networks:
       - openfga
 
+  # Serviço para o servidor do OpenFGA
   openfga:
     depends_on:
       migrate:
@@ -95,12 +79,17 @@ services:
       # Needed for the playground (Do not enable in prod!)
       - "3000:3000"
 
-      # docker pull openfga/cli; docker run -it openfga/cli
-  fga-cli:
-    image: openfga/cli
+  # Serviço para a aplicação Spring Boot
+  app:
+    build: .
+    container_name: app
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - openfga
+    env_file:
+      - .env
     environment:
-      - name=value
-
-
-# volumes:
-#   pg-data:
+      DATABASE_HOST: db
