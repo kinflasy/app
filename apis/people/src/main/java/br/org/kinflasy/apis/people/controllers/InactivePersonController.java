@@ -42,7 +42,7 @@ public class InactivePersonController {
     @Transactional
     @Operation(summary = "ADMIN - Cadastrar", description = "Cadastrar uma nova pessoa inativa.")
     public ResponseEntity<InactivePersonDto> create(
-            @RequestBody @Valid final InactivePersonRequest.WithChurch request) {
+            @RequestBody @Valid final InactivePersonRequest request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 

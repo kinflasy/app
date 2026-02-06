@@ -14,6 +14,7 @@ import br.org.kinflasy.apis.people.clients.AddressClient;
 import br.org.kinflasy.apis.people.converters.UserConverter;
 import br.org.kinflasy.apis.people.repositories.UserRepository;
 import br.org.kinflasy.libs.people.dto.UserDto;
+import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
 import br.org.kinflasy.libs.people.events.UserCreatedEvent;
 import jakarta.persistence.EntityNotFoundException;
@@ -35,12 +36,9 @@ public class UserService {
 
     private final AddressClient addressClient;
 
-    @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
-    public List<UserDto> findAll() {
-        return repository.findAll().stream()
-                .map(converter::toDto)
-                .toList();
-    }
+    /*
+     * ACESSO PÚBLICO
+     */
 
     public UserDto create(final UserRequest request) {
         // Salvar usuário
@@ -61,6 +59,21 @@ public class UserService {
 
         return dto;
     }
+
+    public Optional<UserIdentifierDto> identifyById(final UUID id) {
+        return repository.findById(id)
+                .map(entity -> mapper.map(entity, UserIdentifierDto.class));
+    }
+
+    public UserIdentifierDto identifyByUsername(final String username) {
+        return repository.findByUsername(username)
+                .map(entity -> mapper.map(entity, UserIdentifierDto.class))
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+    }
+
+    /*
+     * ACESSO RESTRITO
+     */
 
     @PreAuthorize("@fga.check('person_data', #id, 'can_view', 'user', principal.id)")
     public Optional<UserDto> findById(final UUID id) {
@@ -87,6 +100,18 @@ public class UserService {
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
     public void delete(final UUID id) {
         repository.deleteById(id);
+    }
+
+    /*
+     * ACESSO DE ADMIN
+     * 
+     * TODO aplicar FGA
+     */
+
+    public List<UserDto> findAll() {
+        return repository.findAll().stream()
+                .map(converter::toDto)
+                .toList();
     }
 
 }

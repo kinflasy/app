@@ -15,12 +15,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 public class InactivePersonRequest extends PersonRequest {
 
-    @Data
-    @EqualsAndHashCode(callSuper = true)
-    public static class WithChurch extends InactivePersonRequest {
-        private @NotNull UUID churchId;
-    }
-
+    private @NotNull UUID churchId;
     private @Email String email;
 
 }

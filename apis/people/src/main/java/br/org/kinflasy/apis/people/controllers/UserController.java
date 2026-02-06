@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.org.kinflasy.apis.people.services.UserService;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.people.dto.UserDto;
+import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,18 +35,31 @@ public class UserController {
     private final UserService service;
     private final AuthUtils authUtils;
 
-    @GetMapping("admin")
-    @Operation(summary = "ADMIN - Listar todos", description = "Listar todos os usuários ativos cadastrados.")
-    public ResponseEntity<List<UserDto>> listAll() {
-        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+    /*
+     * ACESSO PÚBLICO
+     */
+
+    @GetMapping("identify/{id}")
+    @Operation(summary = "Buscar", description = "Buscar um usuário ativo pelo ID.")
+    public ResponseEntity<UserIdentifierDto> identifyById(@PathVariable final UUID id) {
+        return service.identifyById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @PostMapping("admin")
-    @Transactional
-    @Operation(summary = "ADMIN - Cadastrar", description = "Cadastrar um novo usuário ativo.")
-    public ResponseEntity<UserDto> create(@RequestBody @Valid final UserRequest request) {
-        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
+    @GetMapping("identify/@{username}")
+    @Operation(summary = "Buscar por username", description = "Buscar um usuário ativo pelo username.")
+    public ResponseEntity<UserIdentifierDto> identifyByUsername(@PathVariable final String username) {
+        try {
+            return new ResponseEntity<>(service.identifyByUsername(username), HttpStatus.OK);
+        } catch (final EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
+
+    /*
+     * ACESSO RESTRITO
+     */
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar um usuário ativo pelo ID.")
@@ -111,6 +125,23 @@ public class UserController {
         } catch (final Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
+    }
+
+    /*
+     * ACESSO DE ADMIN
+     */
+
+    @GetMapping("admin")
+    @Operation(summary = "ADMIN - Listar todos", description = "Listar todos os usuários ativos cadastrados.")
+    public ResponseEntity<List<UserDto>> listAll() {
+        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+    }
+
+    @PostMapping("admin")
+    @Transactional
+    @Operation(summary = "ADMIN - Cadastrar", description = "Cadastrar um novo usuário ativo.")
+    public ResponseEntity<UserDto> create(@RequestBody @Valid final UserRequest request) {
+        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
 }

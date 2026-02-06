@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.people.clients.AddressClient;
@@ -11,6 +13,7 @@ import br.org.kinflasy.apis.people.converters.InactivePersonConverter;
 import br.org.kinflasy.apis.people.repositories.InactivePersonRepository;
 import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
+import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
@@ -20,18 +23,28 @@ public class InactivePersonService {
 
     private static final String NOT_FOUND_MESSAGE = "Pessoa não encontrada.";
 
+    private final ModelMapper mapper;
+
     private final InactivePersonRepository repository;
     private final InactivePersonConverter converter;
 
     private final AddressClient addressClient;
 
-    public List<InactivePersonDto> findAll() {
-        return repository.findAll().stream()
-                .map(converter::toDto)
-                .toList();
+    /*
+     * ACESSO PÚBLICO
+     */
+
+    public Optional<PersonIdentifierDto> identifyById(final UUID id) {
+        return repository.findById(id)
+                .map(entity -> mapper.map(entity, PersonIdentifierDto.class));
     }
 
-    public InactivePersonDto create(final InactivePersonRequest.WithChurch request) {
+    /*
+     * ACESSO RESTRITO
+     */
+
+    // TODO aplicar FGA: integrante do SOMA
+    public InactivePersonDto create(final InactivePersonRequest request) {
         // Salvar endereço
         final var address = addressClient.create(request.getAddress());
 
@@ -44,10 +57,12 @@ public class InactivePersonService {
         return converter.toDto(entity);
     }
 
+    @PreAuthorize("@fga.check('person_data', #id, 'can_view', 'user', principal.id)")
     public Optional<InactivePersonDto> findById(final UUID id) {
         return repository.findById(id).map(converter::toDto);
     }
 
+    @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
     public InactivePersonDto update(final UUID id, final InactivePersonRequest request) {
         // Atualizar original
         final var original = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
@@ -60,11 +75,23 @@ public class InactivePersonService {
         return converter.toDto(modified);
     }
 
+    @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
     public void delete(final UUID id) {
         final var original = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
 
         repository.delete(original);
         addressClient.delete(original.getAddressId());
+    }
+
+    /*
+     * ACESSO DE ADMIN
+     */
+
+    // TODO aplicar FGA
+    public List<InactivePersonDto> findAll() {
+        return repository.findAll().stream()
+                .map(converter::toDto)
+                .toList();
     }
 
 }

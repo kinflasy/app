@@ -197,7 +197,7 @@ public class UnitService {
                             .map(member -> {
                                 // ... criar pessoa inativa
                                 final var personRequest = mapper
-                                        .map(member.getPerson(), InactivePersonRequest.WithChurch.class)
+                                        .map(member.getPerson(), InactivePersonRequest.class)
                                         .setChurchId(unit.getChurchId());
                                 final var savedPerson = inactivePersonClient.create(personRequest);
 

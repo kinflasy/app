@@ -19,7 +19,7 @@ import jakarta.validation.Valid;
 public interface InactivePersonClient {
 
     @PostMapping("admin")
-    InactivePersonDto create(@RequestBody @Valid InactivePersonRequest.WithChurch request);
+    InactivePersonDto create(@RequestBody @Valid InactivePersonRequest request);
 
     @GetMapping("{id}")
     InactivePersonDto findById(@PathVariable UUID id);
