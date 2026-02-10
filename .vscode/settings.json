@@ -5,6 +5,7 @@
     "conventionalCommits.scopes": [
         "activation",
         "modularization",
-        "openfga"
+        "openfga",
+        "events"
     ]
 }

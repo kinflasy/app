@@ -164,14 +164,12 @@ public class ChurchesFgaTupleManager {
         return client.write(new ClientWriteRequest().writes(List.of(tuples)),
                 new ClientWriteOptions().onDuplicate(OnDuplicateEnum.IGNORE))
                 .thenAccept(response -> {
-                    final var template = "%s\n%s %s %s (%s)";
-
                     final var writes = response.getWrites();
                     log.info("{} tuplas escritas: {}", writes.size(),
                             writes.stream()
                                     .map(write -> write.getTupleKey())
                                     .reduce("",
-                                            (acc, tuple) -> template.formatted(acc, tuple.getUser(),
+                                            (acc, tuple) -> "%s\n%s %s %s (%s)".formatted(acc, tuple.getUser(),
                                                     tuple.getRelation(), tuple.getObject(), tuple.getCondition()),
                                             (a, b) -> a + b));
                 })

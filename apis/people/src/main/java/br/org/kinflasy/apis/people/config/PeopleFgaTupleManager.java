@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import br.org.kinflasy.libs.people.events.UserCreatedEvent;
+import br.org.kinflasy.libs.people.events.UserEvent;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
 import dev.openfga.sdk.api.client.model.ClientWriteRequest;
@@ -33,18 +33,18 @@ public class PeopleFgaTupleManager {
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleUserCreated(final UserCreatedEvent event) {
-        final var user = event.getPerson();
+    public void handleUserCreated(final UserEvent.Created event) {
+        final var dto = event.getPerson();
 
         final var personDataOwnerTuple = new ClientTupleKey()
-                .user("user:" + user.getId())
+                .user("user:" + dto.getId())
                 .relation("owner")
-                ._object("person_data:" + user.getId());
+                ._object("person_data:" + dto.getId());
 
         final var addressOwnerTuple = new ClientTupleKey()
-                .user("user:" + user.getId())
+                .user("user:" + dto.getId())
                 .relation("owner")
-                ._object("address:" + user.getAddressId());
+                ._object("address:" + dto.getAddressId());
 
         writeTuples(personDataOwnerTuple, addressOwnerTuple);
     }

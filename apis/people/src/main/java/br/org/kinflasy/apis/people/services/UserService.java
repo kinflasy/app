@@ -15,7 +15,7 @@ import br.org.kinflasy.apis.people.repositories.UserRepository;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
-import br.org.kinflasy.libs.people.events.UserCreatedEvent;
+import br.org.kinflasy.libs.people.events.UserEvent;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +54,7 @@ public class UserService {
         final var dto = converter.toDto(entity);
 
         // Publicar evento
-        publisher.publishEvent(new UserCreatedEvent(dto));
+        publisher.publishEvent(new UserEvent.Created(dto));
 
         return dto;
     }
