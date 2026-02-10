@@ -3,15 +3,13 @@ package br.org.kinflasy.libs.churches.events;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import lombok.Data;
 
-@Data
-public abstract class MembershipEvent {
+public interface MembershipEvent {
 
-    private final MembershipDto membership;
+    public MembershipDto getMembership();
 
-    public static class Created extends MembershipEvent {
-        public Created(final MembershipDto membership) {
-            super(membership);
-        }
+    @Data
+    public static class Created implements MembershipEvent {
+        private final MembershipDto membership;
     }
 
 }

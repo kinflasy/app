@@ -1,16 +1,12 @@
 package br.org.kinflasy.libs.churches.events.department;
 
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionDto;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public abstract class ExtensionEvent {
+public interface ExtensionEvent {
 
     @Data
-    public static class Subscribed {
+    public static class Subscribed implements ExtensionEvent {
         private final ExtensionSubscriptionDto subscription;
     }
 

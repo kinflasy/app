@@ -3,15 +3,13 @@ package br.org.kinflasy.libs.churches.events.department;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import lombok.Data;
 
-@Data
-public abstract class DepartmentEvent {
+public interface DepartmentEvent {
 
-    private final DepartmentDto department;
+    public DepartmentDto getDepartment();
 
-    public static class Created extends DepartmentEvent {
-        public Created(final DepartmentDto department) {
-            super(department);
-        }
+    @Data
+    public static class Created implements DepartmentEvent {
+        private final DepartmentDto department;
     }
 
 }
