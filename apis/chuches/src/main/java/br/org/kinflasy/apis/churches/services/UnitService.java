@@ -28,7 +28,7 @@ import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import br.org.kinflasy.libs.churches.events.MembershipEvent;
-import br.org.kinflasy.libs.churches.events.UnitCreatedEvent;
+import br.org.kinflasy.libs.churches.events.UnitEvent;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import br.org.kinflasy.libs.people.dto.PersonSimpleDto;
 import jakarta.persistence.EntityNotFoundException;
@@ -104,7 +104,7 @@ public class UnitService {
         final var dto = converter.toDto(created);
 
         // Publicar evento
-        publisher.publishEvent(new UnitCreatedEvent(dto));
+        publisher.publishEvent(new UnitEvent.Created(dto));
 
         return dto;
     }

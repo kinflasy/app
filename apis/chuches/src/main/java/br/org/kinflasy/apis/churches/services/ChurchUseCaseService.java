@@ -21,7 +21,7 @@ import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.churches.events.MembershipEvent;
-import br.org.kinflasy.libs.churches.events.UnitCreatedEvent;
+import br.org.kinflasy.libs.churches.events.UnitEvent;
 import br.org.kinflasy.libs.churches.events.department.DepartmentEvent;
 import br.org.kinflasy.libs.churches.events.department.IntegrationEvent;
 import dev.openfga.sdk.api.client.OpenFgaClient;
@@ -69,7 +69,7 @@ public class ChurchUseCaseService {
         request.getUnit().setType(UnitType.MAIN);
         final var unit = unitService.create(church.getId(), request.getUnit());
 
-        tupleManager.handleUnitCreated(new UnitCreatedEvent(unit)).join();
+        tupleManager.handleUnitCreated(new UnitEvent.Created(unit)).join();
 
         // Adicionar usuário logado como membro da unidade Sede
         final var membership = unitService.addMember(unit.getId(), new MembershipRequest()

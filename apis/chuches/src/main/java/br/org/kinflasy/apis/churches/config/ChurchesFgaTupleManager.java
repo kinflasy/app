@@ -15,7 +15,7 @@ import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.libs.churches.enums.UnitType;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.events.MembershipEvent;
-import br.org.kinflasy.libs.churches.events.UnitCreatedEvent;
+import br.org.kinflasy.libs.churches.events.UnitEvent;
 import br.org.kinflasy.libs.churches.events.department.DepartmentEvent;
 import br.org.kinflasy.libs.churches.events.department.ExtensionEvent;
 import br.org.kinflasy.libs.churches.events.department.IntegrationEvent;
@@ -47,7 +47,7 @@ public class ChurchesFgaTupleManager {
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public CompletableFuture<Void> handleUnitCreated(final UnitCreatedEvent event) {
+    public CompletableFuture<Void> handleUnitCreated(final UnitEvent.Created event) {
         final var dto = event.getUnit();
 
         final List<ClientTupleKey> tuples = new ArrayList<>();
