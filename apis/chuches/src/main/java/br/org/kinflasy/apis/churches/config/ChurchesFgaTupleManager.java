@@ -46,7 +46,7 @@ public class ChurchesFgaTupleManager {
 
     @Async
     @EventListener
-    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<Void> handleUnitCreated(final UnitCreatedEvent event) {
         final var dto = event.getUnit();
 
@@ -85,7 +85,7 @@ public class ChurchesFgaTupleManager {
 
     @Async
     @EventListener
-    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<Void> handleDepartmentCreated(final DepartmentEvent.Created event) {
         final var dto = event.getDepartment();
 
@@ -99,7 +99,7 @@ public class ChurchesFgaTupleManager {
 
     @Async
     @EventListener
-    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<Void> handleMembershipCreated(final MembershipEvent.Created event) {
         final var dto = event.getMembership();
 
@@ -123,7 +123,7 @@ public class ChurchesFgaTupleManager {
 
     @Async
     @EventListener
-    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<Void> handleIntegrationCreated(final IntegrationEvent.Created event) {
         final var dto = event.getIntegration();
 
@@ -137,7 +137,7 @@ public class ChurchesFgaTupleManager {
 
     @Async
     @EventListener
-    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<Void> handleExtensionSubscribed(final ExtensionEvent.Subscribed event) {
         final var dto = event.getSubscription();
 
@@ -163,7 +163,18 @@ public class ChurchesFgaTupleManager {
     private CompletableFuture<Void> writeTuples(final ClientTupleKey... tuples) {
         return client.write(new ClientWriteRequest().writes(List.of(tuples)),
                 new ClientWriteOptions().onDuplicate(OnDuplicateEnum.IGNORE))
-                .thenAccept(response -> log.info("Tuplas escritas: {}", response))
+                .thenAccept(response -> {
+                    final var template = "%s\n%s %s %s (%s)";
+
+                    final var writes = response.getWrites();
+                    log.info("{} tuplas escritas: {}", writes.size(),
+                            writes.stream()
+                                    .map(write -> write.getTupleKey())
+                                    .reduce("",
+                                            (acc, tuple) -> template.formatted(acc, tuple.getUser(),
+                                                    tuple.getRelation(), tuple.getObject(), tuple.getCondition()),
+                                            (a, b) -> a + b));
+                })
                 .exceptionally(e -> {
                     log.error("Erro ao escrever tuplas", e);
                     return null;

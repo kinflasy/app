@@ -7,10 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.config.ChurchesFgaTupleManager;
-import br.org.kinflasy.apis.churches.entities.department.ExtensionSubscription;
-import br.org.kinflasy.apis.churches.repositories.department.ExtensionSubscriptionRepository;
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
-import br.org.kinflasy.apis.churches.services.department.IntegrationService;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.churches.dto.ChurchDto;
 import br.org.kinflasy.libs.churches.dto.ChurchRequest;
@@ -40,12 +37,9 @@ public class ChurchUseCaseService {
     private AuthUtils authUtils;
     private ModelMapper mapper;
 
-    private ExtensionSubscriptionRepository subscriptionRepository;
-
     private ChurchService churchService;
     private UnitService unitService;
     private DepartmentService departmentService;
-    private IntegrationService integrationService;
 
     private OpenFgaClient fgaClient;
     private ChurchesFgaTupleManager tupleManager;
@@ -79,21 +73,18 @@ public class ChurchUseCaseService {
 
         // Adicionar usuário logado como membro da unidade Sede
         final var membership = unitService.addMember(unit.getId(), new MembershipRequest()
-                .setPersonId(loggedUser.getId())
-                .setAffiliation(Affiliation.MEMBER));
+                .setPersonId(loggedUser.getId()).setAffiliation(Affiliation.MEMBER));
 
         tupleManager.handleMembershipCreated(new MembershipEvent.Created(membership)).join();
 
         // Criar ministério pastoral
         final var pastorate = unitService.createDepartment(unit.getId(), new DepartmentRequest()
-                .setName("Ministério Pastoral")
-                .setSlug("pastoral")
+                .setName("Ministério Pastoral").setSlug("pastoral")
                 .setType(DepartmentType.ADMINISTRATIVE));
 
         // Criar secretaria
         final var secretariat = unitService.createDepartment(unit.getId(), new DepartmentRequest()
-                .setName("Secretaria")
-                .setSlug("secretaria")
+                .setName("Secretaria").setSlug("secretaria")
                 .setType(DepartmentType.ADMINISTRATIVE));
 
         // Relacionar departamentos com unidade no FGA
@@ -101,17 +92,11 @@ public class ChurchUseCaseService {
         tupleManager.handleDepartmentCreated(new DepartmentEvent.Created(secretariat)).join();
 
         // Adicionar usuário logado à secretaria
-        // todo usar por departmentService
-        final var secretary = integrationService.create(secretariat.getId(), new IntegrationRequest()
+        final var secretary = departmentService.addIntegrant(secretariat.getId(), new IntegrationRequest()
                 .setMembershipId(membership.getId())
                 .setType(IntegrationType.LEADER));
 
         tupleManager.handleIntegrationCreated(new IntegrationEvent.Created(secretary)).join();
-
-        // final var soma = new ExtensionSubscription();
-        // soma.setDepartmentId(secretariat.getId());
-        // soma.setExtension(Extension.SOMA);
-        // subscriptionRepository.save(soma);
 
         // Associar extensão SOMA à secretaria
         departmentService.subscribeToExtension(secretariat.getId(),
