@@ -5,12 +5,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.entities.department.Integration;
 import br.org.kinflasy.apis.churches.repositories.department.IntegrationRepository;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationRequest;
+import br.org.kinflasy.libs.churches.events.department.IntegrationEvent;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,6 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 public class IntegrationService {
 
     private final ModelMapper mapper;
+    private final ApplicationEventPublisher publisher;
+
     private final IntegrationRepository repository;
 
     public List<IntegrationDto> listByDepartment(final UUID departmentId) {
@@ -43,8 +47,13 @@ public class IntegrationService {
         // Salvar
         final var saved = repository.save(entity);
 
-        // Retornar DTO
-        return mapper.map(saved, IntegrationDto.class);
+        // Gerar DTO
+        final var dto = mapper.map(saved, IntegrationDto.class);
+
+        // Publicar evento
+        publisher.publishEvent(new IntegrationEvent.Created(dto));
+
+        return dto;
     }
 
     public Optional<IntegrationDto> findIntegration(final UUID departmentId, final UUID personId) {

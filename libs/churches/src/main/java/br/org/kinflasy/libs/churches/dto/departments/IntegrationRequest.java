@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class IntegrationRequest {
 
-    private @NotBlank UUID personId;
+    private @NotBlank UUID membershipId;
     private @NotNull IntegrationType type;
 
 }

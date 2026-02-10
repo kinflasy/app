@@ -6,7 +6,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.clients.AddressClient;
@@ -24,6 +27,8 @@ import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
+import br.org.kinflasy.libs.churches.events.MembershipEvent;
+import br.org.kinflasy.libs.churches.events.UnitCreatedEvent;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import br.org.kinflasy.libs.people.dto.PersonSimpleDto;
 import jakarta.persistence.EntityNotFoundException;
@@ -38,6 +43,7 @@ public class UnitService {
     private static final String NOT_FOUND_MESSAGE = "Unidade não encontrada";
 
     private final ModelMapper mapper;
+    private final ApplicationEventPublisher publisher;
 
     private final UnitRepository repository;
     private final UnitConverter converter;
@@ -49,12 +55,34 @@ public class UnitService {
     private final DepartmentService departmentService;
     private final MembershipRepository membershipRepository;
 
+    /*
+     * ACESSO PÚBLICO
+     */
+
     public List<UnitDto> listByChurchId(final UUID churchId) {
         return repository.findByChurchId(churchId).stream()
                 .map(converter::toDto)
                 .toList();
     }
 
+    public Optional<UnitDto> findById(final UUID id) {
+        log.info("Buscando unidade de id {}...", id);
+        return repository.findById(id).map(converter::toDto);
+    }
+
+    @PostFilter("@fga.check('department', filterObject.id, 'can_view', 'user', principal.id)")
+    public List<DepartmentDto> listDepartments(final UUID id) {
+        log.info("Listando todos os departamentos da unidade de id {}...", id);
+        return repository.findById(id)
+                .map(ignoredUnit -> departmentService.listByUnitId(id))
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+    }
+
+    /*
+     * ACESSO RESTRITO
+     */
+
+    @PreAuthorize("@fga.check('church', #churchId, 'admin', 'user', principal.id)")
     public UnitDto create(final UUID churchId, final UnitRequest request) {
         log.info("Criando unidade /{}...", request.getSlug());
 
@@ -72,14 +100,16 @@ public class UnitService {
         // Salvar
         final var created = repository.save(unit);
 
-        return converter.toDto(created);
+        // Criar DTO
+        final var dto = converter.toDto(created);
+
+        // Publicar evento
+        publisher.publishEvent(new UnitCreatedEvent(dto));
+
+        return dto;
     }
 
-    public Optional<UnitDto> findById(final UUID id) {
-        log.info("Buscando unidade de id {}...", id);
-        return repository.findById(id).map(converter::toDto);
-    }
-
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public UnitDto update(final UUID id, final UnitRequest request) {
         log.info("Atualizando unidade /{} (id {})...", request.getSlug(), id);
         return repository.findById(id)
@@ -95,6 +125,7 @@ public class UnitService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public void delete(final UUID id) {
         log.info("Deletando unidade de id {}...", id);
         repository.findById(id)
@@ -113,25 +144,21 @@ public class UnitService {
                         () -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
-    public List<DepartmentDto> listDepartments(final UUID id) {
-        log.info("Listando todos os departamentos da unidade de id {}...", id);
-        return repository.findById(id)
-                .map(ignoredUnit -> departmentService.listByUnitId(id))
-                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
-    }
-
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public DepartmentDto createDepartment(final UUID id, final DepartmentRequest request) {
         return repository.findById(id)
                 .map(ignoredUnit -> departmentService.create(id, request))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public List<MembershipSimpleDto> listMembersAndExMembers(final UUID id) {
         return membershipRepository.findByUnitId(id).stream()
                 .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
                 .toList();
     }
 
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public List<MembershipDto> listMembersAndExMembersWithDetails(final UUID id) {
         return listMembersAndExMembers(id).stream()
                 .map(simpleDto -> mapper.map(simpleDto, MembershipDto.class)
@@ -139,18 +166,21 @@ public class UnitService {
                 .toList();
     }
 
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public Optional<MembershipSimpleDto> findActiveMembership(final UUID id, final UUID personId) {
         return membershipRepository.findByUnitIdAndPersonIdAndLeaveDateNull(id, personId).stream()
                 .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
                 .findFirst();
     }
 
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public List<MembershipSimpleDto> listMembers(final UUID id) {
         return membershipRepository.findByUnitIdAndLeaveDateNull(id).stream()
                 .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
                 .toList();
     }
 
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public List<MembershipDto> listMembersWithDetails(final UUID id) {
         return listMembers(id).stream()
                 .map(simpleDto -> mapper.map(simpleDto, MembershipDto.class)
@@ -158,7 +188,8 @@ public class UnitService {
                 .toList();
     }
 
-    public MembershipSimpleDto addMember(final UUID id, final MembershipRequest request) {
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
+    public MembershipDto addMember(final UUID id, final MembershipRequest request) {
         log.info("Adicionando membro de id {} à unidade de id {}...", request.getPersonId(), id);
         final var entity = mapper.map(request, Membership.class);
         entity.setId(null);
@@ -167,9 +198,16 @@ public class UnitService {
         final var saved = membershipRepository.save(entity);
         log.info("Membro de id {} adicionado à unidade de id {}", request.getPersonId(), id);
 
-        return mapper.map(saved, MembershipSimpleDto.class);
+        // Gerar DTO
+        final var dto = mapper.map(saved, MembershipDto.class);
+
+        // Publicar evento
+        publisher.publishEvent(new MembershipEvent.Created(dto));
+
+        return dto;
     }
 
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public List<MembershipSimpleDto> addMembers(final UUID id, final List<MembershipRequest> request) {
         final var entities = request.stream().map(member -> {
             final var entity = mapper.map(member, Membership.class);
@@ -187,6 +225,7 @@ public class UnitService {
                 .toList();
     }
 
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public List<MembershipSimpleDto> registerMembers(final UUID id, final List<MembershipRequest.Register> request) {
         // Obter dados da unidade
         return repository.findById(id)
@@ -220,6 +259,7 @@ public class UnitService {
 
     }
 
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public void removeMember(final UUID id, final UUID personId) {
         membershipRepository.findByUnitIdAndPersonId(id, personId)
                 .forEach(membership -> {

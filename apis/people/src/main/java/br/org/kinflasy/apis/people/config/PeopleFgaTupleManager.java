@@ -12,6 +12,8 @@ import br.org.kinflasy.libs.people.events.UserCreatedEvent;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
 import dev.openfga.sdk.api.client.model.ClientWriteRequest;
+import dev.openfga.sdk.api.configuration.ClientWriteOptions;
+import dev.openfga.sdk.api.model.WriteRequestWrites.OnDuplicateEnum;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 @AllArgsConstructor
-public class FgaTupleManager {
+public class PeopleFgaTupleManager {
 
     private final OpenFgaClient client;
 
@@ -49,7 +51,8 @@ public class FgaTupleManager {
 
     @SneakyThrows
     private void writeTuples(final ClientTupleKey... tuples) {
-        client.write(new ClientWriteRequest().writes(List.of(tuples)))
+        client.write(new ClientWriteRequest().writes(List.of(tuples)),
+                new ClientWriteOptions().onDuplicate(OnDuplicateEnum.IGNORE))
                 .thenAccept(response -> log.info("Tuplas escritas: {}", response))
                 .exceptionally(e -> {
                     log.error("Erro ao escrever tuplas", e);

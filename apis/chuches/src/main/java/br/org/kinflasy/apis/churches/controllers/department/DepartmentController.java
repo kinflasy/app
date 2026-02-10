@@ -83,10 +83,10 @@ public class DepartmentController {
     }
 
     @PostMapping("{id}/extensions")
-    public ResponseEntity<ExtensionSubscriptionDto> associateExtension(@PathVariable final UUID id,
+    public ResponseEntity<ExtensionSubscriptionDto> subscribeToExtension(@PathVariable final UUID id,
             @RequestBody ExtensionSubscriptionRequest request) {
         try {
-            return new ResponseEntity<>(service.associateExtension(id, request), HttpStatus.OK);
+            return new ResponseEntity<>(service.subscribeToExtension(id, request), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

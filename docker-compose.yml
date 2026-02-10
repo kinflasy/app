@@ -68,6 +68,7 @@ services:
       - OPENFGA_DATASTORE_URI=postgres://${OPENFGA_DATABASE_USER}:${OPENFGA_DATABASE_PASSWORD}@openfga-db:5432/${OPENFGA_DATABASE_NAME}?sslmode=disable
       - OPENFGA_LOG_FORMAT=json
       - OPENFGA_HTTP_ADDR=0.0.0.0:${OPENFGA_HTTP_PORT}
+      - OPENFGA_HTTP_CORS_ALLOWED_ORIGINS
     command: run
     networks:
       - openfga

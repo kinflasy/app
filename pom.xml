@@ -27,15 +27,15 @@
 	<!-- Módulos -->
 	<modules>
 		<module>execution</module>
+		<module>libs/lib_utils</module>
 		<module>libs/contacts</module>
 		<module>libs/people</module>
 		<module>libs/churches</module>
-		<module>libs/lib_utils</module>
 		<module>libs/api_utils</module>
 		<module>apis/contacts</module>
 		<module>apis/people</module>
-		<module>apis/chuches</module>
 		<module>apis/auth</module>
+		<module>apis/chuches</module>
 	</modules>
 
 	<!-- Propriedades -->

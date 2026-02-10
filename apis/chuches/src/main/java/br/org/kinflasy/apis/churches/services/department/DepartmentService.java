@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,8 @@ import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionDto;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionRequest;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
+import br.org.kinflasy.libs.churches.events.department.DepartmentEvent;
+import br.org.kinflasy.libs.churches.events.department.ExtensionEvent;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
@@ -27,6 +30,7 @@ public class DepartmentService {
     private static final String NOT_FOUND_MESSAGE = "Departamento não encontrado";
 
     private final ModelMapper mapper;
+    private final ApplicationEventPublisher publisher;
 
     private final DepartmentRepository repository;
     private final DepartmentConverter converter;
@@ -41,7 +45,8 @@ public class DepartmentService {
 
     public DepartmentDto create(final UUID unitId, final DepartmentRequest request) {
         // Salvar regra de visibilidade
-        // final var visibility = peopleFilterClient.findOrCreate(request.getVisibility());
+        // final var visibility =
+        // peopleFilterClient.findOrCreate(request.getVisibility());
 
         // Construir departamento
         final var department = converter.toEntity(request);
@@ -53,7 +58,13 @@ public class DepartmentService {
         // Salvar
         final var created = repository.saveAndFlush(department);
 
-        return converter.toDto(created);
+        // Gerar DTO
+        final var dto = converter.toDto(created);
+
+        // Publicar evento
+        publisher.publishEvent(new DepartmentEvent.Created(dto));
+
+        return dto;
     }
 
     public Optional<DepartmentDto> findById(final UUID id) {
@@ -79,13 +90,19 @@ public class DepartmentService {
                 .toList();
     }
 
-    public ExtensionSubscriptionDto associateExtension(final UUID id, final ExtensionSubscriptionRequest request) {
+    public ExtensionSubscriptionDto subscribeToExtension(final UUID id, final ExtensionSubscriptionRequest request) {
         final var entity = mapper.map(request, ExtensionSubscription.class);
         entity.setDepartmentId(id);
 
         final var saved = subscriptionRepository.save(entity);
 
-        return mapper.map(saved, ExtensionSubscriptionDto.class);
+        // Gerar DTO
+        final var dto = mapper.map(saved, ExtensionSubscriptionDto.class);
+
+        // Publicar evento
+        publisher.publishEvent(new ExtensionEvent.Subscribed(dto));
+
+        return dto;
     }
 
     public Optional<ExtensionSubscriptionDto> findExtension(final UUID id, final Extension extension) {

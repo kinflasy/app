@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.converters.ChurchConverter;
@@ -29,6 +30,10 @@ public class ChurchService {
 
     private final UnitService unitService;
 
+    /*
+     * ACESSO PÚBLICO
+     */
+
     public List<ChurchDto> findAll() {
         log.info("Listando todas as Igrejas...");
         return repository.findAll().stream()
@@ -36,6 +41,23 @@ public class ChurchService {
                 .toList();
     }
 
+    public Optional<ChurchDto> findById(final UUID id) {
+        log.info("Buscando Igreja de id {}...", id);
+        return repository.findById(id).map(converter::toDto);
+    }
+
+    public List<UnitDto> listUnits(final UUID id) {
+        log.info("Listando todas as unidades da Igreja de id {}...", id);
+        return repository.findById(id)
+                .map(church -> unitService.listByChurchId(id))
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+    }
+
+    /*
+     * ACESSO LOGADO
+     */
+
+    @PreAuthorize("isAuthenticated()")
     public ChurchDto create(final ChurchRequest request) {
         log.info("Criando Igreja @{}...", request.getSlug());
 
@@ -46,11 +68,11 @@ public class ChurchService {
         return converter.toDto(entity);
     }
 
-    public Optional<ChurchDto> findById(final UUID id) {
-        log.info("Buscando Igreja de id {}...", id);
-        return repository.findById(id).map(converter::toDto);
-    }
+    /*
+     * ACESSO RESTRITO
+     */
 
+    @PreAuthorize("@fga.check('church', #id, 'admin', 'user', principal.id)")
     public ChurchDto update(final UUID id, final ChurchRequest request) {
         log.info("Atualizando Igreja @{} (id {})...", request.getSlug(), id);
         return repository.findById(id)
@@ -63,6 +85,7 @@ public class ChurchService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
+    @PreAuthorize("@fga.check('church', #id, 'admin', 'user', principal.id)")
     public void delete(final UUID id) {
         log.info("Deletando Igreja de id {}...", id);
 
@@ -74,13 +97,7 @@ public class ChurchService {
         repository.deleteById(id);
     }
 
-    public List<UnitDto> listUnits(final UUID id) {
-        log.info("Listando todas as unidades da Igreja de id {}...", id);
-        return repository.findById(id)
-                .map(church -> unitService.listByChurchId(id))
-                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
-    }
-
+    @PreAuthorize("@fga.check('church', #id, 'admin', 'user', principal.id)")
     public UnitDto createUnit(final UUID id, final UnitRequest request) {
         return repository.findById(id)
                 .map(ignoredChurch -> unitService.create(id, request))

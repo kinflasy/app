@@ -12,7 +12,47 @@ type person_data
 
 type address
   relations
-    define owner: [user]
+    define owner: [user, unit]
 
     define can_edit: owner
     define can_view: can_edit
+
+type church
+  relations
+    # Permissão total temporária
+    define creator: [user]
+
+    define admin: [unit#admin] or creator
+    define unit: [unit]
+
+    define member: member from unit
+    define congregated: congregated from unit
+    define visitor: visitor from unit
+
+type unit
+  relations
+    define parent_church: [church]
+    define admin: [department#leader] or admin from parent_church
+
+    define member: [membership#user]
+    define congregated: [membership#user] or member
+    define visitor: [membership#user] or congregated
+
+type membership
+  relations
+    define unit: [unit]
+    define user: [user]
+
+type department
+  relations
+    define parent_unit: [unit]
+
+    define leader: [membership#user]
+    define assistant: [membership#user] or leader
+    define integrant: [membership#user] or assistant
+    define consultant: [membership#user]
+    define observer: [membership#user] or integrant or consultant
+
+    define can_edit: leader or admin from parent_unit
+    define can_manage: can_edit or assistant
+    define can_view: can_edit or observer
