@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.org.kinflasy.apis.churches.services.ActivationUseCaseService;
 import br.org.kinflasy.apis.churches.services.ChurchService;
 import br.org.kinflasy.apis.churches.services.ChurchUseCaseService;
+import br.org.kinflasy.apis.churches.services.DeactivationUseCaseService;
 import br.org.kinflasy.apis.churches.services.UnitService;
 import br.org.kinflasy.libs.churches.dto.ChurchDto;
 import br.org.kinflasy.libs.churches.dto.ChurchRequest;
@@ -25,6 +26,7 @@ import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.people.dto.ActivationRequest;
+import br.org.kinflasy.libs.people.dto.DeactivationRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -41,6 +43,7 @@ public class ChurchController {
     private final UnitService unitService;
     private final ChurchUseCaseService useCaseService;
     private final ActivationUseCaseService activationUseCaseService;
+    private final DeactivationUseCaseService deactivationUseCaseService;
 
     @GetMapping
     @Operation(summary = "Listar todos", description = "Listar todas as igrejas cadastradas.")
@@ -110,6 +113,19 @@ public class ChurchController {
     @Operation(summary = "Ativar membro", description = "Substituir pessoa inativa por usuário ativo em todas as unidades.")
     public ResponseEntity<List<MembershipDto>> activateMember(@RequestBody final ActivationRequest request) {
         return ResponseEntity.ok(activationUseCaseService.activate(request.getInactivePersonId(), request.getUserId()));
+    }
+
+    @PostMapping("{id}/deactivate-member")
+    @Operation(summary = "Desativar membro", description = "Substituir membresias do usuário ativo por pessoa inativa em todas as unidades dessa igreja.")
+    public ResponseEntity<List<MembershipDto>> deactivateMember(@PathVariable final UUID id,
+            @RequestBody final DeactivationRequest request) {
+        return ResponseEntity.ok(deactivationUseCaseService.deactivate(id, request.getUserId()));
+    }
+
+    @PostMapping("deactivate-member")
+    @Operation(summary = "Desativar membro", description = "Substituir membresias do usuário ativo por pessoa inativa em todas as unidades do sistema.")
+    public ResponseEntity<List<MembershipDto>> deactivateMember(@RequestBody final DeactivationRequest request) {
+        return ResponseEntity.ok(deactivationUseCaseService.deactivateAll(request.getUserId()));
     }
 
 }

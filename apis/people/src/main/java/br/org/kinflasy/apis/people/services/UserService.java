@@ -10,8 +10,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.people.clients.AddressClient;
+import br.org.kinflasy.apis.people.clients.ChurchClient;
 import br.org.kinflasy.apis.people.converters.UserConverter;
 import br.org.kinflasy.apis.people.repositories.UserRepository;
+import br.org.kinflasy.libs.people.dto.DeactivationRequest;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
@@ -34,6 +36,7 @@ public class UserService {
     private final UserConverter converter;
 
     private final AddressClient addressClient;
+    private final ChurchClient churchClient;
 
     /*
      * ACESSO PÚBLICO
@@ -92,13 +95,36 @@ public class UserService {
         final var original = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
         final var modified = converter.toEntity(form, original);
 
+        // Salvar
         repository.save(modified);
-        return converter.toDto(modified);
+
+        // Gerar DTOs
+        final var originalDto = converter.toDto(original);
+        final var modifiedDto = converter.toDto(modified);
+
+        // Publicar evento
+        publisher.publishEvent(new UserEvent.Updated(originalDto, modifiedDto));
+
+        return modifiedDto;
     }
 
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
     public void delete(final UUID id) {
-        repository.deleteById(id);
+        repository.findById(id)
+                .ifPresent(entity -> {
+                    // Desativar membresias do usuário
+                    churchClient.deactivateMember(new DeactivationRequest(id));
+
+                    // Deletar
+                    repository.deleteById(id);
+
+                    // Gerar DTO
+                    final var dto = mapper.map(entity, UserDto.class);
+
+                    // Publicar evento
+                    publisher.publishEvent(new UserEvent.Deleted(dto));
+                });
+
     }
 
 }
