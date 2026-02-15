@@ -13,11 +13,11 @@ import br.org.kinflasy.apis.people.clients.AddressClient;
 import br.org.kinflasy.apis.people.clients.ChurchClient;
 import br.org.kinflasy.apis.people.converters.UserConverter;
 import br.org.kinflasy.apis.people.repositories.UserRepository;
+import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.libs.people.dto.DeactivationRequest;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
-import br.org.kinflasy.libs.people.events.UserEvent;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,7 +57,7 @@ public class UserService {
         final var dto = converter.toDto(entity);
 
         // Publicar evento
-        publisher.publishEvent(new UserEvent.Created(dto));
+        publisher.publishEvent(new EntityEvent.Created<>(dto));
 
         return dto;
     }
@@ -103,7 +103,7 @@ public class UserService {
         final var modifiedDto = converter.toDto(modified);
 
         // Publicar evento
-        publisher.publishEvent(new UserEvent.Updated(originalDto, modifiedDto));
+        publisher.publishEvent(new EntityEvent.Updated<>(originalDto, modifiedDto));
 
         return modifiedDto;
     }
@@ -122,7 +122,7 @@ public class UserService {
                     final var dto = mapper.map(entity, UserDto.class);
 
                     // Publicar evento
-                    publisher.publishEvent(new UserEvent.Deleted(dto));
+                    publisher.publishEvent(new EntityEvent.Deleted<>(dto));
                 });
 
     }

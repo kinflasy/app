@@ -12,12 +12,12 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
+import br.org.kinflasy.libs.churches.dto.UnitDto;
+import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
+import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
 import br.org.kinflasy.libs.churches.enums.UnitType;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
-import br.org.kinflasy.libs.churches.events.UnitEvent;
-import br.org.kinflasy.libs.churches.events.department.DepartmentEvent;
 import br.org.kinflasy.libs.churches.events.department.ExtensionEvent;
-import br.org.kinflasy.libs.churches.events.department.IntegrationEvent;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
@@ -59,8 +59,8 @@ public class ChurchesFgaTupleManager {
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public CompletableFuture<Void> handleUnitCreated(final UnitEvent.Created event) {
-        final var dto = event.getUnit();
+    public CompletableFuture<Void> handleUnitCreated(final EntityEvent.Created<UnitDto> event) {
+        final var dto = event.getDto();
 
         final List<ClientTupleKey> tuples = new ArrayList<>();
 
@@ -98,8 +98,8 @@ public class ChurchesFgaTupleManager {
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public CompletableFuture<Void> handleDepartmentCreated(final DepartmentEvent.Created event) {
-        final var dto = event.getDepartment();
+    public CompletableFuture<Void> handleDepartmentCreated(final EntityEvent.Created<DepartmentDto> event) {
+        final var dto = event.getDto();
 
         final var parentUnitTuple = new ClientTupleKey()
                 ._object(TYPE_DEPARTMENT + dto.getId())
@@ -172,8 +172,8 @@ public class ChurchesFgaTupleManager {
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public CompletableFuture<Void> handleIntegrationCreated(final IntegrationEvent.Created event) {
-        final var dto = event.getIntegration();
+    public CompletableFuture<Void> handleIntegrationCreated(final EntityEvent.Created<IntegrationDto> event) {
+        final var dto = event.getDto();
 
         final var parentUnitTuple = new ClientTupleKey()
                 ._object(TYPE_DEPARTMENT + dto.getDepartmentId())
@@ -187,7 +187,7 @@ public class ChurchesFgaTupleManager {
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<Void> handleExtensionSubscribed(final ExtensionEvent.Subscribed event) {
-        final var dto = event.getSubscription();
+        final var dto = event.getDto();
 
         return departmentService.findById(dto.getDepartmentId())
                 .map(department -> {

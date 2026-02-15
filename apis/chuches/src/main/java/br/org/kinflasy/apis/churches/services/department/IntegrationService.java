@@ -12,7 +12,7 @@ import br.org.kinflasy.apis.churches.entities.department.Integration;
 import br.org.kinflasy.apis.churches.repositories.department.IntegrationRepository;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationRequest;
-import br.org.kinflasy.libs.churches.events.department.IntegrationEvent;
+import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,7 +51,7 @@ public class IntegrationService {
         final var dto = mapper.map(saved, IntegrationDto.class);
 
         // Publicar evento
-        publisher.publishEvent(new IntegrationEvent.Created(dto));
+        publisher.publishEvent(new EntityEvent.Created<>(dto));
 
         return dto;
     }

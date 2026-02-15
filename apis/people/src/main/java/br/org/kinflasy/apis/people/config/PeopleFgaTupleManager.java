@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import br.org.kinflasy.libs.people.events.UserEvent;
+import br.org.kinflasy.libs.lib_utils.EntityEvent;
+import br.org.kinflasy.libs.people.dto.UserDto;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
 import dev.openfga.sdk.api.client.model.ClientTupleKeyWithoutCondition;
@@ -42,8 +43,8 @@ public class PeopleFgaTupleManager {
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleUserCreated(final UserEvent.Created event) {
-        final var dto = event.getPerson();
+    public void handleUserCreated(final EntityEvent.Created<UserDto> event) {
+        final var dto = event.getDto();
 
         final var personDataOwnerTuple = new ClientTupleKey()
                 .user(TYPE_USER + dto.getId())
@@ -61,8 +62,8 @@ public class PeopleFgaTupleManager {
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleUserDeleted(final UserEvent.Deleted event) {
-        final var dto = event.getPerson();
+    public void handleUserDeleted(final EntityEvent.Deleted<UserDto> event) {
+        final var dto = event.getDto();
 
         final var personDataOwnerTuple = new ClientTupleKey()
                 .user(TYPE_USER + dto.getId())

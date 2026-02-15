@@ -27,8 +27,7 @@ import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
-import br.org.kinflasy.libs.churches.events.MembershipEvent;
-import br.org.kinflasy.libs.churches.events.UnitEvent;
+import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import br.org.kinflasy.libs.people.dto.PersonSimpleDto;
 import jakarta.persistence.EntityNotFoundException;
@@ -104,7 +103,7 @@ public class UnitService {
         final var dto = converter.toDto(created);
 
         // Publicar evento
-        publisher.publishEvent(new UnitEvent.Created(dto));
+        publisher.publishEvent(new EntityEvent.Created<>(dto));
 
         return dto;
     }
@@ -202,7 +201,7 @@ public class UnitService {
         final var dto = mapper.map(saved, MembershipDto.class);
 
         // Publicar evento
-        publisher.publishEvent(new MembershipEvent.Created(dto));
+        publisher.publishEvent(new EntityEvent.Created<>(dto));
 
         return dto;
     }

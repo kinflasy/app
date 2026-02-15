@@ -20,8 +20,8 @@ import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionReques
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationRequest;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
-import br.org.kinflasy.libs.churches.events.department.DepartmentEvent;
 import br.org.kinflasy.libs.churches.events.department.ExtensionEvent;
+import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
@@ -66,7 +66,7 @@ public class DepartmentService {
         final var dto = converter.toDto(created);
 
         // Publicar evento
-        publisher.publishEvent(new DepartmentEvent.Created(dto));
+        publisher.publishEvent(new EntityEvent.Created<>(dto));
 
         return dto;
     }

@@ -20,9 +20,6 @@ import br.org.kinflasy.libs.churches.enums.department.DepartmentType;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
-import br.org.kinflasy.libs.churches.events.UnitEvent;
-import br.org.kinflasy.libs.churches.events.department.DepartmentEvent;
-import br.org.kinflasy.libs.churches.events.department.IntegrationEvent;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
@@ -69,7 +66,7 @@ public class ChurchUseCaseService {
         request.getUnit().setType(UnitType.MAIN);
         final var unit = unitService.create(church.getId(), request.getUnit());
 
-        tupleManager.handleUnitCreated(new UnitEvent.Created(unit)).join();
+        tupleManager.handleUnitCreated(new EntityEvent.Created<>(unit)).join();
 
         // Adicionar usuário logado como membro da unidade Sede
         final var membership = unitService.addMember(unit.getId(), new MembershipRequest()
@@ -88,15 +85,15 @@ public class ChurchUseCaseService {
                 .setType(DepartmentType.ADMINISTRATIVE));
 
         // Relacionar departamentos com unidade no FGA
-        tupleManager.handleDepartmentCreated(new DepartmentEvent.Created(pastorate)).join();
-        tupleManager.handleDepartmentCreated(new DepartmentEvent.Created(secretariat)).join();
+        tupleManager.handleDepartmentCreated(new EntityEvent.Created<>(pastorate)).join();
+        tupleManager.handleDepartmentCreated(new EntityEvent.Created<>(secretariat)).join();
 
         // Adicionar usuário logado à secretaria
         final var secretary = departmentService.addIntegrant(secretariat.getId(), new IntegrationRequest()
                 .setMembershipId(membership.getId())
                 .setType(IntegrationType.LEADER));
 
-        tupleManager.handleIntegrationCreated(new IntegrationEvent.Created(secretary)).join();
+        tupleManager.handleIntegrationCreated(new EntityEvent.Created<>(secretary)).join();
 
         // Associar extensão SOMA à secretaria
         departmentService.subscribeToExtension(secretariat.getId(),
