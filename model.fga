@@ -43,6 +43,9 @@ type membership
     define unit: [unit]
     define user: [user]
 
+    define can_edit: admin from unit
+    define can_view: can_edit or user
+
 type department
   relations
     define parent_unit: [unit]

@@ -1,7 +1,6 @@
 package br.org.kinflasy.apis.churches.config;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -12,17 +11,20 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
+import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.enums.UnitType;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
-import br.org.kinflasy.libs.churches.events.MembershipEvent;
 import br.org.kinflasy.libs.churches.events.UnitEvent;
 import br.org.kinflasy.libs.churches.events.department.DepartmentEvent;
 import br.org.kinflasy.libs.churches.events.department.ExtensionEvent;
 import br.org.kinflasy.libs.churches.events.department.IntegrationEvent;
+import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
-import dev.openfga.sdk.api.client.model.ClientWriteRequest;
-import dev.openfga.sdk.api.configuration.ClientWriteOptions;
+import dev.openfga.sdk.api.client.model.ClientTupleKeyWithoutCondition;
+import dev.openfga.sdk.api.configuration.ClientDeleteTuplesOptions;
+import dev.openfga.sdk.api.configuration.ClientWriteTuplesOptions;
+import dev.openfga.sdk.api.model.WriteRequestDeletes.OnMissingEnum;
 import dev.openfga.sdk.api.model.WriteRequestWrites.OnDuplicateEnum;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -33,6 +35,9 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class ChurchesFgaTupleManager {
 
+    /*
+     * Constantes de tipos
+     */
     private static final String TYPE_USER = "user:";
     private static final String TYPE_CHURCH = "church:";
     private static final String TYPE_UNIT = "unit:";
@@ -40,9 +45,16 @@ public class ChurchesFgaTupleManager {
     private static final String TYPE_DEPARTMENT = "department:";
     private static final String TYPE_MEMBERSHIP = "membership:";
 
+    /*
+     * Constantes de sets
+     */
+    private static final String SET_USER = "#user";
+
     private final OpenFgaClient client;
 
     private final DepartmentService departmentService;
+
+    private final ChurchesFgaTupleManager tupleManager;
 
     @Async
     @EventListener
@@ -100,8 +112,8 @@ public class ChurchesFgaTupleManager {
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public CompletableFuture<Void> handleMembershipCreated(final MembershipEvent.Created event) {
-        final var dto = event.getMembership();
+    public CompletableFuture<Void> handleMembershipCreated(final EntityEvent.Created<MembershipDto> event) {
+        final var dto = event.getDto();
 
         final var userTuple = new ClientTupleKey()
                 ._object(TYPE_MEMBERSHIP + dto.getId())
@@ -116,9 +128,45 @@ public class ChurchesFgaTupleManager {
         final var unitMembershipTuple = new ClientTupleKey()
                 ._object(TYPE_UNIT + dto.getUnitId())
                 .relation(dto.getAffiliation().name().toLowerCase())
-                .user(TYPE_MEMBERSHIP + dto.getId() + "#user");
+                .user(TYPE_MEMBERSHIP + dto.getId() + SET_USER);
 
         return writeTuples(userTuple, unitTuple, unitMembershipTuple);
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public CompletableFuture<Void> handleMembershipDeleted(final EntityEvent.Deleted<MembershipDto> event) {
+        final var dto = event.getDto();
+
+        final var userTuple = new ClientTupleKey()
+                ._object(TYPE_MEMBERSHIP + dto.getId())
+                .relation("user")
+                .user(TYPE_USER + dto.getPerson().getId());
+
+        final var unitTuple = new ClientTupleKey()
+                ._object(TYPE_MEMBERSHIP + dto.getId())
+                .relation("unit")
+                .user(TYPE_UNIT + dto.getUnitId());
+
+        final var unitMembershipTuple = new ClientTupleKey()
+                ._object(TYPE_UNIT + dto.getUnitId())
+                .relation(dto.getAffiliation().name().toLowerCase())
+                .user(TYPE_MEMBERSHIP + dto.getId() + SET_USER);
+
+        return deleteTuples(userTuple, unitTuple, unitMembershipTuple);
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public CompletableFuture<Void> handleMembershipUpdated(final EntityEvent.Updated<MembershipDto> event) {
+        // Deletar tuplas originais da membresia
+        return tupleManager.handleMembershipDeleted(new EntityEvent.Deleted<>(event.getOriginal()))
+
+                // Escrever tuplas modificadas
+                .thenCompose(ignored -> tupleManager
+                        .handleMembershipCreated(new EntityEvent.Created<>(event.getModified())));
     }
 
     @Async
@@ -130,7 +178,7 @@ public class ChurchesFgaTupleManager {
         final var parentUnitTuple = new ClientTupleKey()
                 ._object(TYPE_DEPARTMENT + dto.getDepartmentId())
                 .relation(dto.getType().name().toLowerCase())
-                .user(TYPE_MEMBERSHIP + dto.getMembershipId() + "#user");
+                .user(TYPE_MEMBERSHIP + dto.getMembershipId() + SET_USER);
 
         return writeTuples(parentUnitTuple);
     }
@@ -160,9 +208,8 @@ public class ChurchesFgaTupleManager {
     }
 
     @SneakyThrows
-    private CompletableFuture<Void> writeTuples(final ClientTupleKey... tuples) {
-        return client.write(new ClientWriteRequest().writes(List.of(tuples)),
-                new ClientWriteOptions().onDuplicate(OnDuplicateEnum.IGNORE))
+    private CompletableFuture<Void> writeTuples(final List<ClientTupleKey> tuples) {
+        return client.writeTuples(tuples, new ClientWriteTuplesOptions().onDuplicate(OnDuplicateEnum.IGNORE))
                 .thenAccept(response -> {
                     final var writes = response.getWrites();
                     log.info("{} tuplas escritas: {}", writes.size(),
@@ -179,8 +226,31 @@ public class ChurchesFgaTupleManager {
                 });
     }
 
-    private CompletableFuture<Void> writeTuples(final Collection<ClientTupleKey> tuples) {
-        return writeTuples(tuples.toArray(new ClientTupleKey[0]));
+    private CompletableFuture<Void> writeTuples(final ClientTupleKey... tuples) {
+        return writeTuples(List.of(tuples));
+    }
+
+    @SneakyThrows
+    private CompletableFuture<Void> deleteTuples(final List<ClientTupleKeyWithoutCondition> tuples) {
+        return client.deleteTuples(tuples, new ClientDeleteTuplesOptions().onMissing(OnMissingEnum.IGNORE))
+                .thenAccept(response -> {
+                    final var deletes = response.getDeletes();
+                    log.info("{} tuplas deletadas: {}", deletes.size(),
+                            deletes.stream()
+                                    .map(delete -> delete.getTupleKey())
+                                    .reduce("",
+                                            (acc, tuple) -> "%s\n%s %s %s (%s)".formatted(acc, tuple.getUser(),
+                                                    tuple.getRelation(), tuple.getObject(), tuple.getCondition()),
+                                            (a, b) -> a + b));
+                })
+                .exceptionally(e -> {
+                    log.error("Erro ao deletar tuplas", e);
+                    return null;
+                });
+    }
+
+    private CompletableFuture<Void> deleteTuples(final ClientTupleKey... tuples) {
+        return deleteTuples(List.of(tuples));
     }
 
 }

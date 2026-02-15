@@ -20,10 +20,10 @@ import br.org.kinflasy.libs.churches.enums.department.DepartmentType;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
-import br.org.kinflasy.libs.churches.events.MembershipEvent;
 import br.org.kinflasy.libs.churches.events.UnitEvent;
 import br.org.kinflasy.libs.churches.events.department.DepartmentEvent;
 import br.org.kinflasy.libs.churches.events.department.IntegrationEvent;
+import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
 import dev.openfga.sdk.api.client.model.ClientWriteRequest;
@@ -75,7 +75,7 @@ public class ChurchUseCaseService {
         final var membership = unitService.addMember(unit.getId(), new MembershipRequest()
                 .setPersonId(loggedUser.getId()).setAffiliation(Affiliation.MEMBER));
 
-        tupleManager.handleMembershipCreated(new MembershipEvent.Created(membership)).join();
+        tupleManager.handleMembershipCreated(new EntityEvent.Created<>(membership)).join();
 
         // Criar ministério pastoral
         final var pastorate = unitService.createDepartment(unit.getId(), new DepartmentRequest()
