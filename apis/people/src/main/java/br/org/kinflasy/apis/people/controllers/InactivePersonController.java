@@ -34,8 +34,14 @@ public class InactivePersonController {
     @PostMapping("admin")
     @Transactional
     @Operation(summary = "ADMIN - Cadastrar", description = "Cadastrar uma nova pessoa inativa.")
-    public ResponseEntity<InactivePersonDto> create(
-            @RequestBody @Valid final InactivePersonRequest request) {
+    public ResponseEntity<InactivePersonDto> create(@RequestBody @Valid final InactivePersonRequest request) {
+        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
+    }
+
+    @PostMapping("from-user")
+    @Transactional
+    @Operation(summary = "ADMIN - Cadastrar", description = "Cadastrar uma nova pessoa inativa.")
+    public ResponseEntity<InactivePersonDto> create(@RequestBody @Valid final InactivePersonRequest.FromUser request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 

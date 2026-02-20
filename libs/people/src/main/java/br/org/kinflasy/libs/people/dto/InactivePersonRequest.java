@@ -18,4 +18,11 @@ public class InactivePersonRequest extends PersonRequest {
     private @NotNull UUID churchId;
     private @Email String email;
 
+    @Data
+    @Accessors(chain = true)
+    public static class FromUser {
+        private @NotNull UUID churchId;
+        private @NotNull UUID userId;
+    }
+
 }

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import br.org.kinflasy.apis.people.clients.AddressClient;
 import br.org.kinflasy.apis.people.converters.InactivePersonConverter;
 import br.org.kinflasy.apis.people.repositories.InactivePersonRepository;
+import br.org.kinflasy.libs.contacts.dto.AddressRequest;
 import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
@@ -27,6 +28,8 @@ public class InactivePersonService {
     private final InactivePersonRepository repository;
     private final InactivePersonConverter converter;
 
+    private final UserService userService;
+
     private final AddressClient addressClient;
 
     /*
@@ -42,7 +45,7 @@ public class InactivePersonService {
      * ACESSO RESTRITO
      */
 
-    // TODO aplicar FGA: integrante do SOMA
+    @PreAuthorize("@fga.check('unit_admin', #request.churchId, 'admin', 'user', principal.id)")
     public InactivePersonDto create(final InactivePersonRequest request) {
         // Salvar endereço
         final var address = addressClient.create(request.getAddress());
@@ -54,6 +57,21 @@ public class InactivePersonService {
         repository.save(entity);
 
         return converter.toDto(entity);
+    }
+
+    @PreAuthorize("#originalUser.id.equals(principal.id)")
+    public InactivePersonDto create(final InactivePersonRequest.FromUser request) {
+        final var originalUser = userService.findById(request.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+        final var originalAddress = addressClient.findById(originalUser.getAddressId());
+
+        // Gerar requisições de nova pessoa inativa
+        final var addressRequest = mapper.map(originalAddress, AddressRequest.class);
+        final var inactivePersonRequest = mapper.map(originalUser, InactivePersonRequest.class);
+        inactivePersonRequest.setChurchId(request.getChurchId())
+                .setAddress(addressRequest);
+
+        return create(inactivePersonRequest);
     }
 
     @PreAuthorize("@fga.check('person_data', #id, 'can_view', 'user', principal.id)")

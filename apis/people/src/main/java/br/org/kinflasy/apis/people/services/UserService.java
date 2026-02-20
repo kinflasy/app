@@ -14,6 +14,7 @@ import br.org.kinflasy.apis.people.clients.ChurchClient;
 import br.org.kinflasy.apis.people.converters.UserConverter;
 import br.org.kinflasy.apis.people.repositories.UserRepository;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
+import br.org.kinflasy.libs.lib_utils.EntityEvent.Created;
 import br.org.kinflasy.libs.people.dto.DeactivationRequest;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
@@ -54,10 +55,11 @@ public class UserService {
         savedUser.setAddressId(address.getId());
 
         // Gerar DTO
-        final var dto = converter.toDto(entity);
+        final UserDto dto = converter.toDto(entity);
 
         // Publicar evento
-        publisher.publishEvent(new EntityEvent.Created<>(dto));
+        Created<UserDto> event = new EntityEvent.Created<>(dto);
+        publisher.publishEvent(event);
 
         return dto;
     }

@@ -41,10 +41,10 @@ public class PeopleFgaTupleManager {
      * @param event
      */
     @Async
-    @EventListener
+    // @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleUserCreated(final EntityEvent.Created<UserDto> event) {
-        final var dto = event.getDto();
+        final var dto = event.getSource();
 
         final var personDataOwnerTuple = new ClientTupleKey()
                 .user(TYPE_USER + dto.getId())
@@ -63,7 +63,7 @@ public class PeopleFgaTupleManager {
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleUserDeleted(final EntityEvent.Deleted<UserDto> event) {
-        final var dto = event.getDto();
+        final var dto = event.getSource();
 
         final var personDataOwnerTuple = new ClientTupleKey()
                 .user(TYPE_USER + dto.getId())

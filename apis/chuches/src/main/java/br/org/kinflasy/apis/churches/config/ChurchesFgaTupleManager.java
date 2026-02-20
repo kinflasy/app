@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -32,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor = @__(@Lazy))
 public class ChurchesFgaTupleManager {
 
     /*
@@ -60,7 +61,7 @@ public class ChurchesFgaTupleManager {
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<Void> handleUnitCreated(final EntityEvent.Created<UnitDto> event) {
-        final var dto = event.getDto();
+        final var dto = event.getSource();
 
         final List<ClientTupleKey> tuples = new ArrayList<>();
 
@@ -99,7 +100,7 @@ public class ChurchesFgaTupleManager {
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<Void> handleDepartmentCreated(final EntityEvent.Created<DepartmentDto> event) {
-        final var dto = event.getDto();
+        final var dto = event.getSource();
 
         final var parentUnitTuple = new ClientTupleKey()
                 ._object(TYPE_DEPARTMENT + dto.getId())
@@ -113,7 +114,7 @@ public class ChurchesFgaTupleManager {
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<Void> handleMembershipCreated(final EntityEvent.Created<MembershipDto> event) {
-        final var dto = event.getDto();
+        final var dto = event.getSource();
 
         final var userTuple = new ClientTupleKey()
                 ._object(TYPE_MEMBERSHIP + dto.getId())
@@ -137,7 +138,7 @@ public class ChurchesFgaTupleManager {
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<Void> handleMembershipDeleted(final EntityEvent.Deleted<MembershipDto> event) {
-        final var dto = event.getDto();
+        final var dto = event.getSource();
 
         final var userTuple = new ClientTupleKey()
                 ._object(TYPE_MEMBERSHIP + dto.getId())
@@ -166,14 +167,14 @@ public class ChurchesFgaTupleManager {
 
                 // Escrever tuplas modificadas
                 .thenCompose(ignored -> tupleManager
-                        .handleMembershipCreated(new EntityEvent.Created<>(event.getModified())));
+                        .handleMembershipCreated(new EntityEvent.Created<>(event.getSource())));
     }
 
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<Void> handleIntegrationCreated(final EntityEvent.Created<IntegrationDto> event) {
-        final var dto = event.getDto();
+        final var dto = event.getSource();
 
         final var parentUnitTuple = new ClientTupleKey()
                 ._object(TYPE_DEPARTMENT + dto.getDepartmentId())
@@ -187,7 +188,7 @@ public class ChurchesFgaTupleManager {
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public CompletableFuture<Void> handleExtensionSubscribed(final ExtensionEvent.Subscribed event) {
-        final var dto = event.getDto();
+        final var dto = event.getSource();
 
         return departmentService.findById(dto.getDepartmentId())
                 .map(department -> {

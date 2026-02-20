@@ -24,6 +24,7 @@ type church
 
     define admin: [unit#admin] or creator
     define unit: [unit]
+    define unit_admin: admin from unit
 
     define member: member from unit
     define congregated: congregated from unit
@@ -42,6 +43,8 @@ type membership
   relations
     define unit: [unit]
     define user: [user]
+
+    define church: parent_church from unit
 
     define can_edit: admin from unit
     define can_view: can_edit or user

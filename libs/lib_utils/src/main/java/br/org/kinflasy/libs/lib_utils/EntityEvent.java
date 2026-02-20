@@ -1,30 +1,47 @@
 package br.org.kinflasy.libs.lib_utils;
 
+import org.springframework.core.ResolvableType;
+import org.springframework.core.ResolvableTypeProvider;
+
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-public interface EntityEvent<D> {
+@Data
+public abstract class EntityEvent<D> implements ResolvableTypeProvider {
 
-    D getDto();
+    private final D source;
 
-    @Data
-    public static class Created<D> implements EntityEvent<D> {
-        private final D dto;
+    @Override
+    public ResolvableType getResolvableType() {
+        return ResolvableType.forClassWithGenerics(getClass(), ResolvableType.forInstance(source));
     }
 
     @Data
-    public static class Updated<D> implements EntityEvent<D> {
-        private final D original;
-        private final D modified;
+    @EqualsAndHashCode(callSuper = true)
+    public static class Created<D> extends EntityEvent<D> {
+        public Created(final D source) {
+            super(source);
+        }
 
-        @Override
-        public D getDto() {
-            return modified;
+    }
+
+    @Data
+    @EqualsAndHashCode(callSuper = true)
+    public static class Updated<D> extends EntityEvent<D> {
+        private final D original;
+
+        public Updated(final D original, final D modified) {
+            super(modified);
+            this.original = original;
         }
     }
 
     @Data
-    public static class Deleted<D> implements EntityEvent<D> {
-        private final D dto;
+    @EqualsAndHashCode(callSuper = true)
+    public static class Deleted<D> extends EntityEvent<D> {
+        public Deleted(final D source) {
+            super(source);
+        }
     }
 
 }

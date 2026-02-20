@@ -119,7 +119,7 @@ public class ChurchController {
     @Operation(summary = "Desativar membro", description = "Substituir membresias do usuário ativo por pessoa inativa em todas as unidades dessa igreja.")
     public ResponseEntity<List<MembershipDto>> deactivateMember(@PathVariable final UUID id,
             @RequestBody final DeactivationRequest request) {
-        return ResponseEntity.ok(deactivationUseCaseService.deactivate(id, request.getUserId()));
+        return ResponseEntity.ok(deactivationUseCaseService.deactivateOne(id, request.getUserId()));
     }
 
     @PostMapping("deactivate-member")
