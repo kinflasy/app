@@ -104,10 +104,11 @@ public class UnitController {
                 .orElseGet(ResponseEntity.notFound()::build);
     }
 
+    // TODO consertar validação (@Valid não funciona com listas)
     @PostMapping("{id}/members")
     @Operation(summary = "Associar membros", description = "Adicionar pessoas pré-existentes como membros de uma unidade.")
     public ResponseEntity<List<MembershipSimpleDto>> associateMembers(@PathVariable final UUID id,
-            @RequestBody @Valid final List<MembershipRequest> request) {
+            @RequestBody /*@Valid*/ final List<MembershipRequest> request) {
         return new ResponseEntity<>(service.addMembers(id, request), HttpStatus.OK);
     }
 

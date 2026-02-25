@@ -15,6 +15,7 @@ import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
+import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionDto;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
 import br.org.kinflasy.libs.churches.enums.UnitType;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
@@ -50,6 +51,7 @@ public class ChurchesFgaTupleManager {
      * Constantes de sets
      */
     private static final String SET_USER = "#user";
+    private static final String SET_ADMIN = "#admin";
 
     private final OpenFgaClient client;
 
@@ -78,7 +80,7 @@ public class ChurchesFgaTupleManager {
         final var addressOwnerTuple = new ClientTupleKey()
                 ._object(TYPE_ADDRESS + dto.getAddressId())
                 .relation("owner")
-                .user(TYPE_UNIT + dto.getId());
+                .user(TYPE_UNIT + dto.getId() + SET_ADMIN);
 
         tuples.add(parentChurchTuple);
         tuples.add(unitTuple);
@@ -88,7 +90,7 @@ public class ChurchesFgaTupleManager {
             final var mainUnitTuple = new ClientTupleKey()
                     ._object(TYPE_CHURCH + dto.getChurchId())
                     .relation("admin")
-                    .user(TYPE_UNIT + dto.getId() + "#admin");
+                    .user(TYPE_UNIT + dto.getId() + SET_ADMIN);
 
             tuples.add(mainUnitTuple);
         }
@@ -187,7 +189,8 @@ public class ChurchesFgaTupleManager {
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public CompletableFuture<Void> handleExtensionSubscribed(final ExtensionEvent.Subscribed event) {
+    public CompletableFuture<Void> handleExtensionSubscribed(
+            final ExtensionEvent.Subscribed<ExtensionSubscriptionDto> event) {
         final var dto = event.getSource();
 
         return departmentService.findById(dto.getDepartmentId())

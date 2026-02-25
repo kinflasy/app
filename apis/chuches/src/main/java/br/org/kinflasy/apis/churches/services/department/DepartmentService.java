@@ -110,7 +110,7 @@ public class DepartmentService {
         final var dto = mapper.map(saved, ExtensionSubscriptionDto.class);
 
         // Publicar evento
-        publisher.publishEvent(new ExtensionEvent.Subscribed(dto));
+        publisher.publishEvent(new ExtensionEvent.Subscribed<>(dto));
 
         return dto;
     }

@@ -5,14 +5,14 @@ type user
 
 type person_data
   relations
-    define owner: [user]
+    define owner: [user, church#unit_admin]
 
     define can_edit: owner
     define can_view: can_edit
 
 type address
   relations
-    define owner: [user, unit]
+    define owner: [person_data#can_edit, unit#admin]
 
     define can_edit: owner
     define can_view: can_edit

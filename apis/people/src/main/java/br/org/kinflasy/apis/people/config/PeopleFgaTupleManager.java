@@ -3,13 +3,13 @@ package br.org.kinflasy.apis.people.config;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
+import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
@@ -27,11 +27,24 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class PeopleFgaTupleManager {
 
+    /*
+     * Tipos
+     */
     private static final String TYPE_USER = "user:";
+    private static final String TYPE_CHURCH = "church:";
     private static final String TYPE_PERSON_DATA = "person_data:";
     private static final String TYPE_ADDRESS = "address:";
 
+    /*
+     * Relacionamentos
+     */
     private static final String RELATION_OWNER = "owner";
+
+    /*
+     * Grupos/Sets
+     */
+    private static final String SET_CAN_EDIT = "#can_edit";
+    private static final String SET_UNIT_ADMIN = "#unit_admin";
 
     private final OpenFgaClient client;
 
@@ -41,39 +54,78 @@ public class PeopleFgaTupleManager {
      * @param event
      */
     @Async
-    // @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleUserCreated(final EntityEvent.Created<UserDto> event) {
         final var dto = event.getSource();
 
         final var personDataOwnerTuple = new ClientTupleKey()
-                .user(TYPE_USER + dto.getId())
+                ._object(TYPE_PERSON_DATA + dto.getId())
                 .relation(RELATION_OWNER)
-                ._object(TYPE_PERSON_DATA + dto.getId());
+                .user(TYPE_USER + dto.getId());
 
         final var addressOwnerTuple = new ClientTupleKey()
-                .user(TYPE_USER + dto.getId())
+                ._object(TYPE_ADDRESS + dto.getAddressId())
                 .relation(RELATION_OWNER)
-                ._object(TYPE_ADDRESS + dto.getAddressId());
+                .user(TYPE_PERSON_DATA + dto.getId() + SET_CAN_EDIT);
 
         writeTuples(personDataOwnerTuple, addressOwnerTuple);
     }
 
     @Async
-    @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleUserDeleted(final EntityEvent.Deleted<UserDto> event) {
         final var dto = event.getSource();
 
         final var personDataOwnerTuple = new ClientTupleKey()
-                .user(TYPE_USER + dto.getId())
+                ._object(TYPE_PERSON_DATA + dto.getId())
                 .relation(RELATION_OWNER)
-                ._object(TYPE_PERSON_DATA + dto.getId());
+                .user(TYPE_USER + dto.getId());
 
         final var addressOwnerTuple = new ClientTupleKey()
-                .user(TYPE_USER + dto.getId())
+                ._object(TYPE_ADDRESS + dto.getAddressId())
                 .relation(RELATION_OWNER)
-                ._object(TYPE_ADDRESS + dto.getAddressId());
+                .user(TYPE_PERSON_DATA + dto.getId() + SET_CAN_EDIT);
+
+        deleteTuples(personDataOwnerTuple, addressOwnerTuple);
+    }
+
+    /**
+     * Define o usuário como dono dos seus próprios dados
+     * 
+     * @param event
+     */
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleInactivePersonCreated(final EntityEvent.Created<InactivePersonDto> event) {
+        final var dto = event.getSource();
+
+        final var personDataOwnerTuple = new ClientTupleKey()
+                ._object(TYPE_PERSON_DATA + dto.getId())
+                .relation(RELATION_OWNER)
+                .user(TYPE_CHURCH + dto.getChurchId() + SET_UNIT_ADMIN);
+
+        final var addressOwnerTuple = new ClientTupleKey()
+                ._object(TYPE_ADDRESS + dto.getAddressId())
+                .relation(RELATION_OWNER)
+                .user(TYPE_PERSON_DATA + dto.getId() + SET_CAN_EDIT);
+
+        writeTuples(personDataOwnerTuple, addressOwnerTuple);
+    }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void handleInactivePersonDeleted(final EntityEvent.Deleted<InactivePersonDto> event) {
+        final var dto = event.getSource();
+
+        final var personDataOwnerTuple = new ClientTupleKey()
+                ._object(TYPE_PERSON_DATA + dto.getId())
+                .relation(RELATION_OWNER)
+                .user(TYPE_CHURCH + dto.getChurchId() + SET_UNIT_ADMIN);
+
+        final var addressOwnerTuple = new ClientTupleKey()
+                ._object(TYPE_ADDRESS + dto.getAddressId())
+                .relation(RELATION_OWNER)
+                .user(TYPE_PERSON_DATA + dto.getId() + SET_CAN_EDIT);
 
         deleteTuples(personDataOwnerTuple, addressOwnerTuple);
     }

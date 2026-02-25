@@ -9,8 +9,8 @@ public abstract class ExtensionEvent<D> extends EntityEvent<D> {
         super(source);
     }
 
-    public static class Subscribed extends ExtensionEvent<ExtensionSubscriptionDto> {
-        public Subscribed(final ExtensionSubscriptionDto source) {
+    public static class Subscribed<D extends ExtensionSubscriptionDto> extends ExtensionEvent<D> {
+        public Subscribed(final D source) {
             super(source);
         }
     }

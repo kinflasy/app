@@ -189,13 +189,11 @@ public class UnitService {
 
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public MembershipDto addMember(final UUID id, final MembershipRequest request) {
-        log.info("Adicionando membro de id {} à unidade de id {}...", request.getPersonId(), id);
         final var entity = mapper.map(request, Membership.class);
         entity.setId(null);
         entity.setUnitId(id);
 
         final var saved = membershipRepository.save(entity);
-        log.info("Membro de id {} adicionado à unidade de id {}", request.getPersonId(), id);
 
         // Gerar DTO
         final var dto = mapper.map(saved, MembershipDto.class);
@@ -217,11 +215,7 @@ public class UnitService {
         })
                 .toList();
 
-        final var saved = membershipRepository.saveAll(entities);
-
-        return saved.stream()
-                .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
-                .toList();
+        return saveMemberships(entities);
     }
 
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
@@ -249,13 +243,9 @@ public class UnitService {
                             })
                             .toList();
 
-                    final var saved = membershipRepository.saveAll(entities);
-                    return saved.stream()
-                            .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
-                            .toList();
+                    return saveMemberships(entities);
                 })
                 .orElseGet(Collections::emptyList);
-
     }
 
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
@@ -266,6 +256,24 @@ public class UnitService {
                         membershipRepository.delete(membership);
                     }
                 });
+    }
+
+    private List<MembershipSimpleDto> saveMemberships(final Iterable<Membership> entities) {
+        final var saved = membershipRepository.saveAll(entities);
+
+        return saved.stream()
+                .map(membership -> {
+                    log.info("Membro de id {} adicionado à unidade de id {}", membership.getPersonId(),
+                            membership.getUnitId());
+
+                    // Publicar evento de membresia
+                    final var dto = mapper.map(membership, MembershipDto.class);
+                    publisher.publishEvent(new EntityEvent.Created<>(dto));
+
+                    // Gerar DTO de retorno
+                    return mapper.map(membership, MembershipSimpleDto.class);
+                })
+                .toList();
     }
 
 }

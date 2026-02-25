@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.clients.InactivePersonClient;
@@ -23,14 +24,11 @@ public class ActivationUseCaseService {
 
     private final ModelMapper mapper;
 
+    @PreAuthorize("@fga.check('person_data', #inactivePersonId, 'can_edit', 'user', principal.id)")
     public List<MembershipDto> activate(final UUID inactivePersonId, final UUID userId) {
         // Garantir existência do usuário ativo
+        // Caso não encontre, lança exceção FeignException.NotFound
         userClient.findById(userId);
-
-        // Garantir existência da pessoa inativa
-        inactivePersonClient.findById(inactivePersonId);
-
-        // Caso não encontre alguma das pessoas, lança exceção FeignException.NotFound
 
         // Buscar membresias da pessoa inativa
         final var memberships = membershipRepository.findByPersonId(inactivePersonId).stream()
