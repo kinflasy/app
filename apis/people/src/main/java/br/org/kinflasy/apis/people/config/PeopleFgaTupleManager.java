@@ -39,11 +39,11 @@ public class PeopleFgaTupleManager {
      * Relacionamentos
      */
     private static final String RELATION_OWNER = "owner";
+    private static final String RELATION_ORIGIN = "origin";
 
     /*
      * Grupos/Sets
      */
-    private static final String SET_CAN_EDIT = "#can_edit";
     private static final String SET_UNIT_ADMIN = "#unit_admin";
 
     private final OpenFgaClient client;
@@ -63,12 +63,12 @@ public class PeopleFgaTupleManager {
                 .relation(RELATION_OWNER)
                 .user(TYPE_USER + dto.getId());
 
-        final var addressOwnerTuple = new ClientTupleKey()
+        final var addressOriginTuple = new ClientTupleKey()
                 ._object(TYPE_ADDRESS + dto.getAddressId())
-                .relation(RELATION_OWNER)
-                .user(TYPE_PERSON_DATA + dto.getId() + SET_CAN_EDIT);
+                .relation(RELATION_ORIGIN)
+                .user(TYPE_PERSON_DATA + dto.getId());
 
-        writeTuples(personDataOwnerTuple, addressOwnerTuple);
+        writeTuples(personDataOwnerTuple, addressOriginTuple);
     }
 
     @Async
@@ -81,12 +81,12 @@ public class PeopleFgaTupleManager {
                 .relation(RELATION_OWNER)
                 .user(TYPE_USER + dto.getId());
 
-        final var addressOwnerTuple = new ClientTupleKey()
+        final var addressOriginTuple = new ClientTupleKey()
                 ._object(TYPE_ADDRESS + dto.getAddressId())
-                .relation(RELATION_OWNER)
-                .user(TYPE_PERSON_DATA + dto.getId() + SET_CAN_EDIT);
+                .relation(RELATION_ORIGIN)
+                .user(TYPE_PERSON_DATA + dto.getId());
 
-        deleteTuples(personDataOwnerTuple, addressOwnerTuple);
+        deleteTuples(personDataOwnerTuple, addressOriginTuple);
     }
 
     /**
@@ -104,12 +104,12 @@ public class PeopleFgaTupleManager {
                 .relation(RELATION_OWNER)
                 .user(TYPE_CHURCH + dto.getChurchId() + SET_UNIT_ADMIN);
 
-        final var addressOwnerTuple = new ClientTupleKey()
+        final var addressOriginTuple = new ClientTupleKey()
                 ._object(TYPE_ADDRESS + dto.getAddressId())
-                .relation(RELATION_OWNER)
-                .user(TYPE_PERSON_DATA + dto.getId() + SET_CAN_EDIT);
+                .relation(RELATION_ORIGIN)
+                .user(TYPE_PERSON_DATA + dto.getId());
 
-        writeTuples(personDataOwnerTuple, addressOwnerTuple);
+        writeTuples(personDataOwnerTuple, addressOriginTuple);
     }
 
     @Async
@@ -122,12 +122,12 @@ public class PeopleFgaTupleManager {
                 .relation(RELATION_OWNER)
                 .user(TYPE_CHURCH + dto.getChurchId() + SET_UNIT_ADMIN);
 
-        final var addressOwnerTuple = new ClientTupleKey()
+        final var addressOriginTuple = new ClientTupleKey()
                 ._object(TYPE_ADDRESS + dto.getAddressId())
-                .relation(RELATION_OWNER)
-                .user(TYPE_PERSON_DATA + dto.getId() + SET_CAN_EDIT);
+                .relation(RELATION_ORIGIN)
+                .user(TYPE_PERSON_DATA + dto.getId());
 
-        deleteTuples(personDataOwnerTuple, addressOwnerTuple);
+        deleteTuples(personDataOwnerTuple, addressOriginTuple);
     }
 
     @SneakyThrows

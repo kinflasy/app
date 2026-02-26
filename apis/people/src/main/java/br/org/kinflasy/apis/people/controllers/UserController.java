@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @GetMapping("identify/{id}")
-    @Operation(summary = "Buscar", description = "Buscar um usuário ativo pelo ID.")
+    @Operation(summary = "Identificar", description = "Identificar um usuário ativo pelo ID.")
     public ResponseEntity<UserIdentifierDto> identifyById(@PathVariable final UUID id) {
         return service.identifyById(id)
                 .map(ResponseEntity::ok)
@@ -54,13 +54,11 @@ public class UserController {
     }
 
     @GetMapping("identify/@{username}")
-    @Operation(summary = "Buscar por username", description = "Buscar um usuário ativo pelo username.")
+    @Operation(summary = "Identificar por username", description = "Identificar um usuário ativo pelo username.")
     public ResponseEntity<UserIdentifierDto> identifyByUsername(@PathVariable final String username) {
-        try {
-            return new ResponseEntity<>(service.identifyByUsername(username), HttpStatus.OK);
-        } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return service.identifyByUsername(username)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     /*

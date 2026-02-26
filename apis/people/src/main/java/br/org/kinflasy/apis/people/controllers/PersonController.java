@@ -28,7 +28,7 @@ public class PersonController {
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma pessoa pelo ID.")
-    public ResponseEntity<PersonDto> findById(@PathVariable("id") final UUID id) {
+    public ResponseEntity<PersonDto> findById(@PathVariable final UUID id) {
         try {
             final var entity = service.findById(id);
             final var dto = converter.toDto(entity);

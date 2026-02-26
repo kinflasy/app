@@ -1,4 +1,4 @@
-package br.org.kinflasy.apis.churches.services.department;
+package br.org.kinflasy.apis.churches.services;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,14 +29,14 @@ public class MembershipService {
 
     private final MembershipRepository repository;
 
-    @PreAuthorize("#personId.equals(principal.id)")
+    @PreAuthorize("@fga.check('person_data', #personId, 'can_view', 'user', principal.id) or #personId.equals(principal.id)")
     public List<MembershipDto> findByPersonId(final UUID personId) {
         return repository.findByPersonId(personId).stream()
                 .map(entity -> mapper.map(entity, MembershipDto.class))
                 .toList();
     }
 
-    @PreAuthorize("@fga.check('membership', id, 'admin', 'user', principal.id) or #personId.equals(principal.id)")
+    @PreAuthorize("@fga.check('membership', #id, 'can_edit', 'user', principal.id) or #personId.equals(principal.id)")
     public MembershipDto update(final UUID id, final MembershipRequest request) {
         return repository.findById(id)
                 .map(entity -> {
@@ -45,6 +45,7 @@ public class MembershipService {
 
                     // Editar entidade
                     mapper.map(request, entity);
+                    entity.setId(id);
 
                     // Salvar
                     final var saved = repository.save(entity);
@@ -60,7 +61,7 @@ public class MembershipService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
-    @PreAuthorize("@fga.check('membership', id, 'admin', 'user', principal.id) or #personId.equals(principal.id)")
+    @PreAuthorize("@fga.check('membership', #id, 'can_edit', 'user', principal.id) or #personId.equals(principal.id)")
     public MembershipDto changePerson(final UUID id, final UUID personId) {
         return repository.findById(id)
                 .map(entity -> {

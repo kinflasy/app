@@ -69,10 +69,9 @@ public class UserService {
                 .map(entity -> mapper.map(entity, UserIdentifierDto.class));
     }
 
-    public UserIdentifierDto identifyByUsername(final String username) {
+    public Optional<UserIdentifierDto> identifyByUsername(final String username) {
         return repository.findByUsername(username)
-                .map(entity -> mapper.map(entity, UserIdentifierDto.class))
-                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+                .map(entity -> mapper.map(entity, UserIdentifierDto.class));
     }
 
     /*

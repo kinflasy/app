@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import br.org.kinflasy.libs.people.dto.InactivePersonDto;
+import br.org.kinflasy.libs.people.dto.PersonDto;
 
 @FeignClient(name = "peopleApi", contextId = "churches-peopleApi")
 public interface PersonClient {
 
     @GetMapping("{id}")
-    InactivePersonDto findById(UUID id);
+    PersonDto findById(@PathVariable final UUID id);
 
     @DeleteMapping("{id}")
     ResponseEntity<HttpStatus> delete(@PathVariable final UUID id);

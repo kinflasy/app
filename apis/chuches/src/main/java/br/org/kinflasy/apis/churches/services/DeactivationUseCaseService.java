@@ -9,7 +9,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.clients.InactivePersonClient;
-import br.org.kinflasy.apis.churches.services.department.MembershipService;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
@@ -25,7 +24,7 @@ public class DeactivationUseCaseService {
     private final UnitService unitService;
     private final MembershipService membershipService;
 
-    @PreAuthorize("@fga.check('church', #churchId, 'admin', 'user', principal.id) or #userId.equals(principal.id)")
+    @PreAuthorize("@fga.check('church', #churchId, 'unit_admin', 'user', principal.id) or #userId.equals(principal.id)")
     public List<MembershipDto> deactivateOne(final UUID churchId, final UUID userId) {
         return deactivate(churchId, userId);
     }

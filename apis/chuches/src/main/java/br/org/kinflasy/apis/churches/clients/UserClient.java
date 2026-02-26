@@ -11,7 +11,7 @@ import br.org.kinflasy.libs.people.dto.UserDto;
 @FeignClient(name = "usersApi", contextId = "churches-usersApi")
 public interface UserClient {
 
-    @GetMapping("{id}")
-    UserDto findById(@PathVariable UUID id);
+    @GetMapping("identify/{id}")
+    UserDto identifyById(@PathVariable UUID id);
 
 }

@@ -40,6 +40,7 @@ public class ChurchesFgaTupleManager {
     /*
      * Constantes de tipos
      */
+    private static final String TYPE_PERSON_DATA = "person_data:";
     private static final String TYPE_USER = "user:";
     private static final String TYPE_CHURCH = "church:";
     private static final String TYPE_UNIT = "unit:";
@@ -79,8 +80,8 @@ public class ChurchesFgaTupleManager {
 
         final var addressOwnerTuple = new ClientTupleKey()
                 ._object(TYPE_ADDRESS + dto.getAddressId())
-                .relation("owner")
-                .user(TYPE_UNIT + dto.getId() + SET_ADMIN);
+                .relation("origin")
+                .user(TYPE_UNIT + dto.getId());
 
         tuples.add(parentChurchTuple);
         tuples.add(unitTuple);
@@ -133,7 +134,12 @@ public class ChurchesFgaTupleManager {
                 .relation(dto.getAffiliation().name().toLowerCase())
                 .user(TYPE_MEMBERSHIP + dto.getId() + SET_USER);
 
-        return writeTuples(userTuple, unitTuple, unitMembershipTuple);
+        final var viewPersonDataTuple = new ClientTupleKey()
+                ._object(TYPE_PERSON_DATA + dto.getPerson().getId())
+                .relation("can_view")
+                .user(TYPE_MEMBERSHIP + dto.getId() + "#can_edit");
+
+        return writeTuples(userTuple, unitTuple, unitMembershipTuple, viewPersonDataTuple);
     }
 
     @Async
@@ -157,7 +163,12 @@ public class ChurchesFgaTupleManager {
                 .relation(dto.getAffiliation().name().toLowerCase())
                 .user(TYPE_MEMBERSHIP + dto.getId() + SET_USER);
 
-        return deleteTuples(userTuple, unitTuple, unitMembershipTuple);
+        final var viewPersonDataTuple = new ClientTupleKey()
+                ._object(TYPE_PERSON_DATA + dto.getPerson().getId())
+                .relation("can_view")
+                .user(TYPE_MEMBERSHIP + dto.getId() + "#can_edit");
+
+        return deleteTuples(userTuple, unitTuple, unitMembershipTuple, viewPersonDataTuple);
     }
 
     @Async

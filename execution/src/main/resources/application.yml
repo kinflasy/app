@@ -51,6 +51,7 @@ spring:
 logging:
   level:
     '[br.org.kinflasy.clients.UserClient]': DEBUG
+    '[br.org.kinflasy.apis.churches.clients.PersonClient]': DEBUG
 
 springdoc:
   api-docs:

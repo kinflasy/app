@@ -68,7 +68,7 @@ public class InactivePersonService {
         return dto;
     }
 
-    @PreAuthorize("#request.userId.equals(principal.id)")
+    @PreAuthorize("@fga.check('church', #request.churchId, 'unit_admin', 'user', principal.id) or #request.userId.equals(principal.id)")
     public InactivePersonDto create(final InactivePersonRequest.FromUser request) {
         // Obter dados do usuário a ser desativado
         final var originalUser = userService.findById(request.getUserId())

@@ -8,14 +8,15 @@ type person_data
     define owner: [user, church#unit_admin]
 
     define can_edit: owner
-    define can_view: can_edit
+    define can_view: [membership#can_edit] or can_edit
 
 type address
   relations
-    define owner: [person_data#can_edit, unit#admin]
+    define origin: [person_data, unit]
+    define owner: owner from origin or admin from origin
 
     define can_edit: owner
-    define can_view: can_edit
+    define can_view: can_edit or can_view from origin
 
 type church
   relations

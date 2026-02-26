@@ -29,6 +29,7 @@ import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
+import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people.dto.PersonSimpleDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -182,8 +183,11 @@ public class UnitService {
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public List<MembershipDto> listMembersWithDetails(final UUID id) {
         return listMembers(id).stream()
-                .map(simpleDto -> mapper.map(simpleDto, MembershipDto.class)
-                        .setPerson(mapper.map(personClient.findById(simpleDto.getPersonId()), PersonSimpleDto.class)))
+                .map(simpleDto -> {
+                    PersonDto byId = personClient.findById(simpleDto.getPersonId());
+                    return mapper.map(simpleDto, MembershipDto.class)
+                            .setPerson(mapper.map(byId, PersonSimpleDto.class));
+                })
                 .toList();
     }
 
