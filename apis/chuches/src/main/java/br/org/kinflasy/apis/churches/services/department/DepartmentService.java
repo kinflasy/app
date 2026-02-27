@@ -7,6 +7,8 @@ import java.util.UUID;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.converters.department.DepartmentConverter;
@@ -41,12 +43,14 @@ public class DepartmentService {
 
     private final ExtensionSubscriptionRepository subscriptionRepository;
 
+    @PostFilter("@fga.check('department', returnObject.id, 'can_view', 'user', principal.id)")
     public List<DepartmentDto> listByUnitId(final UUID unitId) {
         return repository.findByUnitId(unitId).stream()
                 .map(converter::toDto)
                 .toList();
     }
 
+    @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
     public DepartmentDto create(final UUID unitId, final DepartmentRequest request) {
         // Salvar regra de visibilidade
         // final var visibility =
@@ -71,11 +75,13 @@ public class DepartmentService {
         return dto;
     }
 
+    @PreAuthorize("@fga.check('department', #id, 'can_view', 'user', principal.id)")
     public Optional<DepartmentDto> findById(final UUID id) {
         return repository.findById(id)
                 .map(converter::toDto);
     }
 
+    @PreAuthorize("@fga.check('department', #id, 'can_edit', 'user', principal.id)")
     public DepartmentDto update(final UUID id, final DepartmentRequest request) {
         final var original = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
         final var modified = converter.toEntity(request, original);
@@ -84,22 +90,26 @@ public class DepartmentService {
         return converter.toDto(modified);
     }
 
+    @PreAuthorize("@fga.check('department', #id, 'can_edit', 'user', principal.id)")
     public void delete(final UUID id) {
         repository.deleteById(id);
     }
 
+    @PreAuthorize("@fga.check('department', #id, 'can_manage', 'user', principal.id)")
     public IntegrationDto addIntegrant(final UUID id, final IntegrationRequest request) {
         return repository.findById(id)
                 .map(ignoredDepartment -> integrationService.create(id, request))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
+    @PreAuthorize("@fga.check('department', #id, 'can_observe', 'user', principal.id)")
     public List<Extension> listExtensions(final UUID id) {
         return subscriptionRepository.findByDepartmentId(id).stream()
                 .map(ExtensionSubscription::getExtension)
                 .toList();
     }
 
+    @PreAuthorize("@fga.check('department', #id, 'can_manage', 'user', principal.id)")
     public ExtensionSubscriptionDto subscribeToExtension(final UUID id, final ExtensionSubscriptionRequest request) {
         final var entity = mapper.map(request, ExtensionSubscription.class);
         entity.setDepartmentId(id);
@@ -115,11 +125,13 @@ public class DepartmentService {
         return dto;
     }
 
+    @PreAuthorize("@fga.check('department', #id, 'can_observe', 'user', principal.id)")
     public Optional<ExtensionSubscriptionDto> findExtension(final UUID id, final Extension extension) {
         return subscriptionRepository.findByDepartmentIdAndExtension(id, extension)
                 .map(subscription -> mapper.map(subscription, ExtensionSubscriptionDto.class));
     }
 
+    @PreAuthorize("@fga.check('department', #id, 'can_manage', 'user', principal.id)")
     public void dissociateExtension(final UUID id, final ExtensionSubscriptionRequest request) {
         subscriptionRepository.findByDepartmentIdAndExtension(id, request.getExtension())
                 .ifPresent(subscriptionRepository::delete);

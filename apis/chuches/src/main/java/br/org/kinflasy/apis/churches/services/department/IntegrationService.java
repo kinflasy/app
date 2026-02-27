@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.entities.department.Integration;
@@ -26,18 +27,21 @@ public class IntegrationService {
 
     private final IntegrationRepository repository;
 
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_observe', 'user', principal.id)")
     public List<IntegrationDto> listByDepartment(final UUID departmentId) {
         return repository.findByDepartmentId(departmentId).stream()
                 .map(integration -> mapper.map(integration, IntegrationDto.class))
                 .toList();
     }
 
+    @PreAuthorize("@fga.check('membership', #membershipId, 'can_view', 'user', principal.id)")
     public List<IntegrationDto> listByMembership(final UUID membershipId) {
         return repository.findByMembershipId(membershipId).stream()
                 .map(integration -> mapper.map(integration, IntegrationDto.class))
                 .toList();
     }
 
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_manage', 'user', principal.id)")
     public IntegrationDto create(final UUID departmentId, final IntegrationRequest request) {
         // Construir entidade
         final var entity = mapper.map(request, Integration.class);
@@ -56,19 +60,17 @@ public class IntegrationService {
         return dto;
     }
 
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_observe', 'user', principal.id)")
     public Optional<IntegrationDto> findByDepartmentAndMembership(final UUID departmentId, final UUID membershipId) {
         return repository.findByDepartmentIdAndMembershipId(departmentId, membershipId).stream()
                 .findFirst()
                 .map(integration -> mapper.map(integration, IntegrationDto.class));
     }
 
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_manage', 'user', principal.id) or @fga.check('membership', #membershipId, 'can_view', 'user', principal.id)")
     public void deleteByDepartmentAndMembership(final UUID departmentId, final UUID membershipId) {
         repository.findByDepartmentIdAndMembershipId(departmentId, membershipId).stream()
                 .findFirst().ifPresent(repository::delete);
-    }
-
-    public void delete(final UUID id) {
-        repository.deleteById(id);
     }
 
 }
