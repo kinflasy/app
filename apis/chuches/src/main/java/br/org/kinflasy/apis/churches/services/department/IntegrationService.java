@@ -56,10 +56,19 @@ public class IntegrationService {
         return dto;
     }
 
-    public Optional<IntegrationDto> findIntegration(final UUID departmentId, final UUID personId) {
-        return repository.findByDepartmentIdAndMembershipId(departmentId, personId).stream()
+    public Optional<IntegrationDto> findByDepartmentAndMembership(final UUID departmentId, final UUID membershipId) {
+        return repository.findByDepartmentIdAndMembershipId(departmentId, membershipId).stream()
                 .findFirst()
                 .map(integration -> mapper.map(integration, IntegrationDto.class));
+    }
+
+    public void deleteByDepartmentAndMembership(final UUID departmentId, final UUID membershipId) {
+        repository.findByDepartmentIdAndMembershipId(departmentId, membershipId).stream()
+                .findFirst().ifPresent(repository::delete);
+    }
+
+    public void delete(final UUID id) {
+        repository.deleteById(id);
     }
 
 }

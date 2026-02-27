@@ -3,7 +3,6 @@ package br.org.kinflasy.apis.churches.controllers.department;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -119,7 +118,7 @@ public class DepartmentController {
     @GetMapping("{id}/integration/{membershipId}")
     public ResponseEntity<IntegrationDto> findIntegration(@PathVariable final UUID id,
             @PathVariable final UUID membershipId) {
-        return integrationService.findIntegration(id, membershipId)
+        return integrationService.findByDepartmentAndMembership(id, membershipId)
                 .map(ResponseEntity::ok)
                 .orElseGet(ResponseEntity.notFound()::build);
     }
@@ -131,10 +130,9 @@ public class DepartmentController {
     }
 
     @DeleteMapping("{id}/integrants")
-    public ResponseEntity<Void> removeIntegrant(@PathVariable final UUID id,
-            @RequestBody IntegrationRequest request) {
-        // TODO implementar
-        throw new NotImplementedException();
+    public ResponseEntity<Void> removeIntegrant(@PathVariable final UUID id, @RequestBody IntegrationRequest request) {
+        integrationService.deleteByDepartmentAndMembership(id, request.getMembershipId());
+        return ResponseEntity.noContent().build();
     }
 
 }
