@@ -22,7 +22,7 @@ public class AddressService {
     private final AddressConverter converter;
 
     /*
-     * ACESSO PÚBLICO
+     * ACESSO PÚBLICO (inclusive deslogado, nesse caso)
      */
 
     public AddressDto create(final AddressRequest form) {
