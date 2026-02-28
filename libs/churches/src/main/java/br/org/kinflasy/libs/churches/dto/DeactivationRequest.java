@@ -1,11 +1,11 @@
-package br.org.kinflasy.libs.people.dto;
+package br.org.kinflasy.libs.churches.dto;
 
 import java.util.UUID;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.Value;
+import lombok.Data;
 
-@Value
+@Data
 public class DeactivationRequest {
 
     private @NotBlank UUID userId;

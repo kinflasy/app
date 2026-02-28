@@ -13,9 +13,9 @@ import br.org.kinflasy.apis.people.clients.AddressClient;
 import br.org.kinflasy.apis.people.clients.ChurchClient;
 import br.org.kinflasy.apis.people.converters.UserConverter;
 import br.org.kinflasy.apis.people.repositories.UserRepository;
+import br.org.kinflasy.libs.churches.dto.DeactivationRequest;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.libs.lib_utils.EntityEvent.Created;
-import br.org.kinflasy.libs.people.dto.DeactivationRequest;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
@@ -114,7 +114,7 @@ public class UserService {
         repository.findById(id)
                 .ifPresent(entity -> {
                     // Desativar membresias do usuário
-                    churchClient.deactivateMember(new DeactivationRequest(id));
+                    churchClient.deactivateMember(new DeactivationRequest().setUserId(id));
 
                     // Deletar
                     repository.deleteById(id);

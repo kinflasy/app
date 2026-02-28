@@ -6,8 +6,8 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import br.org.kinflasy.libs.churches.dto.DeactivationRequest;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
-import br.org.kinflasy.libs.people.dto.DeactivationRequest;
 
 @FeignClient(name = "churchesApi", contextId = "people-churchesApi")
 public interface ChurchClient {

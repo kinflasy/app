@@ -20,13 +20,13 @@ import br.org.kinflasy.apis.churches.services.ChurchService;
 import br.org.kinflasy.apis.churches.services.ChurchUseCaseService;
 import br.org.kinflasy.apis.churches.services.DeactivationUseCaseService;
 import br.org.kinflasy.apis.churches.services.UnitService;
+import br.org.kinflasy.libs.churches.dto.ActivationRequest;
 import br.org.kinflasy.libs.churches.dto.ChurchDto;
 import br.org.kinflasy.libs.churches.dto.ChurchRequest;
+import br.org.kinflasy.libs.churches.dto.DeactivationRequest;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
-import br.org.kinflasy.libs.people.dto.ActivationRequest;
-import br.org.kinflasy.libs.people.dto.DeactivationRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -111,8 +111,8 @@ public class ChurchController {
 
     @PostMapping("activate-member")
     @Operation(summary = "Ativar membro", description = "Substituir pessoa inativa por usuário ativo em todas as unidades.")
-    public ResponseEntity<List<MembershipDto>> activateMember(@RequestBody final ActivationRequest request) {
-        return ResponseEntity.ok(activationUseCaseService.activate(request.getInactivePersonId(), request.getUserId()));
+    public ResponseEntity<List<MembershipDto>> activateMember(@RequestBody final ActivationRequest.WithUsername request) {
+        return ResponseEntity.ok(activationUseCaseService.activate(request.getInactivePersonId(), request.getUsername()));
     }
 
     @PostMapping("{id}/deactivate-member")

@@ -21,11 +21,22 @@ public class ActivationUseCaseService {
     private final MembershipService membershipService;
 
     @PreAuthorize("@fga.check('person_data', #inactivePersonId, 'can_edit', 'user', principal.id)")
+    public List<MembershipDto> activate(final UUID inactivePersonId, final String username) {
+        // Garantir existência do usuário ativo
+        // Caso não encontre, lança exceção FeignException.NotFound
+        final var user = userClient.identifyByUsername(username);
+        return updateMemberships(inactivePersonId, user.getId());
+    }
+
+    @PreAuthorize("@fga.check('person_data', #inactivePersonId, 'can_edit', 'user', principal.id)")
     public List<MembershipDto> activate(final UUID inactivePersonId, final UUID userId) {
         // Garantir existência do usuário ativo
         // Caso não encontre, lança exceção FeignException.NotFound
         userClient.identifyById(userId);
+        return updateMemberships(inactivePersonId, userId);
+    }
 
+    private List<MembershipDto> updateMemberships(final UUID inactivePersonId, final UUID userId) {
         // Buscar membresias da pessoa inativa
         final var memberships = membershipService.findByPersonId(inactivePersonId).stream()
 

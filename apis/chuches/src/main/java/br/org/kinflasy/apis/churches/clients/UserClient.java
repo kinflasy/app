@@ -14,4 +14,7 @@ public interface UserClient {
     @GetMapping("identify/{id}")
     UserDto identifyById(@PathVariable UUID id);
 
+    @GetMapping("identify/@{username}")
+    UserDto identifyByUsername(@PathVariable String username);
+
 }
