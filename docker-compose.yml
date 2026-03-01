@@ -1,5 +1,10 @@
 networks:
   openfga:
+  app:
+
+volumes:
+  # Volume compartilhado para passar os IDs do FGA entre containers
+  shared-data:
 
 services:
   # Serviço para o PostgreSQL
@@ -12,14 +17,16 @@ services:
     expose:
       - ${DATABASE_PORT}
     environment:
-      - POSTGRES_USER=${DATABASE_USER}
-      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
-      - POSTGRES_DB=${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER} -d ${DATABASE_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - app
 
   # Serviço para o PostgreSQL do OpenFGA
   openfga-db:
@@ -31,13 +38,17 @@ services:
     expose:
       - ${OPENFGA_DATABASE_PORT}
     environment:
-      - POSTGRES_USER=${OPENFGA_DATABASE_USER}
-      - POSTGRES_PASSWORD=${OPENFGA_DATABASE_PASSWORD}
-      - POSTGRES_DB=${OPENFGA_DATABASE_NAME}
+      POSTGRES_USER: ${OPENFGA_DATABASE_USER}
+      POSTGRES_PASSWORD: ${OPENFGA_DATABASE_PASSWORD}
+      POSTGRES_DB: ${OPENFGA_DATABASE_NAME}
     networks:
       - openfga
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${OPENFGA_DATABASE_USER}"]
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${OPENFGA_DATABASE_USER} -d ${OPENFGA_DATABASE_NAME}",
+        ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -64,11 +75,11 @@ services:
     image: openfga/openfga:latest
     container_name: openfga
     environment:
-      - OPENFGA_DATASTORE_ENGINE=postgres
-      - OPENFGA_DATASTORE_URI=postgres://${OPENFGA_DATABASE_USER}:${OPENFGA_DATABASE_PASSWORD}@openfga-db:5432/${OPENFGA_DATABASE_NAME}?sslmode=disable
-      - OPENFGA_LOG_FORMAT=json
-      - OPENFGA_HTTP_ADDR=0.0.0.0:${OPENFGA_HTTP_PORT}
-      - OPENFGA_HTTP_CORS_ALLOWED_ORIGINS
+      OPENFGA_DATASTORE_ENGINE: postgres
+      OPENFGA_DATASTORE_URI: postgres://${OPENFGA_DATABASE_USER}:${OPENFGA_DATABASE_PASSWORD}@openfga-db:5432/${OPENFGA_DATABASE_NAME}?sslmode=disable
+      OPENFGA_LOG_FORMAT: json
+      OPENFGA_HTTP_ADDR: 0.0.0.0:${OPENFGA_HTTP_PORT}
+      OPENFGA_HTTP_CORS_ALLOWED_ORIGINS:
     command: run
     networks:
       - openfga
@@ -78,7 +89,55 @@ services:
       # Needed for the grpc server (if used)
       - "8081:8081"
       # Needed for the playground (Do not enable in prod!)
-      - "3000:3000"
+      # - "3000:3000"
+
+  # fga-setup:
+  #   container_name: fga-setup
+  #   image: openfga/cli:latest
+  #   # command: ["store", "list"]
+  #   # stdin_open: true
+  #   # tty: true
+  #   volumes:
+  #     - .:/mnt
+  #     - shared-data:/shared
+  #   environment:
+  #     OPENFGA_HTTP_HOST: openfga
+  #     OPENFGA_HTTP_PORT: ${OPENFGA_HTTP_PORT}
+  #   entrypoint: >
+  #     /bin/sh -c "
+  #     apk add --no-cache curl jq &&
+  #     curl -sSfL https://github.com/openfga/cli/releases/download/v0.6.2/fga_0.6.2_linux_amd64.tar.gz | tar -xz -C /usr/local/bin fga &&
+  #     chmod +x /mnt/setup-fga.sh &&
+  #     /mnt/setup-fga.sh
+  #     "
+  #   depends_on:
+  #     openfga:
+  #       condition: service_started
+
+  fga-setup:
+    container_name: fga-setup
+    image: alpine:3.21
+    # stdin_open: true
+    # tty: true
+    volumes:
+      - .:/mnt
+      - shared-data:/shared
+    environment:
+      OPENFGA_HTTP_HOST: openfga
+      OPENFGA_HTTP_PORT: ${OPENFGA_HTTP_PORT}
+    # O entrypoint abaixo faz tudo: instala dependências e roda seu script
+    entrypoint: >
+      /bin/sh -c "
+      apk add --no-cache curl jq && 
+      curl -sSfL https://github.com/openfga/cli/releases/download/v0.6.2/fga_0.6.2_linux_amd64.tar.gz | tar -xz -C /usr/local/bin fga &&
+      chmod +x /mnt/run/setup-fga.sh &&
+      /mnt/run/setup-fga.sh
+      "
+    depends_on:
+      openfga:
+        condition: service_started
+    networks:
+      - openfga
 
   # Serviço para a aplicação Spring Boot
   app:
@@ -88,9 +147,18 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - db
-      - openfga
+      db:
+        condition: service_healthy
+      fga-setup:
+        condition: service_completed_successfully
     env_file:
       - .env
+    volumes:
+      - shared-data:/shared # Para exportar o arquivo .env.fga
     environment:
       DATABASE_HOST: db
+      OPENFGA_HTTP_HOST: openfga
+      FGA_ENV_FILE: /shared/.env.fga
+    networks:
+      - app
+      - openfga
