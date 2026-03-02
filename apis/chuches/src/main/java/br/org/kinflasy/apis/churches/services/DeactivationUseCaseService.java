@@ -32,7 +32,7 @@ public class DeactivationUseCaseService {
     @PreAuthorize("#userId.equals(principal.id)")
     public List<MembershipDto> deactivateAll(final UUID userId) {
         // Buscar relações de membresia do usuário em questão
-        return membershipService.findByPersonId(userId).stream()
+        return membershipService.listByPersonId(userId).stream()
 
                 // Obter IDs das igrejas
                 .map(membership -> unitService.findById(membership.getUnitId()).map(UnitDto::getChurchId).orElse(null))

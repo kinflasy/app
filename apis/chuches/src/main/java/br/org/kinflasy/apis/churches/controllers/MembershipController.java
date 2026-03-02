@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.org.kinflasy.apis.churches.services.MembershipService;
 import br.org.kinflasy.apis.churches.services.department.IntegrationService;
+import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto.Pending;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -21,6 +23,12 @@ import lombok.AllArgsConstructor;
 public class MembershipController {
 
     private final IntegrationService integrationService;
+    private final MembershipService service;
+
+    @GetMapping("/pending")
+    public ResponseEntity<List<Pending>> listPendingForLoggedUser() {
+        return ResponseEntity.ok(service.listPendingForLoggedUser());
+    }
 
     @GetMapping("{id}/integrations")
     public ResponseEntity<List<IntegrationDto>> listIntegrations(@PathVariable final UUID id) {

@@ -38,7 +38,7 @@ public class ActivationUseCaseService {
 
     private List<MembershipDto> updateMemberships(final UUID inactivePersonId, final UUID userId) {
         // Buscar membresias da pessoa inativa
-        final var memberships = membershipService.findByPersonId(inactivePersonId).stream()
+        final var memberships = membershipService.listByPersonId(inactivePersonId).stream()
 
                 // Substituir pessoa pelo usuário ativo
                 .map(membership -> membershipService.changePerson(membership.getId(), userId))

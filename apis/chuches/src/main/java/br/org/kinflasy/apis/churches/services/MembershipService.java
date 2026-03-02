@@ -1,6 +1,6 @@
 package br.org.kinflasy.apis.churches.services;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,6 +39,37 @@ public class MembershipService {
     private final MembershipRepository repository;
     private final PendingMembershipRepository pendingRepository;
 
+    /*
+     * ACESSO PÚBLICO
+     */
+
+    public Pending askToJoinUnit(final UUID unitId) {
+        final var loggedUser = authUtils.getLoggedUser();
+
+        repository.findByUnitIdAndPersonIdAndLeaveDateNull(unitId, loggedUser.getId())
+                .ifPresent(existing -> {
+                    throw new EntityExistsException(
+                            "Você já é %s desta unidade".formatted(existing.getAffiliation()));
+                });
+
+        final var entity = new PendingMembership();
+        entity.setId(null);
+        entity.setUnitId(unitId);
+        entity.setPersonId(loggedUser.getId());
+        entity.setUserConfirmationDate(LocalDateTime.now());
+
+        return processSavedPending(pendingRepository.save(entity));
+    }
+
+    public List<Pending> listPendingForLoggedUser() {
+        final var loggedUser = authUtils.getLoggedUser();
+        return listPendingByPersonId(loggedUser.getId());
+    }
+
+    /*
+     * ACESSO RESTRITO
+     */
+
     @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id) and @fga.check('person_data', #request.personId, 'can_edit', 'user', principal.id)")
     public MembershipDto create(final UUID unitId, final MembershipRequest request) {
         final var entity = mapper.map(request, Membership.class);
@@ -67,31 +98,13 @@ public class MembershipService {
         final var entity = mapper.map(request, PendingMembership.class);
         entity.setId(null);
         entity.setUnitId(unitId);
-        entity.setUnitConfirmationDate(LocalDate.now());
-
-        return processSavedPending(pendingRepository.save(entity));
-    }
-
-    public Pending askToJoinUnit(final UUID unitId) {
-        final var loggedUser = authUtils.getLoggedUser();
-
-        repository.findByUnitIdAndPersonIdAndLeaveDateNull(unitId, loggedUser.getId())
-                .ifPresent(existing -> {
-                    throw new EntityExistsException(
-                            "Você já é %s desta unidade".formatted(existing.getAffiliation()));
-                });
-
-        final var entity = new PendingMembership();
-        entity.setId(null);
-        entity.setUnitId(unitId);
-        entity.setPersonId(loggedUser.getId());
-        entity.setUserConfirmationDate(LocalDate.now());
+        entity.setUnitConfirmationDate(LocalDateTime.now());
 
         return processSavedPending(pendingRepository.save(entity));
     }
 
     @PreAuthorize("@fga.check('person_data', #personId, 'can_view', 'user', principal.id) or #personId.equals(principal.id)")
-    public List<MembershipDto> findByPersonId(final UUID personId) {
+    public List<MembershipDto> listByPersonId(final UUID personId) {
         return repository.findByPersonId(personId).stream()
                 .map(entity -> mapper.map(entity, MembershipDto.class))
                 .toList();
@@ -136,6 +149,20 @@ public class MembershipService {
                     return update(id, request);
                 })
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+    }
+
+    @PreAuthorize("#personId.equals(principal.id)")
+    public List<Pending> listPendingByPersonId(final UUID personId) {
+        return pendingRepository.findByPersonId(personId).stream()
+                .map(entity -> mapper.map(entity, Pending.class))
+                .toList();
+    }
+
+    @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
+    public List<Pending> listPendingByUnitId(final UUID unitId) {
+        return pendingRepository.findByUnitId(unitId).stream()
+                .map(entity -> mapper.map(entity, Pending.class))
+                .toList();
     }
 
     private Pending processSavedPending(final PendingMembership saved) {

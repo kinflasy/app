@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.org.kinflasy.apis.churches.services.MembershipService;
 import br.org.kinflasy.apis.churches.services.UnitService;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.MembershipRequest;
@@ -37,13 +38,14 @@ import lombok.AllArgsConstructor;
 public class UnitController {
 
     private final UnitService service;
+    private final MembershipService membershipService;
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma unidade pelo ID.")
     public ResponseEntity<UnitDto> findById(@PathVariable final UUID id) {
         return service.findById(id)
-                .map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
     }
 
     @PutMapping("{id}")
@@ -52,9 +54,9 @@ public class UnitController {
     public ResponseEntity<UnitDto> update(@PathVariable final UUID id,
             @RequestBody final UnitRequest request) {
         try {
-            return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
+            return ResponseEntity.ok(service.update(id, request));
         } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 
@@ -64,9 +66,9 @@ public class UnitController {
     public ResponseEntity<HttpStatus> delete(@PathVariable final UUID id) {
         try {
             service.delete(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.noContent().build();
         } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         } catch (final Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
@@ -75,7 +77,7 @@ public class UnitController {
     @GetMapping("{id}/departments")
     @Operation(summary = "Listar departamentos", description = "Listar os departamentos de uma unidade.")
     public ResponseEntity<List<DepartmentDto>> listDepartments(@PathVariable final UUID id) {
-        return new ResponseEntity<>(service.listDepartments(id), HttpStatus.OK);
+        return ResponseEntity.ok(service.listDepartments(id));
     }
 
     @PostMapping("{id}/departments")
@@ -88,13 +90,13 @@ public class UnitController {
     @GetMapping("{id}/members")
     @Operation(summary = "Listar membros", description = "Listar os membros de uma unidade.")
     public ResponseEntity<List<MembershipDto>> listMembers(@PathVariable final UUID id) {
-        return new ResponseEntity<>(service.listMembersWithDetails(id), HttpStatus.OK);
+        return ResponseEntity.ok(service.listMembersWithDetails(id));
     }
 
     @GetMapping("{id}/members-and-ex-members")
     @Operation(summary = "Listar membros", description = "Listar os membros ativos de uma unidade.")
     public ResponseEntity<List<MembershipDto>> listMembersAndExMembers(@PathVariable final UUID id) {
-        return new ResponseEntity<>(service.listMembersAndExMembersWithDetails(id), HttpStatus.OK);
+        return ResponseEntity.ok(service.listMembersAndExMembersWithDetails(id));
     }
 
     @GetMapping("{id}/membership/{personId}")
@@ -106,30 +108,40 @@ public class UnitController {
     }
 
     @PostMapping("{id}/members")
+    @Transactional
     @Operation(summary = "Associar membro", description = "Adicionar pessoa pré-existente como membro de uma unidade.")
     public ResponseEntity<MembershipDto> associateMember(@PathVariable final UUID id,
             @RequestBody @Valid final MembershipRequest request) {
-        return new ResponseEntity<>(service.addMember(id, request), HttpStatus.OK);
+        return ResponseEntity.ok(service.addMember(id, request));
     }
 
     @PostMapping("{id}/members/ask")
+    @Transactional
     @Operation(summary = "Pedir para um usuário ingressar na unidade", description = "Solicitar que pessoa pré-existente seja membro de uma unidade.")
     public ResponseEntity<Pending> askForUserToJoin(@PathVariable final UUID id,
             @RequestBody @Valid final MembershipRequest request) {
-        return new ResponseEntity<>(service.askForUserToJoin(id, request), HttpStatus.OK);
+        return ResponseEntity.ok(service.askForUserToJoin(id, request));
     }
 
     @PostMapping("{id}/join")
+    @Transactional
     @Operation(summary = "Pedir para ingressar na unidade", description = "Solicitar que a administração de uma unidade permita o ingresso da pessoa logada.")
     public ResponseEntity<Pending> askToJoinUnit(@PathVariable final UUID id) {
-        return new ResponseEntity<>(service.askToJoinUnit(id), HttpStatus.OK);
+        return ResponseEntity.ok(service.askToJoinUnit(id));
+    }
+
+    @GetMapping("{id}/members/pending")
+    @Operation(summary = "Listar membros pendentes", description = "Listar as solicitações de ingresso em uma unidade.")
+    public ResponseEntity<List<Pending>> listPendingMemberships(@PathVariable final UUID id) {
+        return ResponseEntity.ok(membershipService.listPendingByUnitId(id));
     }
 
     @PostMapping("{id}/members/register")
+    @Transactional
     @Operation(summary = "Cadastrar membros", description = "Cadastrar novas pessoas inativas e associá-las como membros de uma unidade.")
     public ResponseEntity<MembershipDto> registerMembers(@PathVariable final UUID id,
             @RequestBody final MembershipRequest.Register request) {
-        return new ResponseEntity<>(service.registerMember(id, request), HttpStatus.OK);
+        return ResponseEntity.ok(service.registerMember(id, request));
     }
 
 }

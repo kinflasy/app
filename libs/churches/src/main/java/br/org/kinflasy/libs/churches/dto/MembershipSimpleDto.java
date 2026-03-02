@@ -1,6 +1,6 @@
 package br.org.kinflasy.libs.churches.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
@@ -21,8 +21,8 @@ public class MembershipSimpleDto {
     @NoArgsConstructor
     @EqualsAndHashCode(callSuper = true)
     public static class Pending extends MembershipSimpleDto {
-        private LocalDate unitConfirmationDate;
-        private LocalDate userConfirmationDate;
+        private LocalDateTime unitConfirmationDate;
+        private LocalDateTime userConfirmationDate;
     }
 
 }
