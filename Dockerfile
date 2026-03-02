@@ -24,15 +24,20 @@ RUN mvn clean package -DskipTests
 # --- Etapa 2: Runtime (Execução) ---
 FROM eclipse-temurin:21-alpine-3.23
 
+# Instalamos dos2unix para corrigir finais de linha do Windows
+RUN apk add --no-cache dos2unix
+
 WORKDIR /app
 
 # Copia apenas o .jar gerado na etapa anterior
-# Ajuste o caminho se o nome do jar no seu módulo 'execution' for diferente
 COPY --from=build /build/execution/target/*.jar app.jar
 
 # Copia o script de entrada
 COPY run/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+
+# Remove caracteres \r (CRLF), dá permissão e limpa o utilitário
+RUN dos2unix /entrypoint.sh && \
+    chmod +x /entrypoint.sh
 
 # O Entrypoint agora chama o script em vez do java diretamente
 ENTRYPOINT ["/bin/sh", "/entrypoint.sh"]

@@ -91,29 +91,6 @@ services:
       # Needed for the playground (Do not enable in prod!)
       # - "3000:3000"
 
-  # fga-setup:
-  #   container_name: fga-setup
-  #   image: openfga/cli:latest
-  #   # command: ["store", "list"]
-  #   # stdin_open: true
-  #   # tty: true
-  #   volumes:
-  #     - .:/mnt
-  #     - shared-data:/shared
-  #   environment:
-  #     OPENFGA_HTTP_HOST: openfga
-  #     OPENFGA_HTTP_PORT: ${OPENFGA_HTTP_PORT}
-  #   entrypoint: >
-  #     /bin/sh -c "
-  #     apk add --no-cache curl jq &&
-  #     curl -sSfL https://github.com/openfga/cli/releases/download/v0.6.2/fga_0.6.2_linux_amd64.tar.gz | tar -xz -C /usr/local/bin fga &&
-  #     chmod +x /mnt/setup-fga.sh &&
-  #     /mnt/setup-fga.sh
-  #     "
-  #   depends_on:
-  #     openfga:
-  #       condition: service_started
-
   fga-setup:
     container_name: fga-setup
     image: alpine:3.21
@@ -128,8 +105,9 @@ services:
     # O entrypoint abaixo faz tudo: instala dependências e roda seu script
     entrypoint: >
       /bin/sh -c "
-      apk add --no-cache curl jq && 
+      apk add --no-cache curl jq dos2unix && 
       curl -sSfL https://github.com/openfga/cli/releases/download/v0.6.2/fga_0.6.2_linux_amd64.tar.gz | tar -xz -C /usr/local/bin fga &&
+      dos2unix /mnt/run/setup-fga.sh &&
       chmod +x /mnt/run/setup-fga.sh &&
       /mnt/run/setup-fga.sh
       "
