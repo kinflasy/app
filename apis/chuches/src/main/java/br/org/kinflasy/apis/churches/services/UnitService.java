@@ -1,6 +1,5 @@
 package br.org.kinflasy.apis.churches.services;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -8,7 +7,6 @@ import java.util.UUID;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -16,13 +14,13 @@ import br.org.kinflasy.apis.churches.clients.AddressClient;
 import br.org.kinflasy.apis.churches.clients.InactivePersonClient;
 import br.org.kinflasy.apis.churches.clients.PersonClient;
 import br.org.kinflasy.apis.churches.converters.UnitConverter;
-import br.org.kinflasy.apis.churches.entities.Membership;
 import br.org.kinflasy.apis.churches.repositories.MembershipRepository;
 import br.org.kinflasy.apis.churches.repositories.UnitRepository;
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.MembershipRequest;
 import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto;
+import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto.Pending;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
@@ -48,11 +46,12 @@ public class UnitService {
     private final UnitRepository repository;
     private final UnitConverter converter;
 
+    private final AddressClient addressClient;
     private final PersonClient personClient;
     private final InactivePersonClient inactivePersonClient;
 
-    private final AddressClient addressClient;
     private final DepartmentService departmentService;
+    private final MembershipService membershipService;
     private final MembershipRepository membershipRepository;
 
     /*
@@ -70,12 +69,22 @@ public class UnitService {
         return repository.findById(id).map(converter::toDto);
     }
 
-    @PostFilter("@fga.check('department', filterObject.id, 'can_view', 'user', principal.id)")
+    public Pending askToJoinUnit(final UUID id) {
+        if (repository.existsById(id)) {
+            return membershipService.askToJoinUnit(id);
+        } else {
+            throw new EntityNotFoundException(NOT_FOUND_MESSAGE);
+        }
+    }
+
     public List<DepartmentDto> listDepartments(final UUID id) {
         log.info("Listando todos os departamentos da unidade de id {}...", id);
-        return repository.findById(id)
-                .map(ignoredUnit -> departmentService.listByUnitId(id))
-                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+
+        if (repository.existsById(id)) {
+            return departmentService.listByUnitId(id);
+        } else {
+            throw new EntityNotFoundException(NOT_FOUND_MESSAGE);
+        }
     }
 
     /*
@@ -166,11 +175,10 @@ public class UnitService {
                 .toList();
     }
 
-    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id) or @fga.check('person_data', #personId, 'can_view', 'user', principal.id)")
     public Optional<MembershipSimpleDto> findActiveMembership(final UUID id, final UUID personId) {
-        return membershipRepository.findByUnitIdAndPersonIdAndLeaveDateNull(id, personId).stream()
-                .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
-                .findFirst();
+        return membershipRepository.findByUnitIdAndPersonIdAndLeaveDateNull(id, personId)
+                .map(membership -> mapper.map(membership, MembershipSimpleDto.class));
     }
 
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
@@ -192,64 +200,23 @@ public class UnitService {
     }
 
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
-    public MembershipDto addMember(final UUID id, final MembershipRequest request) {
-        final var entity = mapper.map(request, Membership.class);
-        entity.setId(null);
-        entity.setUnitId(id);
-
-        final var saved = membershipRepository.save(entity);
-
-        // Gerar DTO
-        final var dto = mapper.map(saved, MembershipDto.class);
-
-        // Publicar evento
-        publisher.publishEvent(new EntityEvent.Created<>(dto));
-
-        return dto;
-    }
-
-    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
-    public List<MembershipSimpleDto> addMembers(final UUID id, final List<MembershipRequest> request) {
-        final var entities = request.stream().map(member -> {
-            final var entity = mapper.map(member, Membership.class);
-            entity.setId(null);
-            entity.setUnitId(id);
-
-            return entity;
-        })
-                .toList();
-
-        return saveMemberships(entities);
-    }
-
-    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
-    public List<MembershipSimpleDto> registerMembers(final UUID id, final List<MembershipRequest.Register> request) {
+    public MembershipDto registerMember(final UUID id, final MembershipRequest.Register request) {
         // Obter dados da unidade
         return repository.findById(id)
                 .map(unit -> {
-                    final var entities = request.stream()
+                    // Criar pessoa inativa
+                    final var personRequest = mapper
+                            .map(request.getPerson(), InactivePersonRequest.class)
+                            .setChurchId(unit.getChurchId());
+                    final var savedPerson = inactivePersonClient.create(personRequest);
 
-                            // Para cada membro...
-                            .map(member -> {
-                                // ... criar pessoa inativa
-                                final var personRequest = mapper
-                                        .map(member.getPerson(), InactivePersonRequest.class)
-                                        .setChurchId(unit.getChurchId());
-                                final var savedPerson = inactivePersonClient.create(personRequest);
+                    // Gerar requisição de membresia
+                    final var membershipRequest = mapper.map(request, MembershipRequest.class);
+                    membershipRequest.setPersonId(savedPerson.getId());
 
-                                // ... criar vínculo de membresia
-                                final var entity = mapper.map(member, Membership.class);
-                                entity.setId(null);
-                                entity.setUnitId(id);
-                                entity.setPersonId(savedPerson.getId());
-
-                                return entity;
-                            })
-                            .toList();
-
-                    return saveMemberships(entities);
+                    return addMember(id, membershipRequest);
                 })
-                .orElseGet(Collections::emptyList);
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
@@ -262,22 +229,24 @@ public class UnitService {
                 });
     }
 
-    private List<MembershipSimpleDto> saveMemberships(final Iterable<Membership> entities) {
-        final var saved = membershipRepository.saveAll(entities);
+    /*
+     * VERIFICAÇÃO DE ACESSO REDIRECIONADA
+     */
 
-        return saved.stream()
-                .map(membership -> {
-                    log.info("Membro de id {} adicionado à unidade de id {}", membership.getPersonId(),
-                            membership.getUnitId());
+    public MembershipDto addMember(final UUID id, final MembershipRequest request) {
+        if (repository.existsById(id)) {
+            return membershipService.create(id, request);
+        } else {
+            throw new EntityNotFoundException(NOT_FOUND_MESSAGE);
+        }
+    }
 
-                    // Publicar evento de membresia
-                    final var dto = mapper.map(membership, MembershipDto.class);
-                    publisher.publishEvent(new EntityEvent.Created<>(dto));
-
-                    // Gerar DTO de retorno
-                    return mapper.map(membership, MembershipSimpleDto.class);
-                })
-                .toList();
+    public Pending askForUserToJoin(final UUID id, final MembershipRequest request) {
+        if (repository.existsById(id)) {
+            return membershipService.askForUserToJoin(id, request);
+        } else {
+            throw new EntityNotFoundException(NOT_FOUND_MESSAGE);
+        }
     }
 
 }

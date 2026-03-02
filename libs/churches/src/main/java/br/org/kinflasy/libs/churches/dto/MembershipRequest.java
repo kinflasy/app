@@ -13,6 +13,11 @@ import lombok.Data;
 @Data
 public class MembershipRequest {
 
+    private @NotBlank UUID personId;
+    private @NotNull Affiliation affiliation;
+    private EntryMode entryMode;
+    private LocalDate entryDate;
+
     @Data
     public static class Register {
         private @NotNull InactivePersonRequest person;
@@ -20,10 +25,5 @@ public class MembershipRequest {
         private EntryMode entryMode;
         private LocalDate entryDate;
     }
-
-    private @NotBlank UUID personId;
-    private @NotNull Affiliation affiliation;
-    private EntryMode entryMode;
-    private LocalDate entryDate;
 
 }

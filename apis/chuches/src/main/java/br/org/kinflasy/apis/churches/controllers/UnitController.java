@@ -21,6 +21,7 @@ import br.org.kinflasy.libs.churches.dto.MembershipRequest;
 import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
+import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto.Pending;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -104,19 +105,31 @@ public class UnitController {
                 .orElseGet(ResponseEntity.notFound()::build);
     }
 
-    // TODO consertar validação (@Valid não funciona com listas)
     @PostMapping("{id}/members")
-    @Operation(summary = "Associar membros", description = "Adicionar pessoas pré-existentes como membros de uma unidade.")
-    public ResponseEntity<List<MembershipSimpleDto>> associateMembers(@PathVariable final UUID id,
-            @RequestBody /*@Valid*/ final List<MembershipRequest> request) {
-        return new ResponseEntity<>(service.addMembers(id, request), HttpStatus.OK);
+    @Operation(summary = "Associar membro", description = "Adicionar pessoa pré-existente como membro de uma unidade.")
+    public ResponseEntity<MembershipDto> associateMember(@PathVariable final UUID id,
+            @RequestBody @Valid final MembershipRequest request) {
+        return new ResponseEntity<>(service.addMember(id, request), HttpStatus.OK);
+    }
+
+    @PostMapping("{id}/members/ask")
+    @Operation(summary = "Pedir para um usuário ingressar na unidade", description = "Solicitar que pessoa pré-existente seja membro de uma unidade.")
+    public ResponseEntity<Pending> askForUserToJoin(@PathVariable final UUID id,
+            @RequestBody @Valid final MembershipRequest request) {
+        return new ResponseEntity<>(service.askForUserToJoin(id, request), HttpStatus.OK);
+    }
+
+    @PostMapping("{id}/join")
+    @Operation(summary = "Pedir para ingressar na unidade", description = "Solicitar que a administração de uma unidade permita o ingresso da pessoa logada.")
+    public ResponseEntity<Pending> askToJoinUnit(@PathVariable final UUID id) {
+        return new ResponseEntity<>(service.askToJoinUnit(id), HttpStatus.OK);
     }
 
     @PostMapping("{id}/members/register")
     @Operation(summary = "Cadastrar membros", description = "Cadastrar novas pessoas inativas e associá-las como membros de uma unidade.")
-    public ResponseEntity<List<MembershipSimpleDto>> registerMembers(@PathVariable final UUID id,
-            @RequestBody final List<MembershipRequest.Register> request) {
-        return new ResponseEntity<>(service.registerMembers(id, request), HttpStatus.OK);
+    public ResponseEntity<MembershipDto> registerMembers(@PathVariable final UUID id,
+            @RequestBody final MembershipRequest.Register request) {
+        return new ResponseEntity<>(service.registerMember(id, request), HttpStatus.OK);
     }
 
 }

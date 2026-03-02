@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.org.kinflasy.apis.churches.entities.Membership;
 import java.util.List;
+import java.util.Optional;
 
 public interface MembershipRepository extends JpaRepository<Membership, UUID> {
 
@@ -17,6 +18,6 @@ public interface MembershipRepository extends JpaRepository<Membership, UUID> {
 
     List<Membership> findByUnitIdAndPersonId(UUID unitId, UUID personId);
 
-    List<Membership> findByUnitIdAndPersonIdAndLeaveDateNull(UUID unitId, UUID personId);
+    Optional<Membership> findByUnitIdAndPersonIdAndLeaveDateNull(UUID unitId, UUID personId);
 
 }
