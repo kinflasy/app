@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import br.org.kinflasy.apis.churches.entities.PendingMembership;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PendingMembershipRepository extends JpaRepository<PendingMembership, UUID> {
 
@@ -14,6 +15,6 @@ public interface PendingMembershipRepository extends JpaRepository<PendingMember
 
     List<PendingMembership> findByPersonId(UUID personId);
 
-    List<PendingMembership> findByUnitIdAndPersonId(UUID unitId, UUID personId);
+    Optional<PendingMembership> findByUnitIdAndPersonId(UUID unitId, UUID personId);
 
 }

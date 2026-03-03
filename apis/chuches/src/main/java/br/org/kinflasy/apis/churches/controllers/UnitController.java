@@ -123,10 +123,24 @@ public class UnitController {
         return ResponseEntity.ok(service.askForUserToJoin(id, request));
     }
 
+    @PostMapping("{id}/member/{personId}/confirm")
+    @Transactional
+    @Operation(summary = "Confirmar solicitação de usuário para ingressar na unidade", description = "Confirmar solicitação de usuário para ingressar na unidade.")
+    public ResponseEntity<Pending> confirmAsUnit(@PathVariable final UUID id, @PathVariable final UUID personId) {
+        return ResponseEntity.ok(membershipService.confirmAsUnit(id, personId));
+    }
+
     @PostMapping("{id}/join")
     @Transactional
     @Operation(summary = "Pedir para ingressar na unidade", description = "Solicitar que a administração de uma unidade permita o ingresso da pessoa logada.")
     public ResponseEntity<Pending> askToJoinUnit(@PathVariable final UUID id) {
+        return ResponseEntity.ok(service.askToJoinUnit(id));
+    }
+
+    @PostMapping("{id}/join/confirm")
+    @Transactional
+    @Operation(summary = "Confirmar solicitação para ingressar na unidade", description = "Confirmar solicitação para a pessoa logada ingressar na unidade.")
+    public ResponseEntity<Pending> confirmAsUser(@PathVariable final UUID id) {
         return ResponseEntity.ok(service.askToJoinUnit(id));
     }
 

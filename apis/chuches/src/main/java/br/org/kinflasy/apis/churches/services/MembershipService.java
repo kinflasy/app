@@ -3,6 +3,7 @@ package br.org.kinflasy.apis.churches.services;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
@@ -31,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MembershipService {
 
     private static final String NOT_FOUND_MESSAGE = "Relação de membresia não encontrada";
+    private static final String NOT_FOUND_PENDING_MESSAGE = "Solicitação de membresia não encontrada";
 
     private final ModelMapper mapper;
     private final ApplicationEventPublisher publisher;
@@ -165,6 +167,20 @@ public class MembershipService {
                 .toList();
     }
 
+    @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
+    public Pending confirmAsUnit(final UUID unitId, final UUID personId) {
+        return pendingRepository.findByUnitIdAndPersonId(unitId, personId)
+                .map(pending -> confirm(pending, p -> p.setUnitConfirmationDate(LocalDateTime.now())))
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_PENDING_MESSAGE));
+    }
+
+    @PreAuthorize("#personId.equals(principal.id)")
+    public Pending confirmAsPerson(final UUID unitId, final UUID personId) {
+        return pendingRepository.findByUnitIdAndPersonId(unitId, personId)
+                .map(pending -> confirm(pending, p -> p.setUserConfirmationDate(LocalDateTime.now())))
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_PENDING_MESSAGE));
+    }
+
     private Pending processSavedPending(final PendingMembership saved) {
         log.info("Solicitação realizada para membro de id {} ingressar na unidade de id {}",
                 saved.getPersonId(), saved.getUnitId());
@@ -176,6 +192,21 @@ public class MembershipService {
         publisher.publishEvent(new EntityEvent.Created<>(dto));
 
         return dto;
+    }
+
+    private Pending confirm(final PendingMembership pending, final Consumer<PendingMembership> setter) {
+        // Capturar objeto original
+        final var original = mapper.map(pending, Pending.class);
+
+        // Atualizar confirmação
+        setter.accept(pending);
+        final var saved = pendingRepository.save(pending);
+        final var modified = mapper.map(saved, Pending.class);
+
+        // Publicar evento
+        publisher.publishEvent(new EntityEvent.Updated<>(original, modified));
+
+        return mapper.map(saved, Pending.class);
     }
 
 }
