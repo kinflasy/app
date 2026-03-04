@@ -1,11 +1,12 @@
 package br.org.kinflasy.apis.churches.repositories.department;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.org.kinflasy.apis.churches.entities.department.Integration;
-import java.util.List;
 
 public interface IntegrationRepository extends JpaRepository<Integration, UUID> {
 
@@ -13,6 +14,6 @@ public interface IntegrationRepository extends JpaRepository<Integration, UUID> 
 
     List<Integration> findByMembershipId(UUID membershipId);
 
-    List<Integration> findByDepartmentIdAndMembershipId(UUID departmentId, UUID membershipId);
+    Optional<Integration> findByDepartmentIdAndMembershipId(UUID departmentId, UUID membershipId);
 
 }

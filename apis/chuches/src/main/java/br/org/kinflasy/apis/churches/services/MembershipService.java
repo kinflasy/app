@@ -73,7 +73,8 @@ public class MembershipService {
      * ACESSO RESTRITO
      */
 
-    @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id) and @fga.check('person_data', #request.personId, 'can_edit', 'user', principal.id)")
+    @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id) and "
+            + "@fga.check('person_data', #request.personId, 'can_edit', 'user', principal.id)")
     public MembershipDto create(final UUID unitId, final MembershipRequest request) {
         final var entity = mapper.map(request, Membership.class);
         entity.setId(null);

@@ -26,9 +26,11 @@ public class PersonService {
      * ACESSO PÚBLICO
      */
 
-    public boolean exists(final Person item) {
-        final var id = item.getId();
-        return id != null && repository.existsById(id);
+    public boolean exists(final Person person) {
+        return Optional.ofNullable(person)
+                .map(Person::getId)
+                .map(repository::existsById)
+                .orElse(false);
     }
 
     public Optional<PersonIdentifierDto> identifyById(final UUID id) {

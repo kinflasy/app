@@ -21,6 +21,7 @@ import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionDto;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionRequest;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationRequest;
+import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto.Pending;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.events.department.ExtensionEvent;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
@@ -36,8 +37,8 @@ public class DepartmentService {
     private final ModelMapper mapper;
     private final ApplicationEventPublisher publisher;
 
-    private final DepartmentRepository repository;
     private final DepartmentConverter converter;
+    private final DepartmentRepository repository;
 
     private final IntegrationService integrationService;
 
@@ -95,7 +96,8 @@ public class DepartmentService {
         repository.deleteById(id);
     }
 
-    @PreAuthorize("@fga.check('department', #id, 'can_manage', 'user', principal.id)")
+    @PreAuthorize("@fga.check('department', #id, 'can_manage', 'user', principal.id) and "
+            + "@fga.check('department', #id, 'can_join', 'membership', #request.membershipId + '#user')")
     public IntegrationDto addIntegrant(final UUID id, final IntegrationRequest request) {
         return repository.findById(id)
                 .map(ignoredDepartment -> integrationService.create(id, request))
@@ -135,6 +137,16 @@ public class DepartmentService {
     public void dissociateExtension(final UUID id, final ExtensionSubscriptionRequest request) {
         subscriptionRepository.findByDepartmentIdAndExtension(id, request.getExtension())
                 .ifPresent(subscriptionRepository::delete);
+    }
+
+    /*
+     * VERIFICAÇÃO DE ACESSO REDIRECIONADA
+     */
+
+    public Pending askToJoin(final UUID id) {
+        return repository.findById(id)
+                .map(department -> integrationService.askToJoin(id, department.getUnitId()))
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
 }

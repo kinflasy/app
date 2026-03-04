@@ -15,4 +15,8 @@ public class IntegrationDto {
     private UUID membershipId;
     private IntegrationType type;
 
+    public static class Pending extends IntegrationDto {
+
+    }
+
 }
