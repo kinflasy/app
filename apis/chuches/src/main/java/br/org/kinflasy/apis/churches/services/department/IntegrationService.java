@@ -102,25 +102,38 @@ public class IntegrationService {
                         "Você só pode ingressar nos departamentos das unidades das quais você participa"));
     }
 
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_manage', 'user', principal.id)")
+    public List<Pending> listPendingByDepartment(final UUID departmentId) {
+        return pendingRepository.findByDepartmentId(departmentId).stream()
+                .map(entity -> mapper.map(entity, Pending.class))
+                .toList();
+    }
+
+    @PreAuthorize("@fga.check('membership', #membershipId, 'user', 'user', principal.id)")
+    public List<Pending> listPendingByMembership(final UUID membershipId) {
+        return pendingRepository.findByMembershipId(membershipId).stream()
+                .map(entity -> mapper.map(entity, Pending.class))
+                .toList();
+    }
+
     @PreAuthorize("@fga.check('department', #departmentId, 'can_manage', 'user', principal.id) and "
-            + "@fga.check('department', #departmentId, 'can_join', 'membership', membershipId + '#user')")
+            + "@fga.check('department', #departmentId, 'can_join', 'membership', #membershipId + '#user')")
     public IntegrationDto confirmPending(final UUID departmentId, final UUID membershipId, final IntegrationType type) {
         return pendingRepository.findByDepartmentIdAndMembershipId(departmentId, membershipId)
                 .map(pending -> {
                     // Construir integração oficial
-                    final var official = mapper.map(pending, Integration.class);
-                    official.setDepartmentId(departmentId);
-                    official.setMembershipId(membershipId);
-                    official.setType(type);
+                    final var request = new IntegrationRequest()
+                            .setMembershipId(membershipId)
+                            .setType(type);
 
                     // Salvar integração oficial
-                    final var saved = repository.save(official);
+                    final var saved = create(departmentId, request);
 
                     // Excluir integração pendente
                     pendingRepository.delete(pending);
 
                     // Gerar DTO
-                    return mapper.map(saved, IntegrationDto.class);
+                    return saved;
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Essa solicitação não existe"));
     }

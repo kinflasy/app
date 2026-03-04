@@ -22,6 +22,7 @@ import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionDto;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionRequest;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
+import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto.Pending;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationRequest;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
 import io.swagger.v3.oas.annotations.Operation;
@@ -83,7 +84,7 @@ public class DepartmentController {
 
     @PostMapping("{id}/extensions")
     public ResponseEntity<ExtensionSubscriptionDto> subscribeToExtension(@PathVariable final UUID id,
-            @RequestBody ExtensionSubscriptionRequest request) {
+            @RequestBody final ExtensionSubscriptionRequest request) {
         try {
             return new ResponseEntity<>(service.subscribeToExtension(id, request), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
@@ -101,7 +102,7 @@ public class DepartmentController {
 
     @DeleteMapping("{id}/extensions")
     public ResponseEntity<Void> dissociateExtension(@PathVariable final UUID id,
-            @RequestBody ExtensionSubscriptionRequest request) {
+            @RequestBody final ExtensionSubscriptionRequest request) {
         try {
             service.dissociateExtension(id, request);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -125,13 +126,36 @@ public class DepartmentController {
 
     @PostMapping("{id}/integrants")
     public ResponseEntity<IntegrationDto> addIntegrant(@PathVariable final UUID id,
-            @RequestBody IntegrationRequest request) {
+            @RequestBody final IntegrationRequest request) {
         return ResponseEntity.ok(integrationService.create(id, request));
     }
 
     @DeleteMapping("{id}/integrants")
-    public ResponseEntity<Void> removeIntegrant(@PathVariable final UUID id, @RequestBody IntegrationRequest request) {
+    public ResponseEntity<Void> removeIntegrant(@PathVariable final UUID id,
+            @RequestBody final IntegrationRequest request) {
         integrationService.deleteByDepartmentAndMembership(id, request.getMembershipId());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("{id}/join")
+    public ResponseEntity<Pending> askToJoin(@PathVariable final UUID id) {
+        return ResponseEntity.ok(service.askToJoin(id));
+    }
+
+    @GetMapping("{id}/pending")
+    public ResponseEntity<List<Pending>> listPendingByDepartment(@PathVariable final UUID id) {
+        return ResponseEntity.ok(integrationService.listPendingByDepartment(id));
+    }
+
+    @PostMapping("{id}/pending")
+    public ResponseEntity<IntegrationDto> confirmPending(@PathVariable final UUID id,
+            @RequestBody final IntegrationRequest request) {
+        return ResponseEntity.ok(integrationService.confirmPending(id, request.getMembershipId(), request.getType()));
+    }
+
+    @DeleteMapping("{id}/pending/{membershipId}")
+    public ResponseEntity<Void> deletePending(@PathVariable final UUID id, @PathVariable final UUID membershipId) {
+        integrationService.deletePending(id, membershipId);
         return ResponseEntity.noContent().build();
     }
 

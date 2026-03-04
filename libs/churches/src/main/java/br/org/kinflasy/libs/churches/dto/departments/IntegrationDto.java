@@ -15,8 +15,12 @@ public class IntegrationDto {
     private UUID membershipId;
     private IntegrationType type;
 
-    public static class Pending extends IntegrationDto {
-
+    @Data
+    @NoArgsConstructor
+    public static class Pending {
+        private UUID id;
+        private UUID departmentId;
+        private UUID membershipId;
     }
 
 }
