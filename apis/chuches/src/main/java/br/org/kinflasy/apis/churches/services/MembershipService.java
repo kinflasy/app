@@ -214,6 +214,12 @@ public class MembershipService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_PENDING_MESSAGE));
     }
 
+    @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id) or #personId.equals(principal.id)")
+    public void reject(final UUID unitId, final UUID personId) {
+        pendingRepository.findByUnitIdAndPersonId(unitId, personId)
+                .ifPresent(pendingRepository::delete);
+    }
+
     private Pending processSavedPending(final PendingMembership saved) {
         log.info("Solicitação realizada para membro de id {} ingressar na unidade de id {}",
                 saved.getPersonId(), saved.getUnitId());

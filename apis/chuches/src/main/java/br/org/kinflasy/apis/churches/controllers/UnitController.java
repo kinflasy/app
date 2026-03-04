@@ -151,6 +151,14 @@ public class UnitController {
         return ResponseEntity.ok(service.askToJoinUnit(id));
     }
 
+    @PostMapping("{id}/member/{personId}/reject")
+    @Transactional
+    @Operation(summary = "Rejeitar solicitação de usuário para ingressar na unidade", description = "Rejeitar solicitação de usuário para ingressar na unidade.")
+    public ResponseEntity<Pending> reject(@PathVariable final UUID id, @PathVariable final UUID personId) {
+        membershipService.reject(id, personId);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("{id}/members/pending")
     @Operation(summary = "Listar membros pendentes", description = "Listar as solicitações de ingresso em uma unidade.")
     public ResponseEntity<List<Pending>> listPendingMemberships(@PathVariable final UUID id) {
