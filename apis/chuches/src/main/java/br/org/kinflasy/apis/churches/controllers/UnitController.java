@@ -123,6 +123,13 @@ public class UnitController {
         return ResponseEntity.ok(service.askForUserToJoin(id, request));
     }
 
+    @PutMapping("{id}/pending-members")
+    @Transactional
+    @Operation(summary = "Pedir para um usuário ingressar na unidade", description = "Solicitar que pessoa pré-existente seja membro de uma unidade.")
+    public Pending updatePending(@PathVariable final UUID id, final @RequestBody MembershipRequest request) {
+        return membershipService.updatePending(id, request);
+    }
+
     @PostMapping("{id}/member/{personId}/confirm")
     @Transactional
     @Operation(summary = "Confirmar solicitação de usuário para ingressar na unidade", description = "Confirmar solicitação de usuário para ingressar na unidade.")

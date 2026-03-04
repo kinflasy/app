@@ -2,6 +2,7 @@ package br.org.kinflasy.apis.churches.services;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -168,9 +169,41 @@ public class MembershipService {
     }
 
     @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
+    public Pending updatePending(final UUID unitId, final MembershipRequest request) {
+        return pendingRepository.findByUnitIdAndPersonId(unitId, request.getPersonId())
+                .map(entity -> {
+                    // Capturar objeto original
+                    final var original = mapper.map(entity, Pending.class);
+
+                    // Modificar
+                    mapper.map(request, entity);
+                    entity.setId(original.getId());
+
+                    // Salvar
+                    final var saved = pendingRepository.save(entity);
+                    final var modified = mapper.map(saved, Pending.class);
+
+                    // Publicar evento
+                    publisher.publishEvent(new EntityEvent.Updated<>(original, modified));
+
+                    // Criar, se confirmado por ambas as partes
+                    createIfComplete(saved);
+
+                    return modified;
+                })
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_PENDING_MESSAGE));
+    }
+
+    @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
     public Pending confirmAsUnit(final UUID unitId, final UUID personId) {
         return pendingRepository.findByUnitIdAndPersonId(unitId, personId)
-                .map(pending -> confirm(pending, p -> p.setUnitConfirmationDate(LocalDateTime.now())))
+                .map(pending -> {
+                    if (pending.getAffiliation() == null) {
+                        throw new IllegalStateException("A filiação não pode estar vazia");
+                    }
+
+                    return confirm(pending, p -> p.setUnitConfirmationDate(LocalDateTime.now()));
+                })
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_PENDING_MESSAGE));
     }
 
@@ -206,7 +239,25 @@ public class MembershipService {
         // Publicar evento
         publisher.publishEvent(new EntityEvent.Updated<>(original, modified));
 
-        return mapper.map(saved, Pending.class);
+        // Criar, se confirmado por ambas as partes
+        createIfComplete(saved);
+
+        return modified;
+    }
+
+    private Optional<MembershipDto> createIfComplete(final PendingMembership pending) {
+        // Se ambas as partes confirmarem...
+        if (pending.getUnitConfirmationDate() != null && pending.getUserConfirmationDate() != null) {
+            // ... excluir pendente
+            pendingRepository.findByUnitIdAndPersonId(pending.getUnitId(), pending.getPersonId())
+                    .ifPresent(pendingRepository::delete);
+
+            // ... criar oficial
+            final var request = mapper.map(pending, MembershipRequest.class);
+            return Optional.of(create(pending.getUnitId(), request));
+        } else {
+            return Optional.empty();
+        }
     }
 
 }
