@@ -31,11 +31,13 @@
 		<module>libs/contacts</module>
 		<module>libs/people</module>
 		<module>libs/churches</module>
+		<module>libs/calendar</module>
 		<module>libs/api_utils</module>
 		<module>apis/contacts</module>
 		<module>apis/people</module>
 		<module>apis/auth</module>
 		<module>apis/chuches</module>
+		<module>apis/calendar</module>
 	</modules>
 
 	<!-- Propriedades -->
