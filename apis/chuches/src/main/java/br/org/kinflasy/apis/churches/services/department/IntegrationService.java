@@ -52,7 +52,9 @@ public class IntegrationService {
                 .toList();
     }
 
-    @PreAuthorize("@fga.check('department', #departmentId, 'can_manage', 'user', principal.id)")
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_manage', 'user', principal.id) and "
+            + "@fgau.withCharacteristics('department', #departmentId, 'can_join', 'membership', #request.membershipId + '#user', "
+            + "@membershipService.findById(#request.membershipId).get().person)")
     public IntegrationDto create(final UUID departmentId, final IntegrationRequest request) {
         // Construir entidade
         final var entity = mapper.map(request, Integration.class);
@@ -84,7 +86,7 @@ public class IntegrationService {
                 .findFirst().ifPresent(repository::delete);
     }
 
-    @PreAuthorize("@fga.check('department', #departmentId, 'can_join', 'user', principal.id)")
+    @PreAuthorize("@fgau.withCharacteristics('department', #departmentId, 'can_join')")
     public Pending askToJoin(final UUID departmentId, final UUID unitId) {
         final var loggedUser = authUtils.getLoggedUser();
 
@@ -117,7 +119,8 @@ public class IntegrationService {
     }
 
     @PreAuthorize("@fga.check('department', #departmentId, 'can_manage', 'user', principal.id) and "
-            + "@fga.check('department', #departmentId, 'can_join', 'membership', #membershipId + '#user')")
+            + "@fgau.withCharacteristics('department', #departmentId, 'can_join', 'membership', #membershipId + '#user', "
+            + "@membershipService.findById(#request.membershipId).get().person))")
     public IntegrationDto confirmPending(final UUID departmentId, final UUID membershipId, final IntegrationType type) {
         return pendingRepository.findByDepartmentIdAndMembershipId(departmentId, membershipId)
                 .map(pending -> {

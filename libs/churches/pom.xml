@@ -36,6 +36,13 @@
             <artifactId>lib_utils</artifactId>
             <version>0.0.1-SNAPSHOT-001</version>
         </dependency>
+
+        <!-- OpenFGA -->
+        <dependency>
+            <groupId>dev.openfga</groupId>
+            <artifactId>openfga-spring-boot-starter</artifactId>
+            <version>0.3.0</version>
+        </dependency>
     </dependencies>
 
 </project>

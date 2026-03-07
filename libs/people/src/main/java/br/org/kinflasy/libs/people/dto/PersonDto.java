@@ -1,6 +1,7 @@
 package br.org.kinflasy.libs.people.dto;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.UUID;
 
 import br.org.kinflasy.libs.people.enums.Gender;
@@ -18,5 +19,9 @@ public class PersonDto {
     private LocalDate birthDate;
     private String phone;
     private UUID addressId;
+
+    public int calculateAge() {
+        return Period.between(birthDate, LocalDate.now()).getYears();
+    }
 
 }

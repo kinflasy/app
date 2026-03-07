@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 import br.org.kinflasy.apis.churches.config.ChurchesFgaTupleManager;
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
+import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import br.org.kinflasy.libs.churches.dto.ChurchDto;
 import br.org.kinflasy.libs.churches.dto.ChurchRequest;
 import br.org.kinflasy.libs.churches.dto.MembershipRequest;
+import br.org.kinflasy.libs.churches.dto.access_rules.UserRule;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionRequest;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationRequest;
@@ -74,15 +76,20 @@ public class ChurchUseCaseService {
 
         tupleManager.handleMembershipCreated(new EntityEvent.Created<>(membership)).join();
 
+        // Criar regras de acesso
+        final List<AccessRule> everyone = List.of(UserRule.EVERYONE);
+
         // Criar ministério pastoral
-        final var pastorate = unitService.createDepartment(unit.getId(), new DepartmentRequest()
-                .setName("Ministério Pastoral").setSlug("pastoral")
-                .setType(DepartmentType.ADMINISTRATIVE));
+        final var pastorateRequest = new DepartmentRequest.WithRules();
+        pastorateRequest.setVisibilityRules(everyone)
+                .setName("Ministério Pastoral").setSlug("pastoral").setType(DepartmentType.ADMINISTRATIVE);
+        final var pastorate = unitService.createDepartment(unit.getId(), pastorateRequest);
 
         // Criar secretaria
-        final var secretariat = unitService.createDepartment(unit.getId(), new DepartmentRequest()
-                .setName("Secretaria").setSlug("secretaria")
-                .setType(DepartmentType.ADMINISTRATIVE));
+        final var secretariatRequest = new DepartmentRequest.WithRules();
+        secretariatRequest.setVisibilityRules(everyone)
+                .setName("Secretaria").setSlug("secretaria").setType(DepartmentType.ADMINISTRATIVE);
+        final var secretariat = unitService.createDepartment(unit.getId(), secretariatRequest);
 
         // Relacionar departamentos com unidade no FGA
         tupleManager.handleDepartmentCreated(new EntityEvent.Created<>(pastorate)).join();

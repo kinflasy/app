@@ -1,5 +1,6 @@
 package br.org.kinflasy.libs.churches.dto.departments;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,15 +22,15 @@ public class DepartmentDto {
 
     @Data
     public static class Rules {
-        private List<AccessRule> visibilityRules;
-        private List<AccessRule> joinRules;
+        private List<AccessRule> visibilityRules = Collections.emptyList();
+        private List<AccessRule> joinRules = Collections.emptyList();
     }
 
     @Data
     @EqualsAndHashCode(callSuper = true)
     public static class WithRules extends DepartmentDto {
-        private List<AccessRule> visibilityRules;
-        private List<AccessRule> joinRules;
+        private List<AccessRule> visibilityRules = Collections.emptyList();
+        private List<AccessRule> joinRules = Collections.emptyList();
     }
 
 }

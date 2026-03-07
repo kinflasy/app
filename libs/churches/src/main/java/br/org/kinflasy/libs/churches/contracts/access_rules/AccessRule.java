@@ -8,6 +8,7 @@ import br.org.kinflasy.libs.churches.dto.access_rules.CharacteristicRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.ChurchRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.DepartmentRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.UnitRule;
+import dev.openfga.sdk.api.client.model.ClientRelationshipCondition;
 
 @JsonSubTypes({
         @Type(name = "CHARACTERISTIC", value = CharacteristicRule.class),
@@ -16,5 +17,8 @@ import br.org.kinflasy.libs.churches.dto.access_rules.UnitRule;
         @Type(name = "CHURCH", value = ChurchRule.class) })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXTERNAL_PROPERTY, property = "type", visible = true)
 public interface AccessRule {
+
+    public String getFgaUser();
+    public ClientRelationshipCondition getFgaCondition();
 
 }
