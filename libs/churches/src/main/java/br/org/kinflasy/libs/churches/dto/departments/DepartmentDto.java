@@ -3,7 +3,7 @@ package br.org.kinflasy.libs.churches.dto.departments;
 import java.util.List;
 import java.util.UUID;
 
-import br.org.kinflasy.libs.churches.contracts.access_rules.UnitLevelRule;
+import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import br.org.kinflasy.libs.churches.enums.department.DepartmentType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,15 +21,15 @@ public class DepartmentDto {
 
     @Data
     public static class Rules {
-        private List<UnitLevelRule> visibilityRules;
-        private List<UnitLevelRule> joinRules;
+        private List<AccessRule> visibilityRules;
+        private List<AccessRule> joinRules;
     }
 
     @Data
     @EqualsAndHashCode(callSuper = true)
     public static class WithRules extends DepartmentDto {
-        private List<UnitLevelRule> visibilityRules;
-        private List<UnitLevelRule> joinRules;
+        private List<AccessRule> visibilityRules;
+        private List<AccessRule> joinRules;
     }
 
 }

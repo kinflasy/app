@@ -2,7 +2,7 @@ package br.org.kinflasy.libs.churches.dto.departments;
 
 import java.util.List;
 
-import br.org.kinflasy.libs.churches.contracts.access_rules.UnitLevelRule;
+import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import br.org.kinflasy.libs.churches.enums.department.DepartmentType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,15 +20,15 @@ public class DepartmentRequest {
 
     @Data
     public static class Rules {
-        private List<UnitLevelRule> visibilityRules;
-        private List<UnitLevelRule> joinRules;
+        private List<? extends AccessRule> visibilityRules;
+        private List<? extends AccessRule> joinRules;
     }
 
     @Data
     @EqualsAndHashCode(callSuper = true)
     public static class WithRules extends DepartmentRequest {
-        private List<UnitLevelRule> visibilityRules;
-        private List<UnitLevelRule> joinRules;
+        private List<? extends AccessRule> visibilityRules;
+        private List<? extends AccessRule> joinRules;
     }
 
 }
