@@ -18,22 +18,27 @@ import br.org.kinflasy.apis.churches.entities.department.ExtensionSubscription;
 import br.org.kinflasy.apis.churches.repositories.department.DepartmentRepository;
 import br.org.kinflasy.apis.churches.repositories.department.ExtensionSubscriptionRepository;
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
+import br.org.kinflasy.libs.churches.dto.access_rules.CharacteristicRule;
+import br.org.kinflasy.libs.churches.dto.access_rules.ChurchRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.UnitRule;
+import br.org.kinflasy.libs.churches.dto.access_rules.UserRule;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionDto;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionRequest;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
-import br.org.kinflasy.libs.churches.dto.departments.IntegrationRequest;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto.Pending;
+import br.org.kinflasy.libs.churches.dto.departments.IntegrationRequest;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.churches.events.department.ExtensionEvent;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import dev.openfga.sdk.api.client.OpenFgaClient;
+import dev.openfga.sdk.api.client.model.ClientReadRequest;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
 import dev.openfga.sdk.api.configuration.ClientWriteTuplesOptions;
 import dev.openfga.sdk.api.model.WriteRequestWrites.OnDuplicateEnum;
+import dev.openfga.sdk.errors.FgaInvalidParameterException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -43,6 +48,8 @@ import lombok.SneakyThrows;
 public class DepartmentService {
 
     private static final String NOT_FOUND_MESSAGE = "Departamento não encontrado";
+
+    private static final String TYPE_DEPARTMENT = "department:";
 
     private final ModelMapper mapper;
     private final ApplicationEventPublisher publisher;
@@ -55,12 +62,20 @@ public class DepartmentService {
 
     private final OpenFgaClient fgaClient;
 
+    /*
+     * ACESSO PÚBLICO
+     */
+
     @PostFilter("@fgau.withCharacteristics('department', filterObject.id, 'can_view')")
     public List<DepartmentDto> listByUnitId(final UUID unitId) {
         return repository.findByUnitId(unitId).stream()
                 .map(converter::toDto)
                 .toList();
     }
+
+    /*
+     * ACESSO RESTRITO
+     */
 
     @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
     public DepartmentDto create(final UUID unitId, final DepartmentRequest.WithRules request) {
@@ -75,7 +90,8 @@ public class DepartmentService {
         final var created = repository.saveAndFlush(department);
 
         // Salvar regras de visibilidade e ingresso
-        writeRules(created, request.getVisibilityRules(), request.getJoinRules());
+        writeVisibilityRules(created, request.getVisibilityRules());
+        writeJoinRules(created, request.getJoinRules());
 
         // Gerar DTO
         final var dto = converter.toDto(created);
@@ -141,6 +157,26 @@ public class DepartmentService {
                 .ifPresent(subscriptionRepository::delete);
     }
 
+    @SneakyThrows
+    @PreAuthorize("@fga.check('department', #id, 'can_manage', 'user', principal.id)")
+    public List<AccessRule> listVisibilityRules(final UUID id) {
+        final var request = new ClientReadRequest()
+                ._object(TYPE_DEPARTMENT + id)
+                .relation("can_view");
+
+        return listRules(request);
+    }
+
+    @SneakyThrows
+    @PreAuthorize("@fga.check('department', #id, 'can_manage', 'user', principal.id)")
+    public List<AccessRule> listJoinRules(final UUID id) {
+        final var request = new ClientReadRequest()
+                ._object(TYPE_DEPARTMENT + id)
+                .relation("can_join");
+
+        return listRules(request);
+    }
+
     /*
      * VERIFICAÇÃO DE ACESSO REDIRECIONADA
      */
@@ -170,59 +206,72 @@ public class DepartmentService {
     }
 
     @SneakyThrows
-    private void writeRules(final Department department, final Collection<AccessRule> visibilityRules,
-            final Collection<AccessRule> joinRules) {
-        /*
-         * REGRAS DE VISIBILIDADE
-         * ----------------------
-         */
-
+    private void writeVisibilityRules(final Department department, final Collection<AccessRule> rules) {
         // Usar padrão caso não venham
-        final var chosenVisibilityRules = visibilityRules.isEmpty() ? getDefaultVisibilityRules(department)
-                : visibilityRules;
+        final var chosenRules = rules.isEmpty() ? getDefaultVisibilityRules(department) : rules;
 
         // Gerar tuplas
-        final var visibilityTuples = chosenVisibilityRules.stream()
+        final var tuples = chosenRules.stream()
                 .map(rule -> new ClientTupleKey()
-                        ._object("department:" + department.getId())
+                        ._object(TYPE_DEPARTMENT + department.getId())
                         .relation("can_view")
                         .user(rule.getFgaUser())
                         .condition(rule.getFgaCondition()))
                 .toList();
 
         // Salvar
-        fgaClient.writeTuples(visibilityTuples, new ClientWriteTuplesOptions().onDuplicate(OnDuplicateEnum.IGNORE))
+        fgaClient.writeTuples(tuples, new ClientWriteTuplesOptions().onDuplicate(OnDuplicateEnum.IGNORE))
                 .join();
+    }
 
-        /*
-         * REGRAS DE INTEGRAÇÃO
-         * --------------------
-         */
-
+    @SneakyThrows
+    private void writeJoinRules(final Department department, final Collection<AccessRule> rules) {
         // Usar padrão caso não venham
-        final var chosenJoinRules = joinRules.isEmpty() ? getDefaultJoinRules(department) : joinRules;
+        final var chosenRules = rules.isEmpty() ? getDefaultJoinRules(department) : rules;
 
         // Gerar tuplas
-        final var joinTuples = chosenJoinRules.stream()
+        final var tuples = chosenRules.stream()
                 .map(rule -> new ClientTupleKey()
-                        ._object("department:" + department.getId())
+                        ._object(TYPE_DEPARTMENT + department.getId())
                         .relation("can_join")
                         .user(rule.getFgaUser())
                         .condition(rule.getFgaCondition()))
                 .toList();
 
         // Salvar
-        fgaClient.writeTuples(joinTuples, new ClientWriteTuplesOptions().onDuplicate(OnDuplicateEnum.IGNORE)).join();
+        fgaClient.writeTuples(tuples, new ClientWriteTuplesOptions().onDuplicate(OnDuplicateEnum.IGNORE)).join();
     }
 
-    @SneakyThrows
-    private void listRules(final UUID departmentId) {
-        final var users = fgaClient.listUsers(null).join();
-        final var list = users.getUsers().stream()
-                .map(user -> user.getUserset().getType())
-                .toList();
+    private List<AccessRule> listRules(final ClientReadRequest request) throws FgaInvalidParameterException {
+        final var response = fgaClient.read(request).join();
 
-        list.clear();
+        return response.getTuples().stream()
+                .map(tuple -> {
+                    final var user = tuple.getKey().getUser();
+                    final var userParts = user.split(":");
+                    final var userType = userParts[0];
+                    final var userId = userParts[1];
+
+                    final var characteristics = CharacteristicRule.of(tuple.getKey().getCondition());
+
+                    return switch (userType) {
+                        case "church" -> {
+                            final var userIdParts = userId.split("#");
+                            final var churchId = UUID.fromString(userIdParts[0]);
+                            final var affiliation = Affiliation.valueOf(userIdParts[1].toUpperCase());
+                            yield new ChurchRule(churchId, affiliation, characteristics);
+                        }
+                        case "unit" -> {
+                            final var userIdParts = userId.split("#");
+                            final var unitId = UUID.fromString(userIdParts[0]);
+                            final var affiliation = Affiliation.valueOf(userIdParts[1].toUpperCase());
+                            yield new UnitRule(unitId, affiliation, characteristics);
+                        }
+                        case "user" -> new UserRule(userId, characteristics);
+                        default -> throw new IllegalStateException("Tupla fora das regras");
+                    };
+                })
+                .toList();
     }
 
 }

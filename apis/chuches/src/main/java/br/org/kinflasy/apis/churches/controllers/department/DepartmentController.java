@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.apis.churches.services.department.IntegrationService;
+import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionDto;
@@ -157,6 +158,16 @@ public class DepartmentController {
     public ResponseEntity<Void> deletePending(@PathVariable final UUID id, @PathVariable final UUID membershipId) {
         integrationService.deletePending(id, membershipId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("{id}/visibility-rules")
+    public ResponseEntity<List<AccessRule>> listVisibilityRules(@PathVariable final UUID id) {
+        return ResponseEntity.ok(service.listVisibilityRules(id));
+    }
+
+    @GetMapping("{id}/join-rules")
+    public ResponseEntity<List<AccessRule>> listJoinRules(@PathVariable final UUID id) {
+        return ResponseEntity.ok(service.listJoinRules(id));
     }
 
 }
