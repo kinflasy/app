@@ -170,4 +170,16 @@ public class DepartmentController {
         return ResponseEntity.ok(service.listJoinRules(id));
     }
 
+    @DeleteMapping("{id}/visibility-rules")
+    public ResponseEntity<Void> deleteVisibilityRules(@PathVariable final UUID id) {
+        service.deleteVisibilityRules(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("{id}/join-rules")
+    public ResponseEntity<Void> deleteJoinRules(@PathVariable final UUID id) {
+        service.deleteJoinRules(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

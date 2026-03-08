@@ -36,6 +36,7 @@ import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientReadRequest;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
+import dev.openfga.sdk.api.client.model.ClientTupleKeyWithoutCondition;
 import dev.openfga.sdk.api.configuration.ClientWriteTuplesOptions;
 import dev.openfga.sdk.api.model.WriteRequestWrites.OnDuplicateEnum;
 import dev.openfga.sdk.errors.FgaInvalidParameterException;
@@ -50,6 +51,8 @@ public class DepartmentService {
     private static final String NOT_FOUND_MESSAGE = "Departamento não encontrado";
 
     private static final String TYPE_DEPARTMENT = "department:";
+    private static final String RELATION_CAN_VIEW = "can_view";
+    private static final String RELATION_CAN_JOIN = "can_join";
 
     private final ModelMapper mapper;
     private final ApplicationEventPublisher publisher;
@@ -162,7 +165,7 @@ public class DepartmentService {
     public List<AccessRule> listVisibilityRules(final UUID id) {
         final var request = new ClientReadRequest()
                 ._object(TYPE_DEPARTMENT + id)
-                .relation("can_view");
+                .relation(RELATION_CAN_VIEW);
 
         return listRules(request);
     }
@@ -172,9 +175,25 @@ public class DepartmentService {
     public List<AccessRule> listJoinRules(final UUID id) {
         final var request = new ClientReadRequest()
                 ._object(TYPE_DEPARTMENT + id)
-                .relation("can_join");
+                .relation(RELATION_CAN_JOIN);
 
         return listRules(request);
+    }
+
+    public void deleteVisibilityRules(final UUID id) {
+        final var request = new ClientReadRequest()
+                ._object(TYPE_DEPARTMENT + id)
+                .relation(RELATION_CAN_VIEW);
+
+        deleteRules(request);
+    }
+
+    public void deleteJoinRules(final UUID id) {
+        final var request = new ClientReadRequest()
+                ._object(TYPE_DEPARTMENT + id)
+                .relation(RELATION_CAN_JOIN);
+
+        deleteRules(request);
     }
 
     /*
@@ -214,7 +233,7 @@ public class DepartmentService {
         final var tuples = chosenRules.stream()
                 .map(rule -> new ClientTupleKey()
                         ._object(TYPE_DEPARTMENT + department.getId())
-                        .relation("can_view")
+                        .relation(RELATION_CAN_VIEW)
                         .user(rule.getFgaUser())
                         .condition(rule.getFgaCondition()))
                 .toList();
@@ -233,7 +252,7 @@ public class DepartmentService {
         final var tuples = chosenRules.stream()
                 .map(rule -> new ClientTupleKey()
                         ._object(TYPE_DEPARTMENT + department.getId())
-                        .relation("can_join")
+                        .relation(RELATION_CAN_JOIN)
                         .user(rule.getFgaUser())
                         .condition(rule.getFgaCondition()))
                 .toList();
@@ -272,6 +291,22 @@ public class DepartmentService {
                     };
                 })
                 .toList();
+    }
+
+    @SneakyThrows
+    private void deleteRules(final ClientReadRequest request) {
+        final var response = fgaClient.read(request).join();
+
+        fgaClient.deleteTuples(response.getTuples().stream()
+                .map(tuple -> {
+                    final var key = tuple.getKey();
+                    return new ClientTupleKeyWithoutCondition()
+                            ._object(key.getObject())
+                            .relation(key.getRelation())
+                            .user(key.getUser());
+                })
+                .toList())
+                .join();
     }
 
 }
