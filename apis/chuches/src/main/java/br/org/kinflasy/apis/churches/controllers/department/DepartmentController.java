@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.apis.churches.services.department.IntegrationService;
+import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
+import br.org.kinflasy.libs.churches.dto.access_rules.AccessRulesRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionDto;
@@ -157,6 +159,44 @@ public class DepartmentController {
     public ResponseEntity<Void> deletePending(@PathVariable final UUID id, @PathVariable final UUID membershipId) {
         integrationService.deletePending(id, membershipId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("{id}/visibility-rules")
+    public ResponseEntity<List<AccessRule>> listVisibilityRules(@PathVariable final UUID id) {
+        return ResponseEntity.ok(service.listVisibilityRules(id));
+    }
+
+    @GetMapping("{id}/join-rules")
+    public ResponseEntity<List<AccessRule>> listJoinRules(@PathVariable final UUID id) {
+        return ResponseEntity.ok(service.listJoinRules(id));
+    }
+
+    @PutMapping("{id}/visibility-rules")
+    public ResponseEntity<Void> replaceVisibilityRules(@PathVariable final UUID id,
+            @RequestBody final AccessRulesRequest request) {
+        service.replaceVisibilityRules(id, request.getRules());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("{id}/join-rules")
+    public ResponseEntity<Void> replaceJoinRules(@PathVariable final UUID id,
+            @RequestBody final AccessRulesRequest request) {
+        service.replaceJoinRules(id, request.getRules());
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("{id}/visibility-rules")
+    public ResponseEntity<List<AccessRule>> resetVisibilityRules(@PathVariable final UUID id) {
+        return service.resetVisibilityRules(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
+
+    @DeleteMapping("{id}/join-rules")
+    public ResponseEntity<List<AccessRule>> resetJoinRules(@PathVariable final UUID id) {
+        return service.resetJoinRules(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
     }
 
 }

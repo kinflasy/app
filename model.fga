@@ -63,5 +63,17 @@ type department
     define can_edit: leader or admin from parent_unit
     define can_manage: can_edit or assistant
     define can_observe: can_manage or observer
-    define can_join: congregated from parent_unit
-    define can_view: can_observe or can_join
+    define can_join: [user with characteristics,
+      unit#member with characteristics, unit#congregated with characteristics, unit#visitor with characteristics,
+      church#member with characteristics, church#congregated with characteristics, church#visitor with characteristics,
+      user:* with characteristics]
+    define can_view: [user with characteristics,
+      unit#member with characteristics, unit#congregated with characteristics, unit#visitor with characteristics,
+      church#member with characteristics, church#congregated with characteristics, church#visitor with characteristics,
+      user:* with characteristics] or can_observe or can_join
+
+condition characteristics(user_gender: string, user_age: int, req_gender: string, min_age: int, max_age: int) {
+  (req_gender == "" || user_gender == req_gender) &&
+  (min_age == 0 || user_age >= min_age) && 
+  (max_age == 0 || user_age <= max_age)
+}

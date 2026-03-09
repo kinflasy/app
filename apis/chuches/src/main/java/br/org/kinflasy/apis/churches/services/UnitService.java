@@ -154,7 +154,7 @@ public class UnitService {
     }
 
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
-    public DepartmentDto createDepartment(final UUID id, final DepartmentRequest request) {
+    public DepartmentDto createDepartment(final UUID id, final DepartmentRequest.WithRules request) {
         return repository.findById(id)
                 .map(ignoredUnit -> departmentService.create(id, request))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));

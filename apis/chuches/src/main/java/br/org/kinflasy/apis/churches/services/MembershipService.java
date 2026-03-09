@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.apis.churches.clients.PersonClient;
 import br.org.kinflasy.apis.churches.entities.Membership;
 import br.org.kinflasy.apis.churches.entities.PendingMembership;
 import br.org.kinflasy.apis.churches.repositories.MembershipRepository;
@@ -41,6 +42,9 @@ public class MembershipService {
 
     private final MembershipRepository repository;
     private final PendingMembershipRepository pendingRepository;
+
+    private final UnitService unitService;
+    private final PersonClient personClient;
 
     /*
      * ACESSO PÚBLICO
@@ -112,6 +116,19 @@ public class MembershipService {
         return repository.findByPersonId(personId).stream()
                 .map(entity -> mapper.map(entity, MembershipDto.class))
                 .toList();
+    }
+
+    public Optional<MembershipDto.Detailed> findById(final UUID id) {
+        return repository.findById(id)
+                .map(entity -> {
+                    final var unitDto = unitService.findById(entity.getUnitId())
+                            .orElseThrow(() -> new EntityNotFoundException("Unidade não encontrada"));
+                    final var personDto = personClient.findById(entity.getPersonId());
+
+                    return mapper.map(entity, MembershipDto.Detailed.class)
+                            .setUnitDto(unitDto)
+                            .setPerson(personDto);
+                });
     }
 
     @PreAuthorize("@fga.check('membership', #id, 'can_edit', 'user', principal.id) or #personId.equals(principal.id)")

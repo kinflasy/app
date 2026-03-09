@@ -83,7 +83,7 @@ public class UnitController {
     @PostMapping("{id}/departments")
     @Operation(summary = "Cadastrar departamento", description = "Cadastrar um novo departamento em uma unidade.")
     public ResponseEntity<DepartmentDto> createDepartment(@PathVariable final UUID id,
-            @RequestBody @Valid final DepartmentRequest request) {
+            @RequestBody @Valid final DepartmentRequest.WithRules request) {
         return new ResponseEntity<>(service.createDepartment(id, request), HttpStatus.CREATED);
     }
 
