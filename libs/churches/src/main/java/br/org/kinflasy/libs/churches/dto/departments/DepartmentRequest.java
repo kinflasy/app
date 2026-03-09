@@ -6,7 +6,6 @@ import java.util.List;
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import br.org.kinflasy.libs.churches.enums.department.DepartmentType;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,18 +26,14 @@ public class DepartmentRequest {
 
     @Data
     public static class Rules {
-        @NotEmpty
         private List<AccessRule> visibilityRules = Collections.emptyList();
-
         private List<AccessRule> joinRules = Collections.emptyList();
     }
 
     @Data
     @EqualsAndHashCode(callSuper = true)
     public static class WithRules extends DepartmentRequest {
-        @NotEmpty
         private List<AccessRule> visibilityRules = Collections.emptyList();
-
         private List<AccessRule> joinRules = Collections.emptyList();
     }
 

@@ -3,6 +3,8 @@ package br.org.kinflasy.libs.churches.dto.access_rules;
 import java.text.MessageFormat;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import dev.openfga.sdk.api.client.model.ClientRelationshipCondition;
@@ -11,7 +13,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Data
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor = @__(@JsonCreator))
 public class ChurchRule implements AccessRule {
 
     public static final String PREFIX = "church";

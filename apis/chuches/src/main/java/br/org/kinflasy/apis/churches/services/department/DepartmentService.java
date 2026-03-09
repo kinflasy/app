@@ -39,7 +39,6 @@ import dev.openfga.sdk.api.client.model.ClientTupleKey;
 import dev.openfga.sdk.api.client.model.ClientTupleKeyWithoutCondition;
 import dev.openfga.sdk.api.configuration.ClientWriteTuplesOptions;
 import dev.openfga.sdk.api.model.WriteRequestWrites.OnDuplicateEnum;
-import dev.openfga.sdk.errors.FgaInvalidParameterException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -84,7 +83,6 @@ public class DepartmentService {
     public DepartmentDto create(final UUID unitId, final DepartmentRequest.WithRules request) {
         // Construir departamento
         final var department = converter.toEntity(request);
-        // department.setVisibilityId(visibility.getId());
 
         // Associar unidade
         department.setUnitId(unitId);
@@ -92,9 +90,15 @@ public class DepartmentService {
         // Salvar
         final var created = repository.saveAndFlush(department);
 
-        // Salvar regras de visibilidade e ingresso
-        writeVisibilityRules(created, request.getVisibilityRules());
-        writeJoinRules(created, request.getJoinRules());
+        // Salvar regras de visibilidade e ingresso (usar padrão, caso não venham)
+        final var visibilityRules = request.getVisibilityRules().isEmpty()
+                ? getDefaultVisibilityRules(department)
+                : request.getVisibilityRules();
+        final var joinRules = request.getJoinRules().isEmpty()
+                ? getDefaultJoinRules(department)
+                : request.getJoinRules();
+        writeRules(created.getId(), RELATION_CAN_VIEW, visibilityRules);
+        writeRules(created.getId(), RELATION_CAN_JOIN, joinRules);
 
         // Gerar DTO
         final var dto = converter.toDto(created);
@@ -160,40 +164,34 @@ public class DepartmentService {
                 .ifPresent(subscriptionRepository::delete);
     }
 
-    @SneakyThrows
-    @PreAuthorize("@fga.check('department', #id, 'can_manage', 'user', principal.id)")
+    @PreAuthorize("@fga.check('department', #id, 'can_observe', 'user', principal.id)")
     public List<AccessRule> listVisibilityRules(final UUID id) {
-        final var request = new ClientReadRequest()
-                ._object(TYPE_DEPARTMENT + id)
-                .relation(RELATION_CAN_VIEW);
-
-        return listRules(request);
+        return listRules(id, RELATION_CAN_VIEW);
     }
 
-    @SneakyThrows
-    @PreAuthorize("@fga.check('department', #id, 'can_manage', 'user', principal.id)")
+    @PreAuthorize("@fga.check('department', #id, 'can_observe', 'user', principal.id)")
     public List<AccessRule> listJoinRules(final UUID id) {
-        final var request = new ClientReadRequest()
-                ._object(TYPE_DEPARTMENT + id)
-                .relation(RELATION_CAN_JOIN);
-
-        return listRules(request);
+        return listRules(id, RELATION_CAN_JOIN);
     }
 
-    public void deleteVisibilityRules(final UUID id) {
-        final var request = new ClientReadRequest()
-                ._object(TYPE_DEPARTMENT + id)
-                .relation(RELATION_CAN_VIEW);
-
-        deleteRules(request);
+    @PreAuthorize("@fga.check('department', #id, 'can_edit', 'user', principal.id)")
+    public Optional<List<AccessRule>> resetVisibilityRules(final UUID id) {
+        return resetRules(id, RELATION_CAN_VIEW);
     }
 
-    public void deleteJoinRules(final UUID id) {
-        final var request = new ClientReadRequest()
-                ._object(TYPE_DEPARTMENT + id)
-                .relation(RELATION_CAN_JOIN);
+    @PreAuthorize("@fga.check('department', #id, 'can_edit', 'user', principal.id)")
+    public Optional<List<AccessRule>> resetJoinRules(final UUID id) {
+        return resetRules(id, RELATION_CAN_JOIN);
+    }
 
-        deleteRules(request);
+    @PreAuthorize("@fga.check('department', #id, 'can_edit', 'user', principal.id)")
+    public void replaceVisibilityRules(final UUID id, final Collection<AccessRule> rules) {
+        replaceRules(id, RELATION_CAN_VIEW, rules);
+    }
+
+    @PreAuthorize("@fga.check('department', #id, 'can_edit', 'user', principal.id)")
+    public void replaceJoinRules(final UUID id, final Collection<AccessRule> rules) {
+        replaceRules(id, RELATION_CAN_JOIN, rules);
     }
 
     /*
@@ -217,51 +215,25 @@ public class DepartmentService {
      */
 
     private List<AccessRule> getDefaultVisibilityRules(final Department department) {
-        return List.of(new UnitRule(department.getUnitId(), Affiliation.CONGREGATED));
+        return switch (department.getType()) {
+            case ADMINISTRATIVE -> List.of(new UnitRule(department.getUnitId(), Affiliation.MEMBER));
+            default -> List.of(new UnitRule(department.getUnitId(), Affiliation.CONGREGATED));
+        };
     }
 
     private List<AccessRule> getDefaultJoinRules(final Department department) {
-        return List.of(new UnitRule(department.getUnitId(), Affiliation.CONGREGATED));
+        return switch (department.getType()) {
+            case ADMINISTRATIVE -> List.of(new UnitRule(department.getUnitId(), Affiliation.MEMBER));
+            default -> List.of(new UnitRule(department.getUnitId(), Affiliation.CONGREGATED));
+        };
     }
 
     @SneakyThrows
-    private void writeVisibilityRules(final Department department, final Collection<AccessRule> rules) {
-        // Usar padrão caso não venham
-        final var chosenRules = rules.isEmpty() ? getDefaultVisibilityRules(department) : rules;
+    private List<AccessRule> listRules(final UUID id, final String relation) {
+        final var request = new ClientReadRequest()
+                ._object(TYPE_DEPARTMENT + id)
+                .relation(relation);
 
-        // Gerar tuplas
-        final var tuples = chosenRules.stream()
-                .map(rule -> new ClientTupleKey()
-                        ._object(TYPE_DEPARTMENT + department.getId())
-                        .relation(RELATION_CAN_VIEW)
-                        .user(rule.getFgaUser())
-                        .condition(rule.getFgaCondition()))
-                .toList();
-
-        // Salvar
-        fgaClient.writeTuples(tuples, new ClientWriteTuplesOptions().onDuplicate(OnDuplicateEnum.IGNORE))
-                .join();
-    }
-
-    @SneakyThrows
-    private void writeJoinRules(final Department department, final Collection<AccessRule> rules) {
-        // Usar padrão caso não venham
-        final var chosenRules = rules.isEmpty() ? getDefaultJoinRules(department) : rules;
-
-        // Gerar tuplas
-        final var tuples = chosenRules.stream()
-                .map(rule -> new ClientTupleKey()
-                        ._object(TYPE_DEPARTMENT + department.getId())
-                        .relation(RELATION_CAN_JOIN)
-                        .user(rule.getFgaUser())
-                        .condition(rule.getFgaCondition()))
-                .toList();
-
-        // Salvar
-        fgaClient.writeTuples(tuples, new ClientWriteTuplesOptions().onDuplicate(OnDuplicateEnum.IGNORE)).join();
-    }
-
-    private List<AccessRule> listRules(final ClientReadRequest request) throws FgaInvalidParameterException {
         final var response = fgaClient.read(request).join();
 
         return response.getTuples().stream()
@@ -294,19 +266,64 @@ public class DepartmentService {
     }
 
     @SneakyThrows
-    private void deleteRules(final ClientReadRequest request) {
-        final var response = fgaClient.read(request).join();
+    private void writeRules(final UUID id, final String relation, final Collection<AccessRule> rules) {
+        // Gerar tuplas
+        final var tuples = rules.stream()
+                .map(rule -> new ClientTupleKey()
+                        ._object(TYPE_DEPARTMENT + id)
+                        .relation(relation)
+                        .user(rule.getFgaUser())
+                        .condition(rule.getFgaCondition()))
+                .toList();
 
-        fgaClient.deleteTuples(response.getTuples().stream()
-                .map(tuple -> {
-                    final var key = tuple.getKey();
-                    return new ClientTupleKeyWithoutCondition()
-                            ._object(key.getObject())
-                            .relation(key.getRelation())
-                            .user(key.getUser());
-                })
-                .toList())
-                .join();
+        if (!tuples.isEmpty()) {
+            // Salvar
+            fgaClient.writeTuples(tuples, new ClientWriteTuplesOptions().onDuplicate(OnDuplicateEnum.IGNORE)).join();
+        }
+
+    }
+
+    @SneakyThrows
+    private void clearRules(final UUID id, final String relation) {
+        final var request = new ClientReadRequest()
+                ._object(TYPE_DEPARTMENT + id)
+                .relation(relation);
+
+        final var response = fgaClient.read(request).join();
+        final var tuples = response.getTuples();
+
+        if (!tuples.isEmpty()) {
+            fgaClient.deleteTuples(tuples.stream()
+                    .map(tuple -> {
+                        final var key = tuple.getKey();
+                        return new ClientTupleKeyWithoutCondition()
+                                ._object(key.getObject())
+                                .relation(key.getRelation())
+                                .user(key.getUser());
+                    })
+                    .toList())
+                    .join();
+        }
+    }
+
+    private void replaceRules(final UUID id, final String relation, final Collection<AccessRule> rules) {
+        clearRules(id, relation);
+        writeRules(id, relation, rules);
+    }
+
+    private Optional<List<AccessRule>> resetRules(final UUID id, final String relation) {
+        return repository.findById(id)
+                .map(department -> {
+                    final List<AccessRule> defaultRules = switch (relation) {
+                        case RELATION_CAN_VIEW -> getDefaultVisibilityRules(department);
+                        case RELATION_CAN_JOIN -> getDefaultJoinRules(department);
+                        default -> throw new IllegalArgumentException("Relação não definida");
+                    };
+
+                    replaceRules(id, relation, defaultRules);
+
+                    return defaultRules;
+                });
     }
 
 }
