@@ -60,6 +60,10 @@ type department
     define consultant: [membership#user]
     define observer: [membership#user] or integrant or consultant
 
+    define target: [unit#member with characteristics, unit#congregated with characteristics, unit#visitor with characteristics,
+      church#member with characteristics, church#congregated with characteristics, church#visitor with characteristics,
+      user with characteristics]
+
     define can_edit: leader or admin from parent_unit
     define can_manage: can_edit or assistant
     define can_observe: can_manage or observer
@@ -71,6 +75,19 @@ type department
       unit#member with characteristics, unit#congregated with characteristics, unit#visitor with characteristics,
       church#member with characteristics, church#congregated with characteristics, church#visitor with characteristics,
       user:* with characteristics] or can_observe or can_join
+
+type calendar_event
+  relations
+    define parent_unit: [unit]
+    define owner: [department]
+    define guest_department: [department]
+
+    define can_edit: can_manage from owner or admin from parent_unit
+    define can_manage: can_edit or can_manage from guest_department
+    define can_view: [user with characteristics,
+      unit#member with characteristics, unit#congregated with characteristics, unit#visitor with characteristics,
+      church#member with characteristics, church#congregated with characteristics, church#visitor with characteristics,
+      user:* with characteristics] or can_manage
 
 condition characteristics(user_gender: string, user_age: int, req_gender: string, min_age: int, max_age: int) {
   (req_gender == "" || user_gender == req_gender) &&
