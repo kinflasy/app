@@ -35,6 +35,7 @@ type unit
   relations
     define parent_church: [church]
     define admin: [department#leader] or admin from parent_church
+    define department: [department]
 
     define member: [membership#user]
     define congregated: [membership#user] or member
