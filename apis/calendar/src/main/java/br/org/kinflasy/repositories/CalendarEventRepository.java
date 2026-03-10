@@ -1,4 +1,4 @@
-package br.org.kinflasy;
+package br.org.kinflasy.repositories;
 
 import java.util.UUID;
 
