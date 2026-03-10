@@ -38,6 +38,9 @@ public class CalendarEvent {
     @Column(nullable = false)
     private UUID unitId;
 
+    @Column
+    private UUID departmentId;
+
     /*
      * Dados primitivos
      */
