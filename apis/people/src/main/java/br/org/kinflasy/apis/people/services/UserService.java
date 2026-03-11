@@ -48,11 +48,18 @@ public class UserService {
         final var entity = converter.toEntity(request);
         final var savedUser = repository.save(entity);
 
-        // Salvar endereço
-        final var address = addressClient.create(request.getAddress(), savedUser.getId());
+        Optional.ofNullable(request.getAddress())
+                .ifPresentOrElse(
+                        // Salvar endereço
+                        addressRequest -> {
+                            final var address = addressClient.create(request.getAddress(), savedUser.getId());
 
-        // Referenciar endereço
-        savedUser.setAddressId(address.getId());
+                            // Referenciar endereço
+                            savedUser.setAddressId(address.getId());
+                        },
+
+                        // Ou pular etapa
+                        () -> log.info("Endereço não recebido. Pulando etapa..."));
 
         // Gerar DTO
         final UserDto dto = converter.toDto(entity);
