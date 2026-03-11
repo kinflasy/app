@@ -48,19 +48,12 @@ public class ChurchController {
     @GetMapping
     @Operation(summary = "Listar todos", description = "Listar todas as igrejas cadastradas.")
     public ResponseEntity<List<ChurchDto>> listAll() {
-        return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
+        return ResponseEntity.ok(service.findAll());
     }
 
     @PostMapping
     @Transactional
-    @Operation(summary = "Cadastrar", description = "Cadastrar uma igreja.")
-    public ResponseEntity<ChurchDto> create(@RequestBody @Valid final ChurchRequest request) {
-        return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
-    }
-
-    @PostMapping("/starter")
-    @Transactional
-    @Operation(summary = "Cadastrar combo inicial", description = "Cadastrar uma igreja e sua primeira unidade.")
+    @Operation(summary = "Cadastrar combo inicial", description = "Cadastrar uma igreja, sua primeira unidade e departamentos essenciais.")
     public ResponseEntity<ChurchDto.Starter> createStarter(@RequestBody @Valid final ChurchRequest.Starter request) {
         return new ResponseEntity<>(useCaseService.createStarter(request), HttpStatus.CREATED);
     }
@@ -69,7 +62,7 @@ public class ChurchController {
     @Operation(summary = "Buscar", description = "Buscar uma igreja pelo ID.")
     public ResponseEntity<ChurchDto> findById(@PathVariable final UUID id) {
         return service.findById(id)
-                .map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
@@ -78,7 +71,7 @@ public class ChurchController {
     @Operation(summary = "Editar", description = "Editar os dados de uma igreja.")
     public ResponseEntity<ChurchDto> update(@PathVariable final UUID id, @RequestBody final ChurchRequest request) {
         try {
-            return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
+            return ResponseEntity.ok(service.update(id, request));
         } catch (final EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -90,7 +83,7 @@ public class ChurchController {
     public ResponseEntity<HttpStatus> delete(@PathVariable final UUID id) {
         try {
             service.delete(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.noContent().build();
         } catch (final Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
@@ -99,7 +92,7 @@ public class ChurchController {
     @GetMapping("{id}/units")
     @Operation(summary = "Listar unidades", description = "Listar as unidades de uma igreja.")
     public ResponseEntity<List<UnitDto>> getUnits(@PathVariable final UUID id) {
-        return new ResponseEntity<>(service.listUnits(id), HttpStatus.OK);
+        return ResponseEntity.ok(service.listUnits(id));
     }
 
     @PostMapping("{id}/units")
@@ -111,8 +104,10 @@ public class ChurchController {
 
     @PostMapping("activate-member")
     @Operation(summary = "Ativar membro", description = "Substituir pessoa inativa por usuário ativo em todas as unidades.")
-    public ResponseEntity<List<MembershipDto>> activateMember(@RequestBody final ActivationRequest.WithUsername request) {
-        return ResponseEntity.ok(activationUseCaseService.activate(request.getInactivePersonId(), request.getUsername()));
+    public ResponseEntity<List<MembershipDto>> activateMember(
+            @RequestBody final ActivationRequest.WithUsername request) {
+        return ResponseEntity
+                .ok(activationUseCaseService.activate(request.getInactivePersonId(), request.getUsername()));
     }
 
     @PostMapping("{id}/deactivate-member")
