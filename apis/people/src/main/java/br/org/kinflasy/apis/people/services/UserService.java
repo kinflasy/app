@@ -13,6 +13,7 @@ import br.org.kinflasy.apis.people.clients.AddressClient;
 import br.org.kinflasy.apis.people.clients.ChurchClient;
 import br.org.kinflasy.apis.people.converters.UserConverter;
 import br.org.kinflasy.apis.people.repositories.UserRepository;
+import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.churches.dto.DeactivationRequest;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.libs.lib_utils.EntityEvent.Created;
@@ -32,6 +33,7 @@ public class UserService {
 
     private final ModelMapper mapper;
     private final ApplicationEventPublisher publisher;
+    private final AuthUtils authUtils;
 
     private final UserRepository repository;
     private final UserConverter converter;
@@ -79,6 +81,16 @@ public class UserService {
     public Optional<UserIdentifierDto> identifyByUsername(final String username) {
         return repository.findByUsername(username)
                 .map(entity -> mapper.map(entity, UserIdentifierDto.class));
+    }
+
+    /*
+     * ACESSO AUTENTICADO
+     */
+
+    @PreAuthorize("isAuthenticated()")
+    public Optional<UserIdentifierDto> identifyLoggedUser() {
+        final var loggedUser = authUtils.getLoggedUser();
+        return identifyById(loggedUser.getId());
     }
 
     /*

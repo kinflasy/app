@@ -101,6 +101,8 @@ public class UnitService {
     /*
      * ACESSO AUTENTICADO
      */
+
+    @PreAuthorize("isAuthenticated()")
     public List<MembershipDto.DetailingUnit> listByLoggedUser() {
         final var loggedUser = authUtils.getLoggedUser();
         return membershipService.listByPersonId(loggedUser.getId());

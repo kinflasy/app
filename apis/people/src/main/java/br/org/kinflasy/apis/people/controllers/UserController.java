@@ -62,6 +62,18 @@ public class UserController {
     }
 
     /*
+     * ACESSO AUTENTICADO
+     */
+
+    @GetMapping("identify")
+    @Operation(summary = "Identificar usuário logado", description = "Identificar o usuário logado.")
+    public ResponseEntity<UserIdentifierDto> identifyLoggedUser() {
+        return service.identifyLoggedUser()
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    /*
      * ACESSO RESTRITO
      */
 
