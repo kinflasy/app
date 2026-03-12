@@ -3,9 +3,9 @@ package br.org.kinflasy.libs.churches.dto;
 import java.util.UUID;
 
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
-import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people.dto.PersonSimpleDto;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
@@ -20,11 +20,15 @@ public class MembershipDto {
     private Affiliation affiliation;
 
     @Data
-    public static class Detailed {
-        private UUID id;
-        private UnitDto unitDto;
-        private PersonDto person;
-        private Affiliation affiliation;
+    @EqualsAndHashCode(callSuper = true)
+    public static class DetailingUnit extends MembershipDto {
+        private UnitDto.Detailed unit;
+    }
+
+    @Data
+    @EqualsAndHashCode(callSuper = true)
+    public static class Detailed extends MembershipDto {
+        private UnitDto.Detailed unit;
     }
 
 }

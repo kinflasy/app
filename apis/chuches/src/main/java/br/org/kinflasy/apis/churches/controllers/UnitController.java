@@ -40,9 +40,15 @@ public class UnitController {
     private final UnitService service;
     private final MembershipService membershipService;
 
+    @GetMapping
+    @Operation(summary = "Listar membresias ativas", description = "Listar relações de membresia que estejam válidas para o usuário logado.")
+    public ResponseEntity<List<MembershipDto.DetailingUnit>> listByLoggedUser() {
+        return ResponseEntity.ok(service.listByLoggedUser());
+    }
+
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma unidade pelo ID.")
-    public ResponseEntity<UnitDto> findById(@PathVariable final UUID id) {
+    public ResponseEntity<UnitDto.Detailed> findById(@PathVariable final UUID id) {
         return service.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(ResponseEntity.notFound()::build);

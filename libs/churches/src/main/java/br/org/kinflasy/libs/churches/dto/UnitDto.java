@@ -3,7 +3,9 @@ package br.org.kinflasy.libs.churches.dto;
 import java.util.UUID;
 
 import br.org.kinflasy.libs.churches.enums.UnitType;
+import br.org.kinflasy.libs.contacts.dto.AddressDto;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -18,5 +20,12 @@ public class UnitDto {
     private UnitType type;
     private UUID churchId;
     private UUID addressId;
+
+    @Data
+    @EqualsAndHashCode(callSuper = true)
+    public static class Detailed extends UnitDto {
+        private ChurchDto church;
+        private AddressDto address;
+    }
 
 }

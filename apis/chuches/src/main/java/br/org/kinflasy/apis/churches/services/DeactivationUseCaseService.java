@@ -35,7 +35,7 @@ public class DeactivationUseCaseService {
         return membershipService.listByPersonId(userId).stream()
 
                 // Obter IDs das igrejas
-                .map(membership -> unitService.findById(membership.getUnitId()).map(UnitDto::getChurchId).orElse(null))
+                .map(membership -> unitService.findById(membership.getUnit().getId()).map(UnitDto::getChurchId).orElse(null))
                 .filter(Objects::nonNull)
                 .distinct()
 

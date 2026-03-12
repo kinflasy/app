@@ -23,6 +23,7 @@ import br.org.kinflasy.libs.churches.dto.MembershipRequest;
 import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto;
 import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto.Pending;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
+import br.org.kinflasy.libs.people.dto.PersonSimpleDto;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -112,9 +113,12 @@ public class MembershipService {
     }
 
     @PreAuthorize("@fga.check('person_data', #personId, 'can_view', 'user', principal.id) or #personId.equals(principal.id)")
-    public List<MembershipDto> listByPersonId(final UUID personId) {
+    public List<MembershipDto.DetailingUnit> listByPersonId(final UUID personId) {
         return repository.findByPersonId(personId).stream()
-                .map(entity -> mapper.map(entity, MembershipDto.class))
+                .map(entity -> unitService.findById(entity.getUnitId())
+                        .map(mapper.map(entity, MembershipDto.DetailingUnit.class)::setUnit))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .toList();
     }
 
@@ -125,9 +129,11 @@ public class MembershipService {
                             .orElseThrow(() -> new EntityNotFoundException("Unidade não encontrada"));
                     final var personDto = personClient.findById(entity.getPersonId());
 
-                    return mapper.map(entity, MembershipDto.Detailed.class)
-                            .setUnitDto(unitDto)
-                            .setPerson(personDto);
+                    final var dto = mapper.map(entity, MembershipDto.Detailed.class);
+                    dto.setUnit(unitDto)
+                            .setPerson(mapper.map(personDto, PersonSimpleDto.class));
+
+                    return dto;
                 });
     }
 

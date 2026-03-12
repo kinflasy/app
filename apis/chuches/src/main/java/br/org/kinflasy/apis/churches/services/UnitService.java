@@ -17,6 +17,7 @@ import br.org.kinflasy.apis.churches.converters.UnitConverter;
 import br.org.kinflasy.apis.churches.repositories.MembershipRepository;
 import br.org.kinflasy.apis.churches.repositories.UnitRepository;
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
+import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.MembershipRequest;
 import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto;
@@ -42,6 +43,7 @@ public class UnitService {
 
     private final ModelMapper mapper;
     private final ApplicationEventPublisher publisher;
+    private final AuthUtils authUtils;
 
     private final UnitRepository repository;
     private final UnitConverter converter;
@@ -50,6 +52,7 @@ public class UnitService {
     private final PersonClient personClient;
     private final InactivePersonClient inactivePersonClient;
 
+    private final ChurchService churchService;
     private final DepartmentService departmentService;
     private final MembershipService membershipService;
     private final MembershipRepository membershipRepository;
@@ -64,9 +67,17 @@ public class UnitService {
                 .toList();
     }
 
-    public Optional<UnitDto> findById(final UUID id) {
+    public Optional<UnitDto.Detailed> findById(final UUID id) {
         log.info("Buscando unidade de id {}...", id);
-        return repository.findById(id).map(converter::toDto);
+        return repository.findById(id)
+                .flatMap(entity -> {
+                    final var dto = mapper.map(entity, UnitDto.Detailed.class);
+                    final var address = addressClient.findById(entity.getAddressId());
+                    dto.setAddress(address);
+
+                    return churchService.findById(entity.getChurchId())
+                            .map(dto::setChurch);
+                });
     }
 
     public Pending askToJoinUnit(final UUID id) {
@@ -85,6 +96,14 @@ public class UnitService {
         } else {
             throw new EntityNotFoundException(NOT_FOUND_MESSAGE);
         }
+    }
+
+    /*
+     * ACESSO AUTENTICADO
+     */
+    public List<MembershipDto.DetailingUnit> listByLoggedUser() {
+        final var loggedUser = authUtils.getLoggedUser();
+        return membershipService.listByPersonId(loggedUser.getId());
     }
 
     /*
