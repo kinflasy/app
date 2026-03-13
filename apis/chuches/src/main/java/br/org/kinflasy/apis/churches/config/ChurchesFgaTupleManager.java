@@ -113,7 +113,7 @@ public class ChurchesFgaTupleManager {
         final var departmentTuple = new ClientTupleKey()
                 ._object(TYPE_UNIT + dto.getUnitId())
                 .relation("department")
-                .user(TYPE_UNIT + dto.getId());
+                .user(TYPE_DEPARTMENT + dto.getId());
 
         return writeTuples(parentUnitTuple, departmentTuple);
     }

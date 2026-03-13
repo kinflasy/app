@@ -23,7 +23,6 @@ import br.org.kinflasy.libs.churches.dto.MembershipRequest;
 import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto;
 import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto.Pending;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
-import br.org.kinflasy.libs.people.dto.PersonSimpleDto;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -131,7 +130,7 @@ public class MembershipService {
 
                     final var dto = mapper.map(entity, MembershipDto.Detailed.class);
                     dto.setUnit(unitDto)
-                            .setPerson(mapper.map(personDto, PersonSimpleDto.class));
+                            .setPerson(personDto);
 
                     return dto;
                 });

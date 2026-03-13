@@ -18,19 +18,19 @@ public class FgaUtils {
 
     private final AuthUtils authUtils;
 
-    public boolean withCharacteristics(final String objectType, final String objectId, final String relation) {
+    public boolean withCharacteristics(final String objectType, final Object objectId, final String relation) {
         final var loggedUser = authUtils.getLoggedUser();
 
         return withCharacteristics(objectType, objectId, relation, "user", loggedUser.getId().toString(),
                 loggedUser);
     }
 
-    public boolean withCharacteristics(final String objectType, final String objectId, final String relation,
+    public boolean withCharacteristics(final String objectType, final Object objectId, final String relation,
             final PersonDto person) {
         return withCharacteristics(objectType, objectId, relation, "user", person.getId().toString(), person);
     }
 
-    public boolean withCharacteristics(final String objectType, final String objectId, final String relation,
+    public boolean withCharacteristics(final String objectType, final Object objectId, final String relation,
             final String userType, final String userId, final PersonDto person) {
         final var condition = Map.of("user_gender", person.getGender(), "user_age", person.calculateAge());
 
