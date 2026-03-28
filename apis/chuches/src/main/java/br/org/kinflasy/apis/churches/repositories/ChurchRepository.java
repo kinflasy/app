@@ -1,6 +1,5 @@
 package br.org.kinflasy.apis.churches.repositories;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.domain.Specification;
