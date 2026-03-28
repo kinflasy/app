@@ -1,16 +1,13 @@
 package br.org.kinflasy.dto;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class CalendarEventRequest {
-
-    private UUID departmentId;
+public abstract class CalendarEventRequest {
 
     @NotBlank
     private String title;

@@ -9,7 +9,6 @@ import lombok.Data;
 public class CalendarEventDto {
 
     private UUID id;
-    private UUID unitId;
     private String title;
     private String description;
     private LocalDateTime startDateTime;
