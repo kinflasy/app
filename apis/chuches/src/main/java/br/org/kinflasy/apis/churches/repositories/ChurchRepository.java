@@ -12,8 +12,6 @@ import br.org.kinflasy.apis.churches.entities.Church_;
 
 public interface ChurchRepository extends JpaRepository<Church, UUID>, JpaSpecificationExecutor<Church> {
 
-    List<Church> findByNameContainingIgnoreCase(String term);
-
     public static Specification<Church> searchByTerm(final String term) {
         return (root, query, cb) -> {
             if (term == null || term.isBlank())
