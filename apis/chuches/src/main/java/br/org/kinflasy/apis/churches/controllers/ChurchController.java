@@ -59,11 +59,17 @@ public class ChurchController {
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "Buscar", description = "Buscar uma igreja pelo ID.")
+    @Operation(summary = "Detalhar", description = "Buscar uma igreja pelo ID.")
     public ResponseEntity<ChurchDto> findById(@PathVariable final UUID id) {
         return service.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("search/{term}")
+    @Operation(summary = "Buscar", description = "Buscar uma igreja por nome, slug ou sigla.")
+    public ResponseEntity<List<ChurchDto>> search(@PathVariable final String term) {
+        return ResponseEntity.ok(service.search(term));
     }
 
     @PutMapping("{id}")
