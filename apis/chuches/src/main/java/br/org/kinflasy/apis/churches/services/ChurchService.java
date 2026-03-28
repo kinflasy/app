@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 public class ChurchService {
 
     private static final String NOT_FOUND_MESSAGE = "Igreja não encontrada";
+
+    private final ModelMapper mapper;
 
     private final ChurchRepository repository;
     private final ChurchConverter converter;
@@ -51,6 +54,12 @@ public class ChurchService {
         return repository.findById(id)
                 .map(church -> unitService.listByChurchId(id))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+    }
+
+    public List<ChurchDto> search(final String term) {
+        return repository.findAll(ChurchRepository.searchByTerm(term)).stream()
+                .map(entity -> mapper.map(entity, ChurchDto.class))
+                .toList();
     }
 
     /*
