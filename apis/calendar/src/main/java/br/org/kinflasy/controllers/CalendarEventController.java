@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.dto.CalendarEventDto;
 import br.org.kinflasy.services.CalendarEventService;
+import br.org.kinflasy.services.DepartmentCalendarEventService;
+import br.org.kinflasy.services.UnitCalendarEventService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
@@ -23,17 +25,19 @@ import lombok.AllArgsConstructor;
 public class CalendarEventController {
 
     private final CalendarEventService service;
+    private final UnitCalendarEventService unitService;
+    private final DepartmentCalendarEventService departmentService;
 
     @GetMapping("unit/{unitId}")
-    public ResponseEntity<List<CalendarEventDto>> listByUnitInRange(@PathVariable final UUID unitId,
+    public ResponseEntity<List<? extends CalendarEventDto>> listByUnitInRange(@PathVariable final UUID unitId,
             @RequestParam final LocalDateTime start, @RequestParam final LocalDateTime end) {
-        return ResponseEntity.ok(service.listByUnitInRange(unitId, start, end));
+        return ResponseEntity.ok(unitService.listInRange(unitId, start, end));
     }
 
     @GetMapping("department/{departmentId}")
-    public ResponseEntity<List<CalendarEventDto>> listByDepartmentInRange(@PathVariable final UUID departmentId,
+    public ResponseEntity<List<? extends CalendarEventDto>> listByDepartmentInRange(@PathVariable final UUID departmentId,
             @RequestParam final LocalDateTime start, @RequestParam final LocalDateTime end) {
-        return ResponseEntity.ok(service.listByDepartmentInRange(departmentId, start, end));
+        return ResponseEntity.ok(departmentService.listInRange(departmentId, start, end));
     }
 
 }
