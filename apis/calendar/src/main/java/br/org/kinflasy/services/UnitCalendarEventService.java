@@ -33,7 +33,7 @@ public class UnitCalendarEventService {
     @PostFilter("@fgau.withCaracteristics('calendar_event', filterObject.id, 'can_view')")
     public List<UnitCalendarEventDto> listInRange(final UUID unitId, final LocalDateTime start,
             final LocalDateTime end) {
-        return repository.findByStartDateTimeBeforeAndEndDateTimeAfter(unitId, start, end).stream()
+        return repository.findByUnitIdAndStartDateTimeBeforeAndEndDateTimeAfter(unitId, start, end).stream()
                 .map(entity -> mapper.map(entity, UnitCalendarEventDto.class))
                 .toList();
     }

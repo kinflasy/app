@@ -12,7 +12,7 @@ import br.org.kinflasy.entities.DepartmentCalendarEvent;
 @Repository
 public interface DepartmentCalendarEventRepository extends JpaRepository<DepartmentCalendarEvent, UUID> {
 
-    List<DepartmentCalendarEvent> findByStartDateTimeBeforeAndEndDateTimeAfter(UUID departmentId,
+    List<DepartmentCalendarEvent> findByDepartmentIdAndStartDateTimeBeforeAndEndDateTimeAfter(UUID departmentId,
             LocalDateTime startDateTime, LocalDateTime endDateTime);
 
 }

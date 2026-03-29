@@ -34,7 +34,7 @@ public class DepartmentCalendarEventService {
     @PostFilter("@fgau.withCaracteristics('calendar_event', filterObject.id, 'can_view')")
     public List<DepartmentCalendarEventDto> listInRange(final UUID departmentId, final LocalDateTime start,
             final LocalDateTime end) {
-        return repository.findByStartDateTimeBeforeAndEndDateTimeAfter(departmentId, start, end).stream()
+        return repository.findByDepartmentIdAndStartDateTimeBeforeAndEndDateTimeAfter(departmentId, start, end).stream()
                 .map(entity -> mapper.map(entity, DepartmentCalendarEventDto.class))
                 .toList();
     }
