@@ -82,7 +82,7 @@ type calendar_event
     define owner: [unit, department]
 
     define can_edit: admin from owner or can_manage from owner
-    define can_manage: can_edit or can_manage
+    define can_manage: can_edit or can_manage from owner
     define can_view: [user with characteristics,
       unit#member with characteristics, unit#congregated with characteristics, unit#visitor with characteristics,
       church#member with characteristics, church#congregated with characteristics, church#visitor with characteristics,
