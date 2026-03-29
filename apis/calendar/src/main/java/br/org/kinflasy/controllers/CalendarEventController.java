@@ -41,8 +41,8 @@ public class CalendarEventController {
 
     @GetMapping("department/{departmentId}")
     public ResponseEntity<List<DepartmentCalendarEventDto>> listByDepartmentInRange(
-            @PathVariable final UUID departmentId,
-            @RequestParam final LocalDateTime start, @RequestParam final LocalDateTime end) {
+            @PathVariable final UUID departmentId, @RequestParam final LocalDateTime start,
+            @RequestParam final LocalDateTime end) {
         return ResponseEntity.ok(departmentService.listInRange(departmentId, start, end));
     }
 
