@@ -10,8 +10,8 @@ import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.dto.CalendarEventRequest;
 import br.org.kinflasy.dto.UnitCalendarEventDto;
-import br.org.kinflasy.dto.UnitCalendarEventRequest;
 import br.org.kinflasy.entities.UnitCalendarEvent;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.repositories.UnitCalendarEventRepository;
@@ -43,7 +43,7 @@ public class UnitCalendarEventService {
      */
 
     @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
-    public UnitCalendarEventDto create(final UUID unitId, final UnitCalendarEventRequest request) {
+    public UnitCalendarEventDto create(final UUID unitId, final CalendarEventRequest request) {
         // Validar datas
         if (request.getEndDateTime().isBefore(request.getStartDateTime())) {
             throw new IllegalArgumentException("A data de início deve ser antes da data do fim");

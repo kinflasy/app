@@ -16,10 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.dto.CalendarEventDto;
+import br.org.kinflasy.dto.CalendarEventRequest;
 import br.org.kinflasy.dto.DepartmentCalendarEventDto;
-import br.org.kinflasy.dto.DepartmentCalendarEventRequest;
 import br.org.kinflasy.dto.UnitCalendarEventDto;
-import br.org.kinflasy.dto.UnitCalendarEventRequest;
 import br.org.kinflasy.services.CalendarEventService;
 import br.org.kinflasy.services.DepartmentCalendarEventService;
 import br.org.kinflasy.services.UnitCalendarEventService;
@@ -53,14 +52,14 @@ public class CalendarEventController {
     @PostMapping("unit/{unitId}")
     @Transactional
     public ResponseEntity<UnitCalendarEventDto> createWithUnit(@PathVariable final UUID unitId,
-            @RequestBody final UnitCalendarEventRequest request) {
+            @RequestBody final CalendarEventRequest request) {
         return ResponseEntity.ok(unitService.create(unitId, request));
     }
 
     @PostMapping("department/{departmentId}")
     @Transactional
     public ResponseEntity<DepartmentCalendarEventDto> createWithDepartment(@PathVariable final UUID departmentId,
-            @RequestBody final DepartmentCalendarEventRequest request) {
+            @RequestBody final CalendarEventRequest request) {
         return ResponseEntity.ok(departmentService.create(departmentId, request));
     }
 

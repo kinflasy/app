@@ -10,8 +10,8 @@ import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.dto.CalendarEventRequest;
 import br.org.kinflasy.dto.DepartmentCalendarEventDto;
-import br.org.kinflasy.dto.DepartmentCalendarEventRequest;
 import br.org.kinflasy.entities.DepartmentCalendarEvent;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.repositories.DepartmentCalendarEventRepository;
@@ -40,7 +40,7 @@ public class DepartmentCalendarEventService {
     }
 
     @PreAuthorize("@fga.check('department', #request.departmentId, 'can_manage', 'user', principal.id)")
-    public DepartmentCalendarEventDto create(final UUID departmentId, final DepartmentCalendarEventRequest request) {
+    public DepartmentCalendarEventDto create(final UUID departmentId, final CalendarEventRequest request) {
         // Validar datas
         if (request.getEndDateTime().isBefore(request.getStartDateTime())) {
             throw new IllegalArgumentException("A data de início deve ser antes da data do fim");

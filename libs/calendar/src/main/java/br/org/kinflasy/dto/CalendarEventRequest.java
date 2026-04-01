@@ -11,7 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public abstract class CalendarEventRequest {
+public class CalendarEventRequest {
 
     @NotBlank
     private String title;
