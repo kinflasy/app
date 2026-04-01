@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import br.org.kinflasy.entities.UnitCalendarEvent;
@@ -12,7 +13,13 @@ import br.org.kinflasy.entities.UnitCalendarEvent;
 @Repository
 public interface UnitCalendarEventRepository extends JpaRepository<UnitCalendarEvent, UUID> {
 
-    List<UnitCalendarEvent> findByUnitIdAndStartDateTimeBeforeAndEndDateTimeAfter(UUID unitId,
-            LocalDateTime startDateTime, LocalDateTime endDateTime);
+    @Query("""
+            SELECT e FROM UnitCalendarEvent e
+            WHERE e.unitId = :unitId
+            AND
+                (e.startDateTime BETWEEN :rangeStart AND :rangeEnd
+                OR e.endDateTime BETWEEN :rangeStart AND :rangeEnd)
+            """)
+    List<UnitCalendarEvent> findByUnitId(UUID unitId, LocalDateTime rangeStart, LocalDateTime rangeEnd);
 
 }

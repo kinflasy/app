@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,6 +24,7 @@ import br.org.kinflasy.services.CalendarEventService;
 import br.org.kinflasy.services.DepartmentCalendarEventService;
 import br.org.kinflasy.services.UnitCalendarEventService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -49,14 +51,16 @@ public class CalendarEventController {
     }
 
     @PostMapping("unit/{unitId}")
+    @Transactional
     public ResponseEntity<UnitCalendarEventDto> createWithUnit(@PathVariable final UUID unitId,
-            final UnitCalendarEventRequest request) {
+            @RequestBody final UnitCalendarEventRequest request) {
         return ResponseEntity.ok(unitService.create(unitId, request));
     }
 
     @PostMapping("department/{departmentId}")
+    @Transactional
     public ResponseEntity<DepartmentCalendarEventDto> createWithDepartment(@PathVariable final UUID departmentId,
-            final DepartmentCalendarEventRequest request) {
+            @RequestBody final DepartmentCalendarEventRequest request) {
         return ResponseEntity.ok(departmentService.create(departmentId, request));
     }
 
@@ -68,7 +72,9 @@ public class CalendarEventController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<CalendarEventDto> update(@PathVariable final UUID id, final CalendarEventDto request) {
+    @Transactional
+    public ResponseEntity<CalendarEventDto> update(@PathVariable final UUID id,
+            @RequestBody final CalendarEventDto request) {
         try {
             return ResponseEntity.ok(service.update(id, request));
         } catch (IllegalArgumentException e) {
@@ -77,6 +83,7 @@ public class CalendarEventController {
     }
 
     @DeleteMapping("{id}/delete")
+    @Transactional
     public ResponseEntity<Void> delete(@PathVariable final UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();

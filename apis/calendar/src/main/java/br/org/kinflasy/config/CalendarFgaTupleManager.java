@@ -11,6 +11,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 import br.org.kinflasy.dto.DepartmentCalendarEventDto;
 import br.org.kinflasy.dto.UnitCalendarEventDto;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
+import br.org.kinflasy.services.CalendarEventService;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
 import dev.openfga.sdk.api.client.model.ClientTupleKeyWithoutCondition;
@@ -41,9 +42,12 @@ public class CalendarFgaTupleManager {
 
     private final OpenFgaClient client;
 
+    private final CalendarEventService service;
+
     @Async
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleUnitCalendarEventCreated(final EntityEvent.Created<UnitCalendarEventDto> event) {
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleUnitCalendarEventCreated(
+            final EntityEvent.Created<UnitCalendarEventDto> event) {
         final var dto = event.getSource();
 
         final var tuple = new ClientTupleKey()
@@ -51,12 +55,14 @@ public class CalendarFgaTupleManager {
                 .relation(RELATION_OWNER)
                 .user(TYPE_UNIT + dto.getUnitId());
 
-        writeTuples(tuple);
+        return writeTuples(tuple)
+                .thenRun(() -> service.postCreate(dto));
     }
 
     @Async
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleDepartmentCalendarEventCreated(final EntityEvent.Created<DepartmentCalendarEventDto> event) {
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleDepartmentCalendarEventCreated(
+            final EntityEvent.Created<DepartmentCalendarEventDto> event) {
         final var dto = event.getSource();
 
         final var tuple = new ClientTupleKey()
@@ -64,12 +70,14 @@ public class CalendarFgaTupleManager {
                 .relation(RELATION_OWNER)
                 .user(TYPE_DEPARTMENT + dto.getDepartmentId());
 
-        writeTuples(tuple);
+        return writeTuples(tuple)
+                .thenRun(() -> service.postCreate(dto));
     }
 
     @Async
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleUnitCalendarEventDeleted(final EntityEvent.Deleted<UnitCalendarEventDto> event) {
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleUnitCalendarEventDeleted(
+            final EntityEvent.Deleted<UnitCalendarEventDto> event) {
         final var dto = event.getSource();
 
         final var tuple = new ClientTupleKey()
@@ -77,12 +85,13 @@ public class CalendarFgaTupleManager {
                 .relation(RELATION_OWNER)
                 .user(TYPE_UNIT + dto.getUnitId());
 
-        deleteTuples(tuple);
+        return deleteTuples(tuple);
     }
 
     @Async
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void handleDepartmentCalendarEventDeleted(final EntityEvent.Deleted<DepartmentCalendarEventDto> event) {
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleDepartmentCalendarEventDeleted(
+            final EntityEvent.Deleted<DepartmentCalendarEventDto> event) {
         final var dto = event.getSource();
 
         final var tuple = new ClientTupleKey()
@@ -90,7 +99,7 @@ public class CalendarFgaTupleManager {
                 .relation(RELATION_OWNER)
                 .user(TYPE_DEPARTMENT + dto.getDepartmentId());
 
-        deleteTuples(tuple);
+        return deleteTuples(tuple);
     }
 
     @SneakyThrows

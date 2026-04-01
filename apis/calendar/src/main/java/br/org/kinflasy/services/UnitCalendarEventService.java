@@ -30,10 +30,10 @@ public class UnitCalendarEventService {
      * ACESSO PÚBLICO
      */
 
-    @PostFilter("@fgau.withCaracteristics('calendar_event', filterObject.id, 'can_view')")
+    @PostFilter("@fgau.withCharacteristics('calendar_event', filterObject.id, 'can_view')")
     public List<UnitCalendarEventDto> listInRange(final UUID unitId, final LocalDateTime start,
             final LocalDateTime end) {
-        return repository.findByUnitIdAndStartDateTimeBeforeAndEndDateTimeAfter(unitId, start, end).stream()
+        return repository.findByUnitId(unitId, start, end).stream()
                 .map(entity -> mapper.map(entity, UnitCalendarEventDto.class))
                 .toList();
     }
@@ -54,11 +54,16 @@ public class UnitCalendarEventService {
         entity.setId(null);
         entity.setUnitId(unitId);
 
-        // Salvar e publicar evento
+        // Salvar
         final var saved = repository.save(entity);
         final var dto = mapper.map(saved, UnitCalendarEventDto.class);
 
-        publisher.publishEvent(new EntityEvent.Created<>(dto));
+        // Replicar regras de visibilidade (o event handler vai cadastrar no FGA)
+        dto.setVisibilityRules(request.getVisibilityRules());
+
+        // Publicar evento
+        final var event = new EntityEvent.Created<>(dto);
+        publisher.publishEvent(event);
 
         return dto;
     }

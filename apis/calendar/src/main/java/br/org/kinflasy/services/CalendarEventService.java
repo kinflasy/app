@@ -1,5 +1,7 @@
 package br.org.kinflasy.services;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,26 +11,57 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.dto.CalendarEventDto;
+import br.org.kinflasy.dto.DepartmentCalendarEventDto;
+import br.org.kinflasy.dto.UnitCalendarEventDto;
+import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
+import br.org.kinflasy.libs.churches.dto.access_rules.CharacteristicRule;
+import br.org.kinflasy.libs.churches.dto.access_rules.ChurchRule;
+import br.org.kinflasy.libs.churches.dto.access_rules.DepartmentRule;
+import br.org.kinflasy.libs.churches.dto.access_rules.UnitRule;
+import br.org.kinflasy.libs.churches.dto.access_rules.UserRule;
+import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
+import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.repositories.CalendarEventRepository;
+import br.org.kinflasy.repositories.DepartmentCalendarEventRepository;
+import br.org.kinflasy.repositories.UnitCalendarEventRepository;
+import dev.openfga.sdk.api.client.OpenFgaClient;
+import dev.openfga.sdk.api.client.model.ClientReadRequest;
+import dev.openfga.sdk.api.client.model.ClientTupleKey;
+import dev.openfga.sdk.api.client.model.ClientTupleKeyWithoutCondition;
+import dev.openfga.sdk.api.configuration.ClientWriteTuplesOptions;
+import dev.openfga.sdk.api.model.WriteRequestWrites.OnDuplicateEnum;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 
 @Service
 @AllArgsConstructor
 public class CalendarEventService {
 
+    private static final String TYPE_CALENDAR_EVENT = "calendar_event:";
+    private static final String RELATION_CAN_VIEW = "can_view";
+
     private final ModelMapper mapper;
     private final ApplicationEventPublisher publisher;
 
     private final CalendarEventRepository repository;
+    private final UnitCalendarEventRepository unitRepository;
+    private final DepartmentCalendarEventRepository departmentRepository;
+
+    private final OpenFgaClient fgaClient;
 
     /*
      * ACESSO RESTRITO
      */
-    @PreAuthorize("@fgau.withCaracteristics('calendar_event', #id, 'can_view')")
+    @PreAuthorize("@fgau.withCharacteristics('calendar_event', #id, 'can_view')")
     public Optional<CalendarEventDto> findById(final UUID id) {
-        return repository.findById(id)
-                .map(entity -> mapper.map(entity, CalendarEventDto.class));
+        final Optional<CalendarEventDto> optional = unitRepository.findById(id)
+                .map(entity -> mapper.map(entity, UnitCalendarEventDto.class));
+
+        return optional
+                .or(() -> departmentRepository.findById(id)
+                        .map(entity -> mapper.map(entity, DepartmentCalendarEventDto.class)))
+                .map(dto -> dto.setVisibilityRules(listVisibilityRules(id)));
     }
 
     @PreAuthorize("@fga.check('calendar_event', #id, 'can_edit', 'user', principal.id)")
@@ -57,6 +90,113 @@ public class CalendarEventService {
                     repository.delete(entity);
                     publisher.publishEvent(new EntityEvent.Deleted<>(entity));
                 });
+    }
+
+    @PreAuthorize("@fgau.withCharacteristics('calendar_event', #id, 'can_view')")
+    public List<AccessRule> listVisibilityRules(final UUID id) {
+        return listRules(id, RELATION_CAN_VIEW);
+    }
+
+    @PreAuthorize("@fga.check('calendar_event', #id, 'can_edit', 'user', principal.id)")
+    public void replaceVisibilityRules(final UUID id, final Collection<AccessRule> rules) {
+        replaceRules(id, RELATION_CAN_VIEW, rules);
+    }
+
+    public void postCreate(final CalendarEventDto dto) {
+        writeRules(dto.getId(), RELATION_CAN_VIEW, dto.getVisibilityRules());
+    }
+
+    /*
+     * MÉTODOS PRIVADOS
+     */
+
+    @SneakyThrows
+    private List<AccessRule> listRules(final UUID id, final String relation) {
+        final var request = new ClientReadRequest()
+                ._object(TYPE_CALENDAR_EVENT + id)
+                .relation(relation);
+
+        final var response = fgaClient.read(request).join();
+
+        return response.getTuples().stream()
+                .map(tuple -> {
+                    final var user = tuple.getKey().getUser();
+                    final var userParts = user.split(":");
+                    final var userType = userParts[0];
+                    final var userId = userParts[1];
+
+                    final var characteristics = CharacteristicRule.of(tuple.getKey().getCondition());
+
+                    return switch (userType) {
+                        case "church" -> {
+                            final var userIdParts = userId.split("#");
+                            final var churchId = UUID.fromString(userIdParts[0]);
+                            final var affiliation = Affiliation.valueOf(userIdParts[1].toUpperCase());
+                            yield new ChurchRule(churchId, affiliation, characteristics);
+                        }
+                        case "unit" -> {
+                            final var userIdParts = userId.split("#");
+                            final var unitId = UUID.fromString(userIdParts[0]);
+                            final var affiliation = Affiliation.valueOf(userIdParts[1].toUpperCase());
+                            yield new UnitRule(unitId, affiliation, characteristics);
+                        }
+                        case "department" -> {
+                            final var userIdParts = userId.split("#");
+                            final var departmentId = UUID.fromString(userIdParts[0]);
+                            final var integrationType = IntegrationType.valueOf(userIdParts[1].toUpperCase());
+                            yield new DepartmentRule(departmentId, integrationType, characteristics);
+                        }
+                        case "user" -> new UserRule(userId, characteristics);
+                        default -> throw new IllegalStateException("Tupla fora das regras");
+                    };
+                })
+                .toList();
+    }
+
+    @SneakyThrows
+    private void writeRules(final UUID id, final String relation, final Collection<AccessRule> rules) {
+        // Gerar tuplas
+        final var tuples = rules.stream()
+                .map(rule -> new ClientTupleKey()
+                        ._object(TYPE_CALENDAR_EVENT + id)
+                        .relation(relation)
+                        .user(rule.getFgaUser())
+                        .condition(rule.getFgaCondition()))
+                .toList();
+
+        if (!tuples.isEmpty()) {
+            // Salvar
+            fgaClient.writeTuples(tuples, new ClientWriteTuplesOptions().onDuplicate(OnDuplicateEnum.IGNORE)).join();
+        }
+
+    }
+
+    @SneakyThrows
+    private void clearRules(final UUID id, final String relation) {
+        final var request = new ClientReadRequest()
+                ._object(TYPE_CALENDAR_EVENT + id)
+                .relation(relation);
+
+        final var response = fgaClient.read(request).join();
+        final var tuples = response.getTuples();
+
+        if (!tuples.isEmpty()) {
+            fgaClient.deleteTuples(tuples.stream()
+                    .map(tuple -> {
+                        final var key = tuple.getKey();
+                        return new ClientTupleKeyWithoutCondition()
+                                ._object(key.getObject())
+                                .relation(key.getRelation())
+                                .user(key.getUser());
+                    })
+                    .toList())
+                    .join();
+        }
+    }
+
+    private void replaceRules(final UUID id, final String relation, final Collection<AccessRule> rules) {
+        clearRules(id, relation);
+        writeRules(id, relation, rules);
     }
 
 }

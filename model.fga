@@ -61,10 +61,6 @@ type department
     define consultant: [membership#user]
     define observer: [membership#user] or integrant or consultant
 
-    define target: [unit#member with characteristics, unit#congregated with characteristics, unit#visitor with characteristics,
-      church#member with characteristics, church#congregated with characteristics, church#visitor with characteristics,
-      user with characteristics]
-
     define can_edit: leader or admin from parent_unit
     define can_manage: can_edit or assistant
     define can_observe: can_manage or observer
@@ -84,6 +80,8 @@ type calendar_event
     define can_edit: admin from owner or can_manage from owner
     define can_manage: can_edit or can_manage from owner
     define can_view: [user with characteristics,
+      department#leader with characteristics, department#assistant with characteristics, department#integrant with characteristics,
+      department#consultant with characteristics, department#observer with characteristics,
       unit#member with characteristics, unit#congregated with characteristics, unit#visitor with characteristics,
       church#member with characteristics, church#congregated with characteristics, church#visitor with characteristics,
       user:* with characteristics] or can_manage

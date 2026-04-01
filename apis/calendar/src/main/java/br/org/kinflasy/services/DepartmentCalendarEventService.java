@@ -31,27 +31,34 @@ public class DepartmentCalendarEventService {
      */
 
     @PreAuthorize("@fga.check('department', #departmentId, 'can_view', 'user', principal.id)")
-    @PostFilter("@fgau.withCaracteristics('calendar_event', filterObject.id, 'can_view')")
+    @PostFilter("@fgau.withCharacteristics('calendar_event', filterObject.id, 'can_view')")
     public List<DepartmentCalendarEventDto> listInRange(final UUID departmentId, final LocalDateTime start,
             final LocalDateTime end) {
-        return repository.findByDepartmentIdAndStartDateTimeBeforeAndEndDateTimeAfter(departmentId, start, end).stream()
+        return repository.findByDepartmentIdInRange(departmentId, start, end).stream()
                 .map(entity -> mapper.map(entity, DepartmentCalendarEventDto.class))
                 .toList();
     }
 
     @PreAuthorize("@fga.check('department', #request.departmentId, 'can_manage', 'user', principal.id)")
     public DepartmentCalendarEventDto create(final UUID departmentId, final DepartmentCalendarEventRequest request) {
+        // Validar datas
         if (request.getEndDateTime().isBefore(request.getStartDateTime())) {
             throw new IllegalArgumentException("A data de início deve ser antes da data do fim");
         }
 
+        // Construir entidade
         final var entity = mapper.map(request, DepartmentCalendarEvent.class);
         entity.setId(null);
         entity.setDepartmentId(departmentId);
 
+        // Salvar
         final var saved = repository.save(entity);
         final var dto = mapper.map(saved, DepartmentCalendarEventDto.class);
 
+        // Replicar regras de visibilidade (o event handler vai cadastrar no FGA)
+        dto.setVisibilityRules(request.getVisibilityRules());
+
+        // Publicar evento
         publisher.publishEvent(new EntityEvent.Created<>(dto));
 
         return dto;
