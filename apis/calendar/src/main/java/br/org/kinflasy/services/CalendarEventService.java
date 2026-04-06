@@ -31,6 +31,7 @@ import dev.openfga.sdk.api.client.model.ClientTupleKey;
 import dev.openfga.sdk.api.client.model.ClientTupleKeyWithoutCondition;
 import dev.openfga.sdk.api.configuration.ClientWriteTuplesOptions;
 import dev.openfga.sdk.api.model.WriteRequestWrites.OnDuplicateEnum;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -64,6 +65,7 @@ public class CalendarEventService {
                 .map(dto -> dto.setVisibilityRules(listVisibilityRules(id)));
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('calendar_event', #id, 'can_edit', 'user', principal.id)")
     public CalendarEventDto update(final UUID id, final CalendarEventDto request) {
         if (request.getEndDateTime().isBefore(request.getStartDateTime())) {
@@ -83,6 +85,7 @@ public class CalendarEventService {
         return dto;
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('calendar_event', #id, 'can_edit', 'user', principal.id)")
     public void delete(final UUID id) {
         repository.findById(id)
@@ -97,11 +100,13 @@ public class CalendarEventService {
         return listRules(id, RELATION_CAN_VIEW);
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('calendar_event', #id, 'can_edit', 'user', principal.id)")
     public void replaceVisibilityRules(final UUID id, final Collection<AccessRule> rules) {
         replaceRules(id, RELATION_CAN_VIEW, rules);
     }
 
+    @Transactional
     public void postCreate(final CalendarEventDto dto) {
         writeRules(dto.getId(), RELATION_CAN_VIEW, dto.getVisibilityRules());
     }

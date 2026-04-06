@@ -20,7 +20,6 @@ import br.org.kinflasy.libs.contacts.dto.AddressRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
@@ -33,14 +32,12 @@ public class AddressController {
     private final AddressService service;
 
     @PostMapping
-    @Transactional
     @Operation(summary = "Cadastrar", description = "Cadastrar um endereço.")
     public ResponseEntity<AddressDto> create(@RequestBody @Valid final AddressRequest form) {
         return new ResponseEntity<>(service.create(form), HttpStatus.CREATED);
     }
 
     @PostMapping("/register")
-    @Transactional
     @Operation(summary = "Cadastrar durante cadastro de usuário", description = "Cadastrar um endereço enquanto um novo usuário está sendo criado.")
     public ResponseEntity<AddressDto> create(@RequestBody @Valid final AddressRequest form,
             @RequestParam final UUID createdBy) {
@@ -58,7 +55,6 @@ public class AddressController {
     }
 
     @PutMapping("{id}")
-    @Transactional
     @Operation(summary = "Editar", description = "Editar os dados de um endereço.")
     public ResponseEntity<AddressDto> update(@PathVariable final UUID id, @RequestBody final AddressRequest form) {
         try {
@@ -69,7 +65,6 @@ public class AddressController {
     }
 
     @DeleteMapping("{id}")
-    @Transactional
     @Operation(summary = "Excluir", description = "Descadastrar um endereço.")
     public ResponseEntity<HttpStatus> delete(@PathVariable final UUID id) {
         try {

@@ -21,6 +21,7 @@ import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,6 +46,7 @@ public class UserService {
      * ACESSO PÚBLICO
      */
 
+    @Transactional
     public UserDto create(final UserRequest request) {
         // Salvar usuário
         final var entity = converter.toEntity(request);
@@ -110,6 +112,7 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
     public UserDto update(final UUID id, final UserRequest form) {
         final var original = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
@@ -128,6 +131,7 @@ public class UserService {
         return modifiedDto;
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
     public void delete(final UUID id) {
         repository.findById(id)

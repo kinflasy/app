@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,7 +51,6 @@ public class ChurchController {
     }
 
     @PostMapping
-    @Transactional
     @Operation(summary = "Cadastrar combo inicial", description = "Cadastrar uma igreja, sua primeira unidade e departamentos essenciais.")
     public ResponseEntity<ChurchDto.Starter> createStarter(@RequestBody @Valid final ChurchRequest.Starter request) {
         return new ResponseEntity<>(useCaseService.createStarter(request), HttpStatus.CREATED);
@@ -73,7 +71,6 @@ public class ChurchController {
     }
 
     @PutMapping("{id}")
-    @Transactional
     @Operation(summary = "Editar", description = "Editar os dados de uma igreja.")
     public ResponseEntity<ChurchDto> update(@PathVariable final UUID id, @RequestBody final ChurchRequest request) {
         try {
@@ -84,7 +81,6 @@ public class ChurchController {
     }
 
     @DeleteMapping("{id}")
-    @Transactional
     @Operation(summary = "Excluir", description = "Descadastrar uma igreja, removendo-a do sistema.")
     public ResponseEntity<HttpStatus> delete(@PathVariable final UUID id) {
         try {

@@ -40,6 +40,7 @@ import dev.openfga.sdk.api.client.model.ClientTupleKeyWithoutCondition;
 import dev.openfga.sdk.api.configuration.ClientWriteTuplesOptions;
 import dev.openfga.sdk.api.model.WriteRequestWrites.OnDuplicateEnum;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -79,6 +80,7 @@ public class DepartmentService {
      * ACESSO RESTRITO
      */
 
+    @Transactional
     @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
     public DepartmentDto create(final UUID unitId, final DepartmentRequest.WithRules request) {
         // Construir departamento
@@ -115,6 +117,7 @@ public class DepartmentService {
                 .map(converter::toDto);
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('department', #id, 'can_edit', 'user', principal.id)")
     public DepartmentDto update(final UUID id, final DepartmentRequest request) {
         final var original = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
@@ -124,6 +127,7 @@ public class DepartmentService {
         return converter.toDto(modified);
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('department', #id, 'can_edit', 'user', principal.id)")
     public void delete(final UUID id) {
         repository.deleteById(id);
@@ -136,6 +140,7 @@ public class DepartmentService {
                 .toList();
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('department', #id, 'can_manage', 'user', principal.id)")
     public ExtensionSubscriptionDto subscribeToExtension(final UUID id, final ExtensionSubscriptionRequest request) {
         final var entity = mapper.map(request, ExtensionSubscription.class);
@@ -158,6 +163,7 @@ public class DepartmentService {
                 .map(subscription -> mapper.map(subscription, ExtensionSubscriptionDto.class));
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('department', #id, 'can_manage', 'user', principal.id)")
     public void dissociateExtension(final UUID id, final ExtensionSubscriptionRequest request) {
         subscriptionRepository.findByDepartmentIdAndExtension(id, request.getExtension())
@@ -174,21 +180,25 @@ public class DepartmentService {
         return listRules(id, RELATION_CAN_JOIN);
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('department', #id, 'can_edit', 'user', principal.id)")
     public Optional<List<AccessRule>> resetVisibilityRules(final UUID id) {
         return resetRules(id, RELATION_CAN_VIEW);
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('department', #id, 'can_edit', 'user', principal.id)")
     public Optional<List<AccessRule>> resetJoinRules(final UUID id) {
         return resetRules(id, RELATION_CAN_JOIN);
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('department', #id, 'can_edit', 'user', principal.id)")
     public void replaceVisibilityRules(final UUID id, final Collection<AccessRule> rules) {
         replaceRules(id, RELATION_CAN_VIEW, rules);
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('department', #id, 'can_edit', 'user', principal.id)")
     public void replaceJoinRules(final UUID id, final Collection<AccessRule> rules) {
         replaceRules(id, RELATION_CAN_JOIN, rules);
@@ -198,12 +208,14 @@ public class DepartmentService {
      * VERIFICAÇÃO DE ACESSO REDIRECIONADA
      */
 
+    @Transactional
     public IntegrationDto addIntegrant(final UUID id, final IntegrationRequest request) {
         return repository.findById(id)
                 .map(ignoredDepartment -> integrationService.create(id, request))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
+    @Transactional
     public Pending askToJoin(final UUID id) {
         return repository.findById(id)
                 .map(department -> integrationService.askToJoin(id, department.getUnitId()))

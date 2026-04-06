@@ -23,7 +23,6 @@ import br.org.kinflasy.services.CalendarEventService;
 import br.org.kinflasy.services.DepartmentCalendarEventService;
 import br.org.kinflasy.services.UnitCalendarEventService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -50,14 +49,12 @@ public class CalendarEventController {
     }
 
     @PostMapping("unit/{unitId}")
-    @Transactional
     public ResponseEntity<UnitCalendarEventDto> createWithUnit(@PathVariable final UUID unitId,
             @RequestBody final CalendarEventRequest request) {
         return ResponseEntity.ok(unitService.create(unitId, request));
     }
 
     @PostMapping("department/{departmentId}")
-    @Transactional
     public ResponseEntity<DepartmentCalendarEventDto> createWithDepartment(@PathVariable final UUID departmentId,
             @RequestBody final CalendarEventRequest request) {
         return ResponseEntity.ok(departmentService.create(departmentId, request));
@@ -71,7 +68,6 @@ public class CalendarEventController {
     }
 
     @PutMapping("{id}")
-    @Transactional
     public ResponseEntity<CalendarEventDto> update(@PathVariable final UUID id,
             @RequestBody final CalendarEventDto request) {
         try {
@@ -82,7 +78,6 @@ public class CalendarEventController {
     }
 
     @DeleteMapping("{id}/delete")
-    @Transactional
     public ResponseEntity<Void> delete(@PathVariable final UUID id) {
         service.delete(id);
         return ResponseEntity.noContent().build();

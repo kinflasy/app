@@ -17,6 +17,7 @@ import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -48,6 +49,7 @@ public class InactivePersonService {
      * ACESSO RESTRITO
      */
 
+    @Transactional
     @PreAuthorize("@fga.check('church', #request.churchId, 'unit_admin', 'user', principal.id)")
     public InactivePersonDto create(final InactivePersonRequest request) {
         // Salvar endereço
@@ -68,6 +70,7 @@ public class InactivePersonService {
         return dto;
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('church', #request.churchId, 'unit_admin', 'user', principal.id) or #request.userId.equals(principal.id)")
     public InactivePersonDto create(final InactivePersonRequest.FromUser request) {
         // Obter dados do usuário a ser desativado
@@ -90,6 +93,7 @@ public class InactivePersonService {
         return repository.findById(id).map(converter::toDto);
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
     public InactivePersonDto update(final UUID id, final InactivePersonRequest request) {
         // Obter original
@@ -112,6 +116,7 @@ public class InactivePersonService {
         return dto;
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
     public void delete(final UUID id) {
         // Obter dados

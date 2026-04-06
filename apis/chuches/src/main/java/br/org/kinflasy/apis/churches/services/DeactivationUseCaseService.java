@@ -12,6 +12,7 @@ import br.org.kinflasy.apis.churches.clients.InactivePersonClient;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -24,11 +25,13 @@ public class DeactivationUseCaseService {
     private final UnitService unitService;
     private final MembershipService membershipService;
 
+    @Transactional
     @PreAuthorize("@fga.check('church', #churchId, 'unit_admin', 'user', principal.id) or #userId.equals(principal.id)")
     public List<MembershipDto> deactivateOne(final UUID churchId, final UUID userId) {
         return deactivate(churchId, userId);
     }
 
+    @Transactional
     @PreAuthorize("#userId.equals(principal.id)")
     public List<MembershipDto> deactivateAll(final UUID userId) {
         // Buscar relações de membresia do usuário em questão

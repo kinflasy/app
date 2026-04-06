@@ -15,6 +15,7 @@ import br.org.kinflasy.dto.DepartmentCalendarEventDto;
 import br.org.kinflasy.entities.DepartmentCalendarEvent;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.repositories.DepartmentCalendarEventRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -39,6 +40,7 @@ public class DepartmentCalendarEventService {
                 .toList();
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('department', #request.departmentId, 'can_manage', 'user', principal.id)")
     public DepartmentCalendarEventDto create(final UUID departmentId, final CalendarEventRequest request) {
         // Validar datas

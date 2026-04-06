@@ -26,6 +26,7 @@ import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
 import dev.openfga.sdk.api.client.model.ClientWriteRequest;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -48,6 +49,7 @@ public class ChurchUseCaseService {
      */
 
     @SneakyThrows
+    @Transactional
     @PreAuthorize("isAuthenticated()")
     public ChurchDto.Starter createStarter(final ChurchRequest.Starter request) {
         // Obter usuário logado

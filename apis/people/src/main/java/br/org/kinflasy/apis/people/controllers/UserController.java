@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,7 +38,6 @@ public class UserController {
      */
 
     @PostMapping("admin")
-    @Transactional
     @Operation(summary = "ADMIN - Cadastrar", description = "Cadastrar um novo usuário ativo.")
     public ResponseEntity<UserDto> create(@RequestBody @Valid final UserRequest request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
@@ -96,7 +94,6 @@ public class UserController {
     }
 
     @PutMapping
-    @Transactional
     @Operation(summary = "Editar-se", description = "Editar os dados do usuário logado.")
     public ResponseEntity<UserDto> update(@RequestBody @Valid final UserRequest request) {
         try {
@@ -108,7 +105,6 @@ public class UserController {
     }
 
     @PutMapping("admin/{id}")
-    @Transactional
     @Operation(summary = "ADMIN - Editar", description = "Editar os dados de um usuário ativo.")
     public ResponseEntity<UserDto> update(@PathVariable final UUID id, @RequestBody @Valid final UserRequest request) {
         try {
@@ -119,7 +115,6 @@ public class UserController {
     }
 
     @DeleteMapping
-    @Transactional
     @Operation(summary = "Excluir-se", description = "Descadastrar usuário logado, removendo-o do sistema.")
     public ResponseEntity<HttpStatus> delete() {
         try {
@@ -132,7 +127,6 @@ public class UserController {
     }
 
     @DeleteMapping("admin/{id}")
-    @Transactional
     @Operation(summary = "ADMIN - Excluir", description = "Descadastrar um usuário ativo, removendo-o do sistema.")
     public ResponseEntity<HttpStatus> delete(@PathVariable final UUID id) {
         try {

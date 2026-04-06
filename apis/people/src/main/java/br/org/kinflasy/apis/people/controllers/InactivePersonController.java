@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,14 +31,12 @@ public class InactivePersonController {
     private final InactivePersonService service;
 
     @PostMapping("admin")
-    @Transactional
     @Operation(summary = "ADMIN - Cadastrar", description = "Cadastrar uma nova pessoa inativa.")
     public ResponseEntity<InactivePersonDto> create(@RequestBody @Valid final InactivePersonRequest request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
     }
 
     @PostMapping("from-user")
-    @Transactional
     @Operation(summary = "ADMIN - Cadastrar", description = "Cadastrar uma nova pessoa inativa.")
     public ResponseEntity<InactivePersonDto> create(@RequestBody @Valid final InactivePersonRequest.FromUser request) {
         return new ResponseEntity<>(service.create(request), HttpStatus.CREATED);
@@ -54,7 +51,6 @@ public class InactivePersonController {
     }
 
     @PutMapping("{id}")
-    @Transactional
     @Operation(summary = "Editar", description = "Editar os dados de uma pessoa inativa.")
     public ResponseEntity<InactivePersonDto> update(@PathVariable final UUID id,
             @RequestBody final InactivePersonRequest request) {
@@ -66,7 +62,6 @@ public class InactivePersonController {
     }
 
     @DeleteMapping("{id}")
-    @Transactional
     @Operation(summary = "Excluir", description = "Descadastrar uma pessoa inativa, removendo-a do sistema.")
     public ResponseEntity<HttpStatus> delete(@PathVariable final UUID id) {
         try {

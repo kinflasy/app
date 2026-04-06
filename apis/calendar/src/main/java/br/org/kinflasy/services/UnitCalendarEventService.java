@@ -15,6 +15,7 @@ import br.org.kinflasy.dto.UnitCalendarEventDto;
 import br.org.kinflasy.entities.UnitCalendarEvent;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.repositories.UnitCalendarEventRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -42,6 +43,7 @@ public class UnitCalendarEventService {
      * ACESSO RESTRITO
      */
 
+    @Transactional
     @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
     public UnitCalendarEventDto create(final UUID unitId, final CalendarEventRequest request) {
         // Validar datas

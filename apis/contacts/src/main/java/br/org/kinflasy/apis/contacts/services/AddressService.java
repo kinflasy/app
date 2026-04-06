@@ -10,6 +10,7 @@ import br.org.kinflasy.apis.contacts.repositories.AddressRepository;
 import br.org.kinflasy.libs.contacts.dto.AddressDto;
 import br.org.kinflasy.libs.contacts.dto.AddressRequest;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -25,12 +26,14 @@ public class AddressService {
      * ACESSO PÚBLICO (inclusive deslogado, nesse caso)
      */
 
+    @Transactional
     public AddressDto create(final AddressRequest form) {
         final var entity = converter.toEntity(form);
         repository.save(entity);
         return converter.toDto(entity);
     }
 
+    @Transactional
     public AddressDto create(final AddressRequest form, final UUID createdBy) {
         final var entity = converter.toEntity(form);
         entity.setCreatedBy(createdBy);
@@ -48,6 +51,7 @@ public class AddressService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('address', #id, 'can_edit', 'user', principal.id)")
     public AddressDto update(final UUID id, final AddressRequest form) {
         final var original = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
@@ -57,6 +61,7 @@ public class AddressService {
         return converter.toDto(updated);
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('address', #id, 'can_edit', 'user', principal.id)")
     public void delete(final UUID id) {
         repository.deleteById(id);

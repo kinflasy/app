@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import br.org.kinflasy.apis.churches.clients.InactivePersonClient;
 import br.org.kinflasy.apis.churches.clients.UserClient;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -20,6 +21,7 @@ public class ActivationUseCaseService {
 
     private final MembershipService membershipService;
 
+    @Transactional
     @PreAuthorize("@fga.check('person_data', #inactivePersonId, 'can_edit', 'user', principal.id)")
     public List<MembershipDto> activate(final UUID inactivePersonId, final String username) {
         // Garantir existência do usuário ativo
@@ -28,6 +30,7 @@ public class ActivationUseCaseService {
         return updateMemberships(inactivePersonId, user.getId());
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('person_data', #inactivePersonId, 'can_edit', 'user', principal.id)")
     public List<MembershipDto> activate(final UUID inactivePersonId, final UUID userId) {
         // Garantir existência do usuário ativo

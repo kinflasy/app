@@ -16,6 +16,7 @@ import br.org.kinflasy.libs.churches.dto.ChurchRequest;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,6 +67,7 @@ public class ChurchService {
      * ACESSO LOGADO
      */
 
+    @Transactional
     @PreAuthorize("isAuthenticated()")
     public ChurchDto create(final ChurchRequest request) {
         log.info("Criando Igreja @{}...", request.getSlug());
@@ -81,6 +83,7 @@ public class ChurchService {
      * ACESSO RESTRITO
      */
 
+    @Transactional
     @PreAuthorize("@fga.check('church', #id, 'admin', 'user', principal.id)")
     public ChurchDto update(final UUID id, final ChurchRequest request) {
         log.info("Atualizando Igreja @{} (id {})...", request.getSlug(), id);
@@ -94,6 +97,7 @@ public class ChurchService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('church', #id, 'admin', 'user', principal.id)")
     public void delete(final UUID id) {
         log.info("Deletando Igreja de id {}...", id);
@@ -106,6 +110,7 @@ public class ChurchService {
         repository.deleteById(id);
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('church', #id, 'admin', 'user', principal.id)")
     public UnitDto createUnit(final UUID id, final UnitRequest request) {
         return repository.findById(id)

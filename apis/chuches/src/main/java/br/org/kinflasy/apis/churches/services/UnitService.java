@@ -29,6 +29,7 @@ import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -78,14 +79,6 @@ public class UnitService {
                 });
     }
 
-    public Pending askToJoinUnit(final UUID id) {
-        if (repository.existsById(id)) {
-            return membershipService.askToJoinUnit(id);
-        } else {
-            throw new EntityNotFoundException(NOT_FOUND_MESSAGE);
-        }
-    }
-
     public List<DepartmentDto> listDepartments(final UUID id) {
         log.info("Listando todos os departamentos da unidade de id {}...", id);
 
@@ -106,10 +99,21 @@ public class UnitService {
         return membershipService.listByPersonId(loggedUser.getId());
     }
 
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    public Pending askToJoinUnit(final UUID id) {
+        if (repository.existsById(id)) {
+            return membershipService.askToJoinUnit(id);
+        } else {
+            throw new EntityNotFoundException(NOT_FOUND_MESSAGE);
+        }
+    }
+
     /*
      * ACESSO RESTRITO
      */
 
+    @Transactional
     @PreAuthorize("@fga.check('church', #churchId, 'admin', 'user', principal.id)")
     public UnitDto create(final UUID churchId, final UnitRequest request) {
         log.info("Criando unidade /{}...", request.getSlug());
@@ -137,6 +141,7 @@ public class UnitService {
         return dto;
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public UnitDto update(final UUID id, final UnitRequest request) {
         log.info("Atualizando unidade /{} (id {})...", request.getSlug(), id);
@@ -153,6 +158,7 @@ public class UnitService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public void delete(final UUID id) {
         log.info("Deletando unidade de id {}...", id);
@@ -172,6 +178,7 @@ public class UnitService {
                         () -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public DepartmentDto createDepartment(final UUID id, final DepartmentRequest.WithRules request) {
         return repository.findById(id)
@@ -217,6 +224,7 @@ public class UnitService {
                 .toList();
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public MembershipDto registerMember(final UUID id, final MembershipRequest.Register request) {
         // Obter dados da unidade
@@ -237,6 +245,7 @@ public class UnitService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
+    @Transactional
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public void removeMember(final UUID id, final UUID personId) {
         membershipRepository.findByUnitIdAndPersonId(id, personId)
@@ -251,6 +260,7 @@ public class UnitService {
      * VERIFICAÇÃO DE ACESSO REDIRECIONADA
      */
 
+    @Transactional
     public MembershipDto addMember(final UUID id, final MembershipRequest request) {
         if (repository.existsById(id)) {
             return membershipService.create(id, request);
@@ -259,6 +269,7 @@ public class UnitService {
         }
     }
 
+    @Transactional
     public Pending askForUserToJoin(final UUID id, final MembershipRequest request) {
         if (repository.existsById(id)) {
             return membershipService.askForUserToJoin(id, request);

@@ -25,6 +25,7 @@ import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto.Pending;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,9 +48,10 @@ public class MembershipService {
     private final PersonClient personClient;
 
     /*
-     * ACESSO PÚBLICO
+     * ACESSO AUTENTICADO
      */
 
+    @Transactional
     public Pending askToJoinUnit(final UUID unitId) {
         final var loggedUser = authUtils.getLoggedUser();
 

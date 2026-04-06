@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,9 +19,9 @@ import br.org.kinflasy.apis.churches.services.UnitService;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.MembershipRequest;
 import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto;
+import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto.Pending;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
-import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto.Pending;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -55,7 +54,6 @@ public class UnitController {
     }
 
     @PutMapping("{id}")
-    @Transactional
     @Operation(summary = "Editar", description = "Editar os dados de uma unidade.")
     public ResponseEntity<UnitDto> update(@PathVariable final UUID id,
             @RequestBody final UnitRequest request) {
@@ -67,7 +65,6 @@ public class UnitController {
     }
 
     @DeleteMapping("{id}")
-    @Transactional
     @Operation(summary = "Excluir", description = "Descadastrar uma unidade, removendo-a do sistema.")
     public ResponseEntity<HttpStatus> delete(@PathVariable final UUID id) {
         try {
@@ -114,7 +111,6 @@ public class UnitController {
     }
 
     @PostMapping("{id}/members")
-    @Transactional
     @Operation(summary = "Associar membro", description = "Adicionar pessoa pré-existente como membro de uma unidade.")
     public ResponseEntity<MembershipDto> associateMember(@PathVariable final UUID id,
             @RequestBody @Valid final MembershipRequest request) {
@@ -122,7 +118,6 @@ public class UnitController {
     }
 
     @PostMapping("{id}/members/ask")
-    @Transactional
     @Operation(summary = "Pedir para um usuário ingressar na unidade", description = "Solicitar que pessoa pré-existente seja membro de uma unidade.")
     public ResponseEntity<Pending> askForUserToJoin(@PathVariable final UUID id,
             @RequestBody @Valid final MembershipRequest request) {
@@ -130,35 +125,30 @@ public class UnitController {
     }
 
     @PutMapping("{id}/pending-members")
-    @Transactional
-    @Operation(summary = "Pedir para um usuário ingressar na unidade", description = "Solicitar que pessoa pré-existente seja membro de uma unidade.")
+    @Operation(summary = "Atualizar solicitação para usuário ingressar na unidade", description = "Atualizar dados da solicitação que pede para usuário ingressar na unidade.")
     public Pending updatePending(@PathVariable final UUID id, final @RequestBody MembershipRequest request) {
         return membershipService.updatePending(id, request);
     }
 
     @PostMapping("{id}/member/{personId}/confirm")
-    @Transactional
     @Operation(summary = "Confirmar solicitação de usuário para ingressar na unidade", description = "Confirmar solicitação de usuário para ingressar na unidade.")
     public ResponseEntity<Pending> confirmAsUnit(@PathVariable final UUID id, @PathVariable final UUID personId) {
         return ResponseEntity.ok(membershipService.confirmAsUnit(id, personId));
     }
 
     @PostMapping("{id}/join")
-    @Transactional
     @Operation(summary = "Pedir para ingressar na unidade", description = "Solicitar que a administração de uma unidade permita o ingresso da pessoa logada.")
     public ResponseEntity<Pending> askToJoinUnit(@PathVariable final UUID id) {
         return ResponseEntity.ok(service.askToJoinUnit(id));
     }
 
     @PostMapping("{id}/join/confirm")
-    @Transactional
     @Operation(summary = "Confirmar solicitação para ingressar na unidade", description = "Confirmar solicitação para a pessoa logada ingressar na unidade.")
     public ResponseEntity<Pending> confirmAsUser(@PathVariable final UUID id) {
         return ResponseEntity.ok(service.askToJoinUnit(id));
     }
 
     @PostMapping("{id}/member/{personId}/reject")
-    @Transactional
     @Operation(summary = "Rejeitar solicitação de usuário para ingressar na unidade", description = "Rejeitar solicitação de usuário para ingressar na unidade.")
     public ResponseEntity<Pending> reject(@PathVariable final UUID id, @PathVariable final UUID personId) {
         membershipService.reject(id, personId);
@@ -172,7 +162,6 @@ public class UnitController {
     }
 
     @PostMapping("{id}/members/register")
-    @Transactional
     @Operation(summary = "Cadastrar membros", description = "Cadastrar novas pessoas inativas e associá-las como membros de uma unidade.")
     public ResponseEntity<MembershipDto> registerMembers(@PathVariable final UUID id,
             @RequestBody final MembershipRequest.Register request) {

@@ -5,7 +5,6 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,7 +49,6 @@ public class DepartmentController {
     }
 
     @PutMapping("{id}")
-    @Transactional
     @Operation(summary = "Editar", description = "Editar os dados de um departamento.")
     public ResponseEntity<DepartmentDto> update(@PathVariable final UUID id,
             @RequestBody final DepartmentRequest request) {
@@ -62,7 +60,6 @@ public class DepartmentController {
     }
 
     @DeleteMapping("{id}")
-    @Transactional
     @Operation(summary = "Excluir", description = "Descadastrar um departamento, removendo-o do sistema.")
     public ResponseEntity<HttpStatus> delete(@PathVariable final UUID id) {
         try {
