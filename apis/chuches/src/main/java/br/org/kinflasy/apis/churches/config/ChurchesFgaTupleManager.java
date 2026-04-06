@@ -61,7 +61,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
 
     @Async
     @EventListener
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public CompletableFuture<Void> handleUnitCreated(final EntityEvent.Created<UnitDto> event) {
         final var dto = event.getSource();
 
@@ -100,7 +100,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
 
     @Async
     @EventListener
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public CompletableFuture<Void> handleDepartmentCreated(final EntityEvent.Created<DepartmentDto> event) {
         final var dto = event.getSource();
 
@@ -119,7 +119,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
 
     @Async
     @EventListener
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public CompletableFuture<Void> handleMembershipCreated(final EntityEvent.Created<MembershipDto> event) {
         final var dto = event.getSource();
 
@@ -148,7 +148,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
 
     @Async
     @EventListener
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public CompletableFuture<Void> handleMembershipDeleted(final EntityEvent.Deleted<MembershipDto> event) {
         final var dto = event.getSource();
 
@@ -177,7 +177,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
 
     @Async
     @EventListener
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public CompletableFuture<Void> handleMembershipUpdated(final EntityEvent.Updated<MembershipDto> event) {
         // Deletar tuplas originais da membresia
         return tupleManager.handleMembershipDeleted(new EntityEvent.Deleted<>(event.getOriginal()))
@@ -189,7 +189,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
 
     @Async
     @EventListener
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public CompletableFuture<Void> handleIntegrationCreated(final EntityEvent.Created<IntegrationDto> event) {
         final var dto = event.getSource();
 
@@ -203,7 +203,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
 
     @Async
     @EventListener
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public CompletableFuture<Void> handleExtensionSubscribed(
             final ExtensionEvent.Subscribed<ExtensionSubscriptionDto> event) {
         final var dto = event.getSource();

@@ -50,7 +50,7 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
      */
     @Async
     @EventListener
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handleUserCreated(final EntityEvent.Created<UserDto> event) {
         final var dto = event.getSource();
 
@@ -69,7 +69,7 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
 
     @Async
     @EventListener
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handleUserDeleted(final EntityEvent.Deleted<UserDto> event) {
         final var dto = event.getSource();
 
@@ -93,7 +93,7 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
      */
     @Async
     @EventListener
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handleInactivePersonCreated(final EntityEvent.Created<InactivePersonDto> event) {
         final var dto = event.getSource();
 
@@ -112,7 +112,7 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
 
     @Async
     @EventListener
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handleInactivePersonDeleted(final EntityEvent.Deleted<InactivePersonDto> event) {
         final var dto = event.getSource();
 
