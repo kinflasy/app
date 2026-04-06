@@ -12,6 +12,7 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
+import br.org.kinflasy.libs.api_utils.FgaTupleManager;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
@@ -23,19 +24,11 @@ import br.org.kinflasy.libs.churches.events.department.ExtensionEvent;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
-import dev.openfga.sdk.api.client.model.ClientTupleKeyWithoutCondition;
-import dev.openfga.sdk.api.configuration.ClientDeleteTuplesOptions;
-import dev.openfga.sdk.api.configuration.ClientWriteTuplesOptions;
-import dev.openfga.sdk.api.model.WriteRequestDeletes.OnMissingEnum;
-import dev.openfga.sdk.api.model.WriteRequestWrites.OnDuplicateEnum;
-import lombok.AllArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-@AllArgsConstructor(onConstructor = @__(@Lazy))
-public class ChurchesFgaTupleManager {
+public class ChurchesFgaTupleManager extends FgaTupleManager {
 
     /*
      * Constantes de tipos
@@ -54,11 +47,17 @@ public class ChurchesFgaTupleManager {
     private static final String SET_USER = "#user";
     private static final String SET_ADMIN = "#admin";
 
-    private final OpenFgaClient client;
-
     private final DepartmentService departmentService;
 
     private final ChurchesFgaTupleManager tupleManager;
+
+    @Lazy
+    public ChurchesFgaTupleManager(final OpenFgaClient client, final DepartmentService departmentService,
+            final ChurchesFgaTupleManager tupleManager) {
+        super(client);
+        this.departmentService = departmentService;
+        this.tupleManager = tupleManager;
+    }
 
     @Async
     @EventListener
@@ -225,52 +224,6 @@ public class ChurchesFgaTupleManager {
                     return writeTuples(tuples);
                 })
                 .orElseGet(() -> new CompletableFuture<>());
-    }
-
-    @SneakyThrows
-    private CompletableFuture<Void> writeTuples(final List<ClientTupleKey> tuples) {
-        return client.writeTuples(tuples, new ClientWriteTuplesOptions().onDuplicate(OnDuplicateEnum.IGNORE))
-                .thenAccept(response -> {
-                    final var writes = response.getWrites();
-                    log.info("{} tuplas escritas: {}", writes.size(),
-                            writes.stream()
-                                    .map(write -> write.getTupleKey())
-                                    .reduce("",
-                                            (acc, tuple) -> "%s\n%s %s %s (%s)".formatted(acc, tuple.getUser(),
-                                                    tuple.getRelation(), tuple.getObject(), tuple.getCondition()),
-                                            (a, b) -> a + b));
-                })
-                .exceptionally(e -> {
-                    log.error("Erro ao escrever tuplas", e);
-                    return null;
-                });
-    }
-
-    private CompletableFuture<Void> writeTuples(final ClientTupleKey... tuples) {
-        return writeTuples(List.of(tuples));
-    }
-
-    @SneakyThrows
-    private CompletableFuture<Void> deleteTuples(final List<ClientTupleKeyWithoutCondition> tuples) {
-        return client.deleteTuples(tuples, new ClientDeleteTuplesOptions().onMissing(OnMissingEnum.IGNORE))
-                .thenAccept(response -> {
-                    final var deletes = response.getDeletes();
-                    log.info("{} tuplas deletadas: {}", deletes.size(),
-                            deletes.stream()
-                                    .map(delete -> delete.getTupleKey())
-                                    .reduce("",
-                                            (acc, tuple) -> "%s\n%s %s %s (%s)".formatted(acc, tuple.getUser(),
-                                                    tuple.getRelation(), tuple.getObject(), tuple.getCondition()),
-                                            (a, b) -> a + b));
-                })
-                .exceptionally(e -> {
-                    log.error("Erro ao deletar tuplas", e);
-                    return null;
-                });
-    }
-
-    private CompletableFuture<Void> deleteTuples(final ClientTupleKey... tuples) {
-        return deleteTuples(List.of(tuples));
     }
 
 }
