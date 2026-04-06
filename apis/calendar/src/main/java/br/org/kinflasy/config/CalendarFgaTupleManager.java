@@ -3,6 +3,7 @@ package br.org.kinflasy.config;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -45,6 +46,7 @@ public class CalendarFgaTupleManager {
     private final CalendarEventService service;
 
     @Async
+    @EventListener
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public CompletableFuture<Void> handleUnitCalendarEventCreated(
             final EntityEvent.Created<UnitCalendarEventDto> event) {
@@ -60,6 +62,7 @@ public class CalendarFgaTupleManager {
     }
 
     @Async
+    @EventListener
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public CompletableFuture<Void> handleDepartmentCalendarEventCreated(
             final EntityEvent.Created<DepartmentCalendarEventDto> event) {
@@ -75,6 +78,7 @@ public class CalendarFgaTupleManager {
     }
 
     @Async
+    @EventListener
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public CompletableFuture<Void> handleUnitCalendarEventDeleted(
             final EntityEvent.Deleted<UnitCalendarEventDto> event) {
@@ -89,6 +93,7 @@ public class CalendarFgaTupleManager {
     }
 
     @Async
+    @EventListener
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public CompletableFuture<Void> handleDepartmentCalendarEventDeleted(
             final EntityEvent.Deleted<DepartmentCalendarEventDto> event) {

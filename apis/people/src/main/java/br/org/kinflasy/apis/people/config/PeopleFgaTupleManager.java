@@ -3,6 +3,7 @@ package br.org.kinflasy.apis.people.config;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
@@ -54,6 +55,7 @@ public class PeopleFgaTupleManager {
      * @param event
      */
     @Async
+    @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleUserCreated(final EntityEvent.Created<UserDto> event) {
         final var dto = event.getSource();
@@ -72,6 +74,7 @@ public class PeopleFgaTupleManager {
     }
 
     @Async
+    @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleUserDeleted(final EntityEvent.Deleted<UserDto> event) {
         final var dto = event.getSource();
@@ -95,6 +98,7 @@ public class PeopleFgaTupleManager {
      * @param event
      */
     @Async
+    @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleInactivePersonCreated(final EntityEvent.Created<InactivePersonDto> event) {
         final var dto = event.getSource();
@@ -113,6 +117,7 @@ public class PeopleFgaTupleManager {
     }
 
     @Async
+    @EventListener
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleInactivePersonDeleted(final EntityEvent.Deleted<InactivePersonDto> event) {
         final var dto = event.getSource();
