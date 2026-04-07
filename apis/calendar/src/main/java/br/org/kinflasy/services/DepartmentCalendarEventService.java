@@ -37,6 +37,7 @@ public class DepartmentCalendarEventService {
             final LocalDateTime end) {
         return repository.findByDepartmentIdInRange(departmentId, start, end).stream()
                 .map(entity -> mapper.map(entity, DepartmentCalendarEventDto.class))
+                .sorted((a, b) -> a.getStartDateTime().compareTo(b.getStartDateTime()))
                 .toList();
     }
 

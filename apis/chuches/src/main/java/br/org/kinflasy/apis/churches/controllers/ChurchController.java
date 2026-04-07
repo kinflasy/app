@@ -93,7 +93,7 @@ public class ChurchController {
 
     @GetMapping("{id}/units")
     @Operation(summary = "Listar unidades", description = "Listar as unidades de uma igreja.")
-    public ResponseEntity<List<UnitDto>> getUnits(@PathVariable final UUID id) {
+    public ResponseEntity<List<UnitDto>> listUnits(@PathVariable final UUID id) {
         return ResponseEntity.ok(service.listUnits(id));
     }
 

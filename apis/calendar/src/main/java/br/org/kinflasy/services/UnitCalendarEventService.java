@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.clients.ChurchClient;
 import br.org.kinflasy.dto.CalendarEventRequest;
 import br.org.kinflasy.dto.UnitCalendarEventDto;
 import br.org.kinflasy.entities.UnitCalendarEvent;
@@ -27,6 +28,8 @@ public class UnitCalendarEventService {
 
     private final UnitCalendarEventRepository repository;
 
+    private final ChurchClient churchClient;
+
     /*
      * ACESSO PÚBLICO
      */
@@ -36,6 +39,16 @@ public class UnitCalendarEventService {
             final LocalDateTime end) {
         return repository.findByUnitId(unitId, start, end).stream()
                 .map(entity -> mapper.map(entity, UnitCalendarEventDto.class))
+                .sorted((a, b) -> a.getStartDateTime().compareTo(b.getStartDateTime()))
+                .toList();
+    }
+
+    @PostFilter("@fgau.withCharacteristics('calendar_event', filterObject.id, 'can_view')")
+    public List<UnitCalendarEventDto> listByChurchInRange(final UUID churchId, final LocalDateTime start,
+            final LocalDateTime end) {
+        return churchClient.listUnits(churchId).stream()
+                .flatMap(unit -> listInRange(unit.getId(), start, end).stream())
+                .sorted((a, b) -> a.getStartDateTime().compareTo(b.getStartDateTime()))
                 .toList();
     }
 

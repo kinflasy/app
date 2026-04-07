@@ -54,6 +54,7 @@ public class CalendarEventService {
     /*
      * ACESSO RESTRITO
      */
+
     @PreAuthorize("@fgau.withCharacteristics('calendar_event', #id, 'can_view')")
     public Optional<CalendarEventDto> findById(final UUID id) {
         final Optional<CalendarEventDto> optional = unitRepository.findById(id)
