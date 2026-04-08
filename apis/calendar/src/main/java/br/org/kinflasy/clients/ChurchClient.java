@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 
-@FeignClient(name = "churchesApi", contextId = "people-churchesApi")
+@FeignClient(name = "churchesApi", contextId = "calendar-churchesApi")
 public interface ChurchClient {
 
     @GetMapping("{id}/units")

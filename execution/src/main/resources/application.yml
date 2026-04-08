@@ -41,6 +41,8 @@ spring:
             url: ${ADDRESS_API_URL}
           people-churchesApi:
             url: ${CHURCHES_API_URL}
+          calendar-churchesApi:
+            url: ${CHURCHES_API_URL}
 
   # Configurações do DevTools
   devtools:
