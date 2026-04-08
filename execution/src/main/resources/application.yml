@@ -1,7 +1,7 @@
 spring:
   config:
     import:
-    - optional:file:../.env[.properties]
+      - optional:file:../.env[.properties]
 
   # Configurações do DataSource
   datasource:
@@ -51,20 +51,25 @@ spring:
 
 logging:
   level:
-    '[br.org.kinflasy.clients.UserClient]': DEBUG
-    '[br.org.kinflasy.apis.churches.clients.PersonClient]': DEBUG
+    "[br.org.kinflasy.clients.UserClient]": DEBUG
+    "[br.org.kinflasy.apis.churches.clients.PersonClient]": DEBUG
 
 springdoc:
   api-docs:
     path: /api-docs
   use-fqn: true
+  open-api:
+    servers:
+      - url: ${API_URL:http://localhost:8080}
+        description: URL base para a API (pode ser configurada via variável de ambiente API_URL)
 
 openfga:
   api-url: http://${OPENFGA_HTTP_HOST}:${OPENFGA_HTTP_PORT}
   store-id: ${OPENFGA_STORE_ID}
   authorization-model-id: ${OPENFGA_AUTHORIZATION_MODEL_ID}
 
-api:
-  security:
-    token:
-      secret: ${JWT_SECRET:my-secret-key}
+app:
+  api:
+    security:
+      token:
+        secret: ${JWT_SECRET:my-secret-key}
