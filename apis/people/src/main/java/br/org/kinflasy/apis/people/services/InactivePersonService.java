@@ -52,13 +52,15 @@ public class InactivePersonService {
     @Transactional
     @PreAuthorize("@fga.check('church', #request.churchId, 'unit_admin', 'user', principal.id)")
     public InactivePersonDto create(final InactivePersonRequest request) {
-        // Salvar endereço
-        final var address = addressClient.create(request.getAddress());
-
         // Salvar pessoa
         final var entity = converter.toEntity(request);
         entity.setId(null);
-        entity.setAddressId(address.getId());
+
+        // Salvar endereço
+        Optional.ofNullable(request.getAddress())
+                .map(addressClient::create)
+                .ifPresent(address -> entity.setAddressId(address.getId()));
+
         repository.save(entity);
 
         // Gerar DTO
