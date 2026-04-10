@@ -64,11 +64,11 @@ springdoc:
 
 openfga:
   api-url: http://${OPENFGA_HTTP_HOST}:${OPENFGA_HTTP_PORT}
-  store-id: ${OPENFGA_STORE_ID}
-  authorization-model-id: ${OPENFGA_AUTHORIZATION_MODEL_ID}
 
 app:
   api:
     security:
       token:
         secret: ${JWT_SECRET:my-secret-key}
+  openfga:
+    model-file-path: ${OPENFGA_MODEL_FILE}

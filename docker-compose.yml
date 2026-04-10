@@ -89,33 +89,7 @@ services:
       # Needed for the grpc server (if used)
       - "8081:8081"
       # Needed for the playground (Do not enable in prod!)
-      # - "3000:3000"
-
-  fga-setup:
-    container_name: fga-setup
-    image: alpine:3.21
-    # stdin_open: true
-    # tty: true
-    volumes:
-      - .:/mnt
-      - shared-data:/shared
-    environment:
-      OPENFGA_HTTP_HOST: openfga
-      OPENFGA_HTTP_PORT: ${OPENFGA_HTTP_PORT}
-    # O entrypoint abaixo faz tudo: instala dependências e roda seu script
-    entrypoint: >
-      /bin/sh -c "
-      apk add --no-cache curl jq dos2unix && 
-      curl -sSfL https://github.com/openfga/cli/releases/download/v0.6.2/fga_0.6.2_linux_amd64.tar.gz | tar -xz -C /usr/local/bin fga &&
-      dos2unix /mnt/run/setup-fga.sh &&
-      chmod +x /mnt/run/setup-fga.sh &&
-      /mnt/run/setup-fga.sh
-      "
-    depends_on:
-      openfga:
-        condition: service_started
-    networks:
-      - openfga
+      - "3000:3000"
 
   # Serviço para a aplicação Spring Boot
   app:
@@ -127,8 +101,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      fga-setup:
-        condition: service_completed_successfully
+      openfga:
+        condition: service_started
     env_file:
       - .env
     volumes:
@@ -136,6 +110,7 @@ services:
     environment:
       DATABASE_HOST: db
       OPENFGA_HTTP_HOST: openfga
+      OPENFGA_MODEL_FILE: model.json
       FGA_ENV_FILE: /shared/.env.fga
     networks:
       - app

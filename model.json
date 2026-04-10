@@ -1,0 +1,890 @@
+{
+    "schema_version": "1.1",
+    "type_definitions": [
+        {
+            "type": "user"
+        },
+        {
+            "metadata": {
+                "relations": {
+                    "can_edit": {},
+                    "can_view": {
+                        "directly_related_user_types": [
+                            {
+                                "relation": "can_edit",
+                                "type": "membership"
+                            }
+                        ]
+                    },
+                    "owner": {
+                        "directly_related_user_types": [
+                            {
+                                "type": "user"
+                            },
+                            {
+                                "relation": "unit_admin",
+                                "type": "church"
+                            }
+                        ]
+                    }
+                }
+            },
+            "relations": {
+                "can_edit": {
+                    "computedUserset": {
+                        "relation": "owner"
+                    }
+                },
+                "can_view": {
+                    "union": {
+                        "child": [
+                            {
+                                "this": {}
+                            },
+                            {
+                                "computedUserset": {
+                                    "relation": "can_edit"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "owner": {
+                    "this": {}
+                }
+            },
+            "type": "person_data"
+        },
+        {
+            "metadata": {
+                "relations": {
+                    "can_edit": {},
+                    "can_view": {},
+                    "origin": {
+                        "directly_related_user_types": [
+                            {
+                                "type": "person_data"
+                            },
+                            {
+                                "type": "unit"
+                            }
+                        ]
+                    },
+                    "owner": {}
+                }
+            },
+            "relations": {
+                "can_edit": {
+                    "computedUserset": {
+                        "relation": "owner"
+                    }
+                },
+                "can_view": {
+                    "union": {
+                        "child": [
+                            {
+                                "computedUserset": {
+                                    "relation": "can_edit"
+                                }
+                            },
+                            {
+                                "tupleToUserset": {
+                                    "computedUserset": {
+                                        "relation": "can_view"
+                                    },
+                                    "tupleset": {
+                                        "relation": "origin"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                "origin": {
+                    "this": {}
+                },
+                "owner": {
+                    "union": {
+                        "child": [
+                            {
+                                "tupleToUserset": {
+                                    "computedUserset": {
+                                        "relation": "owner"
+                                    },
+                                    "tupleset": {
+                                        "relation": "origin"
+                                    }
+                                }
+                            },
+                            {
+                                "tupleToUserset": {
+                                    "computedUserset": {
+                                        "relation": "admin"
+                                    },
+                                    "tupleset": {
+                                        "relation": "origin"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "type": "address"
+        },
+        {
+            "metadata": {
+                "relations": {
+                    "admin": {
+                        "directly_related_user_types": [
+                            {
+                                "relation": "admin",
+                                "type": "unit"
+                            }
+                        ]
+                    },
+                    "congregated": {},
+                    "creator": {
+                        "directly_related_user_types": [
+                            {
+                                "type": "user"
+                            }
+                        ]
+                    },
+                    "member": {},
+                    "unit": {
+                        "directly_related_user_types": [
+                            {
+                                "type": "unit"
+                            }
+                        ]
+                    },
+                    "unit_admin": {},
+                    "visitor": {}
+                }
+            },
+            "relations": {
+                "admin": {
+                    "union": {
+                        "child": [
+                            {
+                                "this": {}
+                            },
+                            {
+                                "computedUserset": {
+                                    "relation": "creator"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "congregated": {
+                    "tupleToUserset": {
+                        "computedUserset": {
+                            "relation": "congregated"
+                        },
+                        "tupleset": {
+                            "relation": "unit"
+                        }
+                    }
+                },
+                "creator": {
+                    "this": {}
+                },
+                "member": {
+                    "tupleToUserset": {
+                        "computedUserset": {
+                            "relation": "member"
+                        },
+                        "tupleset": {
+                            "relation": "unit"
+                        }
+                    }
+                },
+                "unit": {
+                    "this": {}
+                },
+                "unit_admin": {
+                    "tupleToUserset": {
+                        "computedUserset": {
+                            "relation": "admin"
+                        },
+                        "tupleset": {
+                            "relation": "unit"
+                        }
+                    }
+                },
+                "visitor": {
+                    "tupleToUserset": {
+                        "computedUserset": {
+                            "relation": "visitor"
+                        },
+                        "tupleset": {
+                            "relation": "unit"
+                        }
+                    }
+                }
+            },
+            "type": "church"
+        },
+        {
+            "metadata": {
+                "relations": {
+                    "admin": {
+                        "directly_related_user_types": [
+                            {
+                                "relation": "leader",
+                                "type": "department"
+                            }
+                        ]
+                    },
+                    "can_edit": {},
+                    "can_view": {
+                        "directly_related_user_types": [
+                            {
+                                "type": "user",
+                                "wildcard": {}
+                            }
+                        ]
+                    },
+                    "congregated": {
+                        "directly_related_user_types": [
+                            {
+                                "relation": "user",
+                                "type": "membership"
+                            }
+                        ]
+                    },
+                    "department": {
+                        "directly_related_user_types": [
+                            {
+                                "type": "department"
+                            }
+                        ]
+                    },
+                    "member": {
+                        "directly_related_user_types": [
+                            {
+                                "relation": "user",
+                                "type": "membership"
+                            }
+                        ]
+                    },
+                    "parent_church": {
+                        "directly_related_user_types": [
+                            {
+                                "type": "church"
+                            }
+                        ]
+                    },
+                    "visitor": {
+                        "directly_related_user_types": [
+                            {
+                                "relation": "user",
+                                "type": "membership"
+                            }
+                        ]
+                    }
+                }
+            },
+            "relations": {
+                "admin": {
+                    "union": {
+                        "child": [
+                            {
+                                "this": {}
+                            },
+                            {
+                                "tupleToUserset": {
+                                    "computedUserset": {
+                                        "relation": "admin"
+                                    },
+                                    "tupleset": {
+                                        "relation": "parent_church"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                "can_edit": {
+                    "computedUserset": {
+                        "relation": "admin"
+                    }
+                },
+                "can_view": {
+                    "union": {
+                        "child": [
+                            {
+                                "this": {}
+                            },
+                            {
+                                "computedUserset": {
+                                    "relation": "admin"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "congregated": {
+                    "union": {
+                        "child": [
+                            {
+                                "this": {}
+                            },
+                            {
+                                "computedUserset": {
+                                    "relation": "member"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "department": {
+                    "this": {}
+                },
+                "member": {
+                    "this": {}
+                },
+                "parent_church": {
+                    "this": {}
+                },
+                "visitor": {
+                    "union": {
+                        "child": [
+                            {
+                                "this": {}
+                            },
+                            {
+                                "computedUserset": {
+                                    "relation": "congregated"
+                                }
+                            }
+                        ]
+                    }
+                }
+            },
+            "type": "unit"
+        },
+        {
+            "metadata": {
+                "relations": {
+                    "can_edit": {},
+                    "can_view": {},
+                    "church": {},
+                    "unit": {
+                        "directly_related_user_types": [
+                            {
+                                "type": "unit"
+                            }
+                        ]
+                    },
+                    "user": {
+                        "directly_related_user_types": [
+                            {
+                                "type": "user"
+                            }
+                        ]
+                    }
+                }
+            },
+            "relations": {
+                "can_edit": {
+                    "tupleToUserset": {
+                        "computedUserset": {
+                            "relation": "admin"
+                        },
+                        "tupleset": {
+                            "relation": "unit"
+                        }
+                    }
+                },
+                "can_view": {
+                    "union": {
+                        "child": [
+                            {
+                                "computedUserset": {
+                                    "relation": "can_edit"
+                                }
+                            },
+                            {
+                                "computedUserset": {
+                                    "relation": "user"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "church": {
+                    "tupleToUserset": {
+                        "computedUserset": {
+                            "relation": "parent_church"
+                        },
+                        "tupleset": {
+                            "relation": "unit"
+                        }
+                    }
+                },
+                "unit": {
+                    "this": {}
+                },
+                "user": {
+                    "this": {}
+                }
+            },
+            "type": "membership"
+        },
+        {
+            "metadata": {
+                "relations": {
+                    "assistant": {
+                        "directly_related_user_types": [
+                            {
+                                "relation": "user",
+                                "type": "membership"
+                            }
+                        ]
+                    },
+                    "can_edit": {},
+                    "can_join": {
+                        "directly_related_user_types": [
+                            {
+                                "condition": "characteristics",
+                                "type": "user"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "member",
+                                "type": "unit"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "congregated",
+                                "type": "unit"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "visitor",
+                                "type": "unit"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "member",
+                                "type": "church"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "congregated",
+                                "type": "church"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "visitor",
+                                "type": "church"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "type": "user",
+                                "wildcard": {}
+                            }
+                        ]
+                    },
+                    "can_manage": {},
+                    "can_observe": {},
+                    "can_view": {
+                        "directly_related_user_types": [
+                            {
+                                "condition": "characteristics",
+                                "type": "user"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "member",
+                                "type": "unit"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "congregated",
+                                "type": "unit"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "visitor",
+                                "type": "unit"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "member",
+                                "type": "church"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "congregated",
+                                "type": "church"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "visitor",
+                                "type": "church"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "type": "user",
+                                "wildcard": {}
+                            }
+                        ]
+                    },
+                    "consultant": {
+                        "directly_related_user_types": [
+                            {
+                                "relation": "user",
+                                "type": "membership"
+                            }
+                        ]
+                    },
+                    "integrant": {
+                        "directly_related_user_types": [
+                            {
+                                "relation": "user",
+                                "type": "membership"
+                            }
+                        ]
+                    },
+                    "leader": {
+                        "directly_related_user_types": [
+                            {
+                                "relation": "user",
+                                "type": "membership"
+                            }
+                        ]
+                    },
+                    "observer": {
+                        "directly_related_user_types": [
+                            {
+                                "relation": "user",
+                                "type": "membership"
+                            }
+                        ]
+                    },
+                    "parent_unit": {
+                        "directly_related_user_types": [
+                            {
+                                "type": "unit"
+                            }
+                        ]
+                    }
+                }
+            },
+            "relations": {
+                "assistant": {
+                    "union": {
+                        "child": [
+                            {
+                                "this": {}
+                            },
+                            {
+                                "computedUserset": {
+                                    "relation": "leader"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "can_edit": {
+                    "union": {
+                        "child": [
+                            {
+                                "computedUserset": {
+                                    "relation": "leader"
+                                }
+                            },
+                            {
+                                "tupleToUserset": {
+                                    "computedUserset": {
+                                        "relation": "admin"
+                                    },
+                                    "tupleset": {
+                                        "relation": "parent_unit"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                "can_join": {
+                    "this": {}
+                },
+                "can_manage": {
+                    "union": {
+                        "child": [
+                            {
+                                "computedUserset": {
+                                    "relation": "can_edit"
+                                }
+                            },
+                            {
+                                "computedUserset": {
+                                    "relation": "assistant"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "can_observe": {
+                    "union": {
+                        "child": [
+                            {
+                                "computedUserset": {
+                                    "relation": "can_manage"
+                                }
+                            },
+                            {
+                                "computedUserset": {
+                                    "relation": "observer"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "can_view": {
+                    "union": {
+                        "child": [
+                            {
+                                "this": {}
+                            },
+                            {
+                                "computedUserset": {
+                                    "relation": "can_observe"
+                                }
+                            },
+                            {
+                                "computedUserset": {
+                                    "relation": "can_join"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "consultant": {
+                    "this": {}
+                },
+                "integrant": {
+                    "union": {
+                        "child": [
+                            {
+                                "this": {}
+                            },
+                            {
+                                "computedUserset": {
+                                    "relation": "assistant"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "leader": {
+                    "this": {}
+                },
+                "observer": {
+                    "union": {
+                        "child": [
+                            {
+                                "this": {}
+                            },
+                            {
+                                "computedUserset": {
+                                    "relation": "integrant"
+                                }
+                            },
+                            {
+                                "computedUserset": {
+                                    "relation": "consultant"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "parent_unit": {
+                    "this": {}
+                }
+            },
+            "type": "department"
+        },
+        {
+            "metadata": {
+                "relations": {
+                    "can_edit": {},
+                    "can_manage": {},
+                    "can_view": {
+                        "directly_related_user_types": [
+                            {
+                                "condition": "characteristics",
+                                "type": "user"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "leader",
+                                "type": "department"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "assistant",
+                                "type": "department"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "integrant",
+                                "type": "department"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "consultant",
+                                "type": "department"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "observer",
+                                "type": "department"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "member",
+                                "type": "unit"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "congregated",
+                                "type": "unit"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "visitor",
+                                "type": "unit"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "member",
+                                "type": "church"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "congregated",
+                                "type": "church"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "relation": "visitor",
+                                "type": "church"
+                            },
+                            {
+                                "condition": "characteristics",
+                                "type": "user",
+                                "wildcard": {}
+                            }
+                        ]
+                    },
+                    "owner": {
+                        "directly_related_user_types": [
+                            {
+                                "type": "unit"
+                            },
+                            {
+                                "type": "department"
+                            }
+                        ]
+                    }
+                }
+            },
+            "relations": {
+                "can_edit": {
+                    "union": {
+                        "child": [
+                            {
+                                "tupleToUserset": {
+                                    "computedUserset": {
+                                        "relation": "admin"
+                                    },
+                                    "tupleset": {
+                                        "relation": "owner"
+                                    }
+                                }
+                            },
+                            {
+                                "tupleToUserset": {
+                                    "computedUserset": {
+                                        "relation": "can_manage"
+                                    },
+                                    "tupleset": {
+                                        "relation": "owner"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                "can_manage": {
+                    "union": {
+                        "child": [
+                            {
+                                "computedUserset": {
+                                    "relation": "can_edit"
+                                }
+                            },
+                            {
+                                "tupleToUserset": {
+                                    "computedUserset": {
+                                        "relation": "can_manage"
+                                    },
+                                    "tupleset": {
+                                        "relation": "owner"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                "can_view": {
+                    "union": {
+                        "child": [
+                            {
+                                "this": {}
+                            },
+                            {
+                                "computedUserset": {
+                                    "relation": "can_manage"
+                                }
+                            }
+                        ]
+                    }
+                },
+                "owner": {
+                    "this": {}
+                }
+            },
+            "type": "calendar_event"
+        }
+    ],
+    "conditions": {
+        "characteristics": {
+            "expression": "(req_gender == \"\" || user_gender == req_gender) \u0026\u0026\n  (min_age == 0 || user_age \u003e= min_age) \u0026\u0026\n  (max_age == 0 || user_age \u003c= max_age)",
+            "name": "characteristics",
+            "parameters": {
+                "max_age": {
+                    "type_name": "TYPE_NAME_INT"
+                },
+                "min_age": {
+                    "type_name": "TYPE_NAME_INT"
+                },
+                "req_gender": {
+                    "type_name": "TYPE_NAME_STRING"
+                },
+                "user_age": {
+                    "type_name": "TYPE_NAME_INT"
+                },
+                "user_gender": {
+                    "type_name": "TYPE_NAME_STRING"
+                }
+            }
+        }
+    }
+}

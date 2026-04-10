@@ -24,20 +24,30 @@ RUN mvn clean package -DskipTests
 # --- Etapa 2: Runtime (Execução) ---
 FROM eclipse-temurin:21-alpine-3.23
 
-# Instalamos dos2unix para corrigir finais de linha do Windows
+# Instalar dos2unix para corrigir finais de linha do Windows
 RUN apk add --no-cache dos2unix
 
 WORKDIR /app
 
-# Copia apenas o .jar gerado na etapa anterior
+# Copiar apenas o .jar gerado na etapa anterior
 COPY --from=build /build/execution/target/*.jar app.jar
 
-# Copia o script de entrada
-COPY run/entrypoint.sh /entrypoint.sh
+# Copiar o arquivo de modelo FGA
+COPY model.fga /model.fga
 
-# Remove caracteres \r (CRLF), dá permissão e limpa o utilitário
-RUN dos2unix /entrypoint.sh && \
+# Copiar o script de entrada
+COPY /run/entrypoint.sh /entrypoint.sh
+
+# Instalar dependências e baixar FGA CLI
+RUN apk add --no-cache curl && \
+    curl -sSfL https://github.com/openfga/cli/releases/download/v0.7.12/fga_0.7.12_linux_amd64.tar.gz | tar -xz -C /usr/local/bin fga && \
+    \
+    # Transformar o modelo FGA para JSON usando o CLI e salvar como model.json \
+    fga model transform --file /model.fga --input-format fga --output-format json > /app/model.json && \
+    \
+    # Remover caracteres \r (CRLF), dar permissão e limpar o utilitário \
+    dos2unix /entrypoint.sh && \
     chmod +x /entrypoint.sh
 
-# O Entrypoint agora chama o script em vez do java diretamente
+# Chamar o script em vez do Java diretamente
 ENTRYPOINT ["/bin/sh", "/entrypoint.sh"]
