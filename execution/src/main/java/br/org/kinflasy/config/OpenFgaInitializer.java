@@ -25,10 +25,8 @@ public class OpenFgaInitializer {
     private final OpenFgaClient client;
     private final ObjectMapper objectMapper;
 
-    public OpenFgaInitializer(
-            @Value("${app.openfga.model-file-path}") final String modelFilePath,
-            final OpenFgaClient client,
-            final ObjectMapper objectMapper) {
+    public OpenFgaInitializer(@Value("${app.openfga.model-file-path}") final String modelFilePath,
+            final OpenFgaClient client, final ObjectMapper objectMapper) {
         this.modelFilePath = modelFilePath;
         this.client = client;
         this.objectMapper = objectMapper;
@@ -101,8 +99,8 @@ public class OpenFgaInitializer {
     @SneakyThrows
     private String createAuthorizationModel() {
         final var request = objectMapper.readValue(new File(modelFilePath), WriteAuthorizationModelRequest.class);
-        client.writeAuthorizationModel(request)
+        final var response = client.writeAuthorizationModel(request)
                 .join();
-        return null;
+        return response.getAuthorizationModelId();
     }
 }

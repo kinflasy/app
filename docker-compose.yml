@@ -2,10 +2,6 @@ networks:
   openfga:
   app:
 
-volumes:
-  # Volume compartilhado para passar os IDs do FGA entre containers
-  shared-data:
-
 services:
   # Serviço para o PostgreSQL
   db:
@@ -80,6 +76,8 @@ services:
       OPENFGA_LOG_FORMAT: json
       OPENFGA_HTTP_ADDR: 0.0.0.0:${OPENFGA_HTTP_PORT}
       OPENFGA_HTTP_CORS_ALLOWED_ORIGINS:
+      OPENFGA_AUTHN_METHOD: preshared
+      OPENFGA_AUTHN_PRESHARED_KEYS: ${OPENFGA_API_TOKEN}
     command: run
     networks:
       - openfga
@@ -105,8 +103,6 @@ services:
         condition: service_started
     env_file:
       - .env
-    volumes:
-      - shared-data:/shared # Para exportar o arquivo .env.fga
     environment:
       DATABASE_HOST: db
       OPENFGA_HTTP_URL: http://openfga:${OPENFGA_HTTP_PORT}

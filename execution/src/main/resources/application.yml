@@ -68,7 +68,11 @@ springdoc:
 
 openfga:
   api-url: ${OPENFGA_HTTP_URL}
-
+  credentials:
+    method: api-token
+    config:
+      api-token: ${OPENFGA_API_TOKEN}
+  
 app:
   api:
     security:
