@@ -42,6 +42,9 @@ spring:
           people-churchesApi:
             url: ${CHURCHES_API_URL}
 
+  mvc:
+    log-request-details: true
+
   # Configurações do DevTools
   devtools:
     livereload:
@@ -51,6 +54,7 @@ spring:
 
 logging:
   level:
+    "[org.springframework.web]": DEBUG
     "[br.org.kinflasy.clients.UserClient]": DEBUG
     "[br.org.kinflasy.apis.churches.clients.PersonClient]": DEBUG
 
