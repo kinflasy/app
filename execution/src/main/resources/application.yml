@@ -63,7 +63,7 @@ springdoc:
       - url: ${API_URL:http://localhost:8080}
 
 openfga:
-  api-url: http://${OPENFGA_HTTP_HOST}:${OPENFGA_HTTP_PORT}
+  api-url: ${OPENFGA_HTTP_URL}
 
 app:
   api:

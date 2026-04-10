@@ -110,6 +110,7 @@ services:
     environment:
       DATABASE_HOST: db
       OPENFGA_HTTP_HOST: openfga
+      OPENFGA_HTTP_URL: http://${OPENFGA_HTTP_HOST}:${OPENFGA_HTTP_PORT}
       OPENFGA_MODEL_FILE: model.json
       FGA_ENV_FILE: /shared/.env.fga
     networks:
