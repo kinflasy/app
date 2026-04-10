@@ -20,18 +20,15 @@ import lombok.extern.slf4j.Slf4j;
 @Component
 public class OpenFgaInitializer {
 
-    private final String openfgaApiUrl;
     private final String modelFilePath;
 
     private final OpenFgaClient client;
     private final ObjectMapper objectMapper;
 
     public OpenFgaInitializer(
-            @Value("${openfga.api-url}") final String openfgaApiUrl,
             @Value("${app.openfga.model-file-path}") final String modelFilePath,
             final OpenFgaClient client,
             final ObjectMapper objectMapper) {
-        this.openfgaApiUrl = openfgaApiUrl;
         this.modelFilePath = modelFilePath;
         this.client = client;
         this.objectMapper = objectMapper;
