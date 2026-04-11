@@ -23,7 +23,7 @@ public class ActivationUseCaseService {
 
     @Transactional
     @PreAuthorize("@fga.check('person_data', #inactivePersonId, 'can_edit', 'user', principal.id)")
-    public List<MembershipDto> activate(final UUID inactivePersonId, final String username) {
+    public List<MembershipDto.Simple> activate(final UUID inactivePersonId, final String username) {
         // Garantir existência do usuário ativo
         // Caso não encontre, lança exceção FeignException.NotFound
         final var user = userClient.identifyByUsername(username);
@@ -32,14 +32,14 @@ public class ActivationUseCaseService {
 
     @Transactional
     @PreAuthorize("@fga.check('person_data', #inactivePersonId, 'can_edit', 'user', principal.id)")
-    public List<MembershipDto> activate(final UUID inactivePersonId, final UUID userId) {
+    public List<MembershipDto.Simple> activate(final UUID inactivePersonId, final UUID userId) {
         // Garantir existência do usuário ativo
         // Caso não encontre, lança exceção FeignException.NotFound
         userClient.identifyById(userId);
         return updateMemberships(inactivePersonId, userId);
     }
 
-    private List<MembershipDto> updateMemberships(final UUID inactivePersonId, final UUID userId) {
+    private List<MembershipDto.Simple> updateMemberships(final UUID inactivePersonId, final UUID userId) {
         // Buscar membresias da pessoa inativa
         final var memberships = membershipService.listByPersonId(inactivePersonId).stream()
 

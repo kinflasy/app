@@ -106,7 +106,7 @@ public class ChurchController {
 
     @PostMapping("activate-member")
     @Operation(summary = "Ativar membro", description = "Substituir pessoa inativa por usuário ativo em todas as unidades.")
-    public ResponseEntity<List<MembershipDto>> activateMember(
+    public ResponseEntity<List<MembershipDto.Simple>> activateMember(
             @RequestBody final ActivationRequest.WithUsername request) {
         return ResponseEntity
                 .ok(activationUseCaseService.activate(request.getInactivePersonId(), request.getUsername()));
@@ -114,14 +114,14 @@ public class ChurchController {
 
     @PostMapping("{id}/deactivate-member")
     @Operation(summary = "Desativar membro", description = "Substituir membresias do usuário ativo por pessoa inativa em todas as unidades dessa igreja.")
-    public ResponseEntity<List<MembershipDto>> deactivateMember(@PathVariable final UUID id,
+    public ResponseEntity<List<MembershipDto.Simple>> deactivateMember(@PathVariable final UUID id,
             @RequestBody final DeactivationRequest request) {
         return ResponseEntity.ok(deactivationUseCaseService.deactivateOne(id, request.getUserId()));
     }
 
     @PostMapping("deactivate-member")
     @Operation(summary = "Desativar membro", description = "Substituir membresias do usuário ativo por pessoa inativa em todas as unidades do sistema.")
-    public ResponseEntity<List<MembershipDto>> deactivateMember(@RequestBody final DeactivationRequest request) {
+    public ResponseEntity<List<MembershipDto.Simple>> deactivateMember(@RequestBody final DeactivationRequest request) {
         return ResponseEntity.ok(deactivationUseCaseService.deactivateAll(request.getUserId()));
     }
 

@@ -120,13 +120,13 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public CompletableFuture<Void> handleMembershipCreated(final EntityEvent.Created<MembershipDto> event) {
+    public CompletableFuture<Void> handleMembershipCreated(final EntityEvent.Created<MembershipDto.Simple> event) {
         final var dto = event.getSource();
 
         final var userTuple = new ClientTupleKey()
                 ._object(TYPE_MEMBERSHIP + dto.getId())
                 .relation("user")
-                .user(TYPE_USER + dto.getPerson().getId());
+                .user(TYPE_USER + dto.getPersonId());
 
         final var unitTuple = new ClientTupleKey()
                 ._object(TYPE_MEMBERSHIP + dto.getId())
@@ -139,7 +139,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
                 .user(TYPE_MEMBERSHIP + dto.getId() + SET_USER);
 
         final var viewPersonDataTuple = new ClientTupleKey()
-                ._object(TYPE_PERSON_DATA + dto.getPerson().getId())
+                ._object(TYPE_PERSON_DATA + dto.getPersonId())
                 .relation("can_view")
                 .user(TYPE_MEMBERSHIP + dto.getId() + "#can_edit");
 
@@ -184,7 +184,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
 
                 // Escrever tuplas modificadas
                 .thenCompose(ignored -> tupleManager
-                        .handleMembershipCreated(new EntityEvent.Created<>(event.getSource())));
+                        .handleMembershipCreated(new EntityEvent.Created<>(event.getSource().toSimple())));
     }
 
     @Async

@@ -20,8 +20,7 @@ import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.MembershipRequest;
-import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto;
-import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto.Pending;
+import br.org.kinflasy.libs.churches.dto.MembershipDto.Pending;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
@@ -187,30 +186,34 @@ public class UnitService {
     }
 
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
-    public List<MembershipSimpleDto> listMembersAndExMembers(final UUID id) {
+    public List<MembershipDto.Simple> listMembersAndExMembers(final UUID id) {
         return membershipRepository.findByUnitId(id).stream()
-                .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
+                .map(membership -> mapper.map(membership, MembershipDto.Simple.class))
                 .toList();
     }
 
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public List<MembershipDto> listMembersAndExMembersWithDetails(final UUID id) {
         return listMembersAndExMembers(id).stream()
-                .map(simpleDto -> mapper.map(simpleDto, MembershipDto.class)
-                        .setPerson(personClient.findById(simpleDto.getPersonId())))
+                .map(simpleDto -> {
+                    final var dto = new MembershipDto();
+                    dto.setPerson(personClient.findById(simpleDto.getPersonId()).getBody());
+                    mapper.map(simpleDto, dto);
+                    return dto;
+                })
                 .toList();
     }
 
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id) or @fga.check('person_data', #personId, 'can_view', 'user', principal.id)")
-    public Optional<MembershipSimpleDto> findActiveMembership(final UUID id, final UUID personId) {
+    public Optional<MembershipDto.Simple> findActiveMembership(final UUID id, final UUID personId) {
         return membershipRepository.findByUnitIdAndPersonIdAndLeaveDateNull(id, personId)
-                .map(membership -> mapper.map(membership, MembershipSimpleDto.class));
+                .map(membership -> mapper.map(membership, MembershipDto.Simple.class));
     }
 
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
-    public List<MembershipSimpleDto> listMembers(final UUID id) {
+    public List<MembershipDto.Simple> listMembers(final UUID id) {
         return membershipRepository.findByUnitIdAndLeaveDateNull(id).stream()
-                .map(membership -> mapper.map(membership, MembershipSimpleDto.class))
+                .map(membership -> mapper.map(membership, MembershipDto.Simple.class))
                 .toList();
     }
 
@@ -218,15 +221,17 @@ public class UnitService {
     public List<MembershipDto> listMembersWithDetails(final UUID id) {
         return listMembers(id).stream()
                 .map(simpleDto -> {
-                    return mapper.map(simpleDto, MembershipDto.class)
-                            .setPerson(personClient.findById(simpleDto.getPersonId()));
+                    final var dto = new MembershipDto();
+                    dto.setPerson(personClient.findById(simpleDto.getPersonId()).getBody());
+                    mapper.map(simpleDto, dto);
+                    return dto;
                 })
                 .toList();
     }
 
     @Transactional
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
-    public MembershipDto registerMember(final UUID id, final MembershipRequest.Register request) {
+    public MembershipDto.Simple registerMember(final UUID id, final MembershipRequest.Register request) {
         // Obter dados da unidade
         return repository.findById(id)
                 .map(unit -> {
@@ -261,7 +266,7 @@ public class UnitService {
      */
 
     @Transactional
-    public MembershipDto addMember(final UUID id, final MembershipRequest request) {
+    public MembershipDto.Simple addMember(final UUID id, final MembershipRequest request) {
         if (repository.existsById(id)) {
             return membershipService.create(id, request);
         } else {

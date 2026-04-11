@@ -32,7 +32,7 @@ public class FgaUtils {
 
     public boolean withCharacteristics(final String objectType, final Object objectId, final String relation,
             final String userType, final String userId, final PersonDto person) {
-        final var condition = Map.of("user_gender", person.getGender(), "user_age", person.calculateAge());
+        final var condition = Map.of("user_gender", person.getGender(), "user_age", person.getAge());
 
         final var body = new ClientCheckRequest()
                 .user(String.format("%s:%s", userType, userId))

@@ -18,8 +18,7 @@ import br.org.kinflasy.apis.churches.services.MembershipService;
 import br.org.kinflasy.apis.churches.services.UnitService;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.MembershipRequest;
-import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto;
-import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto.Pending;
+import br.org.kinflasy.libs.churches.dto.MembershipDto.Pending;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
@@ -103,7 +102,7 @@ public class UnitController {
     }
 
     @GetMapping("{id}/membership/{personId}")
-    public ResponseEntity<MembershipSimpleDto> findActiveMembership(@PathVariable final UUID id,
+    public ResponseEntity<MembershipDto.Simple> findActiveMembership(@PathVariable final UUID id,
             @PathVariable final UUID personId) {
         return service.findActiveMembership(id, personId)
                 .map(ResponseEntity::ok)
@@ -112,7 +111,7 @@ public class UnitController {
 
     @PostMapping("{id}/members")
     @Operation(summary = "Associar membro", description = "Adicionar pessoa pré-existente como membro de uma unidade.")
-    public ResponseEntity<MembershipDto> associateMember(@PathVariable final UUID id,
+    public ResponseEntity<MembershipDto.Simple> associateMember(@PathVariable final UUID id,
             @RequestBody @Valid final MembershipRequest request) {
         return ResponseEntity.ok(service.addMember(id, request));
     }
@@ -162,8 +161,8 @@ public class UnitController {
     }
 
     @PostMapping("{id}/members/register")
-    @Operation(summary = "Cadastrar membros", description = "Cadastrar novas pessoas inativas e associá-las como membros de uma unidade.")
-    public ResponseEntity<MembershipDto> registerMembers(@PathVariable final UUID id,
+    @Operation(summary = "Cadastrar membro", description = "Cadastrar nova pessoa inativa e associá-la como membro de uma unidade.")
+    public ResponseEntity<MembershipDto.Simple> registerMembers(@PathVariable final UUID id,
             @RequestBody final MembershipRequest.Register request) {
         return ResponseEntity.ok(service.registerMember(id, request));
     }

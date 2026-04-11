@@ -20,8 +20,7 @@ import br.org.kinflasy.apis.churches.repositories.PendingMembershipRepository;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.MembershipRequest;
-import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto;
-import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto.Pending;
+import br.org.kinflasy.libs.churches.dto.MembershipDto.Pending;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -81,7 +80,7 @@ public class MembershipService {
 
     @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id) and "
             + "@fga.check('person_data', #request.personId, 'can_edit', 'user', principal.id)")
-    public MembershipDto create(final UUID unitId, final MembershipRequest request) {
+    public MembershipDto.Simple create(final UUID unitId, final MembershipRequest request) {
         final var entity = mapper.map(request, Membership.class);
         entity.setId(null);
         entity.setUnitId(unitId);
@@ -90,11 +89,11 @@ public class MembershipService {
         log.info("Membro de id {} adicionado à unidade de id {}", saved.getPersonId(), saved.getUnitId());
 
         // Publicar evento de membresia
-        final var dto = mapper.map(saved, MembershipDto.class);
+        final var dto = mapper.map(saved, MembershipDto.Simple.class);
         publisher.publishEvent(new EntityEvent.Created<>(dto));
 
         // Gerar DTO de retorno
-        return mapper.map(saved, MembershipDto.class);
+        return dto;
     }
 
     @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
@@ -117,7 +116,7 @@ public class MembershipService {
     public List<MembershipDto.DetailingUnit> listByPersonId(final UUID personId) {
         return repository.findByPersonId(personId).stream()
                 .map(entity -> unitService.findById(entity.getUnitId())
-                        .map(mapper.map(entity, MembershipDto.DetailingUnit.class)::setUnit))
+                        .map(detailed -> mapper.map(entity, MembershipDto.DetailingUnit.class).setUnit(detailed)))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
@@ -128,22 +127,23 @@ public class MembershipService {
                 .map(entity -> {
                     final var unitDto = unitService.findById(entity.getUnitId())
                             .orElseThrow(() -> new EntityNotFoundException("Unidade não encontrada"));
-                    final var personDto = personClient.findById(entity.getPersonId());
+                    final var personDto = personClient.findById(entity.getPersonId()).getBody();
 
-                    final var dto = mapper.map(entity, MembershipDto.Detailed.class);
+                    final var dto = new MembershipDto.Detailed();
                     dto.setUnit(unitDto)
                             .setPerson(personDto);
+                    mapper.map(entity, dto);
 
                     return dto;
                 });
     }
 
     @PreAuthorize("@fga.check('membership', #id, 'can_edit', 'user', principal.id) or #personId.equals(principal.id)")
-    public MembershipDto update(final UUID id, final MembershipRequest request) {
+    public MembershipDto.Simple update(final UUID id, final MembershipRequest request) {
         return repository.findById(id)
                 .map(entity -> {
                     // Gerar DTO original
-                    final var original = mapper.map(entity, MembershipDto.class);
+                    final var original = mapper.map(entity, MembershipDto.Simple.class);
 
                     // Editar entidade
                     mapper.map(request, entity);
@@ -153,7 +153,7 @@ public class MembershipService {
                     final var saved = repository.save(entity);
 
                     // Gerar DTO modificado
-                    final var modified = mapper.map(saved, MembershipDto.class);
+                    final var modified = mapper.map(saved, MembershipDto.Simple.class);
 
                     // Publicar evento
                     publisher.publishEvent(new EntityEvent.Updated<>(original, modified));
@@ -164,7 +164,7 @@ public class MembershipService {
     }
 
     @PreAuthorize("@fga.check('membership', #id, 'can_edit', 'user', principal.id) or #personId.equals(principal.id)")
-    public MembershipDto changePerson(final UUID id, final UUID personId) {
+    public MembershipDto.Simple changePerson(final UUID id, final UUID personId) {
         return repository.findById(id)
                 .map(entity -> {
                     // Gerar requisição com base no original
@@ -250,7 +250,7 @@ public class MembershipService {
                 saved.getPersonId(), saved.getUnitId());
 
         // Gerar DTO de retorno
-        final var dto = mapper.map(saved, MembershipSimpleDto.Pending.class);
+        final var dto = mapper.map(saved, Pending.class);
 
         // Publicar evento de membresia pendente
         publisher.publishEvent(new EntityEvent.Created<>(dto));
@@ -276,7 +276,7 @@ public class MembershipService {
         return modified;
     }
 
-    private Optional<MembershipDto> createIfComplete(final PendingMembership pending) {
+    private Optional<MembershipDto.Simple> createIfComplete(final PendingMembership pending) {
         // Se ambas as partes confirmarem...
         if (pending.getUnitConfirmationDate() != null && pending.getUserConfirmationDate() != null) {
             // ... excluir pendente

@@ -15,7 +15,7 @@ import br.org.kinflasy.libs.people.dto.PersonDto;
 public interface PersonClient {
 
     @GetMapping("{id}")
-    PersonDto findById(@PathVariable final UUID id);
+    ResponseEntity<PersonDto> findById(@PathVariable final UUID id);
 
     @DeleteMapping("{id}")
     ResponseEntity<HttpStatus> delete(@PathVariable final UUID id);
