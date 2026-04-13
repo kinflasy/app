@@ -32,7 +32,7 @@ public class Address extends AbstractSimpleAuditable {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    
+
     /*
      * Dados primitivos
      */
