@@ -10,29 +10,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import br.org.kinflasy.libs.contacts.dto.AddressDto;
-import br.org.kinflasy.libs.contacts.dto.AddressRequest;
+import br.org.kinflasy.libs.contacts.dto.LinkDto;
+import br.org.kinflasy.libs.contacts.dto.LinkRequest;
 import jakarta.validation.Valid;
 
-@FeignClient(name = "churches-addressesApi", url = "${CONTACTS_API_URL}", path = "addresses")
-public interface AddressClient {
+@FeignClient(name = "churches-linksApi", url = "${CONTACTS_API_URL}", path = "links")
+public interface LinkClient {
 
     @GetMapping
-    List<AddressDto> listAll();
+    List<LinkDto> listAll();
 
     @PostMapping
-    AddressDto create(@RequestBody @Valid AddressRequest request);
-
-    @PostMapping("register")
-    AddressDto create(@RequestBody @Valid AddressRequest request, @RequestParam UUID createdBy);
+    LinkDto create(@RequestBody @Valid LinkRequest request);
 
     @GetMapping("{id}")
-    AddressDto findById(@PathVariable UUID id);
+    LinkDto findById(@PathVariable UUID id);
 
     @PutMapping("{id}")
-    AddressDto update(@PathVariable UUID id, @RequestBody AddressRequest request);
+    LinkDto update(@PathVariable UUID id, @RequestBody LinkRequest request);
 
     @DeleteMapping("{id}")
     void delete(@PathVariable UUID id);

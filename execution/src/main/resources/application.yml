@@ -29,8 +29,8 @@ spring:
             url: ${USERS_API_URL}
           auth-usersApi:
             url: ${USERS_API_URL}
-          churches-addressesApi:
-            url: ${ADDRESS_API_URL}
+          churches-contactsApi:
+            url: ${CONTACTS_API_URL}
           churches-peopleApi:
             url: ${PEOPLE_API_URL}
           churches-inactivePeopleApi:

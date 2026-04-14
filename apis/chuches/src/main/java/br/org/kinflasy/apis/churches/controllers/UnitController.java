@@ -23,6 +23,8 @@ import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
+import br.org.kinflasy.libs.contacts.dto.LinkDto;
+import br.org.kinflasy.libs.contacts.dto.LinkRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -165,6 +167,18 @@ public class UnitController {
     public ResponseEntity<MembershipDto.Simple> registerMembers(@PathVariable final UUID id,
             @RequestBody final MembershipRequest.Register request) {
         return ResponseEntity.ok(service.registerMember(id, request));
+    }
+
+    @GetMapping("{id}/links")
+    @Operation(summary = "Listar links", description = "Listar os links associados a uma unidade.")
+    public ResponseEntity<List<LinkDto>> listLinks(@PathVariable final UUID id) {
+        return ResponseEntity.ok(service.listLinks(id));
+    }
+
+    @PostMapping("{id}/links")
+    @Operation(summary = "Cadastrar link", description = "Cadastrar um novo link e associá-lo a uma unidade.")
+    public ResponseEntity<LinkDto> createLink(@PathVariable final UUID id, @RequestBody final LinkRequest request) {
+        return ResponseEntity.ok(service.createLink(id, request));
     }
 
 }

@@ -12,9 +12,12 @@ import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.clients.AddressClient;
 import br.org.kinflasy.apis.churches.clients.InactivePersonClient;
+import br.org.kinflasy.apis.churches.clients.LinkClient;
 import br.org.kinflasy.apis.churches.clients.PersonClient;
 import br.org.kinflasy.apis.churches.converters.UnitConverter;
+import br.org.kinflasy.apis.churches.entities.UnitLink;
 import br.org.kinflasy.apis.churches.repositories.MembershipRepository;
+import br.org.kinflasy.apis.churches.repositories.UnitLinkRepository;
 import br.org.kinflasy.apis.churches.repositories.UnitRepository;
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
@@ -25,6 +28,8 @@ import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
+import br.org.kinflasy.libs.contacts.dto.LinkDto;
+import br.org.kinflasy.libs.contacts.dto.LinkRequest;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import jakarta.persistence.EntityNotFoundException;
@@ -46,6 +51,7 @@ public class UnitService {
     private final UnitRepository repository;
     private final UnitConverter converter;
 
+    private final LinkClient linkClient;
     private final AddressClient addressClient;
     private final PersonClient personClient;
     private final InactivePersonClient inactivePersonClient;
@@ -54,6 +60,7 @@ public class UnitService {
     private final DepartmentService departmentService;
     private final MembershipService membershipService;
     private final MembershipRepository membershipRepository;
+    private final UnitLinkRepository unitLinkRepository;
 
     /*
      * ACESSO PÚBLICO
@@ -86,6 +93,12 @@ public class UnitService {
         } else {
             throw new EntityNotFoundException(NOT_FOUND_MESSAGE);
         }
+    }
+
+    public List<LinkDto> listLinks(final UUID id) {
+        return unitLinkRepository.findByUnitId(id).stream()
+                .map(unitLink -> linkClient.findById(unitLink.getLinkId()))
+                .toList();
     }
 
     /*
@@ -259,6 +272,23 @@ public class UnitService {
                         membershipRepository.delete(membership);
                     }
                 });
+    }
+
+    public LinkDto createLink(final UUID id, final LinkRequest request) {
+        if (repository.existsById(id)) {
+            final var link = linkClient.create(mapper.map(request, LinkRequest.class));
+
+            final var unitLink = new UnitLink();
+            unitLink.setUnitId(id);
+            unitLink.setLinkId(link.getId());
+
+            return new LinkDto()
+                    .setId(link.getId())
+                    .setLabel(request.getLabel())
+                    .setUrl(request.getUrl());
+        } else {
+            throw new EntityNotFoundException(NOT_FOUND_MESSAGE);
+        }
     }
 
     /*
