@@ -115,8 +115,20 @@ public class MembershipService {
     @PreAuthorize("@fga.check('person_data', #personId, 'can_view', 'user', principal.id) or #personId.equals(principal.id)")
     public List<MembershipDto.DetailingUnit> listByPersonId(final UUID personId) {
         return repository.findByPersonId(personId).stream()
-                .map(entity -> unitService.findById(entity.getUnitId())
-                        .map(detailed -> mapper.map(entity, MembershipDto.DetailingUnit.class).setUnit(detailed)))
+                .map(entity -> {
+                    return unitService.findById(entity.getUnitId())
+                            .map(detailed -> {
+                                // Trazer dados da pessoa
+                                final var personDto = personClient.findById(personId).getBody();
+
+                                // Construir DTO de membresia detalhada
+                                final var membershipDto = new MembershipDto.DetailingUnit();
+                                membershipDto.setUnit(detailed).setPerson(personDto);
+                                mapper.map(entity, membershipDto);
+
+                                return membershipDto;
+                            });
+                })
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
