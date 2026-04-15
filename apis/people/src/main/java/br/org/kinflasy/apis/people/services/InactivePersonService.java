@@ -104,6 +104,7 @@ public class InactivePersonService {
 
         // Atualizar original
         final var modified = converter.toEntity(request, original);
+        modified.setId(id);
         repository.save(modified);
 
         // Atualizar endereço
