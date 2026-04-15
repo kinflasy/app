@@ -107,7 +107,8 @@ public class InactivePersonService {
         repository.save(modified);
 
         // Atualizar endereço
-        addressClient.update(original.getAddressId(), request.getAddress());
+        Optional.ofNullable(original.getAddressId())
+                .ifPresent(addressId -> addressClient.update(addressId, request.getAddress()));
 
         // Gerar DTO
         final var dto = converter.toDto(modified);
@@ -132,7 +133,8 @@ public class InactivePersonService {
         publisher.publishEvent(new EntityEvent.Deleted<>(dto));
 
         // Deletar endereço
-        addressClient.delete(entity.getAddressId());
+        Optional.ofNullable(entity.getAddressId())
+                .ifPresent(addressClient::delete);
     }
 
 }
