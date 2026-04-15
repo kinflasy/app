@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import br.org.kinflasy.libs.churches.dto.DeactivationRequest;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 
-@FeignClient(name = "churchesApi", contextId = "people-churchesApi")
+@FeignClient(name = "people-churchesApi", url = "${CHURCHES_API_URL}", path = "churches")
 public interface ChurchClient {
 
     @PostMapping("deactivate-member")

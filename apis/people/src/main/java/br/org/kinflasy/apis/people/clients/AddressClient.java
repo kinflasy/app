@@ -16,7 +16,7 @@ import br.org.kinflasy.libs.contacts.dto.AddressDto;
 import br.org.kinflasy.libs.contacts.dto.AddressRequest;
 import jakarta.validation.Valid;
 
-@FeignClient(name = "addressesApi", contextId = "people-addressesApi")
+@FeignClient(name = "people-addressesApi", url = "${CONTACTS_API_URL}", path = "addresses")
 public interface AddressClient {
 
     @GetMapping

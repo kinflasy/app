@@ -23,24 +23,6 @@ spring:
     openfeign:
       oauth2:
         enabled: true
-      client:
-        config:
-          execution-usersApi:
-            url: ${USERS_API_URL}
-          auth-usersApi:
-            url: ${USERS_API_URL}
-          churches-contactsApi:
-            url: ${CONTACTS_API_URL}
-          churches-peopleApi:
-            url: ${PEOPLE_API_URL}
-          churches-inactivePeopleApi:
-            url: ${INACTIVE_PEOPLE_API_URL}
-          churches-usersApi:
-            url: ${USERS_API_URL}
-          people-addressesApi:
-            url: ${ADDRESS_API_URL}
-          people-churchesApi:
-            url: ${CHURCHES_API_URL}
 
   mvc:
     log-request-details: true

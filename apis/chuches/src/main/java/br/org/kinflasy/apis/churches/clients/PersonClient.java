@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import br.org.kinflasy.libs.people.dto.PersonDto;
 
-@FeignClient(name = "peopleApi", contextId = "churches-peopleApi")
+@FeignClient(name = "churches-peopleApi", url = "${PEOPLE_API_URL}", path = "people")
 public interface PersonClient {
 
     @GetMapping("{id}")
