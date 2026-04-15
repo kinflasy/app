@@ -1,5 +1,9 @@
 package br.org.kinflasy.apis.people.config;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -53,18 +57,24 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handleUserCreated(final EntityEvent.Created<UserDto> event) {
         final var dto = event.getSource();
+        final List<ClientTupleKey> tuples = new ArrayList<>();
 
         final var personDataOwnerTuple = new ClientTupleKey()
                 ._object(TYPE_PERSON_DATA + dto.getId())
                 .relation(RELATION_OWNER)
                 .user(TYPE_USER + dto.getId());
+        tuples.add(personDataOwnerTuple);
 
-        final var addressOriginTuple = new ClientTupleKey()
-                ._object(TYPE_ADDRESS + dto.getAddressId())
-                .relation(RELATION_ORIGIN)
-                .user(TYPE_PERSON_DATA + dto.getId());
+        Optional.ofNullable(dto.getAddressId())
+                .ifPresent(addressId -> {
+                    final var addressOriginTuple = new ClientTupleKey()
+                            ._object(TYPE_ADDRESS + addressId)
+                            .relation(RELATION_ORIGIN)
+                            .user(TYPE_PERSON_DATA + dto.getId());
+                    tuples.add(addressOriginTuple);
+                });
 
-        writeTuples(personDataOwnerTuple, addressOriginTuple);
+        writeTuples(tuples);
     }
 
     @Async
