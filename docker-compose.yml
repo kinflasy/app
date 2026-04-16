@@ -2,6 +2,9 @@ networks:
   openfga:
   app:
 
+volumes:
+  minio_data:
+
 services:
   # Serviço para o PostgreSQL
   db:
@@ -89,6 +92,30 @@ services:
       # Needed for the playground (Do not enable in prod!)
       - "3000:3000"
 
+  # Serviço para MinIO (Armazenamento de Objetos S3-compatível)
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    env_file:
+      - .env
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes:
+      - minio_data:/minio_data
+    command: server /minio_data --console-address ":9001"
+    networks:
+      - app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   # Serviço para a aplicação Spring Boot
   app:
     build: .
@@ -101,6 +128,8 @@ services:
         condition: service_healthy
       openfga:
         condition: service_started
+      minio:
+        condition: service_healthy
     env_file:
       - .env
     environment:
@@ -108,6 +137,9 @@ services:
       OPENFGA_HTTP_URL: http://openfga:${OPENFGA_HTTP_PORT}
       OPENFGA_MODEL_FILE: model.json
       FGA_ENV_FILE: /shared/.env.fga
+      STORAGE_PROVIDER: minio
+      MINIO_URL: http://minio:9000
+      MINIO_BUCKET: kinflasy
     networks:
       - app
       - openfga
