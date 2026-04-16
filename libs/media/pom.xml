@@ -15,12 +15,12 @@
     </parent>
 
     <!-- Informações do Projeto -->
-    <name>Biblioteca de Calendário</name>
-    <description>Biblioteca de binários de Calendário do Projeto Kinflasy</description>
+    <name>Biblioteca de Mídia</name>
+    <description>Biblioteca de binários de Mídia do Projeto Kinflasy</description>
 
     <!-- Informações do Artefato -->
     <groupId>br.org.kinflasy.libs</groupId>
-    <artifactId>calendar</artifactId>
+    <artifactId>media</artifactId>
     <version>0.0.1-SNAPSHOT-001</version>
 
     <!-- Dependências -->
@@ -28,7 +28,7 @@
         <!-- Dependências do Projeto Kinflasy -->
         <dependency>
             <groupId>br.org.kinflasy.libs</groupId>
-            <artifactId>churches</artifactId>
+            <artifactId>api_utils</artifactId>
             <version>0.0.1-SNAPSHOT-001</version>
         </dependency>
         <dependency>

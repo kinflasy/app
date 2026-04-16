@@ -32,6 +32,7 @@
 		<module>libs/people</module>
 		<module>libs/churches</module>
 		<module>libs/calendar</module>
+		<module>libs/media</module>
 		<module>libs/api_utils</module>
 		<module>apis/contacts</module>
 		<module>apis/people</module>
