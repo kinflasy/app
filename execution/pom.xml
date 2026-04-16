@@ -55,6 +55,11 @@
             <artifactId>calendar</artifactId>
             <version>0.0.1-SNAPSHOT-001</version>
         </dependency>
+        <dependency>
+            <groupId>br.org.kinflasy.apis</groupId>
+            <artifactId>media</artifactId>
+            <version>0.0.1-SNAPSHOT-001</version>
+        </dependency>
 
         <!-- Dependências do Spring Boot -->
         <dependency>
