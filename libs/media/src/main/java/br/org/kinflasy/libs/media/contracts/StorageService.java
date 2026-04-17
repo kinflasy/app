@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public interface StorageService {
 
-    String upload(byte[] content, String fileName) throws IOException;
+    void upload(byte[] content, String filename) throws IOException;
 
     byte[] download(String fileId) throws IOException;
 

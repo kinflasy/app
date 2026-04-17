@@ -1,6 +1,8 @@
 package br.org.kinflasy.apis.media.services;
 
 import java.io.IOException;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -36,6 +38,28 @@ public class MediaService {
         storageService.upload(content, saved.getId().toString());
 
         return modelMapper.map(saved, MediaDto.class);
+    }
+
+    public Optional<MediaDto> getMetadata(final UUID id) {
+        return repository.findById(id)
+                .map(entity -> modelMapper.map(entity, MediaDto.class)
+                        .setUrl(storageService.getUrl(entity.getId().toString())));
+    }
+
+    public Optional<MediaDto.WithContent> download(final UUID id) throws IOException {
+        final var content = storageService.download(id.toString());
+
+        return repository.findById(id)
+                .map(entity -> modelMapper.map(entity, MediaDto.WithContent.class)
+                        .setContent(content));
+    }
+
+    public void delete(final UUID id) throws IOException {
+        // Deletar o arquivo do sistema de armazenamento
+        storageService.delete(id.toString());
+
+        // Deletar os metadados do banco de dados
+        repository.deleteById(id);
     }
 
 }

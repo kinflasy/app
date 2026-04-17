@@ -1,14 +1,18 @@
 package br.org.kinflasy.apis.media.services;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.libs.media.contracts.StorageService;
+import io.minio.GetObjectArgs;
+import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.minio.RemoveObjectArgs;
+import io.minio.http.Method;
 import lombok.Cleanup;
 import lombok.SneakyThrows;
 
@@ -25,35 +29,45 @@ public class MinioService implements StorageService {
 
     @Override
     @SneakyThrows
-    public String upload(final byte[] content, final String fileName) {
+    public void upload(final byte[] content, final String filename) {
         @Cleanup
         final var stream = new ByteArrayInputStream(content);
 
         client.putObject(PutObjectArgs.builder()
                 .bucket(bucketName)
-                .object(fileName)
+                .object(filename)
                 .stream(stream, stream.available(), -1)
                 .build());
-
-        return null;
     }
 
     @Override
-    public byte[] download(final String fileId) throws IOException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'download'");
+    @SneakyThrows
+    public byte[] download(final String fileId) {
+        return client.getObject(GetObjectArgs.builder()
+                .bucket(bucketName)
+                .object(fileId)
+                .build())
+                .readAllBytes();
     }
 
     @Override
-    public void delete(final String fileId) throws IOException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    @SneakyThrows
+    public void delete(final String fileId) {
+        client.removeObject(RemoveObjectArgs.builder()
+                .bucket(bucketName)
+                .object(fileId)
+                .build());
     }
 
     @Override
+    @SneakyThrows
     public String getUrl(final String fileId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getUrl'");
+        return client.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+                .bucket(bucketName)
+                .object(fileId)
+                .method(Method.GET)
+                .expiry(60, TimeUnit.SECONDS)
+                .build());
     }
 
 }
