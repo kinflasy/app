@@ -48,7 +48,7 @@ public class MediaController {
 
     @GetMapping(value = "{id}/download")
     @Operation(summary = "Download", description = "Fazer download de um arquivo.")
-    public ResponseEntity<byte[]> download(@PathVariable final UUID id) throws IOException {
+    public ResponseEntity<byte[]> download(@PathVariable final UUID id) {
         return service.download(id)
                 .map(mediaWithContent -> {
                     final var headers = new HttpHeaders();

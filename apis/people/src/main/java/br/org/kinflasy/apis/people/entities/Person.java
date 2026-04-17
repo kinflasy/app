@@ -46,6 +46,9 @@ public abstract class Person extends AbstractSimpleAuditable implements Emailabl
     @Column
     private UUID addressId;
 
+    @Column
+    private UUID profileImageId;
+
     /*
      * Enumerações
      */

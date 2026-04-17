@@ -27,6 +27,7 @@ public abstract class PersonDto {
     private LocalDate birthDate;
     private String phone;
     private UUID addressId;
+    private UUID profileImageId;
 
     public int getAge() {
         return Period.between(birthDate, LocalDate.now()).getYears();
