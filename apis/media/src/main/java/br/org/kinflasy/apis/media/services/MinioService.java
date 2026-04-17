@@ -22,7 +22,7 @@ public class MinioService implements StorageService {
     private final MinioClient client;
     private final String bucketName;
 
-    public MinioService(final MinioClient client, @Value("${app.minio.bucket}") final String bucketName) {
+    public MinioService(final MinioClient client, @Value("${app.storage.bucket}") final String bucketName) {
         this.client = client;
         this.bucketName = bucketName;
     }
