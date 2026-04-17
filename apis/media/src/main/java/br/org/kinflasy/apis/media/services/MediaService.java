@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.media.entities.Media;
 import br.org.kinflasy.apis.media.repositories.MediaRepository;
+import br.org.kinflasy.libs.media.contracts.StorageService;
 import br.org.kinflasy.libs.media.dto.MediaDto;
-import br.org.kinflasy.libs.media.services.StorageService;
 import lombok.AllArgsConstructor;
 
 @Service

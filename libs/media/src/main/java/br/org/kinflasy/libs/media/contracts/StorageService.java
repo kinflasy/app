@@ -1,4 +1,4 @@
-package br.org.kinflasy.libs.media.services;
+package br.org.kinflasy.libs.media.contracts;
 
 import java.io.IOException;
 
