@@ -27,6 +27,12 @@ spring:
   mvc:
     log-request-details: true
 
+  # Configurações de Multipart (Upload de Arquivos)
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
+
   # Configurações do DevTools
   devtools:
     livereload:

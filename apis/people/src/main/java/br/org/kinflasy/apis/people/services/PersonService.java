@@ -14,6 +14,7 @@ import br.org.kinflasy.apis.people.entities.Person;
 import br.org.kinflasy.apis.people.entities.User;
 import br.org.kinflasy.apis.people.repositories.PersonRepository;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
+import br.org.kinflasy.libs.media.validators.ProfileImageValidator;
 import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
@@ -67,6 +68,9 @@ public class PersonService {
     public Optional<PersonDto> updateProfileImage(final UUID id, final MultipartFile file) {
         return repository.findById(id)
                 .map(person -> {
+                    // Validar a imagem
+                    ProfileImageValidator.validate(file);
+
                     // Fazer upload da nova foto
                     final var uploaded = mediaClient.upload(file).getBody();
 
