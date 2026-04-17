@@ -11,6 +11,7 @@ import br.org.kinflasy.apis.media.entities.Media;
 import br.org.kinflasy.apis.media.repositories.MediaRepository;
 import br.org.kinflasy.libs.media.contracts.StorageService;
 import br.org.kinflasy.libs.media.dto.MediaDto;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -23,6 +24,7 @@ public class MediaService {
 
     private final StorageService storageService;
 
+    @Transactional
     public MediaDto upload(final byte[] content, final String fileName, final String mimeType, final long fileSize)
             throws IOException {
         // Construir a entidade de metadados
@@ -37,7 +39,8 @@ public class MediaService {
         // Fazer upload do arquivo no sistema de armazenamento
         storageService.upload(content, saved.getId().toString());
 
-        return modelMapper.map(saved, MediaDto.class);
+        return modelMapper.map(saved, MediaDto.class)
+                .setUrl(storageService.getUrl(saved.getId().toString()));
     }
 
     public Optional<MediaDto> getMetadata(final UUID id) {
@@ -46,14 +49,20 @@ public class MediaService {
                         .setUrl(storageService.getUrl(entity.getId().toString())));
     }
 
-    public Optional<MediaDto.WithContent> download(final UUID id) throws IOException {
-        final var content = storageService.download(id.toString());
-
+    public Optional<MediaDto.WithContent> download(final UUID id) {
         return repository.findById(id)
-                .map(entity -> modelMapper.map(entity, MediaDto.WithContent.class)
-                        .setContent(content));
+                .map(entity -> {
+                    try {
+                        final var content = storageService.download(id.toString());
+                        return modelMapper.map(entity, MediaDto.WithContent.class)
+                                .setContent(content);
+                    } catch (final IOException e) {
+                        return null;
+                    }
+                });
     }
 
+    @Transactional
     public void delete(final UUID id) throws IOException {
         // Deletar o arquivo do sistema de armazenamento
         storageService.delete(id.toString());
