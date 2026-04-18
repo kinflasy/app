@@ -19,6 +19,8 @@ public class DepartmentDto {
     private String name;
     private String slug;
     private DepartmentType type;
+    private UUID profileImageId;
+    private UUID coverImageId;
 
     @Data
     public static class Rules {

@@ -11,7 +11,9 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import br.org.kinflasy.apis.churches.clients.MediaClient;
 import br.org.kinflasy.apis.churches.converters.department.DepartmentConverter;
 import br.org.kinflasy.apis.churches.entities.department.Department;
 import br.org.kinflasy.apis.churches.entities.department.ExtensionSubscription;
@@ -33,6 +35,7 @@ import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.churches.events.department.ExtensionEvent;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
+import br.org.kinflasy.libs.media.validators.ProfileImageValidator;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientReadRequest;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
@@ -64,6 +67,7 @@ public class DepartmentService {
     private final IntegrationService integrationService;
 
     private final OpenFgaClient fgaClient;
+    private final MediaClient mediaClient;
 
     /*
      * ACESSO PÚBLICO
@@ -125,6 +129,86 @@ public class DepartmentService {
 
         repository.save(modified);
         return converter.toDto(modified);
+    }
+
+    @PreAuthorize("@fga.check('department', #id, 'can_manage', 'user', principal.id)")
+    public Optional<DepartmentDto> updateProfileImage(final UUID id, final MultipartFile file) {
+        return repository.findById(id)
+                .map(department -> {
+                    // Validar a imagem
+                    ProfileImageValidator.validate(file);
+
+                    // Fazer upload da nova foto
+                    final var uploaded = mediaClient.upload(file).getBody();
+
+                    // Deletar a foto antiga, se existir
+                    Optional.ofNullable(department.getProfileImageId())
+                            .ifPresent(mediaClient::delete);
+
+                    // Atualizar a referência da foto no banco de dados
+                    department.setProfileImageId(uploaded.getId());
+                    final var saved = repository.save(department);
+
+                    // Mapear a entidade atualizada para DTO
+                    return mapper.map(saved, DepartmentDto.class);
+                });
+    }
+
+    @PreAuthorize("@fga.check('department', #id, 'can_manage', 'user', principal.id)")
+    public Optional<DepartmentDto> deleteProfileImage(final UUID id) {
+        return repository.findById(id)
+                .map(department -> {
+                    // Deletar a foto antiga, se existir
+                    Optional.ofNullable(department.getProfileImageId())
+                            .ifPresent(mediaClient::delete);
+
+                    // Remover a referência da foto no banco de dados
+                    department.setProfileImageId(null);
+                    final var saved = repository.save(department);
+
+                    // Mapear a entidade atualizada para DTO
+                    return mapper.map(saved, DepartmentDto.class);
+                });
+    }
+
+    @PreAuthorize("@fga.check('department', #id, 'can_manage', 'user', principal.id)")
+    public Optional<DepartmentDto> updateCoverImage(final UUID id, final MultipartFile file) {
+        return repository.findById(id)
+                .map(department -> {
+                    // Validar a imagem
+                    ProfileImageValidator.validate(file);
+
+                    // Fazer upload da nova foto
+                    final var uploaded = mediaClient.upload(file).getBody();
+
+                    // Deletar a foto antiga, se existir
+                    Optional.ofNullable(department.getCoverImageId())
+                            .ifPresent(mediaClient::delete);
+
+                    // Atualizar a referência da foto no banco de dados
+                    department.setCoverImageId(uploaded.getId());
+                    final var saved = repository.save(department);
+
+                    // Mapear a entidade atualizada para DTO
+                    return mapper.map(saved, DepartmentDto.class);
+                });
+    }
+
+    @PreAuthorize("@fga.check('department', #id, 'can_manage', 'user', principal.id)")
+    public Optional<DepartmentDto> deleteCoverImage(final UUID id) {
+        return repository.findById(id)
+                .map(department -> {
+                    // Deletar a foto antiga, se existir
+                    Optional.ofNullable(department.getCoverImageId())
+                            .ifPresent(mediaClient::delete);
+
+                    // Remover a referência da foto no banco de dados
+                    department.setCoverImageId(null);
+                    final var saved = repository.save(department);
+
+                    // Mapear a entidade atualizada para DTO
+                    return mapper.map(saved, DepartmentDto.class);
+                });
     }
 
     @Transactional

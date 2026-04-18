@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.apis.churches.services.department.IntegrationService;
@@ -57,6 +59,40 @@ public class DepartmentController {
         } catch (final EntityNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PutMapping(value = "{id}/profile-image", consumes = "multipart/form-data")
+    @Operation(summary = "Atualizar a imagem de perfil", description = "Atualizar a imagem de perfil do departamento.")
+    public ResponseEntity<DepartmentDto> updateProfileImage(@PathVariable final UUID id,
+            @RequestPart final MultipartFile file) {
+        return service.updateProfileImage(id, file)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
+
+    @DeleteMapping("{id}/profile-image")
+    @Operation(summary = "Deletar imagem de perfil", description = "Deletar a imagem de perfil de um departamento.")
+    public ResponseEntity<DepartmentDto> deleteProfileImage(@PathVariable final UUID id) {
+        return service.deleteProfileImage(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
+
+    @PutMapping(value = "{id}/cover-image", consumes = "multipart/form-data")
+    @Operation(summary = "Atualizar a imagem de capa", description = "Atualizar a imagem de capa do departamento.")
+    public ResponseEntity<DepartmentDto> updateCoverImage(@PathVariable final UUID id,
+            @RequestPart final MultipartFile file) {
+        return service.updateCoverImage(id, file)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
+
+    @DeleteMapping("{id}/cover-image")
+    @Operation(summary = "Deletar imagem de capa", description = "Deletar a imagem de capa de um departamento.")
+    public ResponseEntity<DepartmentDto> deleteCoverImage(@PathVariable final UUID id) {
+        return service.deleteCoverImage(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
     }
 
     @DeleteMapping("{id}")
