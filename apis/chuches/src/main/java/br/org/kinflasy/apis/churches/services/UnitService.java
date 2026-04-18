@@ -9,10 +9,12 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.org.kinflasy.apis.churches.clients.AddressClient;
 import br.org.kinflasy.apis.churches.clients.InactivePersonClient;
 import br.org.kinflasy.apis.churches.clients.LinkClient;
+import br.org.kinflasy.apis.churches.clients.MediaClient;
 import br.org.kinflasy.apis.churches.clients.PersonClient;
 import br.org.kinflasy.apis.churches.converters.UnitConverter;
 import br.org.kinflasy.apis.churches.entities.UnitLink;
@@ -22,8 +24,8 @@ import br.org.kinflasy.apis.churches.repositories.UnitRepository;
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
-import br.org.kinflasy.libs.churches.dto.MembershipRequest;
 import br.org.kinflasy.libs.churches.dto.MembershipDto.Pending;
+import br.org.kinflasy.libs.churches.dto.MembershipRequest;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
@@ -31,6 +33,7 @@ import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import br.org.kinflasy.libs.contacts.dto.LinkDto;
 import br.org.kinflasy.libs.contacts.dto.LinkRequest;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
+import br.org.kinflasy.libs.media.validators.ProfileImageValidator;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -53,6 +56,7 @@ public class UnitService {
 
     private final LinkClient linkClient;
     private final AddressClient addressClient;
+    private final MediaClient mediaClient;
     private final PersonClient personClient;
     private final InactivePersonClient inactivePersonClient;
 
@@ -170,6 +174,86 @@ public class UnitService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
+    public Optional<UnitDto> updateProfileImage(final UUID id, final MultipartFile file) {
+        return repository.findById(id)
+                .map(unit -> {
+                    // Validar a imagem
+                    ProfileImageValidator.validate(file);
+
+                    // Fazer upload da nova foto
+                    final var uploaded = mediaClient.upload(file).getBody();
+
+                    // Deletar a foto antiga, se existir
+                    Optional.ofNullable(unit.getProfileImageId())
+                            .ifPresent(mediaClient::delete);
+
+                    // Atualizar a referência da foto no banco de dados
+                    unit.setProfileImageId(uploaded.getId());
+                    final var saved = repository.save(unit);
+
+                    // Mapear a entidade atualizada para DTO
+                    return mapper.map(saved, UnitDto.class);
+                });
+    }
+
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
+    public Optional<UnitDto> deleteProfileImage(final UUID id) {
+        return repository.findById(id)
+                .map(unit -> {
+                    // Deletar a foto antiga, se existir
+                    Optional.ofNullable(unit.getProfileImageId())
+                            .ifPresent(mediaClient::delete);
+
+                    // Remover a referência da foto no banco de dados
+                    unit.setProfileImageId(null);
+                    final var saved = repository.save(unit);
+
+                    // Mapear a entidade atualizada para DTO
+                    return mapper.map(saved, UnitDto.class);
+                });
+    }
+
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
+    public Optional<UnitDto> updateCoverImage(final UUID id, final MultipartFile file) {
+        return repository.findById(id)
+                .map(unit -> {
+                    // Validar a imagem
+                    ProfileImageValidator.validate(file);
+
+                    // Fazer upload da nova foto
+                    final var uploaded = mediaClient.upload(file).getBody();
+
+                    // Deletar a foto antiga, se existir
+                    Optional.ofNullable(unit.getCoverImageId())
+                            .ifPresent(mediaClient::delete);
+
+                    // Atualizar a referência da foto no banco de dados
+                    unit.setCoverImageId(uploaded.getId());
+                    final var saved = repository.save(unit);
+
+                    // Mapear a entidade atualizada para DTO
+                    return mapper.map(saved, UnitDto.class);
+                });
+    }
+
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
+    public Optional<UnitDto> deleteCoverImage(final UUID id) {
+        return repository.findById(id)
+                .map(unit -> {
+                    // Deletar a foto antiga, se existir
+                    Optional.ofNullable(unit.getCoverImageId())
+                            .ifPresent(mediaClient::delete);
+
+                    // Remover a referência da foto no banco de dados
+                    unit.setCoverImageId(null);
+                    final var saved = repository.save(unit);
+
+                    // Mapear a entidade atualizada para DTO
+                    return mapper.map(saved, UnitDto.class);
+                });
+    }
+
     @Transactional
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public void delete(final UUID id) {
@@ -274,6 +358,8 @@ public class UnitService {
                 });
     }
 
+    @Transactional
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public LinkDto createLink(final UUID id, final LinkRequest request) {
         if (repository.existsById(id)) {
             final var link = linkClient.create(mapper.map(request, LinkRequest.class));

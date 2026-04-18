@@ -49,6 +49,12 @@ public class Unit extends AbstractSimpleAuditable implements Emailable {
     @Column(nullable = false)
     private UUID addressId;
 
+    @Column
+    private UUID profileImageId;
+
+    @Column
+    private UUID coverImageId;
+
     /*
      * Enumerações
      */
