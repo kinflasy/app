@@ -147,7 +147,7 @@ public class DepartmentController {
     }
 
     @GetMapping("{id}/integrants")
-    public ResponseEntity<List<IntegrationDto>> listIntegrants(@PathVariable final UUID id) {
+    public ResponseEntity<List<IntegrationDto.Detailed>> listIntegrants(@PathVariable final UUID id) {
         return ResponseEntity.ok(integrationService.listByDepartment(id));
     }
 

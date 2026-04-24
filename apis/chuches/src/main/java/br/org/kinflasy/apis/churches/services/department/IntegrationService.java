@@ -1,5 +1,6 @@
 package br.org.kinflasy.apis.churches.services.department;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -13,6 +14,7 @@ import br.org.kinflasy.apis.churches.entities.department.Integration;
 import br.org.kinflasy.apis.churches.entities.department.PendingIntegration;
 import br.org.kinflasy.apis.churches.repositories.department.IntegrationRepository;
 import br.org.kinflasy.apis.churches.repositories.department.PendingIntegrationRepository;
+import br.org.kinflasy.apis.churches.services.MembershipService;
 import br.org.kinflasy.apis.churches.services.UnitService;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
@@ -37,12 +39,37 @@ public class IntegrationService {
     private final PendingIntegrationRepository pendingRepository;
 
     private final UnitService unitService;
+    private final DepartmentService departmentService;
+    private final MembershipService membershipService;
 
     @PreAuthorize("@fga.check('department', #departmentId, 'can_observe', 'user', principal.id)")
-    public List<IntegrationDto> listByDepartment(final UUID departmentId) {
-        return repository.findByDepartmentId(departmentId).stream()
-                .map(integration -> mapper.map(integration, IntegrationDto.class))
-                .toList();
+    public List<IntegrationDto.Detailed> listByDepartment(final UUID departmentId) {
+        // Consultar departamento
+        return departmentService.findById(departmentId)
+
+                // Listar suas integrações
+                .map(department -> repository.findByDepartmentId(departmentId).stream()
+
+                        // Para cada integração, detalhar a membership associada
+                        .map(integration -> membershipService.findById(integration.getMembershipId())
+
+                                // Gerar DTO detalhado
+                                .map(membership -> new IntegrationDto.Detailed()
+                                        .setId(integration.getId())
+                                        .setDepartment(department)
+                                        .setMembership(membership)
+                                        .setType(integration.getType())))
+
+                        // Filtrar integrações com membership inexistente (embora isso não devesse
+                        // acontecer)
+                        .filter(Optional::isPresent)
+
+                        // Coletar resultados
+                        .map(Optional::get)
+                        .toList())
+
+                // Se departamento não existir, retornar lista vazia
+                .orElseGet(Collections::emptyList);
     }
 
     @PreAuthorize("@fga.check('membership', #membershipId, 'can_view', 'user', principal.id)")
