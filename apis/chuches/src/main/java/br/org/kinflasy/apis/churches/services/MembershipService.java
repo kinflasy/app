@@ -19,8 +19,8 @@ import br.org.kinflasy.apis.churches.repositories.MembershipRepository;
 import br.org.kinflasy.apis.churches.repositories.PendingMembershipRepository;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
-import br.org.kinflasy.libs.churches.dto.MembershipRequest;
 import br.org.kinflasy.libs.churches.dto.MembershipDto.Pending;
+import br.org.kinflasy.libs.churches.dto.MembershipRequest;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -51,7 +51,7 @@ public class MembershipService {
      */
 
     @Transactional
-    public Pending askToJoinUnit(final UUID unitId, final MembershipRequest.Join request) {
+    public MembershipDto.Simple askToJoinUnit(final UUID unitId, final MembershipRequest.Join request) {
         final var loggedUser = authUtils.getLoggedUser();
 
         repository.findByUnitIdAndPersonIdAndLeaveDateNull(unitId, loggedUser.getId())
@@ -60,14 +60,12 @@ public class MembershipService {
                             "Você já é %s desta unidade".formatted(existing.getAffiliation()));
                 });
 
-        final var entity = new PendingMembership();
-        entity.setId(null);
-        entity.setUnitId(unitId);
-        entity.setPersonId(loggedUser.getId());
-        entity.setAffiliation(request.getAffiliation());
-        entity.setUserConfirmationDate(LocalDateTime.now());
-
-        return processSavedPending(pendingRepository.save(entity));
+        return switch (request.getAffiliation()) {
+            case VISITOR -> create(unitId, new MembershipRequest()
+                    .setPersonId(loggedUser.getId())
+                    .setAffiliation(request.getAffiliation()));
+            default -> createPendingMembership(unitId, request, loggedUser.getId());
+        };
     }
 
     public List<Pending> listPendingForLoggedUser() {
@@ -256,6 +254,18 @@ public class MembershipService {
     public void reject(final UUID unitId, final UUID personId) {
         pendingRepository.findByUnitIdAndPersonId(unitId, personId)
                 .ifPresent(pendingRepository::delete);
+    }
+
+    private Pending createPendingMembership(final UUID unitId, final MembershipRequest.Join request,
+            final UUID loggedUserId) {
+        final var entity = new PendingMembership();
+        entity.setId(null);
+        entity.setUnitId(unitId);
+        entity.setPersonId(loggedUserId);
+        entity.setAffiliation(request.getAffiliation());
+        entity.setUserConfirmationDate(LocalDateTime.now());
+
+        return processSavedPending(pendingRepository.save(entity));
     }
 
     private Pending processSavedPending(final PendingMembership saved) {

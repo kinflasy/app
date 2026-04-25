@@ -175,7 +175,8 @@ public class UnitController {
 
     @PostMapping("{id}/join")
     @Operation(summary = "Pedir para ingressar na unidade", description = "Solicitar que a administração de uma unidade permita o ingresso da pessoa logada.")
-    public ResponseEntity<Pending> askToJoinUnit(@PathVariable final UUID id, @RequestBody final MembershipRequest.Join request) {
+    public ResponseEntity<MembershipDto.Simple> askToJoinUnit(@PathVariable final UUID id,
+            @RequestBody final MembershipRequest.Join request) {
         return ResponseEntity.ok(service.askToJoinUnit(id, request));
     }
 
