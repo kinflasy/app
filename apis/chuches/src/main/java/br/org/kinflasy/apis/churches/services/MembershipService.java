@@ -98,7 +98,7 @@ public class MembershipService {
     }
 
     @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
-    public Pending askForUserToJoin(final UUID unitId, final MembershipRequest request) {
+    public Pending inviteUserToJoin(final UUID unitId, final MembershipRequest request) {
         repository.findByUnitIdAndPersonIdAndLeaveDateNull(unitId, request.getPersonId())
                 .ifPresent(existing -> {
                     throw new EntityExistsException(

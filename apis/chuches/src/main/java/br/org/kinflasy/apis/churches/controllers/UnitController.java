@@ -154,11 +154,11 @@ public class UnitController {
         return ResponseEntity.ok(service.addMember(id, request));
     }
 
-    @PostMapping("{id}/members/ask")
+    @PostMapping("{id}/members/invite")
     @Operation(summary = "Pedir para um usuário ingressar na unidade", description = "Solicitar que pessoa pré-existente seja membro de uma unidade.")
-    public ResponseEntity<Pending> askForUserToJoin(@PathVariable final UUID id,
+    public ResponseEntity<Pending> inviteUserToJoin(@PathVariable final UUID id,
             @RequestBody @Valid final MembershipRequest request) {
-        return ResponseEntity.ok(service.askForUserToJoin(id, request));
+        return ResponseEntity.ok(service.inviteUserToJoin(id, request));
     }
 
     @PutMapping("{id}/pending-members")

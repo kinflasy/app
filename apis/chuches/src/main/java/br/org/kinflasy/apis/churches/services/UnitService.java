@@ -391,9 +391,9 @@ public class UnitService {
     }
 
     @Transactional
-    public Pending askForUserToJoin(final UUID id, final MembershipRequest request) {
+    public Pending inviteUserToJoin(final UUID id, final MembershipRequest request) {
         if (repository.existsById(id)) {
-            return membershipService.askForUserToJoin(id, request);
+            return membershipService.inviteUserToJoin(id, request);
         } else {
             throw new EntityNotFoundException(NOT_FOUND_MESSAGE);
         }
