@@ -117,9 +117,9 @@ public class UnitService {
 
     @Transactional
     @PreAuthorize("isAuthenticated()")
-    public Pending askToJoinUnit(final UUID id) {
+    public Pending askToJoinUnit(final UUID id, final MembershipRequest.Join request) {
         if (repository.existsById(id)) {
-            return membershipService.askToJoinUnit(id);
+            return membershipService.askToJoinUnit(id, request);
         } else {
             throw new EntityNotFoundException(NOT_FOUND_MESSAGE);
         }

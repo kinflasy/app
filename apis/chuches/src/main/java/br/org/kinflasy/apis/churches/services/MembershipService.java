@@ -51,7 +51,7 @@ public class MembershipService {
      */
 
     @Transactional
-    public Pending askToJoinUnit(final UUID unitId) {
+    public Pending askToJoinUnit(final UUID unitId, final MembershipRequest.Join request) {
         final var loggedUser = authUtils.getLoggedUser();
 
         repository.findByUnitIdAndPersonIdAndLeaveDateNull(unitId, loggedUser.getId())
@@ -64,6 +64,7 @@ public class MembershipService {
         entity.setId(null);
         entity.setUnitId(unitId);
         entity.setPersonId(loggedUser.getId());
+        entity.setAffiliation(request.getAffiliation());
         entity.setUserConfirmationDate(LocalDateTime.now());
 
         return processSavedPending(pendingRepository.save(entity));
@@ -244,9 +245,9 @@ public class MembershipService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_PENDING_MESSAGE));
     }
 
-    @PreAuthorize("#personId.equals(principal.id)")
-    public Pending confirmAsPerson(final UUID unitId, final UUID personId) {
-        return pendingRepository.findByUnitIdAndPersonId(unitId, personId)
+    public Pending confirmAsPerson(final UUID unitId) {
+        final var loggedUser = authUtils.getLoggedUser();
+        return pendingRepository.findByUnitIdAndPersonId(unitId, loggedUser.getId())
                 .map(pending -> confirm(pending, p -> p.setUserConfirmationDate(LocalDateTime.now())))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_PENDING_MESSAGE));
     }

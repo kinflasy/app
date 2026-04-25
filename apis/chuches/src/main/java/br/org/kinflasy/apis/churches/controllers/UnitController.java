@@ -175,14 +175,14 @@ public class UnitController {
 
     @PostMapping("{id}/join")
     @Operation(summary = "Pedir para ingressar na unidade", description = "Solicitar que a administração de uma unidade permita o ingresso da pessoa logada.")
-    public ResponseEntity<Pending> askToJoinUnit(@PathVariable final UUID id) {
-        return ResponseEntity.ok(service.askToJoinUnit(id));
+    public ResponseEntity<Pending> askToJoinUnit(@PathVariable final UUID id, @RequestBody final MembershipRequest.Join request) {
+        return ResponseEntity.ok(service.askToJoinUnit(id, request));
     }
 
     @PostMapping("{id}/join/confirm")
     @Operation(summary = "Confirmar solicitação para ingressar na unidade", description = "Confirmar solicitação para a pessoa logada ingressar na unidade.")
     public ResponseEntity<Pending> confirmAsUser(@PathVariable final UUID id) {
-        return ResponseEntity.ok(service.askToJoinUnit(id));
+        return ResponseEntity.ok(membershipService.confirmAsPerson(id));
     }
 
     @PostMapping("{id}/member/{personId}/reject")
