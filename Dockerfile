@@ -1,5 +1,5 @@
 # --- Etapa 1: Build (Compilação) ---
-FROM maven:3.9.12-eclipse-temurin-21-alpine AS build
+FROM maven:3.9.15-amazoncorretto-21-alpine AS build
 
 # Define o diretório de trabalho para o build
 WORKDIR /build
@@ -22,7 +22,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # --- Etapa 2: Runtime (Execução) ---
-FROM eclipse-temurin:21-alpine-3.23
+FROM sapmachine:21-jre-alpine-3.23
 
 # Instalar dos2unix para corrigir finais de linha do Windows
 RUN apk add --no-cache dos2unix
