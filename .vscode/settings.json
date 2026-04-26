@@ -9,6 +9,9 @@
         "events",
         "calendar",
         "churches",
-        "target"
+        "target",
+        "people",
+        "contacts",
+        "media"
     ]
 }

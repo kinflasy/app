@@ -42,6 +42,11 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
     private static final String TYPE_MEMBERSHIP = "membership:";
 
     /*
+     * Constantes de relações
+     */
+    private static final String RELATION_CAN_VIEW = "can_view";
+
+    /*
      * Constantes de sets
      */
     private static final String SET_USER = "#user";
@@ -67,6 +72,11 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
 
         final List<ClientTupleKey> tuples = new ArrayList<>();
 
+        final var publicAccessTuple = new ClientTupleKey()
+                ._object(TYPE_UNIT + dto.getId())
+                .relation(RELATION_CAN_VIEW)
+                .user("user:*");
+
         final var parentChurchTuple = new ClientTupleKey()
                 ._object(TYPE_UNIT + dto.getId())
                 .relation("parent_church")
@@ -82,6 +92,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
                 .relation("origin")
                 .user(TYPE_UNIT + dto.getId());
 
+        tuples.add(publicAccessTuple);
         tuples.add(parentChurchTuple);
         tuples.add(unitTuple);
         tuples.add(addressOwnerTuple);
@@ -120,13 +131,13 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public CompletableFuture<Void> handleMembershipCreated(final EntityEvent.Created<MembershipDto> event) {
+    public CompletableFuture<Void> handleMembershipCreated(final EntityEvent.Created<MembershipDto.Simple> event) {
         final var dto = event.getSource();
 
         final var userTuple = new ClientTupleKey()
                 ._object(TYPE_MEMBERSHIP + dto.getId())
                 .relation("user")
-                .user(TYPE_USER + dto.getPerson().getId());
+                .user(TYPE_USER + dto.getPersonId());
 
         final var unitTuple = new ClientTupleKey()
                 ._object(TYPE_MEMBERSHIP + dto.getId())
@@ -139,8 +150,8 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
                 .user(TYPE_MEMBERSHIP + dto.getId() + SET_USER);
 
         final var viewPersonDataTuple = new ClientTupleKey()
-                ._object(TYPE_PERSON_DATA + dto.getPerson().getId())
-                .relation("can_view")
+                ._object(TYPE_PERSON_DATA + dto.getPersonId())
+                .relation(RELATION_CAN_VIEW)
                 .user(TYPE_MEMBERSHIP + dto.getId() + "#can_edit");
 
         return writeTuples(userTuple, unitTuple, unitMembershipTuple, viewPersonDataTuple);
@@ -169,7 +180,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
 
         final var viewPersonDataTuple = new ClientTupleKey()
                 ._object(TYPE_PERSON_DATA + dto.getPerson().getId())
-                .relation("can_view")
+                .relation(RELATION_CAN_VIEW)
                 .user(TYPE_MEMBERSHIP + dto.getId() + "#can_edit");
 
         return deleteTuples(userTuple, unitTuple, unitMembershipTuple, viewPersonDataTuple);
@@ -184,7 +195,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
 
                 // Escrever tuplas modificadas
                 .thenCompose(ignored -> tupleManager
-                        .handleMembershipCreated(new EntityEvent.Created<>(event.getSource())));
+                        .handleMembershipCreated(new EntityEvent.Created<>(event.getSource().toSimple())));
     }
 
     @Async

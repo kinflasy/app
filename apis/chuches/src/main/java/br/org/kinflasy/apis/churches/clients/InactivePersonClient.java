@@ -14,7 +14,7 @@ import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import jakarta.validation.Valid;
 
-@FeignClient(name = "inactivePeopleApi", contextId = "churches-inactivePeopleApi")
+@FeignClient(name = "churches-inactivePeopleApi", url = "${PEOPLE_API_URL}", path = "inactive-people")
 public interface InactivePersonClient {
 
     @PostMapping("admin")

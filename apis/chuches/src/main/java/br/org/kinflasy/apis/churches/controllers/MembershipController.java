@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.apis.churches.services.MembershipService;
 import br.org.kinflasy.apis.churches.services.department.IntegrationService;
-import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto.Pending;
+import br.org.kinflasy.libs.churches.dto.MembershipDto.Pending;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;

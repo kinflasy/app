@@ -16,7 +16,7 @@
 
     <!-- Informações do Projeto -->
     <name>Biblioteca de Calendário</name>
-    <description>Biblioteca de binários de Calendário Projeto Kinflasy</description>
+    <description>Biblioteca de binários de Calendário do Projeto Kinflasy</description>
 
     <!-- Informações do Artefato -->
     <groupId>br.org.kinflasy.libs</groupId>

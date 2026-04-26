@@ -15,7 +15,7 @@ import br.org.kinflasy.libs.people.dto.UserDto;
 @Service
 public class TokenService {
 
-    @Value("${api.security.token.secret}")
+    @Value("${app.api.security.token.secret}")
     private String secret;
 
     public String generateToken(final UserDto user) {

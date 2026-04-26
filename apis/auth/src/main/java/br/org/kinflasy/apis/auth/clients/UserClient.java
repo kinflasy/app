@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
 
-@FeignClient(name = "usersApi", contextId = "auth-usersApi")
+@FeignClient(name = "auth-usersApi", url = "${PEOPLE_API_URL}", path = "users")
 public interface UserClient {
 
     @PostMapping("admin")

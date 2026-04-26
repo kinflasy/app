@@ -3,8 +3,7 @@ networks:
   app:
 
 volumes:
-  # Volume compartilhado para passar os IDs do FGA entre containers
-  shared-data:
+  minio_data:
 
 services:
   # Serviço para o PostgreSQL
@@ -80,6 +79,8 @@ services:
       OPENFGA_LOG_FORMAT: json
       OPENFGA_HTTP_ADDR: 0.0.0.0:${OPENFGA_HTTP_PORT}
       OPENFGA_HTTP_CORS_ALLOWED_ORIGINS:
+      OPENFGA_AUTHN_METHOD: preshared
+      OPENFGA_AUTHN_PRESHARED_KEYS: ${OPENFGA_API_TOKEN}
     command: run
     networks:
       - openfga
@@ -89,33 +90,31 @@ services:
       # Needed for the grpc server (if used)
       - "8081:8081"
       # Needed for the playground (Do not enable in prod!)
-      # - "3000:3000"
+      - "3000:3000"
 
-  fga-setup:
-    container_name: fga-setup
-    image: alpine:3.21
-    # stdin_open: true
-    # tty: true
-    volumes:
-      - .:/mnt
-      - shared-data:/shared
+  # Serviço para MinIO (Armazenamento de Objetos S3-compatível)
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    env_file:
+      - .env
     environment:
-      OPENFGA_HTTP_HOST: openfga
-      OPENFGA_HTTP_PORT: ${OPENFGA_HTTP_PORT}
-    # O entrypoint abaixo faz tudo: instala dependências e roda seu script
-    entrypoint: >
-      /bin/sh -c "
-      apk add --no-cache curl jq dos2unix && 
-      curl -sSfL https://github.com/openfga/cli/releases/download/v0.6.2/fga_0.6.2_linux_amd64.tar.gz | tar -xz -C /usr/local/bin fga &&
-      dos2unix /mnt/run/setup-fga.sh &&
-      chmod +x /mnt/run/setup-fga.sh &&
-      /mnt/run/setup-fga.sh
-      "
-    depends_on:
-      openfga:
-        condition: service_started
+      STORAGE_ACCESS_KEY: ${STORAGE_ACCESS_KEY:-minioadmin}
+      STORAGE_SECRET_KEY: ${STORAGE_SECRET_KEY:-minioadmin}
+    volumes:
+      - minio_data:/minio_data
+    command: server /minio_data --console-address ":9001"
     networks:
-      - openfga
+      - app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # Serviço para a aplicação Spring Boot
   app:
@@ -127,16 +126,20 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      fga-setup:
-        condition: service_completed_successfully
+      openfga:
+        condition: service_started
+      minio:
+        condition: service_healthy
     env_file:
       - .env
-    volumes:
-      - shared-data:/shared # Para exportar o arquivo .env.fga
     environment:
       DATABASE_HOST: db
-      OPENFGA_HTTP_HOST: openfga
+      OPENFGA_HTTP_URL: http://openfga:${OPENFGA_HTTP_PORT}
+      OPENFGA_MODEL_FILE: model.json
       FGA_ENV_FILE: /shared/.env.fga
+      STORAGE_PROVIDER: minio
+      STORAGE_URL: http://minio:9000
+      STORAGE_BUCKET: kinflasy
     networks:
       - app
       - openfga

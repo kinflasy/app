@@ -20,6 +20,8 @@ public class UnitDto {
     private UnitType type;
     private UUID churchId;
     private UUID addressId;
+    private UUID profileImageId;
+    private UUID coverImageId;
 
     @Data
     @EqualsAndHashCode(callSuper = true)

@@ -41,6 +41,9 @@ type unit
     define congregated: [membership#user] or member
     define visitor: [membership#user] or congregated
 
+    define can_edit: admin
+    define can_view: [user:*] or admin
+
 type membership
   relations
     define unit: [unit]

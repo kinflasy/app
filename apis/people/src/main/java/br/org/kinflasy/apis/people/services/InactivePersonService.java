@@ -52,13 +52,15 @@ public class InactivePersonService {
     @Transactional
     @PreAuthorize("@fga.check('church', #request.churchId, 'unit_admin', 'user', principal.id)")
     public InactivePersonDto create(final InactivePersonRequest request) {
-        // Salvar endereço
-        final var address = addressClient.create(request.getAddress());
-
         // Salvar pessoa
         final var entity = converter.toEntity(request);
         entity.setId(null);
-        entity.setAddressId(address.getId());
+
+        // Salvar endereço
+        Optional.ofNullable(request.getAddress())
+                .map(addressClient::create)
+                .ifPresent(address -> entity.setAddressId(address.getId()));
+
         repository.save(entity);
 
         // Gerar DTO
@@ -97,18 +99,31 @@ public class InactivePersonService {
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
     public InactivePersonDto update(final UUID id, final InactivePersonRequest request) {
         // Obter original
-        final var original = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
-        final var originalDto = mapper.map(original, InactivePersonDto.class);
-
-        // Atualizar original
-        final var modified = converter.toEntity(request, original);
-        repository.save(modified);
+        final var entity = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+        final var originalDto = mapper.map(entity, InactivePersonDto.class);
 
         // Atualizar endereço
-        addressClient.update(original.getAddressId(), request.getAddress());
+        final var addressId = Optional.ofNullable(entity.getAddressId())
+                .map(currentAddressId -> Optional.ofNullable(request.getAddress())
+                        .map(addressRequest -> addressClient.update(currentAddressId, addressRequest).getId())
+                        .orElseGet(() -> {
+                            addressClient.delete(currentAddressId);
+                            return null;
+                        }))
+                .orElseGet(() -> Optional.ofNullable(request.getAddress())
+                        .map(addressRequest -> addressClient.create(addressRequest).getId())
+                        .orElse(null));
+
+        // Atualizar original
+        mapper.map(request, entity);
+        entity.setId(id);
+        entity.setChurchId(id);
+        entity.setAddressId(addressId);
+
+        repository.save(entity);
 
         // Gerar DTO
-        final var dto = converter.toDto(modified);
+        final var dto = converter.toDto(entity);
 
         // Publicar evento
         publisher.publishEvent(new EntityEvent.Updated<>(originalDto, dto));
@@ -130,7 +145,8 @@ public class InactivePersonService {
         publisher.publishEvent(new EntityEvent.Deleted<>(dto));
 
         // Deletar endereço
-        addressClient.delete(entity.getAddressId());
+        Optional.ofNullable(entity.getAddressId())
+                .ifPresent(addressClient::delete);
     }
 
 }

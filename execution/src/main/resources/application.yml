@@ -1,7 +1,7 @@
 spring:
   config:
     import:
-    - optional:file:../.env[.properties]
+      - optional:file:../.env[.properties]
 
   # Configurações do DataSource
   datasource:
@@ -23,26 +23,15 @@ spring:
     openfeign:
       oauth2:
         enabled: true
-      client:
-        config:
-          execution-usersApi:
-            url: ${USERS_API_URL}
-          auth-usersApi:
-            url: ${USERS_API_URL}
-          churches-addressesApi:
-            url: ${ADDRESS_API_URL}
-          churches-peopleApi:
-            url: ${PEOPLE_API_URL}
-          churches-inactivePeopleApi:
-            url: ${INACTIVE_PEOPLE_API_URL}
-          churches-usersApi:
-            url: ${USERS_API_URL}
-          people-addressesApi:
-            url: ${ADDRESS_API_URL}
-          people-churchesApi:
-            url: ${CHURCHES_API_URL}
-          calendar-churchesApi:
-            url: ${CHURCHES_API_URL}
+
+  mvc:
+    log-request-details: true
+
+  # Configurações de Multipart (Upload de Arquivos)
+  servlet:
+    multipart:
+      max-file-size: 2MB
+      max-request-size: 2MB
 
   # Configurações do DevTools
   devtools:
@@ -53,20 +42,35 @@ spring:
 
 logging:
   level:
-    '[br.org.kinflasy.clients.UserClient]': DEBUG
-    '[br.org.kinflasy.apis.churches.clients.PersonClient]': DEBUG
+    "[org.springframework.web]": DEBUG
+    "[br.org.kinflasy.clients.UserClient]": DEBUG
+    "[br.org.kinflasy.apis.churches.clients.PersonClient]": DEBUG
 
 springdoc:
   api-docs:
     path: /api-docs
   use-fqn: true
+  open-api:
+    servers:
+      - url: ${API_URL:http://localhost:8080}
 
 openfga:
-  api-url: http://${OPENFGA_HTTP_HOST}:${OPENFGA_HTTP_PORT}
-  store-id: ${OPENFGA_STORE_ID}
-  authorization-model-id: ${OPENFGA_AUTHORIZATION_MODEL_ID}
+  api-url: ${OPENFGA_HTTP_URL}
+  credentials:
+    method: api-token
+    config:
+      api-token: ${OPENFGA_API_TOKEN}
 
-api:
-  security:
-    token:
-      secret: ${JWT_SECRET:my-secret-key}
+app:
+  api:
+    security:
+      token:
+        secret: ${JWT_SECRET:my-secret-key}
+  openfga:
+    model-file-path: ${OPENFGA_MODEL_FILE}
+  storage:
+    provider: ${STORAGE_PROVIDER}
+    url: ${STORAGE_URL}
+    bucket: ${STORAGE_BUCKET}
+    access-key: ${STORAGE_ACCESS_KEY}
+    secret-key: ${STORAGE_SECRET_KEY}

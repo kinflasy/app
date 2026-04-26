@@ -12,18 +12,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.org.kinflasy.apis.churches.services.MembershipService;
 import br.org.kinflasy.apis.churches.services.UnitService;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
+import br.org.kinflasy.libs.churches.dto.MembershipDto.Pending;
 import br.org.kinflasy.libs.churches.dto.MembershipRequest;
-import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto;
-import br.org.kinflasy.libs.churches.dto.MembershipSimpleDto.Pending;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
+import br.org.kinflasy.libs.contacts.dto.LinkDto;
+import br.org.kinflasy.libs.contacts.dto.LinkRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -62,6 +65,40 @@ public class UnitController {
         } catch (final EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PutMapping(value = "{id}/profile-image", consumes = "multipart/form-data")
+    @Operation(summary = "Atualizar a imagem de perfil", description = "Atualizar a imagem de perfil da unidade.")
+    public ResponseEntity<UnitDto> updateProfileImage(@PathVariable final UUID id,
+            @RequestPart final MultipartFile file) {
+        return service.updateProfileImage(id, file)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
+
+    @DeleteMapping("{id}/profile-image")
+    @Operation(summary = "Deletar imagem de perfil", description = "Deletar a imagem de perfil de uma unidade.")
+    public ResponseEntity<UnitDto> deleteProfileImage(@PathVariable final UUID id) {
+        return service.deleteProfileImage(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
+
+    @PutMapping(value = "{id}/cover-image", consumes = "multipart/form-data")
+    @Operation(summary = "Atualizar a imagem de capa", description = "Atualizar a imagem de capa da unidade.")
+    public ResponseEntity<UnitDto> updateCoverImage(@PathVariable final UUID id,
+            @RequestPart final MultipartFile file) {
+        return service.updateCoverImage(id, file)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
+
+    @DeleteMapping("{id}/cover-image")
+    @Operation(summary = "Deletar imagem de capa", description = "Deletar a imagem de capa de uma unidade.")
+    public ResponseEntity<UnitDto> deleteCoverImage(@PathVariable final UUID id) {
+        return service.deleteCoverImage(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
     }
 
     @DeleteMapping("{id}")
@@ -103,7 +140,7 @@ public class UnitController {
     }
 
     @GetMapping("{id}/membership/{personId}")
-    public ResponseEntity<MembershipSimpleDto> findActiveMembership(@PathVariable final UUID id,
+    public ResponseEntity<MembershipDto.Simple> findActiveMembership(@PathVariable final UUID id,
             @PathVariable final UUID personId) {
         return service.findActiveMembership(id, personId)
                 .map(ResponseEntity::ok)
@@ -112,16 +149,16 @@ public class UnitController {
 
     @PostMapping("{id}/members")
     @Operation(summary = "Associar membro", description = "Adicionar pessoa pré-existente como membro de uma unidade.")
-    public ResponseEntity<MembershipDto> associateMember(@PathVariable final UUID id,
+    public ResponseEntity<MembershipDto.Simple> associateMember(@PathVariable final UUID id,
             @RequestBody @Valid final MembershipRequest request) {
         return ResponseEntity.ok(service.addMember(id, request));
     }
 
-    @PostMapping("{id}/members/ask")
+    @PostMapping("{id}/members/invite")
     @Operation(summary = "Pedir para um usuário ingressar na unidade", description = "Solicitar que pessoa pré-existente seja membro de uma unidade.")
-    public ResponseEntity<Pending> askForUserToJoin(@PathVariable final UUID id,
+    public ResponseEntity<Pending> inviteUserToJoin(@PathVariable final UUID id,
             @RequestBody @Valid final MembershipRequest request) {
-        return ResponseEntity.ok(service.askForUserToJoin(id, request));
+        return ResponseEntity.ok(service.inviteUserToJoin(id, request));
     }
 
     @PutMapping("{id}/pending-members")
@@ -138,14 +175,15 @@ public class UnitController {
 
     @PostMapping("{id}/join")
     @Operation(summary = "Pedir para ingressar na unidade", description = "Solicitar que a administração de uma unidade permita o ingresso da pessoa logada.")
-    public ResponseEntity<Pending> askToJoinUnit(@PathVariable final UUID id) {
-        return ResponseEntity.ok(service.askToJoinUnit(id));
+    public ResponseEntity<MembershipDto.Simple> askToJoinUnit(@PathVariable final UUID id,
+            @RequestBody final MembershipRequest.Join request) {
+        return ResponseEntity.ok(service.askToJoinUnit(id, request));
     }
 
     @PostMapping("{id}/join/confirm")
     @Operation(summary = "Confirmar solicitação para ingressar na unidade", description = "Confirmar solicitação para a pessoa logada ingressar na unidade.")
     public ResponseEntity<Pending> confirmAsUser(@PathVariable final UUID id) {
-        return ResponseEntity.ok(service.askToJoinUnit(id));
+        return ResponseEntity.ok(membershipService.confirmAsPerson(id));
     }
 
     @PostMapping("{id}/member/{personId}/reject")
@@ -162,10 +200,22 @@ public class UnitController {
     }
 
     @PostMapping("{id}/members/register")
-    @Operation(summary = "Cadastrar membros", description = "Cadastrar novas pessoas inativas e associá-las como membros de uma unidade.")
-    public ResponseEntity<MembershipDto> registerMembers(@PathVariable final UUID id,
+    @Operation(summary = "Cadastrar membro", description = "Cadastrar nova pessoa inativa e associá-la como membro de uma unidade.")
+    public ResponseEntity<MembershipDto.Simple> registerMembers(@PathVariable final UUID id,
             @RequestBody final MembershipRequest.Register request) {
         return ResponseEntity.ok(service.registerMember(id, request));
+    }
+
+    @GetMapping("{id}/links")
+    @Operation(summary = "Listar links", description = "Listar os links associados a uma unidade.")
+    public ResponseEntity<List<LinkDto>> listLinks(@PathVariable final UUID id) {
+        return ResponseEntity.ok(service.listLinks(id));
+    }
+
+    @PostMapping("{id}/links")
+    @Operation(summary = "Cadastrar link", description = "Cadastrar um novo link e associá-lo a uma unidade.")
+    public ResponseEntity<LinkDto> createLink(@PathVariable final UUID id, @RequestBody final LinkRequest request) {
+        return ResponseEntity.ok(service.createLink(id, request));
     }
 
 }

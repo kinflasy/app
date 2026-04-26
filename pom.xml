@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.13</version>
+		<version>3.5.14</version>
 		<relativePath />
 	</parent>
 
@@ -32,12 +32,14 @@
 		<module>libs/people</module>
 		<module>libs/churches</module>
 		<module>libs/calendar</module>
+		<module>libs/media</module>
 		<module>libs/api_utils</module>
 		<module>apis/contacts</module>
 		<module>apis/people</module>
 		<module>apis/auth</module>
 		<module>apis/chuches</module>
 		<module>apis/calendar</module>
+		<module>apis/media</module>
 	</modules>
 
 	<!-- Propriedades -->
