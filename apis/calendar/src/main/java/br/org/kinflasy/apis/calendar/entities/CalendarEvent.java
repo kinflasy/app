@@ -36,6 +36,13 @@ public abstract class CalendarEvent extends AbstractSimpleAuditable {
     private UUID id;
 
     /*
+     * Chaves "estrangeiras" (referências)
+     */
+
+    @Column
+    private UUID cardImageId;
+
+    /*
      * Dados primitivos
      */
 

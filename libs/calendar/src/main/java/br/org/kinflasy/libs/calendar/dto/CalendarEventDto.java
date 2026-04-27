@@ -24,5 +24,6 @@ public class CalendarEventDto {
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private List<AccessRule> visibilityRules;
+    private UUID cardImageId;
 
 }

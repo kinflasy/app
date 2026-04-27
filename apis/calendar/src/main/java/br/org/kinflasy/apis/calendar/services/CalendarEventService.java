@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.org.kinflasy.libs.calendar.dto.CalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
@@ -22,6 +23,8 @@ import br.org.kinflasy.libs.churches.dto.access_rules.UserRule;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
+import br.org.kinflasy.libs.media.validators.ProfileImageValidator;
+import br.org.kinflasy.apis.calendar.clients.MediaClient;
 import br.org.kinflasy.apis.calendar.repositories.CalendarEventRepository;
 import br.org.kinflasy.apis.calendar.repositories.DepartmentCalendarEventRepository;
 import br.org.kinflasy.apis.calendar.repositories.UnitCalendarEventRepository;
@@ -46,10 +49,11 @@ public class CalendarEventService {
     private final ApplicationEventPublisher publisher;
 
     private final CalendarEventRepository repository;
-    private final UnitCalendarEventRepository unitRepository;
-    private final DepartmentCalendarEventRepository departmentRepository;
+    private final UnitCalendarEventRepository unitEventRepository;
+    private final DepartmentCalendarEventRepository departmentEventRepository;
 
     private final OpenFgaClient fgaClient;
+    private final MediaClient mediaClient;
 
     /*
      * ACESSO RESTRITO
@@ -57,12 +61,15 @@ public class CalendarEventService {
 
     @PreAuthorize("@fgau.withCharacteristics('calendar_event', #id, 'can_view')")
     public Optional<CalendarEventDto> findById(final UUID id) {
-        final Optional<CalendarEventDto> optional = unitRepository.findById(id)
-                .map(entity -> mapper.map(entity, UnitCalendarEventDto.class));
+        // Buscar o evento como sendo de unidade
+        return unitEventRepository.findById(id)
+                .map(entity -> (CalendarEventDto) mapper.map(entity, UnitCalendarEventDto.class))
 
-        return optional
-                .or(() -> departmentRepository.findById(id)
+                // Se não encontrar, buscar o evento como sendo de departamento
+                .or(() -> departmentEventRepository.findById(id)
                         .map(entity -> mapper.map(entity, DepartmentCalendarEventDto.class)))
+
+                // Para todos os casos, preencher as regras de visibilidade
                 .map(dto -> dto.setVisibilityRules(listVisibilityRules(id)));
     }
 
@@ -84,6 +91,46 @@ public class CalendarEventService {
         publisher.publishEvent(new EntityEvent.Updated<>(original, dto));
 
         return dto;
+    }
+
+    @PreAuthorize("@fga.check('calendar_event', #id, 'can_edit', 'user', principal.id)")
+    public Optional<CalendarEventDto> updateCardImage(final UUID id, final MultipartFile file) {
+        return repository.findById(id)
+                .map(calendarEvent -> {
+                    // Validar a imagem
+                    ProfileImageValidator.validate(file);
+
+                    // Fazer upload da nova foto
+                    final var uploaded = mediaClient.upload(file).getBody();
+
+                    // Deletar a foto antiga, se existir
+                    Optional.ofNullable(calendarEvent.getCardImageId())
+                            .ifPresent(mediaClient::delete);
+
+                    // Atualizar a referência da foto no banco de dados
+                    calendarEvent.setCardImageId(uploaded.getId());
+                    final var saved = repository.save(calendarEvent);
+
+                    // Mapear a entidade atualizada para DTO
+                    return mapper.map(saved, CalendarEventDto.class);
+                });
+    }
+
+    @PreAuthorize("@fga.check('calendar_event', #id, 'can_edit', 'user', principal.id)")
+    public Optional<CalendarEventDto> deleteCardImage(final UUID id) {
+        return repository.findById(id)
+                .map(calendarEvent -> {
+                    // Deletar a foto antiga, se existir
+                    Optional.ofNullable(calendarEvent.getCardImageId())
+                            .ifPresent(mediaClient::delete);
+
+                    // Remover a referência da foto no banco de dados
+                    calendarEvent.setCardImageId(null);
+                    final var saved = repository.save(calendarEvent);
+
+                    // Mapear a entidade atualizada para DTO
+                    return mapper.map(saved, CalendarEventDto.class);
+                });
     }
 
     @Transactional

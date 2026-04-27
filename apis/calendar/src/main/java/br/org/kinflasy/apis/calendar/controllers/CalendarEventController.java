@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.org.kinflasy.apis.calendar.services.CalendarEventService;
 import br.org.kinflasy.apis.calendar.services.DepartmentCalendarEventService;
@@ -22,6 +24,7 @@ import br.org.kinflasy.libs.calendar.dto.CalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.CalendarEventRequest;
 import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.UnitCalendarEventDto;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
@@ -75,6 +78,23 @@ public class CalendarEventController {
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @PutMapping(value = "{id}/card-image", consumes = "multipart/form-data")
+    @Operation(summary = "Atualizar card", description = "Atualizar card do evento.")
+    public ResponseEntity<CalendarEventDto> updateCardImage(@PathVariable final UUID id,
+            @RequestPart final MultipartFile file) {
+        return service.updateCardImage(id, file)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
+
+    @DeleteMapping("{id}/card-image")
+    @Operation(summary = "Deletar card", description = "Deletar card do evento.")
+    public ResponseEntity<CalendarEventDto> deleteCardImage(@PathVariable final UUID id) {
+        return service.deleteCardImage(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
     }
 
     @DeleteMapping("{id}/delete")
