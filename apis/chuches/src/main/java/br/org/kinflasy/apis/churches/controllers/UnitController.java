@@ -20,6 +20,7 @@ import br.org.kinflasy.apis.churches.services.MembershipService;
 import br.org.kinflasy.apis.churches.services.UnitService;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.MembershipDto.Pending;
+import br.org.kinflasy.libs.churches.dto.MembershipDto.SimplePending;
 import br.org.kinflasy.libs.churches.dto.MembershipRequest;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
@@ -156,20 +157,20 @@ public class UnitController {
 
     @PostMapping("{id}/members/invite")
     @Operation(summary = "Pedir para um usuário ingressar na unidade", description = "Solicitar que pessoa pré-existente seja membro de uma unidade.")
-    public ResponseEntity<Pending> inviteUserToJoin(@PathVariable final UUID id,
+    public ResponseEntity<SimplePending> inviteUserToJoin(@PathVariable final UUID id,
             @RequestBody @Valid final MembershipRequest request) {
         return ResponseEntity.ok(service.inviteUserToJoin(id, request));
     }
 
     @PutMapping("{id}/pending-members")
     @Operation(summary = "Atualizar solicitação para usuário ingressar na unidade", description = "Atualizar dados da solicitação que pede para usuário ingressar na unidade.")
-    public Pending updatePending(@PathVariable final UUID id, final @RequestBody MembershipRequest request) {
+    public SimplePending updatePending(@PathVariable final UUID id, final @RequestBody MembershipRequest request) {
         return membershipService.updatePending(id, request);
     }
 
     @PostMapping("{id}/member/{personId}/confirm")
     @Operation(summary = "Confirmar solicitação de usuário para ingressar na unidade", description = "Confirmar solicitação de usuário para ingressar na unidade.")
-    public ResponseEntity<Pending> confirmAsUnit(@PathVariable final UUID id, @PathVariable final UUID personId) {
+    public ResponseEntity<SimplePending> confirmAsUnit(@PathVariable final UUID id, @PathVariable final UUID personId) {
         return ResponseEntity.ok(membershipService.confirmAsUnit(id, personId));
     }
 
@@ -182,13 +183,13 @@ public class UnitController {
 
     @PostMapping("{id}/join/confirm")
     @Operation(summary = "Confirmar solicitação para ingressar na unidade", description = "Confirmar solicitação para a pessoa logada ingressar na unidade.")
-    public ResponseEntity<Pending> confirmAsUser(@PathVariable final UUID id) {
+    public ResponseEntity<SimplePending> confirmAsUser(@PathVariable final UUID id) {
         return ResponseEntity.ok(membershipService.confirmAsPerson(id));
     }
 
     @PostMapping("{id}/member/{personId}/reject")
     @Operation(summary = "Rejeitar solicitação de usuário para ingressar na unidade", description = "Rejeitar solicitação de usuário para ingressar na unidade.")
-    public ResponseEntity<Pending> reject(@PathVariable final UUID id, @PathVariable final UUID personId) {
+    public ResponseEntity<SimplePending> reject(@PathVariable final UUID id, @PathVariable final UUID personId) {
         membershipService.reject(id, personId);
         return ResponseEntity.noContent().build();
     }
