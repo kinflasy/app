@@ -53,6 +53,8 @@ springdoc:
   open-api:
     servers:
       - url: ${API_URL:http://localhost:8080}
+  swagger-ui:
+    doc-expansion: none
 
 openfga:
   api-url: ${OPENFGA_HTTP_URL}
