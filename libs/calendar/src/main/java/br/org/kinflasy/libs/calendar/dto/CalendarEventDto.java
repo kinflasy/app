@@ -1,4 +1,4 @@
-package br.org.kinflasy.dto;
+package br.org.kinflasy.libs.calendar.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;

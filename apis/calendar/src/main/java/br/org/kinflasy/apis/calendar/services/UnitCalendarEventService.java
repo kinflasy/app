@@ -1,4 +1,4 @@
-package br.org.kinflasy.services;
+package br.org.kinflasy.apis.calendar.services;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,12 +10,12 @@ import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import br.org.kinflasy.clients.ChurchClient;
-import br.org.kinflasy.dto.CalendarEventRequest;
-import br.org.kinflasy.dto.UnitCalendarEventDto;
-import br.org.kinflasy.entities.UnitCalendarEvent;
+import br.org.kinflasy.apis.calendar.clients.ChurchClient;
+import br.org.kinflasy.apis.calendar.entities.UnitCalendarEvent;
+import br.org.kinflasy.libs.calendar.dto.CalendarEventRequest;
+import br.org.kinflasy.libs.calendar.dto.UnitCalendarEventDto;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
-import br.org.kinflasy.repositories.UnitCalendarEventRepository;
+import br.org.kinflasy.apis.calendar.repositories.UnitCalendarEventRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 

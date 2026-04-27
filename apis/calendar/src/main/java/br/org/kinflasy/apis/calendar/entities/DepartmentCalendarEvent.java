@@ -1,4 +1,4 @@
-package br.org.kinflasy.entities;
+package br.org.kinflasy.apis.calendar.entities;
 
 import java.util.UUID;
 
@@ -12,18 +12,18 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 @Entity
-@Table(name = "unit_calendar_events")
+@Table(name = "department_calendar_events")
 @DynamicUpdate
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = true)
-public class UnitCalendarEvent extends CalendarEvent {
+public class DepartmentCalendarEvent extends CalendarEvent {
 
     /*
      * Chaves "estrangeiras" (referências)
      */
 
     @Column(nullable = false)
-    private UUID unitId;
+    private UUID departmentId;
 
 }

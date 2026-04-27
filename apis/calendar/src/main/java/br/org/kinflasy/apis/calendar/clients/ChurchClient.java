@@ -1,4 +1,4 @@
-package br.org.kinflasy.clients;
+package br.org.kinflasy.apis.calendar.clients;
 
 import java.util.List;
 import java.util.UUID;

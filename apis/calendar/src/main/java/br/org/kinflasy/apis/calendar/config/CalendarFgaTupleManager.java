@@ -1,4 +1,4 @@
-package br.org.kinflasy.config;
+package br.org.kinflasy.apis.calendar.config;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import br.org.kinflasy.dto.DepartmentCalendarEventDto;
-import br.org.kinflasy.dto.UnitCalendarEventDto;
 import br.org.kinflasy.libs.api_utils.FgaTupleManager;
+import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
+import br.org.kinflasy.libs.calendar.dto.UnitCalendarEventDto;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
-import br.org.kinflasy.services.CalendarEventService;
+import br.org.kinflasy.apis.calendar.services.CalendarEventService;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
 import lombok.extern.slf4j.Slf4j;

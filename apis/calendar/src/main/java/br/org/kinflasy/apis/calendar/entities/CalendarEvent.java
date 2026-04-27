@@ -1,4 +1,4 @@
-package br.org.kinflasy.entities;
+package br.org.kinflasy.apis.calendar.entities;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

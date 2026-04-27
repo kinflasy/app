@@ -1,4 +1,4 @@
-package br.org.kinflasy.services;
+package br.org.kinflasy.apis.calendar.services;
 
 import java.util.Collection;
 import java.util.List;
@@ -10,9 +10,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
-import br.org.kinflasy.dto.CalendarEventDto;
-import br.org.kinflasy.dto.DepartmentCalendarEventDto;
-import br.org.kinflasy.dto.UnitCalendarEventDto;
+import br.org.kinflasy.libs.calendar.dto.CalendarEventDto;
+import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
+import br.org.kinflasy.libs.calendar.dto.UnitCalendarEventDto;
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.CharacteristicRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.ChurchRule;
@@ -22,9 +22,9 @@ import br.org.kinflasy.libs.churches.dto.access_rules.UserRule;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
-import br.org.kinflasy.repositories.CalendarEventRepository;
-import br.org.kinflasy.repositories.DepartmentCalendarEventRepository;
-import br.org.kinflasy.repositories.UnitCalendarEventRepository;
+import br.org.kinflasy.apis.calendar.repositories.CalendarEventRepository;
+import br.org.kinflasy.apis.calendar.repositories.DepartmentCalendarEventRepository;
+import br.org.kinflasy.apis.calendar.repositories.UnitCalendarEventRepository;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientReadRequest;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;

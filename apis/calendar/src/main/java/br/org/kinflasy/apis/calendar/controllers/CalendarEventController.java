@@ -1,4 +1,4 @@
-package br.org.kinflasy.controllers;
+package br.org.kinflasy.apis.calendar.controllers;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.org.kinflasy.dto.CalendarEventDto;
-import br.org.kinflasy.dto.CalendarEventRequest;
-import br.org.kinflasy.dto.DepartmentCalendarEventDto;
-import br.org.kinflasy.dto.UnitCalendarEventDto;
-import br.org.kinflasy.services.CalendarEventService;
-import br.org.kinflasy.services.DepartmentCalendarEventService;
-import br.org.kinflasy.services.UnitCalendarEventService;
+import br.org.kinflasy.apis.calendar.services.CalendarEventService;
+import br.org.kinflasy.apis.calendar.services.DepartmentCalendarEventService;
+import br.org.kinflasy.apis.calendar.services.UnitCalendarEventService;
+import br.org.kinflasy.libs.calendar.dto.CalendarEventDto;
+import br.org.kinflasy.libs.calendar.dto.CalendarEventRequest;
+import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
+import br.org.kinflasy.libs.calendar.dto.UnitCalendarEventDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
