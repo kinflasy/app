@@ -294,7 +294,7 @@ public class UnitService {
         return listMembersAndExMembers(id).stream()
                 .map(simpleDto -> {
                     final var dto = new MembershipDto();
-                    dto.setPerson(personClient.findById(simpleDto.getPersonId()).getBody());
+                    dto.setPerson(personClient.findById(simpleDto.getPersonId()));
                     mapper.map(simpleDto, dto);
                     return dto;
                 })
@@ -319,7 +319,7 @@ public class UnitService {
         return listMembers(id).stream()
                 .map(simpleDto -> {
                     final var dto = new MembershipDto();
-                    dto.setPerson(personClient.findById(simpleDto.getPersonId()).getBody());
+                    dto.setPerson(personClient.findById(simpleDto.getPersonId()));
                     mapper.map(simpleDto, dto);
                     return dto;
                 })

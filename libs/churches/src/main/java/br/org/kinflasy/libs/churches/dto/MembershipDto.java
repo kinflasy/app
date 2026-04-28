@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.people.dto.PersonDto;
+import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -46,8 +47,11 @@ public class MembershipDto {
 
     @Data
     @NoArgsConstructor
-    @EqualsAndHashCode(callSuper = true)
-    public static class Pending extends MembershipDto {
+    public static class Pending {
+        private UUID id;
+        private UUID unitId;
+        private UserIdentifierDto person;
+        private Affiliation affiliation;
         private LocalDateTime unitConfirmationDate;
         private LocalDateTime userConfirmationDate;
     }

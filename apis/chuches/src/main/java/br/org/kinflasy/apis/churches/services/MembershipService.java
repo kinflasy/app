@@ -13,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.clients.PersonClient;
+import br.org.kinflasy.apis.churches.clients.UserClient;
 import br.org.kinflasy.apis.churches.entities.Membership;
 import br.org.kinflasy.apis.churches.entities.PendingMembership;
 import br.org.kinflasy.apis.churches.repositories.MembershipRepository;
@@ -45,6 +46,7 @@ public class MembershipService {
     private final PendingMembershipRepository pendingRepository;
 
     private final UnitService unitService;
+    private final UserClient userClient;
     private final PersonClient personClient;
 
     /*
@@ -120,7 +122,7 @@ public class MembershipService {
                     return unitService.findById(entity.getUnitId())
                             .map(detailed -> {
                                 // Trazer dados da pessoa
-                                final var personDto = personClient.findById(personId).getBody();
+                                final var personDto = personClient.findById(personId);
 
                                 // Construir DTO de membresia detalhada
                                 final var membershipDto = new MembershipDto.DetailingUnit();
@@ -140,7 +142,7 @@ public class MembershipService {
                 .map(entity -> {
                     final var unitDto = unitService.findById(entity.getUnitId())
                             .orElseThrow(() -> new EntityNotFoundException("Unidade não encontrada"));
-                    final var personDto = personClient.findById(entity.getPersonId()).getBody();
+                    final var personDto = personClient.findById(entity.getPersonId());
 
                     final var dto = new MembershipDto.Detailed();
                     dto.setUnit(unitDto)
@@ -195,14 +197,12 @@ public class MembershipService {
     @PreAuthorize("#personId.equals(principal.id)")
     public List<Pending> listPendingByPersonId(final UUID personId) {
         return pendingRepository.findByPersonId(personId).stream()
-                .map(entity -> {
-                    return Optional.ofNullable(personClient.findById(entity.getPersonId()).getBody())
-                            .map(person -> {
-                                final var dto = mapper.map(entity, Pending.class);
-                                dto.setPerson(person);
-                                return dto;
-                            });
-                })
+                .map(entity -> Optional.ofNullable(userClient.identifyById(entity.getPersonId()))
+                        .map(identifier -> {
+                            final var dto = mapper.map(entity, Pending.class);
+                            dto.setPerson(identifier);
+                            return dto;
+                        }))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
@@ -211,10 +211,10 @@ public class MembershipService {
     @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
     public List<Pending> listPendingByUnitId(final UUID unitId) {
         return pendingRepository.findByUnitId(unitId).stream()
-                .map(entity -> Optional.ofNullable(personClient.findById(entity.getPersonId()).getBody())
-                        .map(person -> {
+                .map(entity -> Optional.ofNullable(userClient.identifyById(entity.getPersonId()))
+                        .map(identifier -> {
                             final var dto = mapper.map(entity, Pending.class);
-                            dto.setPerson(person);
+                            dto.setPerson(identifier);
                             return dto;
                         }))
                 .filter(Optional::isPresent)
