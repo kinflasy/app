@@ -24,7 +24,7 @@ import br.org.kinflasy.apis.churches.repositories.UnitRepository;
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
-import br.org.kinflasy.libs.churches.dto.MembershipDto.Pending;
+import br.org.kinflasy.libs.churches.dto.MembershipDto.SimplePending;
 import br.org.kinflasy.libs.churches.dto.MembershipRequest;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
@@ -391,7 +391,7 @@ public class UnitService {
     }
 
     @Transactional
-    public Pending inviteUserToJoin(final UUID id, final MembershipRequest request) {
+    public SimplePending inviteUserToJoin(final UUID id, final MembershipRequest request) {
         if (repository.existsById(id)) {
             return membershipService.inviteUserToJoin(id, request);
         } else {

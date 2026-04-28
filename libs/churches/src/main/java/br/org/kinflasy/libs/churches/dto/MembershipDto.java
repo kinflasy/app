@@ -39,7 +39,15 @@ public class MembershipDto {
     @Data
     @NoArgsConstructor
     @EqualsAndHashCode(callSuper = true)
-    public static class Pending extends Simple {
+    public static class SimplePending extends Simple {
+        private LocalDateTime unitConfirmationDate;
+        private LocalDateTime userConfirmationDate;
+    }
+
+    @Data
+    @NoArgsConstructor
+    @EqualsAndHashCode(callSuper = true)
+    public static class Pending extends MembershipDto {
         private LocalDateTime unitConfirmationDate;
         private LocalDateTime userConfirmationDate;
     }

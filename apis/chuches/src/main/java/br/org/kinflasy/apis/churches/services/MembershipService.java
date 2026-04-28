@@ -20,6 +20,7 @@ import br.org.kinflasy.apis.churches.repositories.PendingMembershipRepository;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.MembershipDto.Pending;
+import br.org.kinflasy.libs.churches.dto.MembershipDto.SimplePending;
 import br.org.kinflasy.libs.churches.dto.MembershipRequest;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import jakarta.persistence.EntityExistsException;
@@ -68,6 +69,7 @@ public class MembershipService {
         };
     }
 
+    @PreAuthorize("isAuthenticated()")
     public List<Pending> listPendingForLoggedUser() {
         final var loggedUser = authUtils.getLoggedUser();
         return listPendingByPersonId(loggedUser.getId());
@@ -96,7 +98,7 @@ public class MembershipService {
     }
 
     @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
-    public Pending inviteUserToJoin(final UUID unitId, final MembershipRequest request) {
+    public SimplePending inviteUserToJoin(final UUID unitId, final MembershipRequest request) {
         repository.findByUnitIdAndPersonIdAndLeaveDateNull(unitId, request.getPersonId())
                 .ifPresent(existing -> {
                     throw new EntityExistsException(
@@ -193,23 +195,39 @@ public class MembershipService {
     @PreAuthorize("#personId.equals(principal.id)")
     public List<Pending> listPendingByPersonId(final UUID personId) {
         return pendingRepository.findByPersonId(personId).stream()
-                .map(entity -> mapper.map(entity, Pending.class))
+                .map(entity -> {
+                    return Optional.ofNullable(personClient.findById(entity.getPersonId()).getBody())
+                            .map(person -> {
+                                final var dto = mapper.map(entity, Pending.class);
+                                dto.setPerson(person);
+                                return dto;
+                            });
+                })
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .toList();
     }
 
     @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
     public List<Pending> listPendingByUnitId(final UUID unitId) {
         return pendingRepository.findByUnitId(unitId).stream()
-                .map(entity -> mapper.map(entity, Pending.class))
+                .map(entity -> Optional.ofNullable(personClient.findById(entity.getPersonId()).getBody())
+                        .map(person -> {
+                            final var dto = mapper.map(entity, Pending.class);
+                            dto.setPerson(person);
+                            return dto;
+                        }))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .toList();
     }
 
     @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
-    public Pending updatePending(final UUID unitId, final MembershipRequest request) {
+    public SimplePending updatePending(final UUID unitId, final MembershipRequest request) {
         return pendingRepository.findByUnitIdAndPersonId(unitId, request.getPersonId())
                 .map(entity -> {
                     // Capturar objeto original
-                    final var original = mapper.map(entity, Pending.class);
+                    final var original = mapper.map(entity, SimplePending.class);
 
                     // Modificar
                     mapper.map(request, entity);
@@ -217,7 +235,7 @@ public class MembershipService {
 
                     // Salvar
                     final var saved = pendingRepository.save(entity);
-                    final var modified = mapper.map(saved, Pending.class);
+                    final var modified = mapper.map(saved, SimplePending.class);
 
                     // Publicar evento
                     publisher.publishEvent(new EntityEvent.Updated<>(original, modified));
@@ -231,7 +249,7 @@ public class MembershipService {
     }
 
     @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
-    public Pending confirmAsUnit(final UUID unitId, final UUID personId) {
+    public SimplePending confirmAsUnit(final UUID unitId, final UUID personId) {
         return pendingRepository.findByUnitIdAndPersonId(unitId, personId)
                 .map(pending -> {
                     if (pending.getAffiliation() == null) {
@@ -243,7 +261,7 @@ public class MembershipService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_PENDING_MESSAGE));
     }
 
-    public Pending confirmAsPerson(final UUID unitId) {
+    public SimplePending confirmAsPerson(final UUID unitId) {
         final var loggedUser = authUtils.getLoggedUser();
         return pendingRepository.findByUnitIdAndPersonId(unitId, loggedUser.getId())
                 .map(pending -> confirm(pending, p -> p.setUserConfirmationDate(LocalDateTime.now())))
@@ -256,7 +274,7 @@ public class MembershipService {
                 .ifPresent(pendingRepository::delete);
     }
 
-    private Pending createPendingMembership(final UUID unitId, final MembershipRequest.Join request,
+    private SimplePending createPendingMembership(final UUID unitId, final MembershipRequest.Join request,
             final UUID loggedUserId) {
         final var entity = new PendingMembership();
         entity.setId(null);
@@ -268,12 +286,12 @@ public class MembershipService {
         return processSavedPending(pendingRepository.save(entity));
     }
 
-    private Pending processSavedPending(final PendingMembership saved) {
+    private SimplePending processSavedPending(final PendingMembership saved) {
         log.info("Solicitação realizada para membro de id {} ingressar na unidade de id {}",
                 saved.getPersonId(), saved.getUnitId());
 
         // Gerar DTO de retorno
-        final var dto = mapper.map(saved, Pending.class);
+        final var dto = mapper.map(saved, SimplePending.class);
 
         // Publicar evento de membresia pendente
         publisher.publishEvent(new EntityEvent.Created<>(dto));
@@ -281,14 +299,14 @@ public class MembershipService {
         return dto;
     }
 
-    private Pending confirm(final PendingMembership pending, final Consumer<PendingMembership> setter) {
+    private SimplePending confirm(final PendingMembership pending, final Consumer<PendingMembership> setter) {
         // Capturar objeto original
-        final var original = mapper.map(pending, Pending.class);
+        final var original = mapper.map(pending, SimplePending.class);
 
         // Atualizar confirmação
         setter.accept(pending);
         final var saved = pendingRepository.save(pending);
-        final var modified = mapper.map(saved, Pending.class);
+        final var modified = mapper.map(saved, SimplePending.class);
 
         // Publicar evento
         publisher.publishEvent(new EntityEvent.Updated<>(original, modified));
