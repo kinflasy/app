@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
-import br.org.kinflasy.libs.people.dto.PersonDto;
+import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
 import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,7 +18,7 @@ public class MembershipDto {
 
     private UUID id;
     private UUID unitId;
-    private PersonDto person;
+    private PersonIdentifierDto person;
     private Affiliation affiliation;
 
     public Simple toSimple() {

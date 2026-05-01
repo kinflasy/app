@@ -122,7 +122,7 @@ public class MembershipService {
                     return unitService.findById(entity.getUnitId())
                             .map(detailed -> {
                                 // Trazer dados da pessoa
-                                final var personDto = personClient.findById(personId);
+                                final var personDto = personClient.identifyById(personId);
 
                                 // Construir DTO de membresia detalhada
                                 final var membershipDto = new MembershipDto.DetailingUnit();
@@ -142,7 +142,7 @@ public class MembershipService {
                 .map(entity -> {
                     final var unitDto = unitService.findById(entity.getUnitId())
                             .orElseThrow(() -> new EntityNotFoundException("Unidade não encontrada"));
-                    final var personDto = personClient.findById(entity.getPersonId());
+                    final var personDto = personClient.identifyById(entity.getPersonId());
 
                     final var dto = new MembershipDto.Detailed();
                     dto.setUnit(unitDto)
