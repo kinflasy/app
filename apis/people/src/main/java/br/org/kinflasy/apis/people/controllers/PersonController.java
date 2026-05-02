@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.org.kinflasy.apis.people.services.PersonService;
 import br.org.kinflasy.libs.people.dto.PersonDto;
+import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,14 @@ import lombok.AllArgsConstructor;
 public class PersonController {
 
     private final PersonService service;
+
+    @GetMapping("identify/{id}")
+    @Operation(summary = "Identificar", description = "Identificar uma pessoa pelo ID.")
+    public ResponseEntity<PersonIdentifierDto> identifyById(@PathVariable final UUID id) {
+        return service.identifyById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma pessoa pelo ID.")
