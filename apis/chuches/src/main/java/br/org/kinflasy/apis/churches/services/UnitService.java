@@ -362,11 +362,16 @@ public class UnitService {
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
     public LinkDto createLink(final UUID id, final LinkRequest request) {
         if (repository.existsById(id)) {
+            // Criar link
             final var link = linkClient.create(mapper.map(request, LinkRequest.class));
 
+            // Construir associação entre unidade e link
             final var unitLink = new UnitLink();
             unitLink.setUnitId(id);
             unitLink.setLinkId(link.getId());
+
+            // Salvar
+            unitLinkRepository.save(unitLink);
 
             return new LinkDto()
                     .setId(link.getId())
