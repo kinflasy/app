@@ -15,7 +15,7 @@ import br.org.kinflasy.libs.calendar.dto.CalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.UnitCalendarEventDto;
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
-import br.org.kinflasy.libs.churches.dto.access_rules.CharacteristicRule;
+import br.org.kinflasy.libs.churches.dto.access_rules.CharacteristicCondition;
 import br.org.kinflasy.libs.churches.dto.access_rules.ChurchRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.DepartmentRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.UnitRule;
@@ -178,7 +178,7 @@ public class CalendarEventService {
                     final var userType = userParts[0];
                     final var userId = userParts[1];
 
-                    final var characteristics = CharacteristicRule.of(tuple.getKey().getCondition());
+                    final var characteristics = CharacteristicCondition.of(tuple.getKey().getCondition());
 
                     return switch (userType) {
                         case "church" -> {
@@ -216,7 +216,7 @@ public class CalendarEventService {
                             .relation(relation)
                             .user(rule.getFgaUser());
 
-                    Optional.ofNullable(rule.getFgaCondition())
+                    rule.getFgaCondition()
                             .ifPresent(tuple::condition);
 
                     return tuple;

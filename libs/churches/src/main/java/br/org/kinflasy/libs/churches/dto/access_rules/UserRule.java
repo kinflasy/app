@@ -3,7 +3,6 @@ package br.org.kinflasy.libs.churches.dto.access_rules;
 import java.text.MessageFormat;
 
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
-import dev.openfga.sdk.api.client.model.ClientRelationshipCondition;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -19,24 +18,19 @@ public class UserRule implements AccessRule {
     @NotNull
     private final String userId;
 
-    private final CharacteristicRule condition;
+    private final CharacteristicCondition condition;
 
-    public static UserRule everyoneWith(final CharacteristicRule characteristic) {
+    public static UserRule everyoneWith(final CharacteristicCondition characteristic) {
         return new UserRule(ALL, characteristic);
     }
 
     public UserRule(final String userId) {
-        this(userId, CharacteristicRule.EVERYONE);
+        this(userId, CharacteristicCondition.EVERYONE);
     }
 
     @Override
     public String getFgaUser() {
         return MessageFormat.format("{0}:{1}", PREFIX, userId);
-    }
-
-    @Override
-    public ClientRelationshipCondition getFgaCondition() {
-        return condition.writeCondition();
     }
 
 }

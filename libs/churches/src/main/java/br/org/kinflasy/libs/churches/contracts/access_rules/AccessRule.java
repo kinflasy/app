@@ -1,5 +1,7 @@
 package br.org.kinflasy.libs.churches.contracts.access_rules;
 
+import java.util.Optional;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
@@ -19,10 +21,15 @@ import dev.openfga.sdk.api.client.model.ClientRelationshipCondition;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 public interface AccessRule {
 
+    public AccessCondition getCondition();
+
     @JsonIgnore
     public String getFgaUser();
 
     @JsonIgnore
-    public ClientRelationshipCondition getFgaCondition();
+    default Optional<ClientRelationshipCondition> getFgaCondition() {
+        return Optional.ofNullable(getCondition())
+                .map(AccessCondition::writeCondition);
+    }
 
 }

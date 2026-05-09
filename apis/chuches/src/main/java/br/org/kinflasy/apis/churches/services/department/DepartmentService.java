@@ -20,7 +20,7 @@ import br.org.kinflasy.apis.churches.entities.department.ExtensionSubscription;
 import br.org.kinflasy.apis.churches.repositories.department.DepartmentRepository;
 import br.org.kinflasy.apis.churches.repositories.department.ExtensionSubscriptionRepository;
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
-import br.org.kinflasy.libs.churches.dto.access_rules.CharacteristicRule;
+import br.org.kinflasy.libs.churches.dto.access_rules.CharacteristicCondition;
 import br.org.kinflasy.libs.churches.dto.access_rules.ChurchRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.UnitRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.UserRule;
@@ -339,7 +339,7 @@ public class DepartmentService {
                     final var userType = userParts[0];
                     final var userId = userParts[1];
 
-                    final var characteristics = CharacteristicRule.of(tuple.getKey().getCondition());
+                    final var characteristics = CharacteristicCondition.of(tuple.getKey().getCondition());
 
                     return switch (userType) {
                         case "church" -> {
@@ -365,11 +365,17 @@ public class DepartmentService {
     private void writeRules(final UUID id, final String relation, final Collection<AccessRule> rules) {
         // Gerar tuplas
         final var tuples = rules.stream()
-                .map(rule -> new ClientTupleKey()
-                        ._object(TYPE_DEPARTMENT + id)
-                        .relation(relation)
-                        .user(rule.getFgaUser())
-                        .condition(rule.getFgaCondition()))
+                .map(rule -> {
+                    final var tuple = new ClientTupleKey()
+                            ._object(TYPE_DEPARTMENT + id)
+                            .relation(relation)
+                            .user(rule.getFgaUser());
+
+                    rule.getFgaCondition()
+                            .ifPresent(tuple::condition);
+
+                    return tuple;
+                })
                 .toList();
 
         if (!tuples.isEmpty()) {

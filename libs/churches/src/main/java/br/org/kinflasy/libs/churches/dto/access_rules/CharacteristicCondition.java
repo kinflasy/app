@@ -3,6 +3,7 @@ package br.org.kinflasy.libs.churches.dto.access_rules;
 import java.util.Map;
 import java.util.Optional;
 
+import br.org.kinflasy.libs.churches.contracts.access_rules.AccessCondition;
 import br.org.kinflasy.libs.people.enums.Gender;
 import dev.openfga.sdk.api.client.model.ClientRelationshipCondition;
 import dev.openfga.sdk.api.model.RelationshipCondition;
@@ -11,9 +12,9 @@ import jakarta.validation.constraints.Min;
 import lombok.Data;
 
 @Data
-public class CharacteristicRule {
+public class CharacteristicCondition implements AccessCondition {
 
-    public static final CharacteristicRule EVERYONE = new CharacteristicRule(null, 0, 0);
+    public static final CharacteristicCondition EVERYONE = new CharacteristicCondition(null, 0, 0);
 
     private final Gender gender;
 
@@ -26,14 +27,14 @@ public class CharacteristicRule {
     private final int maxAge;
 
     @SuppressWarnings("unchecked")
-    public static CharacteristicRule of(final RelationshipCondition condition) {
+    public static CharacteristicCondition of(final RelationshipCondition condition) {
         return of((Map<String, Object>) condition.getContext());
     }
 
-    public static CharacteristicRule of(final Map<String, Object> condition) {
+    public static CharacteristicCondition of(final Map<String, Object> condition) {
         final var genderAsString = (String) condition.get("req_gender");
         final var gender = genderAsString.equals("") ? null : Gender.valueOf(genderAsString);
-        return new CharacteristicRule(gender, (int) condition.get("min_age"),
+        return new CharacteristicCondition(gender, (int) condition.get("min_age"),
                 (int) condition.get("max_age"));
     }
 
