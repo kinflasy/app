@@ -42,7 +42,7 @@ public class DepartmentCalendarEventService {
     }
 
     @Transactional
-    @PreAuthorize("@fga.check('department', #request.departmentId, 'can_manage', 'user', principal.id)")
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_manage', 'user', principal.id)")
     public DepartmentCalendarEventDto create(final UUID departmentId, final CalendarEventRequest request) {
         // Validar datas
         if (request.getEndDateTime().isBefore(request.getStartDateTime())) {
