@@ -1,6 +1,7 @@
 package br.org.kinflasy.libs.churches.dto.access_rules;
 
 import java.text.MessageFormat;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -9,10 +10,8 @@ import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 @Data
-@RequiredArgsConstructor(onConstructor = @__(@JsonCreator))
 public class DepartmentRule implements AccessRule {
 
     public static final String PREFIX = "department";
@@ -24,6 +23,14 @@ public class DepartmentRule implements AccessRule {
     private final IntegrationType integrationType;
 
     private final CharacteristicCondition condition;
+
+    @JsonCreator
+    public DepartmentRule(final UUID departmentId, final IntegrationType integrationType,
+            final CharacteristicCondition condition) {
+        this.departmentId = departmentId;
+        this.integrationType = integrationType;
+        this.condition = Optional.ofNullable(condition).orElse(CharacteristicCondition.EVERYONE);
+    }
 
     public DepartmentRule(final UUID departmentId, final IntegrationType integrationType) {
         this(departmentId, integrationType, CharacteristicCondition.EVERYONE);

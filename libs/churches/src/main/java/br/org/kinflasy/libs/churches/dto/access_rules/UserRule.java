@@ -1,14 +1,13 @@
 package br.org.kinflasy.libs.churches.dto.access_rules;
 
 import java.text.MessageFormat;
+import java.util.Optional;
 
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 @Data
-@RequiredArgsConstructor
 public class UserRule implements AccessRule {
 
     private static final String PREFIX = "user";
@@ -22,6 +21,11 @@ public class UserRule implements AccessRule {
 
     public static UserRule everyoneWith(final CharacteristicCondition characteristic) {
         return new UserRule(ALL, characteristic);
+    }
+
+    public UserRule(final String userId, final CharacteristicCondition condition) {
+        this.userId = userId;
+        this.condition = Optional.ofNullable(condition).orElse(CharacteristicCondition.EVERYONE);
     }
 
     public UserRule(final String userId) {
