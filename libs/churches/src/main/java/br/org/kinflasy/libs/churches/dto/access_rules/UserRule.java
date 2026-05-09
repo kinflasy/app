@@ -3,6 +3,8 @@ package br.org.kinflasy.libs.churches.dto.access_rules;
 import java.text.MessageFormat;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -23,6 +25,7 @@ public class UserRule implements AccessRule {
         return new UserRule(ALL, characteristic);
     }
 
+    @JsonCreator
     public UserRule(final String userId, final CharacteristicCondition condition) {
         this.userId = userId;
         this.condition = Optional.ofNullable(condition).orElse(CharacteristicCondition.EVERYONE);

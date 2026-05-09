@@ -4,6 +4,8 @@ import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import jakarta.validation.constraints.NotNull;
@@ -22,6 +24,7 @@ public class UnitRule implements AccessRule {
 
     private final CharacteristicCondition condition;
 
+    @JsonCreator
     public UnitRule(final UUID unitId, final Affiliation affiliation, final CharacteristicCondition condition) {
         this.unitId = unitId;
         this.affiliation = affiliation;
