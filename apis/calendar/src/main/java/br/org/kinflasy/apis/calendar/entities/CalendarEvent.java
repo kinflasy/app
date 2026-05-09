@@ -49,7 +49,7 @@ public abstract class CalendarEvent extends AbstractSimpleAuditable {
     @Column(nullable = false)
     private String title;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Column(nullable = false)
