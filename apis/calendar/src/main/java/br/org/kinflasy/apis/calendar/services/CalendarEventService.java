@@ -210,11 +210,17 @@ public class CalendarEventService {
     private void writeRules(final UUID id, final String relation, final Collection<AccessRule> rules) {
         // Gerar tuplas
         final var tuples = rules.stream()
-                .map(rule -> new ClientTupleKey()
-                        ._object(TYPE_CALENDAR_EVENT + id)
-                        .relation(relation)
-                        .user(rule.getFgaUser())
-                        .condition(rule.getFgaCondition()))
+                .map(rule -> {
+                    final var tuple = new ClientTupleKey()
+                            ._object(TYPE_CALENDAR_EVENT + id)
+                            .relation(relation)
+                            .user(rule.getFgaUser());
+
+                    Optional.ofNullable(rule.getFgaCondition())
+                            .ifPresent(tuple::condition);
+
+                    return tuple;
+                })
                 .toList();
 
         if (!tuples.isEmpty()) {
