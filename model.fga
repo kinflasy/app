@@ -2,6 +2,12 @@ model
   schema 1.1
 
 type user
+  relations
+    define membership: [membership]
+
+    define admin: can_edit from membership
+    define leader: leader from membership
+    define colleague: colleague from membership
 
 type person_data
   relations
@@ -48,11 +54,14 @@ type membership
   relations
     define unit: [unit]
     define user: [user]
+    define department: [department]
 
     define church: parent_church from unit
 
     define can_edit: admin from unit
     define can_view: can_edit or user
+    define leader: leader from department
+    define colleague: observer from department
 
 type department
   relations
@@ -88,6 +97,13 @@ type calendar_event
       unit#member with characteristics, unit#congregated with characteristics, unit#visitor with characteristics,
       church#member with characteristics, church#congregated with characteristics, church#visitor with characteristics,
       user:* with characteristics] or can_manage
+
+type ability
+  relations
+    define owner: [user]
+
+    define can_edit: owner or leader from owner
+    define can_view: can_edit or colleague from owner
 
 condition characteristics(user_gender: string, user_age: int, req_gender: string, min_age: int, max_age: int) {
   (req_gender == "" || user_gender == req_gender) &&
