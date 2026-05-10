@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 
 @Entity
 @DynamicUpdate
-@Table(name = "abilities", uniqueConstraints = @UniqueConstraint(columnNames = { "user_id", "role_id" }))
+@Table(name = "abilities", uniqueConstraints = @UniqueConstraint(columnNames = { "person_id", "role_id" }))
 @Data
 @Builder
 @NoArgsConstructor
@@ -40,7 +40,7 @@ public class Ability {
      */
 
     @Column(nullable = false)
-    private UUID userId;
+    private UUID personId;
 
     @Column(nullable = false)
     private UUID roleId;

@@ -2,7 +2,7 @@ package br.org.kinflasy.apis.people.entities.roles;
 
 import java.util.UUID;
 
-import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Immutable;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 @Entity
-@DynamicUpdate
+@Immutable
 @Table(name = "roles")
 @Data
 @Builder
