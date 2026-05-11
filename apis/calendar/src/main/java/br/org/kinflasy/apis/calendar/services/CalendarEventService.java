@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.org.kinflasy.libs.calendar.dto.CalendarEventDto;
+import br.org.kinflasy.libs.calendar.dto.CalendarEventRequest;
 import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.UnitCalendarEventDto;
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
@@ -75,7 +76,7 @@ public class CalendarEventService {
 
     @Transactional
     @PreAuthorize("@fga.check('calendar_event', #id, 'can_edit', 'user', principal.id)")
-    public CalendarEventDto update(final UUID id, final CalendarEventDto request) {
+    public CalendarEventDto update(final UUID id, final CalendarEventRequest request) {
         if (request.getEndDateTime().isBefore(request.getStartDateTime())) {
             throw new IllegalArgumentException("A data de início deve ser antes da data do fim");
         }
