@@ -72,7 +72,7 @@ public class CalendarEventController {
 
     @PutMapping("{id}")
     public ResponseEntity<CalendarEventDto> update(@PathVariable final UUID id,
-            @RequestBody final CalendarEventDto request) {
+            @RequestBody final CalendarEventRequest request) {
         try {
             return ResponseEntity.ok(service.update(id, request));
         } catch (IllegalArgumentException e) {
