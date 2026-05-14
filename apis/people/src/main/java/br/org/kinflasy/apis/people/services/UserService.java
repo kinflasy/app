@@ -114,21 +114,38 @@ public class UserService {
 
     @Transactional
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
-    public UserDto update(final UUID id, final UserRequest form) {
-        final var original = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
-        final var modified = converter.toEntity(form, original);
+    public UserDto update(final UUID id, final UserRequest request) {
+        return repository.findById(id)
+                .map(entity -> {
+                    final var originalDto = mapper.map(entity, UserDto.class);
 
-        // Salvar
-        repository.save(modified);
+                    // Dados obrigatórios: obter da requisição ou manter original
+                    final var email = Optional.ofNullable(request.getEmail()).orElseGet(entity::getEmail);
+                    final var username = Optional.ofNullable(request.getUsername()).orElseGet(entity::getUsername);
+                    final var password = Optional.ofNullable(request.getPassword()).orElseGet(entity::getPassword);
+                    final var gender = Optional.ofNullable(request.getGender()).orElseGet(entity::getGender);
+                    final var fullName = Optional.ofNullable(request.getFullName()).orElseGet(entity::getFullName);
+                    final var birthDate = Optional.ofNullable(request.getBirthDate()).orElseGet(entity::getBirthDate);
 
-        // Gerar DTOs
-        final var originalDto = converter.toDto(original);
-        final var modifiedDto = converter.toDto(modified);
+                    // Atualizar
+                    mapper.map(request, entity);
+                    entity.setEmail(email);
+                    entity.setUsername(username);
+                    entity.setPassword(password);
+                    entity.setGender(gender);
+                    entity.setFullName(fullName);
+                    entity.setBirthDate(birthDate);
 
-        // Publicar evento
-        publisher.publishEvent(new EntityEvent.Updated<>(originalDto, modifiedDto));
+                    // Salvar
+                    repository.save(entity);
+                    final var modifiedDto = mapper.map(entity, UserDto.class);
 
-        return modifiedDto;
+                    // Publicar evento
+                    publisher.publishEvent(new EntityEvent.Updated<>(originalDto, modifiedDto));
+
+                    return modifiedDto;
+                })
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
     @Transactional
