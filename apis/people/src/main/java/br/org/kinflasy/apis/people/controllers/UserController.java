@@ -95,7 +95,7 @@ public class UserController {
 
     @PutMapping
     @Operation(summary = "Editar-se", description = "Editar os dados do usuário logado.")
-    public ResponseEntity<UserDto> update(@RequestBody @Valid final UserRequest request) {
+    public ResponseEntity<UserDto> update(@RequestBody final UserRequest request) {
         try {
             final var loggedUser = authUtils.getLoggedUser();
             return new ResponseEntity<>(service.update(loggedUser.getId(), request), HttpStatus.OK);
@@ -106,7 +106,7 @@ public class UserController {
 
     @PutMapping("admin/{id}")
     @Operation(summary = "ADMIN - Editar", description = "Editar os dados de um usuário ativo.")
-    public ResponseEntity<UserDto> update(@PathVariable final UUID id, @RequestBody @Valid final UserRequest request) {
+    public ResponseEntity<UserDto> update(@PathVariable final UUID id, @RequestBody final UserRequest request) {
         try {
             return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
