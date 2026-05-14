@@ -41,7 +41,7 @@ public class OpenFgaMigrationLog {
     @Enumerated(EnumType.STRING)
     private OpenFgaMigrationStatus status;
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "TEXT")
     private String details;
 
 }
