@@ -3,6 +3,7 @@ package br.org.kinflasy.apis.people.services;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -56,6 +57,11 @@ public class InactivePersonService {
         // Salvar pessoa
         final var entity = converter.toEntity(request);
         entity.setId(null);
+
+        if (StringUtils.isBlank(entity.getNickname())) {
+            final var firstName = entity.getFullName().split(" ")[0];
+            entity.setNickname(firstName);
+        }
 
         // Salvar endereço
         Optional.ofNullable(request.getAddress())

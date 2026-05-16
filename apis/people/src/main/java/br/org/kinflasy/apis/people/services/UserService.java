@@ -3,6 +3,7 @@ package br.org.kinflasy.apis.people.services;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PostAuthorize;
@@ -51,6 +52,12 @@ public class UserService {
     public UserDto create(final UserRequest request) {
         // Salvar usuário
         final var entity = converter.toEntity(request);
+
+        if (StringUtils.isBlank(entity.getNickname())) {
+            final var firstName = entity.getFullName().split(" ")[0];
+            entity.setNickname(firstName);
+        }
+
         final var savedUser = repository.save(entity);
 
         Optional.ofNullable(request.getAddress())
