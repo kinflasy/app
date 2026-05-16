@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
+import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
 import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
 import lombok.Data;
@@ -63,9 +64,19 @@ public class MembershipDto {
     }
 
     @Data
-    @EqualsAndHashCode(callSuper = true)
-    public static class Detailed extends MembershipDto {
+    public static class DetailingPerson {
+        private UUID id;
+        private UUID unitId;
+        private PersonDto person;
+        private Affiliation affiliation;
+    }
+
+    @Data
+    public static class Detailed {
+        private UUID id;
         private UnitDto.Detailed unit;
+        private PersonDto person;
+        private Affiliation affiliation;
     }
 
 }

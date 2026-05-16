@@ -315,11 +315,11 @@ public class UnitService {
     }
 
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
-    public List<MembershipDto> listMembersWithDetails(final UUID id) {
+    public List<MembershipDto.DetailingPerson> listMembersWithDetails(final UUID id) {
         return listMembers(id).stream()
                 .map(simpleDto -> {
-                    final var dto = new MembershipDto();
-                    dto.setPerson(personClient.identifyById(simpleDto.getPersonId()));
+                    final var dto = new MembershipDto.DetailingPerson();
+                    dto.setPerson(personClient.findById(simpleDto.getPersonId()));
                     mapper.map(simpleDto, dto);
                     return dto;
                 })

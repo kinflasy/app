@@ -130,7 +130,7 @@ public class UnitController {
 
     @GetMapping("{id}/members")
     @Operation(summary = "Listar membros", description = "Listar os membros de uma unidade.")
-    public ResponseEntity<List<MembershipDto>> listMembers(@PathVariable final UUID id) {
+    public ResponseEntity<List<MembershipDto.DetailingPerson>> listMembers(@PathVariable final UUID id) {
         return ResponseEntity.ok(service.listMembersWithDetails(id));
     }
 

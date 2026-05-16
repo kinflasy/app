@@ -137,14 +137,14 @@ public class MembershipService {
                 .toList();
     }
 
-    public Optional<MembershipDto.Detailed> findById(final UUID id) {
+    public Optional<MembershipDto.DetailingUnit> findById(final UUID id) {
         return repository.findById(id)
                 .map(entity -> {
                     final var unitDto = unitService.findById(entity.getUnitId())
                             .orElseThrow(() -> new EntityNotFoundException("Unidade não encontrada"));
                     final var personDto = personClient.identifyById(entity.getPersonId());
 
-                    final var dto = new MembershipDto.Detailed();
+                    final var dto = new MembershipDto.DetailingUnit();
                     dto.setUnit(unitDto)
                             .setPerson(personDto);
                     mapper.map(entity, dto);
