@@ -165,6 +165,14 @@ public class DepartmentController {
         return ResponseEntity.ok(integrationService.create(id, request));
     }
 
+    @PutMapping("{id}/integrants")
+    public ResponseEntity<IntegrationDto> updateIntegrationType(@PathVariable final UUID id,
+            @RequestBody final IntegrationRequest request) {
+        return integrationService.updateType(id, request)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
+
     @DeleteMapping("{id}/integrants")
     public ResponseEntity<Void> removeIntegrant(@PathVariable final UUID id,
             @RequestBody final IntegrationRequest request) {

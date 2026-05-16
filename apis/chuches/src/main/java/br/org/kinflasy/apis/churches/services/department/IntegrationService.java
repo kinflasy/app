@@ -107,6 +107,27 @@ public class IntegrationService {
                 .map(integration -> mapper.map(integration, IntegrationDto.class));
     }
 
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_edit', 'user', principal.id)")
+    public Optional<IntegrationDto> updateType(final UUID departmentId, final IntegrationRequest request) {
+        return repository.findByDepartmentIdAndMembershipId(departmentId, request.getMembershipId())
+                .map(integration -> {
+                    // Atualizar tipo
+                    integration.setType(request.getType());
+                    final var original = mapper.map(integration, IntegrationDto.class);
+
+                    // Salvar
+                    final var saved = repository.save(integration);
+
+                    // Gerar DTO
+                    final var modified = mapper.map(saved, IntegrationDto.class);
+
+                    // Publicar evento
+                    publisher.publishEvent(new EntityEvent.Updated<>(original, modified));
+
+                    return modified;
+                });
+    }
+
     @PreAuthorize("@fga.check('department', #departmentId, 'can_manage', 'user', principal.id) or @fga.check('membership', #membershipId, 'can_view', 'user', principal.id)")
     public void deleteByDepartmentAndMembership(final UUID departmentId, final UUID membershipId) {
         repository.findByDepartmentIdAndMembershipId(departmentId, membershipId).stream()
