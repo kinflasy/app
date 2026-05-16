@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.apis.people.adapters.UserIdentifierDtoAdapter;
 import br.org.kinflasy.apis.people.clients.AddressClient;
 import br.org.kinflasy.apis.people.clients.ChurchClient;
 import br.org.kinflasy.apis.people.converters.UserConverter;
@@ -77,12 +78,12 @@ public class UserService {
 
     public Optional<UserIdentifierDto> identifyById(final UUID id) {
         return repository.findById(id)
-                .map(entity -> mapper.map(entity, UserIdentifierDto.class));
+                .map(UserIdentifierDtoAdapter::new);
     }
 
     public Optional<UserIdentifierDto> identifyByUsername(final String username) {
         return repository.findByUsername(username)
-                .map(entity -> mapper.map(entity, UserIdentifierDto.class));
+                .map(UserIdentifierDtoAdapter::new);
     }
 
     /*

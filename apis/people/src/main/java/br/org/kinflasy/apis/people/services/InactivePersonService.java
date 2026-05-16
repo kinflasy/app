@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.apis.people.adapters.PersonIdentifierDtoAdapter;
 import br.org.kinflasy.apis.people.clients.AddressClient;
 import br.org.kinflasy.apis.people.converters.InactivePersonConverter;
 import br.org.kinflasy.apis.people.repositories.InactivePersonRepository;
@@ -42,7 +43,7 @@ public class InactivePersonService {
 
     public Optional<PersonIdentifierDto> identifyById(final UUID id) {
         return repository.findById(id)
-                .map(entity -> mapper.map(entity, PersonIdentifierDto.class));
+                .map(PersonIdentifierDtoAdapter::new);
     }
 
     /*

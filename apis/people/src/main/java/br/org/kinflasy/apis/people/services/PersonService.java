@@ -8,6 +8,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.org.kinflasy.apis.people.adapters.PersonIdentifierDtoAdapter;
 import br.org.kinflasy.apis.people.clients.MediaClient;
 import br.org.kinflasy.apis.people.entities.InactivePerson;
 import br.org.kinflasy.apis.people.entities.Person;
@@ -46,7 +47,7 @@ public class PersonService {
 
     public Optional<PersonIdentifierDto> identifyById(final UUID id) {
         return repository.findById(id)
-                .map(entity -> mapper.map(entity, PersonIdentifierDto.class));
+                .map(PersonIdentifierDtoAdapter::new);
     }
 
     /*
