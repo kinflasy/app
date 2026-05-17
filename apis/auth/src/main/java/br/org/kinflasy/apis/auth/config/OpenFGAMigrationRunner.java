@@ -12,9 +12,6 @@ import br.org.kinflasy.apis.auth.exceptions.OpenFgaMigrationException;
 import br.org.kinflasy.apis.auth.migrations.contracts.OpenFGAMigration;
 import br.org.kinflasy.apis.auth.repositories.MigrationLogRepository;
 import dev.openfga.sdk.api.client.OpenFgaClient;
-import dev.openfga.sdk.errors.ApiException;
-import dev.openfga.sdk.errors.FgaInvalidParameterException;
-import dev.openfga.sdk.errors.FgaValidationError;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
@@ -72,7 +69,7 @@ public class OpenFGAMigrationRunner {
                         // Registrar sucesso
                         migrationLog.setStatus(OpenFgaMigrationStatus.SUCCESS);
                         log.info("✅ V{} executada com sucesso", migration.getVersion());
-                    } catch (final ApiException | FgaInvalidParameterException | FgaValidationError e) {
+                    } catch (final Exception e) {
                         // Registrar falha
                         migrationLog.setStatus(OpenFgaMigrationStatus.FAILED);
                         log.error("❌ Erro na V{}: {}", migration.getVersion(), e.getMessage(), e);
