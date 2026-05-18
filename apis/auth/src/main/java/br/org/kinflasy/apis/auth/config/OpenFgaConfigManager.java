@@ -1,6 +1,7 @@
 package br.org.kinflasy.apis.auth.config;
 
-import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.org.kinflasy.apis.auth.exceptions.OpenFgaParameterizationException;
+import dev.openfga.language.DslToJsonTransformer;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientCreateStoreResponse;
 import dev.openfga.sdk.api.model.CreateStoreRequest;
@@ -24,12 +26,14 @@ public class OpenFgaConfigManager {
 
     private final OpenFgaClient client;
     private final ObjectMapper objectMapper;
+    private final DslToJsonTransformer transformer;
 
     public OpenFgaConfigManager(@Value("${app.openfga.model-file-path}") final String modelFilePath,
-            final OpenFgaClient client, final ObjectMapper objectMapper) {
+            final OpenFgaClient client, final ObjectMapper objectMapper, final DslToJsonTransformer transformer) {
         this.modelFilePath = modelFilePath;
         this.client = client;
         this.objectMapper = objectMapper;
+        this.transformer = transformer;
     }
 
     public void parameterize() {
@@ -50,10 +54,13 @@ public class OpenFgaConfigManager {
     }
 
     @SneakyThrows
-    public String createAuthorizationModel() {
-        final var request = objectMapper.readValue(new File(modelFilePath), WriteAuthorizationModelRequest.class);
-        final var response = client.writeAuthorizationModel(request)
-                .join();
+    public String writeAuthorizationModel() {
+        final var dsl = Files.readString(Paths.get(modelFilePath));
+        final var json = transformer.transform(dsl);
+
+        final var request = objectMapper.readValue(json, WriteAuthorizationModelRequest.class);
+        final var response = client.writeAuthorizationModel(request).join();
+
         return response.getAuthorizationModelId();
     }
 
@@ -62,6 +69,9 @@ public class OpenFgaConfigManager {
         // Listar stores existentes
         return client.listStores().join()
                 .getStores().stream()
+
+                // Ordenar por data de criação (da mais recente para a mais antiga)
+                .sorted((a, b) -> b.getCreatedAt().compareTo(a.getCreatedAt()))
 
                 // Usar a primeira, se existir
                 .findFirst()
@@ -97,7 +107,7 @@ public class OpenFgaConfigManager {
                 })
                 .orElseGet(() -> {
                     // Criar novo model a partir do model.json
-                    final var modelId = createAuthorizationModel();
+                    final var modelId = writeAuthorizationModel();
                     log.info("Authorization Model criada: {}", modelId);
                     return modelId;
                 });

@@ -25,7 +25,7 @@ import lombok.experimental.Accessors;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @Accessors(chain = false)
-public abstract class Person {
+public class Person {
 
     /*
      * Chave primária

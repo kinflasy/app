@@ -12,7 +12,6 @@ import br.org.kinflasy.apis.auth.exceptions.OpenFgaMigrationException;
 import br.org.kinflasy.apis.auth.migrations.contracts.OpenFGAMigration;
 import br.org.kinflasy.apis.auth.repositories.MigrationLogRepository;
 import dev.openfga.sdk.api.client.OpenFgaClient;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -34,7 +33,6 @@ public class OpenFGAMigrationRunner {
                 .toList();
     }
 
-    @PostConstruct
     public void migrate() {
         log.info("Iniciando OpenFGA migrations...");
 
