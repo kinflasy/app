@@ -33,7 +33,7 @@ WORKDIR /app
 COPY --from=build /build/execution/target/*.jar app.jar
 
 # Copiar o arquivo de modelo FGA
-COPY model.fga /model.fga
+COPY model.fga /app/model.fga
 
 # Copiar o script de entrada
 COPY /run/entrypoint.sh /entrypoint.sh
@@ -43,7 +43,7 @@ RUN apk add --no-cache curl && \
     curl -sSfL https://github.com/openfga/cli/releases/download/v0.7.12/fga_0.7.12_linux_amd64.tar.gz | tar -xz -C /usr/local/bin fga && \
     \
     # Transformar o modelo FGA para JSON usando o CLI e salvar como model.json \
-    fga model transform --file /model.fga --input-format fga --output-format json > /app/model.json && \
+    fga model transform --file /app/model.fga --input-format fga --output-format json > /app/model.json && \
     \
     # Remover caracteres \r (CRLF), dar permissão e limpar o utilitário \
     dos2unix /entrypoint.sh && \
