@@ -212,6 +212,26 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
         return writeTuples(parentUnitTuple);
     }
 
+    public CompletableFuture<Void> handleIntegrationDeleted(final EntityEvent.Deleted<IntegrationDto> event) {
+        final var dto = event.getSource();
+
+        final var parentUnitTuple = new ClientTupleKey()
+                ._object(TYPE_DEPARTMENT + dto.getDepartmentId())
+                .relation(dto.getType().name().toLowerCase())
+                .user(TYPE_MEMBERSHIP + dto.getMembershipId() + SET_USER);
+
+        return deleteTuples(parentUnitTuple);
+    }
+
+    public CompletableFuture<Void> handleIntegrationUpdated(final EntityEvent.Updated<IntegrationDto> event) {
+        // Deletar tuplas originais da integração
+        return tupleManager.handleIntegrationDeleted(new EntityEvent.Deleted<>(event.getOriginal()))
+
+                // Escrever tuplas modificadas
+                .thenCompose(ignored -> tupleManager
+                        .handleIntegrationCreated(new EntityEvent.Created<>(event.getSource())));
+    }
+
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)

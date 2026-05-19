@@ -131,7 +131,10 @@ public class IntegrationService {
     @PreAuthorize("@fga.check('department', #departmentId, 'can_manage', 'user', principal.id) or @fga.check('membership', #membershipId, 'can_view', 'user', principal.id)")
     public void deleteByDepartmentAndMembership(final UUID departmentId, final UUID membershipId) {
         repository.findByDepartmentIdAndMembershipId(departmentId, membershipId).stream()
-                .findFirst().ifPresent(repository::delete);
+                .findFirst().ifPresent(integration -> {
+                    repository.delete(integration);
+                    publisher.publishEvent(new EntityEvent.Deleted<>(mapper.map(integration, IntegrationDto.class)));
+                });
     }
 
     @PreAuthorize("@fgau.withCharacteristics('department', #departmentId, 'can_join')")
