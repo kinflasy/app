@@ -117,6 +117,7 @@ public class IntegrationService {
 
                     // Salvar
                     final var saved = repository.save(integration);
+                    log.info("Tipo de integração atualizado de {} para {}", original.getType(), saved.getType());
 
                     // Gerar DTO
                     final var modified = mapper.map(saved, IntegrationDto.class);
