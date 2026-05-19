@@ -230,22 +230,12 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public CompletableFuture<Void> handleIntegrationUpdated(final EntityEvent.Updated<IntegrationDto> event) {
-        log.info("Atualizando tuplas da integração {} do departamento {}", event.getSource().getId(),
-                event.getSource().getDepartmentId());
         // Deletar tuplas originais da integração
         return tupleManager.handleIntegrationDeleted(new EntityEvent.Deleted<>(event.getOriginal()))
 
                 // Escrever tuplas modificadas
                 .thenCompose(ignored -> tupleManager
-                        .handleIntegrationCreated(new EntityEvent.Created<>(event.getSource())))
-
-                .thenAccept(a -> log.info("Tuplas da integração {} do departamento {} atualizadas com sucesso",
-                        event.getSource().getId(), event.getSource().getDepartmentId()))
-                .exceptionally(e -> {
-                    log.error("Erro ao atualizar tuplas da integração {} do departamento {}: {}",
-                            event.getSource().getId(), event.getSource().getDepartmentId(), e.getMessage());
-                    return null;
-                });
+                        .handleIntegrationCreated(new EntityEvent.Created<>(event.getSource())));
     }
 
     @Async
