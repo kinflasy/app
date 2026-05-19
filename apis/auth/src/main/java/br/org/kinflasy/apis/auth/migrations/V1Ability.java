@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
+import org.springframework.util.function.ThrowingSupplier;
 
 import br.org.kinflasy.apis.auth.config.OpenFgaConfigManager;
-import br.org.kinflasy.apis.auth.exceptions.OpenFgaMigrationException;
 import br.org.kinflasy.apis.auth.migrations.contracts.OpenFGAMigration;
 import br.org.kinflasy.apis.auth.repositories.PersonRepository;
 import dev.openfga.sdk.api.client.OpenFgaClient;
@@ -25,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 @EqualsAndHashCode(callSuper = true)
 @Component
 public class V1Ability extends OpenFGAMigration {
+
+    private static final String USER = "user:";
 
     private final OpenFgaConfigManager configManager;
     private final PersonRepository personRepository;
@@ -56,28 +58,44 @@ public class V1Ability extends OpenFGAMigration {
                     final var membershipsRequest = new ClientListObjectsRequest()
                             .type("membership")
                             .relation("user")
-                            .user("user:" + person.getId());
+                            .user(USER + person.getId());
 
-                    try {
-                        // Executar consulta
-                        client.listObjects(membershipsRequest).join().getObjects()
+                    // Executar consulta
+                    open(() -> client.listObjects(membershipsRequest))
+                            .join().getObjects()
 
-                                // Para cada membership encontrada, criar um tuple de User -> membership
-                                .forEach(membership -> tuples.add(new ClientTupleKey()
-                                        ._object("user:" + person.getId())
+                            // Para cada membership encontrada...
+                            .forEach(membership -> {
+                                // ... criar tuple de User -> membership
+                                tuples.add(new ClientTupleKey()
+                                        ._object(USER + person.getId())
                                         .relation("membership")
-                                        .user(membership)));
-                    } catch (final FgaInvalidParameterException e) {
-                        throw new OpenFgaMigrationException(this, e);
-                    }
+                                        .user(membership));
+
+                                // ... obter departamentos relacionados
+                                final var departmentsRequest = new ClientListObjectsRequest()
+                                        .type("department")
+                                        .relation("observer")
+                                        .user(USER + person.getId());
+
+                                // ... associar cada departamento como relacionamento do membership
+                                open(() -> client.listObjects(departmentsRequest))
+                                        .join().getObjects()
+                                        .forEach(department -> tuples.add(new ClientTupleKey()
+                                                ._object(membership)
+                                                .relation("department")
+                                                .user(department)));
+                            });
                 });
 
         if (!tuples.isEmpty()) {
             final var request = new ClientWriteRequest().writes(tuples);
-            final var response = client.write(request).join();
-            final var status = response.getStatusCode();
-            log.info("Status da escrita das tuplas lá: " + status);
+            client.write(request).join();
         }
+    }
+
+    private <T> T open(final ThrowingSupplier<T> supplier) {
+        return supplier.get();
     }
 
 }
