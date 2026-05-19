@@ -212,6 +212,9 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
         return writeTuples(parentUnitTuple);
     }
 
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public CompletableFuture<Void> handleIntegrationDeleted(final EntityEvent.Deleted<IntegrationDto> event) {
         final var dto = event.getSource();
 
@@ -223,6 +226,9 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
         return deleteTuples(parentUnitTuple);
     }
 
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public CompletableFuture<Void> handleIntegrationUpdated(final EntityEvent.Updated<IntegrationDto> event) {
         log.info("Atualizando tuplas da integração {} do departamento {}", event.getSource().getId(),
                 event.getSource().getDepartmentId());

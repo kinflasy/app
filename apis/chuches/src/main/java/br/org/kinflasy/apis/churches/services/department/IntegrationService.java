@@ -112,8 +112,8 @@ public class IntegrationService {
         return repository.findByDepartmentIdAndMembershipId(departmentId, request.getMembershipId())
                 .map(integration -> {
                     // Atualizar tipo
-                    integration.setType(request.getType());
                     final var original = mapper.map(integration, IntegrationDto.class);
+                    integration.setType(request.getType());
 
                     // Salvar
                     final var saved = repository.save(integration);
