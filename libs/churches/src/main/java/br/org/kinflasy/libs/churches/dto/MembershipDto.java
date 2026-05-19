@@ -79,4 +79,10 @@ public class MembershipDto {
         private Affiliation affiliation;
     }
 
+    @Data
+    @EqualsAndHashCode(callSuper = true)
+    public static class WithPhone extends MembershipDto {
+        private String phone;
+    }
+
 }

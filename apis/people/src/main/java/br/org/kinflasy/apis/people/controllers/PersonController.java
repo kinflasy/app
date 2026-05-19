@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import br.org.kinflasy.apis.people.services.PersonService;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
+import br.org.kinflasy.libs.people.dto.PersonPhoneDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -39,6 +40,14 @@ public class PersonController {
     @Operation(summary = "Buscar", description = "Buscar uma pessoa pelo ID.")
     public ResponseEntity<PersonDto> findById(@PathVariable final UUID id) {
         return service.findById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
+
+    @GetMapping("{id}/phone")
+    @Operation(summary = "Buscar telefone", description = "Buscar o telefone de uma pessoa pelo ID.")
+    public ResponseEntity<PersonPhoneDto> getPhone(@PathVariable final UUID id) {
+        return service.getPhone(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(ResponseEntity.notFound()::build);
     }

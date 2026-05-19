@@ -19,6 +19,7 @@ import br.org.kinflasy.libs.media.validators.ProfileImageValidator;
 import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
+import br.org.kinflasy.libs.people.dto.PersonPhoneDto;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
@@ -63,6 +64,12 @@ public class PersonService {
                     default -> throw new IllegalStateException(
                             "Não foi possível mapear o tipo de pessoa: " + person.getClass());
                 });
+    }
+
+    @PreAuthorize("@fga.check('user', #id, 'assistant', 'user', principal.id)")
+    public Optional<PersonPhoneDto> getPhone(final UUID id) {
+        return repository.findById(id)
+                .map(person -> new PersonPhoneDto().setPhone(person.getPhone()));
     }
 
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import br.org.kinflasy.libs.people.dto.PersonDto;
+import br.org.kinflasy.libs.people.dto.PersonPhoneDto;
 import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
 
 @FeignClient(name = "churches-peopleApi", url = "${PEOPLE_API_URL}", path = "people")
@@ -22,5 +23,8 @@ public interface PersonClient {
 
     @DeleteMapping("{id}")
     HttpStatus delete(@PathVariable final UUID id);
+
+    @GetMapping("{id}/phone")
+    PersonPhoneDto getPhone(@PathVariable final UUID id);
 
 }

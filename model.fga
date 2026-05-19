@@ -7,6 +7,7 @@ type user
 
     define admin: can_edit from membership
     define leader: leader from membership
+    define assistant: assistant from membership
     define colleague: colleague from membership
 
 type person_data
@@ -61,6 +62,7 @@ type membership
     define can_edit: admin from unit
     define can_view: can_edit or user
     define leader: leader from department
+    define assistant: assistant from department
     define colleague: observer from department
 
 type department

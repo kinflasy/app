@@ -13,5 +13,6 @@ public class PersonIdentifierDto {
     private UUID id;
     private String nickname;
     private Gender gender;
+    private UUID profileImageId;
 
 }

@@ -29,7 +29,7 @@ public class IntegrationDto {
     public static class Detailed {
         private UUID id;
         private DepartmentDto department;
-        private MembershipDto membership;
+        private MembershipDto.WithPhone membership;
         private IntegrationType type;
     }
 

@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.apis.churches.clients.PersonClient;
 import br.org.kinflasy.apis.churches.entities.department.Integration;
 import br.org.kinflasy.apis.churches.entities.department.PendingIntegration;
 import br.org.kinflasy.apis.churches.repositories.department.IntegrationRepository;
@@ -17,6 +18,7 @@ import br.org.kinflasy.apis.churches.repositories.department.PendingIntegrationR
 import br.org.kinflasy.apis.churches.services.MembershipService;
 import br.org.kinflasy.apis.churches.services.UnitService;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
+import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationRequest;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto.Pending;
@@ -42,6 +44,8 @@ public class IntegrationService {
     private final DepartmentService departmentService;
     private final MembershipService membershipService;
 
+    private final PersonClient personClient;
+
     @PreAuthorize("@fga.check('department', #departmentId, 'can_observe', 'user', principal.id)")
     public List<IntegrationDto.Detailed> listByDepartment(final UUID departmentId) {
         // Consultar departamento
@@ -54,11 +58,16 @@ public class IntegrationService {
                         .map(integration -> membershipService.findById(integration.getMembershipId())
 
                                 // Gerar DTO detalhado
-                                .map(membership -> new IntegrationDto.Detailed()
-                                        .setId(integration.getId())
-                                        .setDepartment(department)
-                                        .setMembership(membership)
-                                        .setType(integration.getType())))
+                                .map(membership -> {
+                                    final var withPhone = mapper.map(membership, MembershipDto.WithPhone.class)
+                                            .setPhone(personClient.getPhone(membership.getPerson().getId()).getPhone());
+
+                                    return new IntegrationDto.Detailed()
+                                            .setId(integration.getId())
+                                            .setDepartment(department)
+                                            .setMembership(withPhone)
+                                            .setType(integration.getType());
+                                }))
 
                         // Filtrar integrações com membership inexistente (embora isso não devesse
                         // acontecer)
