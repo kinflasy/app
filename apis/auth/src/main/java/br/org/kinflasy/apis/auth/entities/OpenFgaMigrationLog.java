@@ -28,7 +28,7 @@ public class OpenFgaMigrationLog {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = false)
     private int version;
 
     @Column(nullable = false)

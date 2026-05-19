@@ -4,25 +4,28 @@ import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.errors.ApiException;
 import dev.openfga.sdk.errors.FgaInvalidParameterException;
 import dev.openfga.sdk.errors.FgaValidationError;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-public interface OpenFGAMigration {
+@Data
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public abstract class OpenFGAMigration {
 
-    int getVersion();
-
-    /**
-     * Descrição legível
-     */
-    String getDescription();
+    private final int version;
+    private final String description;
 
     /**
      * Executa a migration
      */
-    void up(OpenFgaClient fgaClient) throws ApiException, FgaInvalidParameterException, FgaValidationError;
+    public abstract void up(OpenFgaClient client)
+            throws ApiException, FgaInvalidParameterException, FgaValidationError;
 
     /**
      * Rollback (opcional, para emergências)
      */
-    default void down(final OpenFgaClient fgaClient) throws ApiException, FgaInvalidParameterException, FgaValidationError {
+    public void down(final OpenFgaClient client)
+            throws ApiException, FgaInvalidParameterException, FgaValidationError {
         throw new UnsupportedOperationException("Rollback não implementado");
     }
 
