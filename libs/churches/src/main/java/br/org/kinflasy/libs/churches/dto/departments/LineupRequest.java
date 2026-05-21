@@ -18,7 +18,7 @@ public class LineupRequest {
     @NoArgsConstructor
     public static class Item {
         @NotNull
-        private UUID abilityId;
+        private UUID roleId;
 
         @NotBlank
         private String description;

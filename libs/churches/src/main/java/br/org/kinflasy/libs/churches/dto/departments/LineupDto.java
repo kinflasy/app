@@ -27,7 +27,7 @@ public class LineupDto {
     public static class Item {
         private UUID id;
         private UUID lineupId;
-        private UUID abilityId;
+        private UUID roleId;
         private String description;
     }
 
