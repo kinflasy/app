@@ -111,14 +111,22 @@ public class InactivePersonService {
 
         // Atualizar endereço
         final var addressId = Optional.ofNullable(entity.getAddressId())
+
                 .map(currentAddressId -> Optional.ofNullable(request.getAddress())
+                        // Caso 1: o endereço antigo e o novo existem -> atualizar
                         .map(addressRequest -> addressClient.update(currentAddressId, addressRequest).getId())
+
+                        // Caso 2: o endereço antigo existe, mas o novo não -> deletar
                         .orElseGet(() -> {
                             addressClient.delete(currentAddressId);
                             return null;
                         }))
+
                 .orElseGet(() -> Optional.ofNullable(request.getAddress())
+                        // Caso 3: o endereço antigo não existe, mas o novo existe -> criar
                         .map(addressRequest -> addressClient.create(addressRequest).getId())
+
+                        // Caso 4: o endereço antigo e o novo não existem -> manter como null
                         .orElse(null));
 
         // Atualizar original
