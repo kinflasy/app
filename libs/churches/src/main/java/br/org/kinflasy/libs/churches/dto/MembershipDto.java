@@ -58,9 +58,11 @@ public class MembershipDto {
     }
 
     @Data
-    @EqualsAndHashCode(callSuper = true)
-    public static class DetailingUnit extends MembershipDto {
+    public static class DetailingUnit {
+        private UUID id;
         private UnitDto.Detailed unit;
+        private PersonIdentifierDto person;
+        private Affiliation affiliation;
     }
 
     @Data
