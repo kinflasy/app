@@ -18,6 +18,7 @@ import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.roles.AbilityDto;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
+import dev.openfga.sdk.api.client.model.ClientTupleKeyWithoutCondition;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -83,18 +84,24 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handleUserDeleted(final EntityEvent.Deleted<UserDto> event) {
         final var dto = event.getSource();
+        final List<ClientTupleKeyWithoutCondition> tuples = new ArrayList<>();
 
         final var personDataOwnerTuple = new ClientTupleKey()
                 ._object(TYPE_PERSON_DATA + dto.getId())
                 .relation(RELATION_OWNER)
                 .user(TYPE_USER + dto.getId());
+        tuples.add(personDataOwnerTuple);
 
-        final var addressOriginTuple = new ClientTupleKey()
-                ._object(TYPE_ADDRESS + dto.getAddressId())
-                .relation(RELATION_ORIGIN)
-                .user(TYPE_PERSON_DATA + dto.getId());
+        Optional.ofNullable(dto.getAddressId())
+                .ifPresent(addressId -> {
+                    final var addressOriginTuple = new ClientTupleKey()
+                            ._object(TYPE_ADDRESS + addressId)
+                            .relation(RELATION_ORIGIN)
+                            .user(TYPE_PERSON_DATA + dto.getId());
+                    tuples.add(addressOriginTuple);
+                });
 
-        deleteTuples(personDataOwnerTuple, addressOriginTuple);
+        deleteTuples(tuples);
     }
 
     /**
@@ -107,18 +114,24 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handleInactivePersonCreated(final EntityEvent.Created<InactivePersonDto> event) {
         final var dto = event.getSource();
+        final List<ClientTupleKey> tuples = new ArrayList<>();
 
         final var personDataOwnerTuple = new ClientTupleKey()
                 ._object(TYPE_PERSON_DATA + dto.getId())
                 .relation(RELATION_OWNER)
                 .user(TYPE_CHURCH + dto.getChurchId() + SET_UNIT_ADMIN);
+        tuples.add(personDataOwnerTuple);
 
-        final var addressOriginTuple = new ClientTupleKey()
-                ._object(TYPE_ADDRESS + dto.getAddressId())
-                .relation(RELATION_ORIGIN)
-                .user(TYPE_PERSON_DATA + dto.getId());
+        Optional.ofNullable(dto.getAddressId())
+                .ifPresent(addressId -> {
+                    final var addressOriginTuple = new ClientTupleKey()
+                            ._object(TYPE_ADDRESS + addressId)
+                            .relation(RELATION_ORIGIN)
+                            .user(TYPE_PERSON_DATA + dto.getId());
+                    tuples.add(addressOriginTuple);
+                });
 
-        writeTuples(personDataOwnerTuple, addressOriginTuple);
+        writeTuples(tuples);
     }
 
     @Async
@@ -126,18 +139,24 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handleInactivePersonDeleted(final EntityEvent.Deleted<InactivePersonDto> event) {
         final var dto = event.getSource();
+        final List<ClientTupleKeyWithoutCondition> tuples = new ArrayList<>();
 
         final var personDataOwnerTuple = new ClientTupleKey()
                 ._object(TYPE_PERSON_DATA + dto.getId())
                 .relation(RELATION_OWNER)
                 .user(TYPE_CHURCH + dto.getChurchId() + SET_UNIT_ADMIN);
+        tuples.add(personDataOwnerTuple);
 
-        final var addressOriginTuple = new ClientTupleKey()
-                ._object(TYPE_ADDRESS + dto.getAddressId())
-                .relation(RELATION_ORIGIN)
-                .user(TYPE_PERSON_DATA + dto.getId());
+        Optional.ofNullable(dto.getAddressId())
+                .ifPresent(addressId -> {
+                    final var addressOriginTuple = new ClientTupleKey()
+                            ._object(TYPE_ADDRESS + dto.getAddressId())
+                            .relation(RELATION_ORIGIN)
+                            .user(TYPE_PERSON_DATA + dto.getId());
+                    tuples.add(addressOriginTuple);
+                });
 
-        deleteTuples(personDataOwnerTuple, addressOriginTuple);
+        deleteTuples(tuples);
     }
 
     @Async
