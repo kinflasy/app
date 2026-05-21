@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 
 import org.modelmapper.ModelMapper;
 
+import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
 import dev.openfga.OpenFgaExceptionHandler;
@@ -53,7 +54,7 @@ public class FgaUtils {
 
     public boolean withCharacteristics(final String objectType, final Object objectId, final String relation,
             final String userType, final String userId, final PersonIdentifierDto identifier) {
-        final var dto = mapper.map(identifier, PersonDto.class);
+        final var dto = mapper.map(identifier, InactivePersonDto.class);
         return withCharacteristics(objectType, objectId, relation, userType, userId, dto);
     }
 
