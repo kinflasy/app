@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = true)
-public class UnitLinup extends Lineup {
+public class UnitLineup extends Lineup {
 
     /*
      * Chaves "estrangeiras" (referências)
