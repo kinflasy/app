@@ -2,6 +2,7 @@ package br.org.kinflasy.libs.people.dto;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -28,9 +29,12 @@ public abstract class PersonDto {
     private String phone;
     private UUID addressId;
     private UUID profileImageId;
+    private Integer age;
 
     public int getAge() {
-        return Period.between(birthDate, LocalDate.now()).getYears();
+        return Optional.ofNullable(age)
+                .or(() -> Optional.ofNullable(birthDate).map(bd -> Period.between(bd, LocalDate.now()).getYears()))
+                .orElseThrow();
     }
 
 }
