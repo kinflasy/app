@@ -20,7 +20,7 @@ import lombok.experimental.Accessors;
 
 @Entity
 @DynamicUpdate
-@Table(name = "calendar_event") // todo plural
+@Table(name = "calendar_event") // TODO plural
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @Accessors(chain = false)
