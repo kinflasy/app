@@ -15,6 +15,7 @@ import br.org.kinflasy.libs.api_utils.FgaTupleManager;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.UserDto;
+import br.org.kinflasy.libs.people.dto.roles.AbilityDto;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
 import lombok.extern.slf4j.Slf4j;
@@ -137,6 +138,34 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
                 .user(TYPE_PERSON_DATA + dto.getId());
 
         deleteTuples(personDataOwnerTuple, addressOriginTuple);
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public void handleAbilityCreated(final EntityEvent.Created<AbilityDto> event) {
+        final var dto = event.getSource();
+
+        final var abilityTuple = new ClientTupleKey()
+                ._object("ability:" + dto.getId())
+                .relation(RELATION_OWNER)
+                .user(TYPE_USER + dto.getPersonId());
+
+        writeTuples(abilityTuple);
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public void handleAbilityDeleted(final EntityEvent.Deleted<AbilityDto> event) {
+        final var dto = event.getSource();
+
+        final var abilityTuple = new ClientTupleKey()
+                ._object("ability:" + dto.getId())
+                .relation(RELATION_OWNER)
+                .user(TYPE_USER + dto.getPersonId());
+
+        deleteTuples(abilityTuple);
     }
 
 }
