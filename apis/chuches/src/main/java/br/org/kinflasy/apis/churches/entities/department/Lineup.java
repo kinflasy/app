@@ -1,6 +1,5 @@
-package br.org.kinflasy.apis.calendar.entities;
+package br.org.kinflasy.apis.churches.entities.department;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.hibernate.annotations.DynamicUpdate;
@@ -20,12 +19,12 @@ import lombok.experimental.Accessors;
 
 @Entity
 @DynamicUpdate
-@Table(name = "calendar_event") // todo plural
+@Table(name = "lineups")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
-public abstract class CalendarEvent extends AbstractSimpleAuditable {
+public class Lineup extends AbstractSimpleAuditable {
 
     /*
      * Chave primária
@@ -35,27 +34,7 @@ public abstract class CalendarEvent extends AbstractSimpleAuditable {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    /*
-     * Chaves "estrangeiras" (referências)
-     */
-
-    @Column
-    private UUID cardImageId;
-
-    /*
-     * Dados primitivos
-     */
-
     @Column(nullable = false)
-    private String title;
-
-    @Column(columnDefinition = "TEXT", nullable = true)
-    private String description;
-
-    @Column(nullable = false)
-    private LocalDateTime startDateTime;
-
-    @Column(nullable = false)
-    private LocalDateTime endDateTime;
+    private String name;
 
 }
