@@ -24,7 +24,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
-public class Lineup extends AbstractSimpleAuditable {
+public abstract class Lineup extends AbstractSimpleAuditable {
 
     /*
      * Chave primária
