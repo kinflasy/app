@@ -3,7 +3,10 @@ package br.org.kinflasy.libs.api_utils;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import org.modelmapper.ModelMapper;
+
 import br.org.kinflasy.libs.people.dto.PersonDto;
+import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
 import dev.openfga.OpenFgaExceptionHandler;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientCheckRequest;
@@ -12,6 +15,8 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public class FgaUtils {
+
+    private final ModelMapper mapper;
 
     private final OpenFgaClient fgaClient;
     private final OpenFgaExceptionHandler exceptionHandler;
@@ -23,11 +28,6 @@ public class FgaUtils {
 
         return withCharacteristics(objectType, objectId, relation, "user", loggedUser.getId().toString(),
                 loggedUser);
-    }
-
-    public boolean withCharacteristics(final String objectType, final Object objectId, final String relation,
-            final PersonDto person) {
-        return withCharacteristics(objectType, objectId, relation, "user", person.getId().toString(), person);
     }
 
     public boolean withCharacteristics(final String objectType, final Object objectId, final String relation,
@@ -44,6 +44,22 @@ public class FgaUtils {
         } catch (InterruptedException | FgaInvalidParameterException | ExecutionException cause) {
             throw exceptionHandler.handle(cause, "Error performing FGA check");
         }
+    }
+
+    public boolean withCharacteristics(final String objectType, final Object objectId, final String relation,
+            final PersonDto person) {
+        return withCharacteristics(objectType, objectId, relation, "user", person.getId().toString(), person);
+    }
+
+    public boolean withCharacteristics(final String objectType, final Object objectId, final String relation,
+            final String userType, final String userId, final PersonIdentifierDto identifier) {
+        final var dto = mapper.map(identifier, PersonDto.class);
+        return withCharacteristics(objectType, objectId, relation, userType, userId, dto);
+    }
+
+    public boolean withCharacteristics(final String objectType, final Object objectId, final String relation,
+            final PersonIdentifierDto identifier) {
+        return withCharacteristics(objectType, objectId, relation, "user", identifier.getId().toString(), identifier);
     }
 
 }

@@ -48,6 +48,10 @@ type unit
     define congregated: [membership#user] or member
     define visitor: [membership#user] or congregated
 
+    define leader: leader from department
+    define assistant: assistant from department
+    define department_manager: can_manage from department
+
     define can_edit: admin
     define can_view: [user:*] or admin
 
@@ -60,7 +64,7 @@ type membership
     define church: parent_church from unit
 
     define can_edit: admin from unit
-    define can_view: can_edit or user
+    define can_view: can_edit or user or department_manager from unit
     define leader: leader from department
     define assistant: assistant from department
     define colleague: observer from department

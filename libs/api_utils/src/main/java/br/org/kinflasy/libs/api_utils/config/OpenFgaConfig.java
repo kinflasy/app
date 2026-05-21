@@ -1,5 +1,6 @@
 package br.org.kinflasy.libs.api_utils.config;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,9 +13,10 @@ import dev.openfga.sdk.api.client.OpenFgaClient;
 public class OpenFgaConfig {
 
     @Bean
-    FgaUtils fgau(final OpenFgaClient openFgaClient, final OpenFgaExceptionHandler openFgaExceptionHandler,
+    FgaUtils fgau(final ModelMapper mapper, final OpenFgaClient openFgaClient,
+            final OpenFgaExceptionHandler openFgaExceptionHandler,
             final AuthUtils authUtils) {
-        return new FgaUtils(openFgaClient, openFgaExceptionHandler, authUtils);
+        return new FgaUtils(mapper, openFgaClient, openFgaExceptionHandler, authUtils);
     }
 
 }

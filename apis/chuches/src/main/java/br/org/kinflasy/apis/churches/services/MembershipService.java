@@ -77,6 +77,14 @@ public class MembershipService {
         return listPendingByPersonId(loggedUser.getId());
     }
 
+    @PreAuthorize("isAuthenticated()")
+    public SimplePending confirmAsPerson(final UUID unitId) {
+        final var loggedUser = authUtils.getLoggedUser();
+        return pendingRepository.findByUnitIdAndPersonId(unitId, loggedUser.getId())
+                .map(pending -> confirm(pending, p -> p.setUserConfirmationDate(LocalDateTime.now())))
+                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_PENDING_MESSAGE));
+    }
+
     /*
      * ACESSO RESTRITO
      */
@@ -137,6 +145,7 @@ public class MembershipService {
                 .toList();
     }
 
+    @PreAuthorize("@fga.check('membership', #id, 'can_view', 'user', principal.id)")
     public Optional<MembershipDto.DetailingUnit> findById(final UUID id) {
         return repository.findById(id)
                 .map(entity -> {
@@ -145,6 +154,23 @@ public class MembershipService {
                     final var personDto = personClient.identifyById(entity.getPersonId());
 
                     final var dto = new MembershipDto.DetailingUnit();
+                    dto.setUnit(unitDto)
+                            .setPerson(personDto);
+                    mapper.map(entity, dto);
+
+                    return dto;
+                });
+    }
+
+    @PreAuthorize("@fga.check('membership', #id, 'can_view', 'user', principal.id)")
+    public Optional<MembershipDto.Detailed> detailById(final UUID id) {
+        return repository.findById(id)
+                .map(entity -> {
+                    final var unitDto = unitService.findById(entity.getUnitId())
+                            .orElseThrow(() -> new EntityNotFoundException("Unidade não encontrada"));
+                    final var personDto = personClient.findById(entity.getPersonId());
+
+                    final var dto = new MembershipDto.Detailed();
                     dto.setUnit(unitDto)
                             .setPerson(personDto);
                     mapper.map(entity, dto);
@@ -258,13 +284,6 @@ public class MembershipService {
 
                     return confirm(pending, p -> p.setUnitConfirmationDate(LocalDateTime.now()));
                 })
-                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_PENDING_MESSAGE));
-    }
-
-    public SimplePending confirmAsPerson(final UUID unitId) {
-        final var loggedUser = authUtils.getLoggedUser();
-        return pendingRepository.findByUnitIdAndPersonId(unitId, loggedUser.getId())
-                .map(pending -> confirm(pending, p -> p.setUserConfirmationDate(LocalDateTime.now())))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_PENDING_MESSAGE));
     }
 
