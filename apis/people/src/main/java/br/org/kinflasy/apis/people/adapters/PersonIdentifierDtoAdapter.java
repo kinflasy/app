@@ -17,6 +17,7 @@ public class PersonIdentifierDtoAdapter extends PersonIdentifierDto {
         dto.setId(entity.getId());
         dto.setNickname(nickname);
         dto.setGender(entity.getGender());
+        dto.setBirthDate(entity.getBirthDate());
     }
 
     public PersonIdentifierDtoAdapter(final Person entity) {
