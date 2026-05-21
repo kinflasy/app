@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 public class LineupDto {
 
     private UUID id;
-    private UUID departmentId;
     private String name;
 
     @Data

@@ -11,18 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LineupRequest {
 
-    @NotNull
-    private UUID departmentId;
-
     @NotBlank
     private String name;
 
     @Data
     @NoArgsConstructor
     public static class Item {
-        @NotNull
-        private UUID lineupId;
-
         @NotNull
         private UUID abilityId;
 
