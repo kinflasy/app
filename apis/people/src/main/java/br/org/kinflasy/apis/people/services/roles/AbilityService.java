@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -33,6 +34,15 @@ public class AbilityService {
      */
 
     @PreAuthorize("isAuthenticated()")
+    public List<AbilityDto.DetailingRole> findAll() {
+        return findAllByUser(authUtils.getLoggedUser().getId());
+    }
+
+    /*
+     * ACESSO RESTRITO
+     */
+
+    @PostFilter("@fga.check('ability', filterObject.id, 'can_view', 'user', principal.id)")
     public List<AbilityDto.DetailingRole> findAllByUser(final UUID personId) {
         return repository.findAllByPersonId(personId).stream()
                 .map(ability -> {
@@ -45,16 +55,9 @@ public class AbilityService {
                 .toList();
     }
 
-    @PreAuthorize("isAuthenticated()")
-    public List<AbilityDto.DetailingRole> findAll() {
-        return findAllByUser(authUtils.getLoggedUser().getId());
-    }
-
-    /*
-     * ACESSO RESTRITO
-     */
-
-    // todo @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("#personId.equals(principal.id) or "
+            + " @fga.check('user', #personId, 'admin', 'user', principal.id) or "
+            + " @fga.check('user', #personId, 'assistant', 'user', principal.id)")
     public Optional<AbilityDto> create(final UUID personId, final UUID roleId) {
         // Assegurar que a pessoa existe
         return personService.findById(personId)
