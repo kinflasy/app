@@ -16,17 +16,20 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.org.kinflasy.apis.churches.services.department.DepartmentLineupService;
 import br.org.kinflasy.apis.churches.services.department.DepartmentService;
 import br.org.kinflasy.apis.churches.services.department.IntegrationService;
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.AccessRulesRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
+import br.org.kinflasy.libs.churches.dto.departments.DepartmentLineupDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionDto;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionRequest;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto.Pending;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationRequest;
+import br.org.kinflasy.libs.churches.dto.departments.LineupRequest;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,6 +44,7 @@ public class DepartmentController {
 
     private final DepartmentService service;
     private final IntegrationService integrationService;
+    private final DepartmentLineupService lineupService;
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar um departamento pelo ID.")
@@ -238,6 +242,19 @@ public class DepartmentController {
         return service.resetJoinRules(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(ResponseEntity.notFound()::build);
+    }
+
+    @GetMapping("{id}/lineups")
+    @Operation(summary = "Listar formações", description = "Listar as formações de um departamento.")
+    public ResponseEntity<List<DepartmentLineupDto>> listLineups(@PathVariable final UUID id) {
+        return ResponseEntity.ok(lineupService.listAllByDepartmentId(id));
+    }
+
+    @PostMapping("{id}/lineups")
+    @Operation(summary = "Cadastrar formação", description = "Cadastrar uma nova formação para um departamento.")
+    public ResponseEntity<DepartmentLineupDto> createLineup(@PathVariable final UUID id,
+            @RequestBody final LineupRequest request) {
+        return ResponseEntity.ok(lineupService.create(id, request));
     }
 
 }

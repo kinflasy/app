@@ -7,11 +7,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import br.org.kinflasy.apis.churches.entities.department.UnitLineup;
-import br.org.kinflasy.libs.churches.dto.departments.UnitLineupDto;
 
 @Repository
 public interface UnitLineupRepository extends JpaRepository<UnitLineup, UUID> {
 
-    List<UnitLineupDto> findAllByUnitId(UUID unitId);
+    List<UnitLineup> findAllByUnitId(UUID unitId);
 
 }

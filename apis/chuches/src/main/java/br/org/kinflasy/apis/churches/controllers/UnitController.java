@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.org.kinflasy.apis.churches.services.MembershipService;
 import br.org.kinflasy.apis.churches.services.UnitService;
+import br.org.kinflasy.apis.churches.services.department.UnitLineupService;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.MembershipDto.Pending;
 import br.org.kinflasy.libs.churches.dto.MembershipDto.SimplePending;
@@ -26,6 +27,8 @@ import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.UnitRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentRequest;
+import br.org.kinflasy.libs.churches.dto.departments.LineupRequest;
+import br.org.kinflasy.libs.churches.dto.departments.UnitLineupDto;
 import br.org.kinflasy.libs.contacts.dto.LinkDto;
 import br.org.kinflasy.libs.contacts.dto.LinkRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,6 +45,7 @@ public class UnitController {
 
     private final UnitService service;
     private final MembershipService membershipService;
+    private final UnitLineupService lineupService;
 
     @GetMapping
     @Operation(summary = "Listar membresias ativas", description = "Listar relações de membresia que estejam válidas para o usuário logado.")
@@ -217,6 +221,19 @@ public class UnitController {
     @Operation(summary = "Cadastrar link", description = "Cadastrar um novo link e associá-lo a uma unidade.")
     public ResponseEntity<LinkDto> createLink(@PathVariable final UUID id, @RequestBody final LinkRequest request) {
         return ResponseEntity.ok(service.createLink(id, request));
+    }
+
+    @GetMapping("{id}/lineups")
+    @Operation(summary = "Listar formações", description = "Listar as formações associadas a uma unidade.")
+    public ResponseEntity<List<UnitLineupDto>> listLineups(@PathVariable final UUID id) {
+        return ResponseEntity.ok(lineupService.listAllByUnitId(id));
+    }
+
+    @PostMapping("{id}/lineups")
+    @Operation(summary = "Cadastrar formação", description = "Cadastrar uma nova formação e associá-la a uma unidade.")
+    public ResponseEntity<UnitLineupDto> createLineup(@PathVariable final UUID id,
+            @RequestBody final LineupRequest request) {
+        return ResponseEntity.ok(lineupService.create(id, request));
     }
 
 }
