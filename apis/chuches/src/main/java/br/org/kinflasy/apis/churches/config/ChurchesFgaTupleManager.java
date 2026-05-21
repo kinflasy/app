@@ -45,6 +45,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
      * Constantes de relações
      */
     private static final String RELATION_CAN_VIEW = "can_view";
+    private static final String RELATION_DEPARTMENT = "department";
 
     /*
      * Constantes de sets
@@ -122,7 +123,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
 
         final var departmentTuple = new ClientTupleKey()
                 ._object(TYPE_UNIT + dto.getUnitId())
-                .relation("department")
+                .relation(RELATION_DEPARTMENT)
                 .user(TYPE_DEPARTMENT + dto.getId());
 
         return writeTuples(parentUnitTuple, departmentTuple);
@@ -139,6 +140,11 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
                 .relation("user")
                 .user(TYPE_USER + dto.getPersonId());
 
+        final var inverseUserTuple = new ClientTupleKey()
+                ._object(TYPE_USER + dto.getPersonId())
+                .relation("membership")
+                .user(TYPE_MEMBERSHIP + dto.getId());
+
         final var unitTuple = new ClientTupleKey()
                 ._object(TYPE_MEMBERSHIP + dto.getId())
                 .relation("unit")
@@ -154,7 +160,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
                 .relation(RELATION_CAN_VIEW)
                 .user(TYPE_MEMBERSHIP + dto.getId() + "#can_edit");
 
-        return writeTuples(userTuple, unitTuple, unitMembershipTuple, viewPersonDataTuple);
+        return writeTuples(userTuple, inverseUserTuple, unitTuple, unitMembershipTuple, viewPersonDataTuple);
     }
 
     @Async
@@ -167,6 +173,11 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
                 ._object(TYPE_MEMBERSHIP + dto.getId())
                 .relation("user")
                 .user(TYPE_USER + dto.getPerson().getId());
+
+        final var inverseUserTuple = new ClientTupleKey()
+                ._object(TYPE_USER + dto.getPerson().getId())
+                .relation("membership")
+                .user(TYPE_MEMBERSHIP + dto.getId());
 
         final var unitTuple = new ClientTupleKey()
                 ._object(TYPE_MEMBERSHIP + dto.getId())
@@ -183,7 +194,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
                 .relation(RELATION_CAN_VIEW)
                 .user(TYPE_MEMBERSHIP + dto.getId() + "#can_edit");
 
-        return deleteTuples(userTuple, unitTuple, unitMembershipTuple, viewPersonDataTuple);
+        return deleteTuples(userTuple, inverseUserTuple, unitTuple, unitMembershipTuple, viewPersonDataTuple);
     }
 
     @Async
@@ -209,7 +220,12 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
                 .relation(dto.getType().name().toLowerCase())
                 .user(TYPE_MEMBERSHIP + dto.getMembershipId() + SET_USER);
 
-        return writeTuples(parentUnitTuple);
+        final var membershipTuple = new ClientTupleKey()
+                ._object(TYPE_MEMBERSHIP + dto.getMembershipId())
+                .relation(RELATION_DEPARTMENT)
+                .user(TYPE_DEPARTMENT + dto.getDepartmentId());
+
+        return writeTuples(parentUnitTuple, membershipTuple);
     }
 
     @Async
@@ -223,7 +239,12 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
                 .relation(dto.getType().name().toLowerCase())
                 .user(TYPE_MEMBERSHIP + dto.getMembershipId() + SET_USER);
 
-        return deleteTuples(parentUnitTuple);
+        final var membershipTuple = new ClientTupleKey()
+                ._object(TYPE_MEMBERSHIP + dto.getMembershipId())
+                .relation(RELATION_DEPARTMENT)
+                .user(TYPE_DEPARTMENT + dto.getDepartmentId());
+
+        return deleteTuples(parentUnitTuple, membershipTuple);
     }
 
     @Async
