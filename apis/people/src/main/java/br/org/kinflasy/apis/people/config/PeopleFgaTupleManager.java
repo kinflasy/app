@@ -174,6 +174,9 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
         return deleteTuples(tuples);
     }
 
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public CompletableFuture<Void> handleInactivePersonUpdated(final EntityEvent.Updated<InactivePersonDto> event) {
         return self.handleInactivePersonDeleted(new EntityEvent.Deleted<>(event.getSource()))
                 .exceptionally(e -> null)
