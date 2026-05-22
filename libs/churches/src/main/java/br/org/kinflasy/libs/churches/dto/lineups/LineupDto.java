@@ -1,4 +1,4 @@
-package br.org.kinflasy.libs.churches.dto.departments;
+package br.org.kinflasy.libs.churches.dto.lineups;
 
 import java.util.List;
 import java.util.UUID;

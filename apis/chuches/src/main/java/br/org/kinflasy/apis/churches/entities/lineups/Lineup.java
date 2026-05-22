@@ -1,4 +1,4 @@
-package br.org.kinflasy.apis.churches.entities.department;
+package br.org.kinflasy.apis.churches.entities.lineups;
 
 import java.util.UUID;
 

@@ -1,4 +1,4 @@
-package br.org.kinflasy.apis.churches.controllers.department;
+package br.org.kinflasy.apis.churches.controllers.lineups;
 
 import java.util.UUID;
 
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.org.kinflasy.apis.churches.services.department.LineupService;
-import br.org.kinflasy.libs.churches.dto.departments.LineupDto;
-import br.org.kinflasy.libs.churches.dto.departments.LineupRequest;
+import br.org.kinflasy.apis.churches.services.lineups.LineupService;
+import br.org.kinflasy.libs.churches.dto.lineups.LineupDto;
+import br.org.kinflasy.libs.churches.dto.lineups.LineupRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;

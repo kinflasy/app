@@ -1,4 +1,4 @@
-package br.org.kinflasy.apis.churches.services.department;
+package br.org.kinflasy.apis.churches.services.lineups;
 
 import java.util.List;
 import java.util.UUID;
@@ -7,10 +7,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import br.org.kinflasy.apis.churches.entities.department.UnitLineup;
-import br.org.kinflasy.apis.churches.repositories.department.UnitLineupRepository;
-import br.org.kinflasy.libs.churches.dto.departments.LineupRequest;
-import br.org.kinflasy.libs.churches.dto.departments.UnitLineupDto;
+import br.org.kinflasy.apis.churches.entities.lineups.UnitLineup;
+import br.org.kinflasy.apis.churches.repositories.lineups.UnitLineupRepository;
+import br.org.kinflasy.libs.churches.dto.lineups.LineupRequest;
+import br.org.kinflasy.libs.churches.dto.lineups.UnitLineupDto;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import lombok.AllArgsConstructor;
 

@@ -1,4 +1,4 @@
-package br.org.kinflasy.apis.churches.entities.department;
+package br.org.kinflasy.apis.churches.entities.lineups;
 
 import java.util.UUID;
 
@@ -12,18 +12,18 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 @Entity
-@Table(name = "department_lineups")
+@Table(name = "unit_lineups")
 @DynamicUpdate
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = true)
-public class DepartmentLineup extends Lineup {
+public class UnitLineup extends Lineup {
 
     /*
      * Chaves "estrangeiras" (referências)
      */
 
     @Column(nullable = false)
-    private UUID departmentId;
+    private UUID unitId;
 
 }

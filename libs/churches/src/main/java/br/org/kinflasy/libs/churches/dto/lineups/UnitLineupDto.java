@@ -1,4 +1,4 @@
-package br.org.kinflasy.libs.churches.dto.departments;
+package br.org.kinflasy.libs.churches.dto.lineups;
 
 import java.util.UUID;
 
@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class DepartmentLineupDto extends LineupDto {
+public class UnitLineupDto extends LineupDto {
 
-    private UUID departmentId;
+    private UUID unitId;
 
 }
