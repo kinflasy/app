@@ -3,6 +3,7 @@ package br.org.kinflasy.apis.people.config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.event.EventListener;
@@ -44,20 +45,24 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
      */
     private static final String SET_UNIT_ADMIN = "#unit_admin";
 
+    private final PeopleFgaTupleManager self;
+
     @Lazy
-    public PeopleFgaTupleManager(final OpenFgaClient client) {
+    public PeopleFgaTupleManager(final OpenFgaClient client, final PeopleFgaTupleManager self) {
         super(client);
+        this.self = self;
     }
 
     /**
      * Define o usuário como dono dos seus próprios dados
      * 
      * @param event
+     * @return
      */
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public void handleUserCreated(final EntityEvent.Created<UserDto> event) {
+    public CompletableFuture<Void> handleUserCreated(final EntityEvent.Created<UserDto> event) {
         final var dto = event.getSource();
         final List<ClientTupleKey> tuples = new ArrayList<>();
 
@@ -76,13 +81,13 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
                     tuples.add(addressOriginTuple);
                 });
 
-        writeTuples(tuples);
+        return writeTuples(tuples);
     }
 
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public void handleUserDeleted(final EntityEvent.Deleted<UserDto> event) {
+    public CompletableFuture<Void> handleUserDeleted(final EntityEvent.Deleted<UserDto> event) {
         final var dto = event.getSource();
         final List<ClientTupleKeyWithoutCondition> tuples = new ArrayList<>();
 
@@ -101,18 +106,28 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
                     tuples.add(addressOriginTuple);
                 });
 
-        deleteTuples(tuples);
+        return deleteTuples(tuples);
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleUserUpdated(final EntityEvent.Updated<UserDto> event) {
+        return self.handleUserDeleted(new EntityEvent.Deleted<>(event.getSource()))
+                .exceptionally(e -> null)
+                .thenCompose(ignore -> self.handleUserCreated(new EntityEvent.Created<>(event.getSource())));
     }
 
     /**
      * Define o usuário como dono dos seus próprios dados
      * 
      * @param event
+     * @return
      */
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public void handleInactivePersonCreated(final EntityEvent.Created<InactivePersonDto> event) {
+    public CompletableFuture<Void> handleInactivePersonCreated(final EntityEvent.Created<InactivePersonDto> event) {
         final var dto = event.getSource();
         final List<ClientTupleKey> tuples = new ArrayList<>();
 
@@ -131,13 +146,13 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
                     tuples.add(addressOriginTuple);
                 });
 
-        writeTuples(tuples);
+        return writeTuples(tuples);
     }
 
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public void handleInactivePersonDeleted(final EntityEvent.Deleted<InactivePersonDto> event) {
+    public CompletableFuture<Void> handleInactivePersonDeleted(final EntityEvent.Deleted<InactivePersonDto> event) {
         final var dto = event.getSource();
         final List<ClientTupleKeyWithoutCondition> tuples = new ArrayList<>();
 
@@ -156,13 +171,19 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
                     tuples.add(addressOriginTuple);
                 });
 
-        deleteTuples(tuples);
+        return deleteTuples(tuples);
+    }
+
+    public CompletableFuture<Void> handleInactivePersonUpdated(final EntityEvent.Updated<InactivePersonDto> event) {
+        return self.handleInactivePersonDeleted(new EntityEvent.Deleted<>(event.getSource()))
+                .exceptionally(e -> null)
+                .thenCompose(ignore -> self.handleInactivePersonCreated(new EntityEvent.Created<>(event.getSource())));
     }
 
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public void handleAbilityCreated(final EntityEvent.Created<AbilityDto> event) {
+    public CompletableFuture<Void> handleAbilityCreated(final EntityEvent.Created<AbilityDto> event) {
         final var dto = event.getSource();
 
         final var abilityTuple = new ClientTupleKey()
@@ -170,13 +191,13 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
                 .relation(RELATION_OWNER)
                 .user(TYPE_USER + dto.getPersonId());
 
-        writeTuples(abilityTuple);
+        return writeTuples(abilityTuple);
     }
 
     @Async
     @EventListener
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public void handleAbilityDeleted(final EntityEvent.Deleted<AbilityDto> event) {
+    public CompletableFuture<Void> handleAbilityDeleted(final EntityEvent.Deleted<AbilityDto> event) {
         final var dto = event.getSource();
 
         final var abilityTuple = new ClientTupleKey()
@@ -184,7 +205,7 @@ public class PeopleFgaTupleManager extends FgaTupleManager {
                 .relation(RELATION_OWNER)
                 .user(TYPE_USER + dto.getPersonId());
 
-        deleteTuples(abilityTuple);
+        return deleteTuples(abilityTuple);
     }
 
 }
