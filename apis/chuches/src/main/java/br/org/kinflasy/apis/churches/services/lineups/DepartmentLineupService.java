@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.entities.lineups.DepartmentLineup;
@@ -23,12 +25,15 @@ public class DepartmentLineupService {
 
     private final DepartmentLineupRepository repository;
 
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_view', 'user', principal.id)")
+    @PostFilter("@fga.check('lineup', filterObject.id, 'can_view', 'user', principal.id)")
     public List<DepartmentLineupDto> listAllByDepartmentId(final UUID departmentId) {
         return repository.findAllByDepartmentId(departmentId).stream()
                 .map(entity -> mapper.map(entity, DepartmentLineupDto.class))
                 .toList();
     }
 
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_manage', 'user', principal.id)")
     public DepartmentLineupDto create(final UUID departmentId, final LineupRequest request) {
         // Construir entidade
         final var entity = mapper.map(request, DepartmentLineup.class);

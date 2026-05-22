@@ -111,6 +111,13 @@ type ability
     define can_edit: owner or leader from owner
     define can_view: can_edit or colleague from owner
 
+type lineup
+  relations
+    define owner: [unit, department]
+
+    define can_edit: admin from owner or can_manage from owner
+    define can_view: can_view from owner or can_edit
+
 condition characteristics(user_gender: string, user_age: int, req_gender: string, min_age: int, max_age: int) {
   (req_gender == "" || user_gender == req_gender) &&
   (min_age == 0 || user_age >= min_age) && 

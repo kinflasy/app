@@ -5,6 +5,8 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.entities.lineups.UnitLineup;
@@ -23,12 +25,15 @@ public class UnitLineupService {
 
     private final UnitLineupRepository repository;
 
+    @PreAuthorize("@fga.check('unit', #unitId, 'can_view', 'user', principal.id)")
+    @PostFilter("@fga.check('lineup', filterObject.id, 'can_view', 'user', principal.id)")
     public List<UnitLineupDto> listAllByUnitId(final UUID unitId) {
         return repository.findAllByUnitId(unitId).stream()
                 .map(entity -> mapper.map(entity, UnitLineupDto.class))
                 .toList();
     }
 
+    @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
     public UnitLineupDto create(final UUID unitId, final LineupRequest request) {
         // Construir entidade
         final var entity = mapper.map(request, UnitLineup.class);

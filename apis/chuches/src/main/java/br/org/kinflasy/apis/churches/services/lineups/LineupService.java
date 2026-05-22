@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.entities.lineups.DepartmentLineup;
@@ -26,11 +27,13 @@ public class LineupService {
 
     private LineupRepository repository;
 
+    @PreAuthorize("@fga.check('lineup', #id, 'can_view', 'user', principal.id)")
     public Optional<LineupDto> findById(final UUID id) {
         return repository.findById(id)
                 .map(this::toDto);
     }
 
+    @PreAuthorize("@fga.check('lineup', #id, 'can_edit', 'user', principal.id)")
     public Optional<LineupDto> update(final UUID id, final LineupRequest request) {
         return repository.findById(id)
                 .map(lineup -> {
@@ -47,6 +50,7 @@ public class LineupService {
                 });
     }
 
+    @PreAuthorize("@fga.check('lineup', #id, 'can_edit', 'user', principal.id)")
     public void delete(final UUID id) {
         repository.findById(id)
                 .ifPresent(lineup -> {

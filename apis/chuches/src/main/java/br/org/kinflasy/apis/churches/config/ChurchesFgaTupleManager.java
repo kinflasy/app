@@ -18,6 +18,8 @@ import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionDto;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
+import br.org.kinflasy.libs.churches.dto.lineups.DepartmentLineupDto;
+import br.org.kinflasy.libs.churches.dto.lineups.UnitLineupDto;
 import br.org.kinflasy.libs.churches.enums.UnitType;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
 import br.org.kinflasy.libs.churches.events.department.ExtensionEvent;
@@ -40,12 +42,14 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
     private static final String TYPE_ADDRESS = "address:";
     private static final String TYPE_DEPARTMENT = "department:";
     private static final String TYPE_MEMBERSHIP = "membership:";
+    private static final String TYPE_LINEUP = "lineup:";
 
     /*
      * Constantes de relações
      */
     private static final String RELATION_CAN_VIEW = "can_view";
     private static final String RELATION_DEPARTMENT = "department";
+    private static final String RELATION_OWNER = "owner";
 
     /*
      * Constantes de sets
@@ -284,6 +288,62 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
                     return writeTuples(tuples);
                 })
                 .orElseGet(() -> new CompletableFuture<>());
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleUnitLineupCreated(final EntityEvent.Created<UnitLineupDto> event) {
+        final var dto = event.getSource();
+
+        final var ownerTuple = new ClientTupleKey()
+                ._object(TYPE_LINEUP + dto.getId())
+                .relation(RELATION_OWNER)
+                .user(TYPE_UNIT + dto.getUnitId());
+
+        return writeTuples(ownerTuple);
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleUnitLineupDeleted(final EntityEvent.Deleted<UnitLineupDto> event) {
+        final var dto = event.getSource();
+
+        final var ownerTuple = new ClientTupleKey()
+                ._object(TYPE_LINEUP + dto.getId())
+                .relation(RELATION_OWNER)
+                .user(TYPE_UNIT + dto.getUnitId());
+
+        return deleteTuples(ownerTuple);
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleDepartmentLineupCreated(final EntityEvent.Created<DepartmentLineupDto> event) {
+        final var dto = event.getSource();
+
+        final var ownerTuple = new ClientTupleKey()
+                ._object(TYPE_LINEUP + dto.getId())
+                .relation(RELATION_OWNER)
+                .user(TYPE_DEPARTMENT + dto.getDepartmentId());
+
+        return writeTuples(ownerTuple);
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleDepartmentLineupDeleted(final EntityEvent.Deleted<DepartmentLineupDto> event) {
+        final var dto = event.getSource();
+
+        final var ownerTuple = new ClientTupleKey()
+                ._object(TYPE_LINEUP + dto.getId())
+                .relation(RELATION_OWNER)
+                .user(TYPE_DEPARTMENT + dto.getDepartmentId());
+
+        return deleteTuples(ownerTuple);
     }
 
 }
