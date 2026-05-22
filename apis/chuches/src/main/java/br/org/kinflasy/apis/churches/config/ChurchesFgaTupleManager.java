@@ -203,6 +203,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
     public CompletableFuture<Void> handleMembershipUpdated(final EntityEvent.Updated<MembershipDto> event) {
         // Deletar tuplas originais da membresia
         return tupleManager.handleMembershipDeleted(new EntityEvent.Deleted<>(event.getOriginal()))
+                .exceptionally(e -> null)
 
                 // Escrever tuplas modificadas
                 .thenCompose(ignored -> tupleManager
@@ -253,6 +254,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
     public CompletableFuture<Void> handleIntegrationUpdated(final EntityEvent.Updated<IntegrationDto> event) {
         // Deletar tuplas originais da integração
         return tupleManager.handleIntegrationDeleted(new EntityEvent.Deleted<>(event.getOriginal()))
+                .exceptionally(e -> null)
 
                 // Escrever tuplas modificadas
                 .thenCompose(ignored -> tupleManager
