@@ -79,7 +79,7 @@ public class LineupController {
 
     @GetMapping("{id}/items")
     @Operation(summary = "Listar itens", description = "Listar os itens (papel + descrição) de uma formação.")
-    public ResponseEntity<List<LineupDto.Item>> listItems(@PathVariable final UUID id) {
+    public ResponseEntity<List<LineupDto.Item.DetailingRole>> listItems(@PathVariable final UUID id) {
         return service.findById(id)
                 .map(lineup -> new ResponseEntity<>(service.listItems(id), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));

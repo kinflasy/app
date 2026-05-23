@@ -9,6 +9,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.apis.churches.clients.RoleClient;
 import br.org.kinflasy.apis.churches.entities.lineups.DepartmentLineup;
 import br.org.kinflasy.apis.churches.entities.lineups.Lineup;
 import br.org.kinflasy.apis.churches.entities.lineups.LineupItem;
@@ -30,6 +31,8 @@ public class LineupService {
 
     private LineupRepository repository;
     private LineupItemRepository itemRepository;
+
+    private RoleClient roleClient;
 
     @PreAuthorize("@fga.check('lineup', #id, 'can_view', 'user', principal.id)")
     public Optional<LineupDto> findById(final UUID id) {
@@ -65,9 +68,10 @@ public class LineupService {
     }
 
     @PreAuthorize("@fga.check('lineup', #id, 'can_view', 'user', principal.id)")
-    public List<LineupDto.Item> listItems(final UUID id) {
+    public List<LineupDto.Item.DetailingRole> listItems(final UUID id) {
         return itemRepository.findByLineupId(id).stream()
-                .map(item -> mapper.map(item, LineupDto.Item.class))
+                .map(item -> mapper.map(item, LineupDto.Item.DetailingRole.class)
+                        .setRole(roleClient.findById(item.getRoleId())))
                 .toList();
     }
 

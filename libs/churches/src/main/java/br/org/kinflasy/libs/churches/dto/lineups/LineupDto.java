@@ -5,6 +5,9 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+
+import br.org.kinflasy.libs.people.dto.roles.RoleDto;
+
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import lombok.Data;
@@ -29,13 +32,22 @@ public class LineupDto {
         private UUID lineupId;
         private UUID roleId;
         private String description;
+
+        @Data
+        @NoArgsConstructor
+        public static class DetailingRole {
+            private UUID id;
+            private UUID lineupId;
+            private RoleDto role;
+            private String description;
+        }
     }
 
     @Data
     @NoArgsConstructor
     @EqualsAndHashCode(callSuper = true)
     public static class WithItems extends LineupDto {
-        private List<Item> items;
+        private List<Item.DetailingRole> items;
     }
 
 }
