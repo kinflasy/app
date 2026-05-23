@@ -24,4 +24,11 @@ public class LineupRequest {
         private String description;
     }
 
+    @Data
+    @NoArgsConstructor
+    public static class UpdateItem {
+        @NotBlank
+        private String description;
+    }
+
 }

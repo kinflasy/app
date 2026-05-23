@@ -19,6 +19,7 @@ import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.dto.departments.ExtensionSubscriptionDto;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
 import br.org.kinflasy.libs.churches.dto.lineups.DepartmentLineupDto;
+import br.org.kinflasy.libs.churches.dto.lineups.LineupDto;
 import br.org.kinflasy.libs.churches.dto.lineups.UnitLineupDto;
 import br.org.kinflasy.libs.churches.enums.UnitType;
 import br.org.kinflasy.libs.churches.enums.department.Extension;
@@ -43,6 +44,7 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
     private static final String TYPE_DEPARTMENT = "department:";
     private static final String TYPE_MEMBERSHIP = "membership:";
     private static final String TYPE_LINEUP = "lineup:";
+    private static final String TYPE_LINEUP_ITEM = "lineup_item:";
 
     /*
      * Constantes de relações
@@ -344,6 +346,57 @@ public class ChurchesFgaTupleManager extends FgaTupleManager {
                 .user(TYPE_DEPARTMENT + dto.getDepartmentId());
 
         return deleteTuples(ownerTuple);
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleLineupItemCreated(final EntityEvent.Created<LineupDto.Item> event) {
+        final var dto = event.getSource();
+
+        final var parentLineupTuple = new ClientTupleKey()
+                ._object(TYPE_LINEUP_ITEM + dto.getId())
+                .relation("parent_lineup")
+                .user(TYPE_LINEUP + dto.getLineupId());
+
+        final var itemTuple = new ClientTupleKey()
+                ._object(TYPE_LINEUP + dto.getLineupId())
+                .relation("item")
+                .user(TYPE_LINEUP_ITEM + dto.getId());
+
+        return writeTuples(parentLineupTuple, itemTuple);
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleLineupItemDeleted(final EntityEvent.Deleted<LineupDto.Item> event) {
+        final var dto = event.getSource();
+
+        final var parentLineupTuple = new ClientTupleKey()
+                ._object(TYPE_LINEUP + dto.getLineupId())
+                .relation("parent_lineup")
+                .user(TYPE_LINEUP_ITEM + dto.getId());
+
+        final var itemTuple = new ClientTupleKey()
+                ._object(TYPE_LINEUP_ITEM + dto.getId())
+                .relation("item")
+                .user(TYPE_LINEUP + dto.getLineupId());
+
+        return deleteTuples(parentLineupTuple, itemTuple);
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleLineupItemUpdated(final EntityEvent.Updated<LineupDto.Item> event) {
+        // Deletar tuplas originais do item de lineup
+        return tupleManager.handleLineupItemDeleted(new EntityEvent.Deleted<>(event.getOriginal()))
+                .exceptionally(e -> null)
+
+                // Escrever tuplas modificadas
+                .thenCompose(
+                        ignored -> tupleManager.handleLineupItemCreated(new EntityEvent.Created<>(event.getSource())));
     }
 
 }

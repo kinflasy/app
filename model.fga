@@ -114,9 +114,17 @@ type ability
 type lineup
   relations
     define owner: [unit, department]
+    define item: [lineup_item]
 
     define can_edit: admin from owner or can_manage from owner
     define can_view: can_view from owner or can_edit
+
+type lineup_item
+  relations
+    define parent_lineup: [lineup]
+
+    define can_edit: can_edit from parent_lineup
+    define can_view: can_view from parent_lineup
 
 condition characteristics(user_gender: string, user_age: int, req_gender: string, min_age: int, max_age: int) {
   (req_gender == "" || user_gender == req_gender) &&
