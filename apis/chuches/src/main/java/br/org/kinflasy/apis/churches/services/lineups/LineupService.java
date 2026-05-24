@@ -81,6 +81,7 @@ public class LineupService {
                 .map(lineup -> {
                     // Criar e salvar
                     final var entity = mapper.map(request, LineupItem.class);
+                    entity.setId(null);
                     entity.setLineupId(id);
 
                     final var saved = itemRepository.save(entity);
