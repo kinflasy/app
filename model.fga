@@ -94,15 +94,17 @@ type department
 type calendar_event
   relations
     define owner: [unit, department]
+    define collaborator: [department]
 
     define can_edit: admin from owner or can_manage from owner
     define can_manage: can_edit or can_manage from owner
+    define can_scale: can_manage from collaborator
     define can_view: [user with characteristics,
       department#leader with characteristics, department#assistant with characteristics, department#integrant with characteristics,
       department#consultant with characteristics, department#observer with characteristics,
       unit#member with characteristics, unit#congregated with characteristics, unit#visitor with characteristics,
       church#member with characteristics, church#congregated with characteristics, church#visitor with characteristics,
-      user:* with characteristics] or can_manage
+      user:* with characteristics] or can_manage or observer from collaborator
 
 type ability
   relations

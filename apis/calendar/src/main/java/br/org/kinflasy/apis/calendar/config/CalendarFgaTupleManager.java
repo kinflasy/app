@@ -11,6 +11,7 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import br.org.kinflasy.libs.api_utils.FgaTupleManager;
 import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
+import br.org.kinflasy.libs.calendar.dto.EventCollaborationDto;
 import br.org.kinflasy.libs.calendar.dto.UnitCalendarEventDto;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.apis.calendar.services.CalendarEventService;
@@ -99,6 +100,36 @@ public class CalendarFgaTupleManager extends FgaTupleManager {
         final var tuple = new ClientTupleKey()
                 ._object(TYPE_CALENDAR_EVENT + dto.getId())
                 .relation(RELATION_OWNER)
+                .user(TYPE_DEPARTMENT + dto.getDepartmentId());
+
+        return deleteTuples(tuple);
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleEventCollaboratorAdded(
+            final EntityEvent.Created<EventCollaborationDto> event) {
+        final var dto = event.getSource();
+
+        final var tuple = new ClientTupleKey()
+                ._object(TYPE_CALENDAR_EVENT + dto.getCalendarEventId())
+                .relation("collaborator")
+                .user(TYPE_DEPARTMENT + dto.getDepartmentId());
+
+        return writeTuples(tuple);
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleEventCollaboratorRemoved(
+            final EntityEvent.Deleted<EventCollaborationDto> event) {
+        final var dto = event.getSource();
+
+        final var tuple = new ClientTupleKey()
+                ._object(TYPE_CALENDAR_EVENT + dto.getCalendarEventId())
+                .relation("collaborator")
                 .user(TYPE_DEPARTMENT + dto.getDepartmentId());
 
         return deleteTuples(tuple);
