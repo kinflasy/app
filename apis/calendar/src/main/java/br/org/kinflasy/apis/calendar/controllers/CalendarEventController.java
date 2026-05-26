@@ -23,7 +23,9 @@ import br.org.kinflasy.apis.calendar.services.UnitCalendarEventService;
 import br.org.kinflasy.libs.calendar.dto.CalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.CalendarEventRequest;
 import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
+import br.org.kinflasy.libs.calendar.dto.EventCollaborationDto;
 import br.org.kinflasy.libs.calendar.dto.UnitCalendarEventDto;
+import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -100,6 +102,26 @@ public class CalendarEventController {
     @DeleteMapping("{id}/delete")
     public ResponseEntity<Void> delete(@PathVariable final UUID id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("{id}/collaborators")
+    public ResponseEntity<List<DepartmentDto>> listCollaborators(@PathVariable final UUID id) {
+        return ResponseEntity.ok(service.listCollaborators(id));
+    }
+
+    @PostMapping("{id}/collaborators/{departmentId}")
+    public ResponseEntity<EventCollaborationDto> addCollaboratingDepartment(@PathVariable final UUID id,
+            @PathVariable final UUID departmentId) {
+        return service.addCollaboratingDepartment(id, departmentId)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
+
+    @DeleteMapping("{id}/collaborators/{departmentId}")
+    public ResponseEntity<Void> removeCollaboratingDepartment(@PathVariable final UUID id,
+            @PathVariable final UUID departmentId) {
+        service.removeCollaboratingDepartment(id, departmentId);
         return ResponseEntity.noContent().build();
     }
 

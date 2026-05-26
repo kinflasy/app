@@ -168,7 +168,7 @@ public class CalendarEventService {
     }
 
     @PreAuthorize("@fga.check('calendar_event', #id, 'can_manage', 'user', principal.id)")
-    public List<DepartmentDto> listCollaboratingDepartments(final UUID id) {
+    public List<DepartmentDto> listCollaborators(final UUID id) {
         return collaborationRepository.findByCalendarEventId(id).stream()
                 .map(collaboration -> departmentClient.findById(collaboration.getDepartmentId()))
                 .toList();
