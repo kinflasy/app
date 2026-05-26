@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import br.org.kinflasy.libs.calendar.dto.CalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.CalendarEventRequest;
 import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
+import br.org.kinflasy.libs.calendar.dto.EventCollaborationDto;
 import br.org.kinflasy.libs.calendar.dto.UnitCalendarEventDto;
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.CharacteristicCondition;
@@ -21,13 +22,17 @@ import br.org.kinflasy.libs.churches.dto.access_rules.ChurchRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.DepartmentRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.UnitRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.UserRule;
+import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.libs.media.validators.ProfileImageValidator;
+import br.org.kinflasy.apis.calendar.clients.DepartmentClient;
 import br.org.kinflasy.apis.calendar.clients.MediaClient;
+import br.org.kinflasy.apis.calendar.entities.EventCollaboration;
 import br.org.kinflasy.apis.calendar.repositories.CalendarEventRepository;
 import br.org.kinflasy.apis.calendar.repositories.DepartmentCalendarEventRepository;
+import br.org.kinflasy.apis.calendar.repositories.EventCollaborationRepository;
 import br.org.kinflasy.apis.calendar.repositories.UnitCalendarEventRepository;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientReadRequest;
@@ -52,9 +57,11 @@ public class CalendarEventService {
     private final CalendarEventRepository repository;
     private final UnitCalendarEventRepository unitEventRepository;
     private final DepartmentCalendarEventRepository departmentEventRepository;
+    private final EventCollaborationRepository collaborationRepository;
 
     private final OpenFgaClient fgaClient;
     private final MediaClient mediaClient;
+    private final DepartmentClient departmentClient;
 
     /*
      * ACESSO RESTRITO
@@ -158,6 +165,48 @@ public class CalendarEventService {
     @Transactional
     public void postCreate(final CalendarEventDto dto) {
         writeRules(dto.getId(), RELATION_CAN_VIEW, dto.getVisibilityRules());
+    }
+
+    @PreAuthorize("@fga.check('calendar_event', #id, 'can_manage', 'user', principal.id)")
+    public List<DepartmentDto> listCollaboratingDepartments(final UUID id) {
+        return collaborationRepository.findByCalendarEventId(id).stream()
+                .map(collaboration -> departmentClient.findById(collaboration.getDepartmentId()))
+                .toList();
+    }
+
+    @Transactional
+    @PreAuthorize("@fga.check('calendar_event', #id, 'can_manage', 'user', principal.id)")
+    public Optional<EventCollaborationDto> addCollaboratingDepartment(final UUID id, final UUID departmentId) {
+        return repository.findById(id)
+                .map(event -> {
+                    // Construir a entidade
+                    final var entity = new EventCollaboration();
+                    entity.setCalendarEventId(id);
+                    entity.setDepartmentId(departmentId);
+
+                    // Salvar
+                    final var saved = collaborationRepository.save(entity);
+                    final var dto = mapper.map(saved, EventCollaborationDto.class);
+
+                    // Publicar evento
+                    publisher.publishEvent(new EntityEvent.Created<>(dto));
+
+                    return dto;
+                });
+    }
+
+    @Transactional
+    @PreAuthorize("@fga.check('calendar_event', #id, 'can_manage', 'user', principal.id)")
+    public void removeCollaboratingDepartment(final UUID id, final UUID departmentId) {
+        collaborationRepository.findByCalendarEventIdAndDepartmentId(id, departmentId)
+                .ifPresent(collaboration -> {
+                    // Deletar a colaboração
+                    collaborationRepository.delete(collaboration);
+
+                    // Publicar evento
+                    final var dto = mapper.map(collaboration, EventCollaborationDto.class);
+                    publisher.publishEvent(new EntityEvent.Deleted<>(dto));
+                });
     }
 
     /*
