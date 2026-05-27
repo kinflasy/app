@@ -147,6 +147,7 @@ public class CalendarEventService {
         repository.findById(id)
                 .ifPresent(entity -> {
                     repository.delete(entity);
+                    // TODO publicar DTO ao invés da entidade
                     publisher.publishEvent(new EntityEvent.Deleted<>(entity));
                 });
     }
