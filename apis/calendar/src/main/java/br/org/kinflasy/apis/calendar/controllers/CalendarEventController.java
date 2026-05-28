@@ -132,7 +132,7 @@ public class CalendarEventController {
         return ResponseEntity.ok(service.listScales(id));
     }
 
-    @PostMapping("{id}/scales/owner")
+    @PostMapping("{id}/scales")
     public ResponseEntity<ScaleDto> createOwnerScale(@PathVariable final UUID id,
             @RequestBody final ScaleRequest request) {
         return ResponseEntity.ok(service.createOwnerScale(id, request));
