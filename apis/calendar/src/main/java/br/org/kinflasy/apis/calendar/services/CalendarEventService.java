@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
@@ -16,6 +17,8 @@ import br.org.kinflasy.libs.calendar.dto.CalendarEventRequest;
 import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.EventCollaborationDto;
 import br.org.kinflasy.libs.calendar.dto.UnitCalendarEventDto;
+import br.org.kinflasy.libs.calendar.dto.scales.ScaleDto;
+import br.org.kinflasy.libs.calendar.dto.scales.ScaleRequest;
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.CharacteristicCondition;
 import br.org.kinflasy.libs.churches.dto.access_rules.ChurchRule;
@@ -34,6 +37,8 @@ import br.org.kinflasy.apis.calendar.repositories.CalendarEventRepository;
 import br.org.kinflasy.apis.calendar.repositories.DepartmentCalendarEventRepository;
 import br.org.kinflasy.apis.calendar.repositories.EventCollaborationRepository;
 import br.org.kinflasy.apis.calendar.repositories.UnitCalendarEventRepository;
+import br.org.kinflasy.apis.calendar.services.scales.CollaboratorScaleService;
+import br.org.kinflasy.apis.calendar.services.scales.OwnerScaleService;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientReadRequest;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
@@ -58,6 +63,9 @@ public class CalendarEventService {
     private final UnitCalendarEventRepository unitEventRepository;
     private final DepartmentCalendarEventRepository departmentEventRepository;
     private final EventCollaborationRepository collaborationRepository;
+
+    private final OwnerScaleService ownerScaleService;
+    private final CollaboratorScaleService collaboratorScaleService;
 
     private final OpenFgaClient fgaClient;
     private final MediaClient mediaClient;
@@ -177,7 +185,7 @@ public class CalendarEventService {
 
     @Transactional
     @PreAuthorize("@fga.check('calendar_event', #id, 'can_manage', 'user', principal.id)")
-    public Optional<EventCollaborationDto> addCollaboratingDepartment(final UUID id, final UUID departmentId) {
+    public Optional<EventCollaborationDto> addCollaborator(final UUID id, final UUID departmentId) {
         return repository.findById(id)
                 .map(event -> {
                     // Construir a entidade
@@ -198,7 +206,7 @@ public class CalendarEventService {
 
     @Transactional
     @PreAuthorize("@fga.check('calendar_event', #id, 'can_manage', 'user', principal.id)")
-    public void removeCollaboratingDepartment(final UUID id, final UUID departmentId) {
+    public void removeCollaborator(final UUID id, final UUID departmentId) {
         collaborationRepository.findByCalendarEventIdAndDepartmentId(id, departmentId)
                 .ifPresent(collaboration -> {
                     // Deletar a colaboração
@@ -208,6 +216,32 @@ public class CalendarEventService {
                     final var dto = mapper.map(collaboration, EventCollaborationDto.class);
                     publisher.publishEvent(new EntityEvent.Deleted<>(dto));
                 });
+    }
+
+    @PreAuthorize("@fga.check('calendar_event', #id, 'can_scale', 'user', principal.id)")
+    public List<ScaleDto> listScales(final UUID id) {
+        final var ownerScales = ownerScaleService.listByCalendarEventId(id);
+        final var collaboratorScales = collaborationRepository.findByCalendarEventId(id).stream()
+                .flatMap(collab -> collaboratorScaleService.listByCollaborationId(collab.getId()).stream())
+                .toList();
+
+        return Stream.concat(ownerScales.stream(), collaboratorScales.stream())
+                .toList();
+    }
+
+    @PreAuthorize("@fga.check('calendar_event', #id, 'can_manage', 'user', principal.id)")
+    public ScaleDto createOwnerScale(final UUID id, final ScaleRequest request) {
+        return ownerScaleService.create(id, request);
+    }
+
+    @PreAuthorize("@fga.check('calendar_event', #id, 'can_scale', 'user', principal.id) and "
+            + " @fga.check('department', #departmentId, 'can_manage', 'user', principal.id) and "
+            + " @fga.check('lineup', #request.lineupId, 'owner', 'department', departmentId)")
+    public Optional<ScaleDto> createCollaboratorScale(final UUID id, final UUID departmentId,
+            final ScaleRequest request) {
+        // Buscar a colaboração e criar a escala
+        return collaborationRepository.findByCalendarEventIdAndDepartmentId(id, departmentId)
+                .map(collab -> collaboratorScaleService.create(collab.getId(), request));
     }
 
     /*

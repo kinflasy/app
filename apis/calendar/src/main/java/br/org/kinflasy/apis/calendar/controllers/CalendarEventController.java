@@ -25,6 +25,8 @@ import br.org.kinflasy.libs.calendar.dto.CalendarEventRequest;
 import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.EventCollaborationDto;
 import br.org.kinflasy.libs.calendar.dto.UnitCalendarEventDto;
+import br.org.kinflasy.libs.calendar.dto.scales.ScaleDto;
+import br.org.kinflasy.libs.calendar.dto.scales.ScaleRequest;
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -113,7 +115,7 @@ public class CalendarEventController {
     @PostMapping("{id}/collaborators/{departmentId}")
     public ResponseEntity<EventCollaborationDto> addCollaboratingDepartment(@PathVariable final UUID id,
             @PathVariable final UUID departmentId) {
-        return service.addCollaboratingDepartment(id, departmentId)
+        return service.addCollaborator(id, departmentId)
                 .map(ResponseEntity::ok)
                 .orElseGet(ResponseEntity.notFound()::build);
     }
@@ -121,8 +123,27 @@ public class CalendarEventController {
     @DeleteMapping("{id}/collaborators/{departmentId}")
     public ResponseEntity<Void> removeCollaboratingDepartment(@PathVariable final UUID id,
             @PathVariable final UUID departmentId) {
-        service.removeCollaboratingDepartment(id, departmentId);
+        service.removeCollaborator(id, departmentId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("{id}/scales")
+    public ResponseEntity<List<ScaleDto>> listScales(@PathVariable final UUID id) {
+        return ResponseEntity.ok(service.listScales(id));
+    }
+
+    @PostMapping("{id}/scales/owner")
+    public ResponseEntity<ScaleDto> createOwnerScale(@PathVariable final UUID id,
+            @RequestBody final ScaleRequest request) {
+        return ResponseEntity.ok(service.createOwnerScale(id, request));
+    }
+
+    @PostMapping("{id}/collaborators/{departmentId}/scales")
+    public ResponseEntity<ScaleDto> createCollaboratorScale(@PathVariable final UUID id,
+            @PathVariable final UUID departmentId, @RequestBody final ScaleRequest request) {
+        return service.createCollaboratorScale(id, departmentId, request)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
     }
 
 }
