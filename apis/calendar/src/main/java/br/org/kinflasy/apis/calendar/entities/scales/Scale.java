@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 
 @Entity
 @DynamicUpdate
-@Table(name = "calendar_events")
+@Table(name = "scales")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @Accessors(chain = false)
