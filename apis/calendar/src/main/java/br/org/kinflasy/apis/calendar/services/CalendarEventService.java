@@ -12,6 +12,17 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.org.kinflasy.apis.calendar.clients.DepartmentClient;
+import br.org.kinflasy.apis.calendar.clients.MediaClient;
+import br.org.kinflasy.apis.calendar.entities.DepartmentCalendarEvent;
+import br.org.kinflasy.apis.calendar.entities.EventCollaboration;
+import br.org.kinflasy.apis.calendar.entities.UnitCalendarEvent;
+import br.org.kinflasy.apis.calendar.repositories.CalendarEventRepository;
+import br.org.kinflasy.apis.calendar.repositories.DepartmentCalendarEventRepository;
+import br.org.kinflasy.apis.calendar.repositories.EventCollaborationRepository;
+import br.org.kinflasy.apis.calendar.repositories.UnitCalendarEventRepository;
+import br.org.kinflasy.apis.calendar.services.scales.CollaboratorScaleService;
+import br.org.kinflasy.apis.calendar.services.scales.OwnerScaleService;
 import br.org.kinflasy.libs.calendar.dto.CalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.CalendarEventRequest;
 import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
@@ -30,15 +41,6 @@ import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.libs.media.validators.ProfileImageValidator;
-import br.org.kinflasy.apis.calendar.clients.DepartmentClient;
-import br.org.kinflasy.apis.calendar.clients.MediaClient;
-import br.org.kinflasy.apis.calendar.entities.EventCollaboration;
-import br.org.kinflasy.apis.calendar.repositories.CalendarEventRepository;
-import br.org.kinflasy.apis.calendar.repositories.DepartmentCalendarEventRepository;
-import br.org.kinflasy.apis.calendar.repositories.EventCollaborationRepository;
-import br.org.kinflasy.apis.calendar.repositories.UnitCalendarEventRepository;
-import br.org.kinflasy.apis.calendar.services.scales.CollaboratorScaleService;
-import br.org.kinflasy.apis.calendar.services.scales.OwnerScaleService;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientReadRequest;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
@@ -154,9 +156,24 @@ public class CalendarEventService {
     public void delete(final UUID id) {
         repository.findById(id)
                 .ifPresent(entity -> {
+                    // Deletar
                     repository.delete(entity);
-                    // TODO publicar DTO ao invés da entidade
-                    publisher.publishEvent(new EntityEvent.Deleted<>(entity));
+
+                    // Publicar evento
+                    switch (entity) {
+                        case UnitCalendarEvent unitCalendarEvent:
+                            publisher.publishEvent(new EntityEvent.Deleted<>(
+                                    mapper.map(unitCalendarEvent, UnitCalendarEventDto.class)));
+                            break;
+
+                        case DepartmentCalendarEvent departmentCalendarEvent:
+                            publisher.publishEvent(new EntityEvent.Deleted<>(
+                                    mapper.map(departmentCalendarEvent, DepartmentCalendarEventDto.class)));
+                            break;
+
+                        default:
+                            break;
+                    }
                 });
     }
 
