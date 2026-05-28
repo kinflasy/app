@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 
 @Entity
 @DynamicUpdate
-@Table(name = "event_collaborations", uniqueConstraints = {
+@Table(name = "scale_items", uniqueConstraints = {
         @jakarta.persistence.UniqueConstraint(columnNames = { ScaleItem_.SCALE_ID, ScaleItem_.ROLE_ID,
                 ScaleItem_.PERSON_ID })
 })
