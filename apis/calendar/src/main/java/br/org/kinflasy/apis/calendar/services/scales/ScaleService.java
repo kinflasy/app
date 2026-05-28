@@ -46,7 +46,7 @@ public class ScaleService {
 
     private final ApplicationEventPublisher publisher;
 
-    public List<ScaleDto.DetailingCalendarEvent> listByDepartmentIdInRange(final UUID departmentId,
+    public List<ScaleDto.DetailingCalendarEvent> listByDepartmentInRange(final UUID departmentId,
             final LocalDateTime start, final LocalDateTime end) {
         // Obter escalas cujo dono é este departamento
         final var ownerScales = departmentCalendarEventService.listInRange(departmentId, start, end).stream()

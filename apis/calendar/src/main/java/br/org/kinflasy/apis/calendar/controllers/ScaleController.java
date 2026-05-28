@@ -1,5 +1,6 @@
 package br.org.kinflasy.apis.calendar.controllers;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.apis.calendar.services.scales.ScaleService;
@@ -29,6 +31,13 @@ import lombok.AllArgsConstructor;
 public class ScaleController {
 
     private final ScaleService scaleService;
+
+    @GetMapping("department/{departmentId}")
+    public ResponseEntity<List<ScaleDto.DetailingCalendarEvent>> listByDepartmentInRange(
+            @PathVariable final UUID departmentId, @RequestParam final LocalDateTime start,
+            @RequestParam final LocalDateTime end) {
+        return ResponseEntity.ok(scaleService.listByDepartmentInRange(departmentId, start, end));
+    }
 
     @GetMapping("{id}/items")
     public ResponseEntity<List<ScaleItemDto>> listItems(@PathVariable final UUID id) {
