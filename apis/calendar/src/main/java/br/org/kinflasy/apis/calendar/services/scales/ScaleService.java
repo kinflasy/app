@@ -1,8 +1,10 @@
 package br.org.kinflasy.apis.calendar.services.scales;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
@@ -12,8 +14,11 @@ import br.org.kinflasy.apis.calendar.entities.scales.CollaboratorScale;
 import br.org.kinflasy.apis.calendar.entities.scales.OwnerScale;
 import br.org.kinflasy.apis.calendar.entities.scales.Scale;
 import br.org.kinflasy.apis.calendar.entities.scales.ScaleItem;
+import br.org.kinflasy.apis.calendar.repositories.EventCollaborationRepository;
 import br.org.kinflasy.apis.calendar.repositories.scales.ScaleItemRepository;
 import br.org.kinflasy.apis.calendar.repositories.scales.ScaleRepository;
+import br.org.kinflasy.apis.calendar.services.CalendarEventService;
+import br.org.kinflasy.apis.calendar.services.DepartmentCalendarEventService;
 import br.org.kinflasy.libs.calendar.dto.scales.CollaboratorScaleDto;
 import br.org.kinflasy.libs.calendar.dto.scales.OwnerScaleDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleDto;
@@ -21,6 +26,7 @@ import br.org.kinflasy.libs.calendar.dto.scales.ScaleItemDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleItemRequest;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleRequest;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -31,8 +37,39 @@ public class ScaleService {
 
     private final ScaleRepository repository;
     private final ScaleItemRepository itemRepository;
+    private final EventCollaborationRepository collaborationRepository;
+
+    private final OwnerScaleService ownerScaleService;
+    private final CalendarEventService calendarEventService;
+    private final CollaboratorScaleService collaboratorScaleService;
+    private final DepartmentCalendarEventService departmentCalendarEventService;
 
     private final ApplicationEventPublisher publisher;
+
+    public List<ScaleDto.DetailingCalendarEvent> listByDepartmentIdInRange(final UUID departmentId,
+            final LocalDateTime start, final LocalDateTime end) {
+        // Obter escalas cujo dono é este departamento
+        final var ownerScales = departmentCalendarEventService.listInRange(departmentId, start, end).stream()
+                .flatMap(event -> ownerScaleService.listByCalendarEventId(event.getId()).stream()
+                        .map(scale -> mapper.map(scale, ScaleDto.DetailingCalendarEvent.class)
+                                .setCalendarEvent(event)));
+
+        // Obter escalas de colaborações associadas a este departamento
+        final var collabScales = collaborationRepository.findByDepartmentIdInRange(departmentId, start, end).stream()
+                .flatMap(collab -> collaboratorScaleService.listByCollaborationId(collab.getId()).stream()
+                        .map(scale -> {
+                            final var event = calendarEventService.findById(collab.getCalendarEventId())
+                                    .orElseThrow(EntityNotFoundException::new);
+                            return mapper.map(scale, ScaleDto.DetailingCalendarEvent.class)
+                                    .setCalendarEvent(event);
+                        }));
+
+        return Stream.concat(ownerScales, collabScales)
+                .distinct()
+                .sorted((a, b) -> a.getCalendarEvent().getStartDateTime()
+                        .compareTo(b.getCalendarEvent().getStartDateTime()))
+                .toList();
+    }
 
     public Optional<ScaleDto> findById(final UUID id) {
         return repository.findById(id)
