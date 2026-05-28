@@ -39,6 +39,13 @@ public class ScaleController {
         return ResponseEntity.ok(scaleService.listByDepartmentInRange(departmentId, start, end));
     }
 
+    @GetMapping("unit/{unitId}")
+    public ResponseEntity<List<ScaleDto.DetailingCalendarEvent>> listByUnitInRange(
+            @PathVariable final UUID unitId, @RequestParam final LocalDateTime start,
+            @RequestParam final LocalDateTime end) {
+        return ResponseEntity.ok(scaleService.listByUnitInRange(unitId, start, end));
+    }
+
     @GetMapping("{id}/items")
     public ResponseEntity<List<ScaleItemDto>> listItems(@PathVariable final UUID id) {
         return ResponseEntity.ok(scaleService.listItems(id));

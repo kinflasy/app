@@ -19,6 +19,7 @@ import br.org.kinflasy.apis.calendar.repositories.scales.ScaleItemRepository;
 import br.org.kinflasy.apis.calendar.repositories.scales.ScaleRepository;
 import br.org.kinflasy.apis.calendar.services.CalendarEventService;
 import br.org.kinflasy.apis.calendar.services.DepartmentCalendarEventService;
+import br.org.kinflasy.apis.calendar.services.UnitCalendarEventService;
 import br.org.kinflasy.libs.calendar.dto.scales.CollaboratorScaleDto;
 import br.org.kinflasy.libs.calendar.dto.scales.OwnerScaleDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleDto;
@@ -42,6 +43,7 @@ public class ScaleService {
     private final OwnerScaleService ownerScaleService;
     private final CalendarEventService calendarEventService;
     private final CollaboratorScaleService collaboratorScaleService;
+    private final UnitCalendarEventService unitCalendarEventService;
     private final DepartmentCalendarEventService departmentCalendarEventService;
 
     private final ApplicationEventPublisher publisher;
@@ -65,6 +67,19 @@ public class ScaleService {
                         }));
 
         return Stream.concat(ownerScales, collabScales)
+                .distinct()
+                .sorted((a, b) -> a.getCalendarEvent().getStartDateTime()
+                        .compareTo(b.getCalendarEvent().getStartDateTime()))
+                .toList();
+    }
+
+    public List<ScaleDto.DetailingCalendarEvent> listByUnitInRange(final UUID unitId, final LocalDateTime start,
+            final LocalDateTime end) {
+        // Obter escalas cuja dona é esta unidade
+        return unitCalendarEventService.listInRange(unitId, start, end).stream()
+                .flatMap(event -> ownerScaleService.listByCalendarEventId(event.getId()).stream()
+                        .map(scale -> mapper.map(scale, ScaleDto.DetailingCalendarEvent.class)
+                                .setCalendarEvent(event)))
                 .distinct()
                 .sorted((a, b) -> a.getCalendarEvent().getStartDateTime()
                         .compareTo(b.getCalendarEvent().getStartDateTime()))
