@@ -98,13 +98,14 @@ type calendar_event
 
     define can_edit: admin from owner or can_manage from owner
     define can_manage: can_edit or can_manage from owner
-    define can_scale: can_manage from collaborator
+    define can_scale: can_manage or can_manage from collaborator
+    define can_observe: can_scale or observer from collaborator
     define can_view: [user with characteristics,
       department#leader with characteristics, department#assistant with characteristics, department#integrant with characteristics,
       department#consultant with characteristics, department#observer with characteristics,
       unit#member with characteristics, unit#congregated with characteristics, unit#visitor with characteristics,
       church#member with characteristics, church#congregated with characteristics, church#visitor with characteristics,
-      user:* with characteristics] or can_manage or observer from collaborator
+      user:* with characteristics] or can_observe
 
 type ability
   relations
@@ -127,6 +128,13 @@ type lineup_item
 
     define can_edit: can_edit from parent_lineup
     define can_view: can_view from parent_lineup
+
+type scale
+  relations
+    define owner: [unit, department]
+
+    define can_edit: admin from owner or can_manage from owner
+    define can_view: congregated from owner or can_observe from owner
 
 condition characteristics(user_gender: string, user_age: int, req_gender: string, min_age: int, max_age: int) {
   (req_gender == "" || user_gender == req_gender) &&

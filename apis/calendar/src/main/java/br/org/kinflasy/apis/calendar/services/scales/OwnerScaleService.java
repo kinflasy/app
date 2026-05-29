@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.calendar.entities.scales.OwnerScale;
@@ -21,12 +22,18 @@ public class OwnerScaleService {
 
     private final ApplicationEventPublisher publisher;
 
+    /*
+     * ACESSO RESTRITO
+     */
+
+    @PreAuthorize("@fga.check('calendar_event', #calendarEventId, 'can_observe', 'user', principal.id)")
     public List<OwnerScaleDto> listByCalendarEventId(final UUID calendarEventId) {
         return repository.findByCalendarEventId(calendarEventId).stream()
                 .map(this::toDto)
                 .toList();
     }
 
+    @PreAuthorize("@fga.check('calendar_event', #calendarEventId, 'can_manage', 'user', principal.id)")
     public OwnerScaleDto create(final UUID calendarEventId, final ScaleRequest request) {
         // Construir entidade
         final var entity = new OwnerScale();
@@ -42,6 +49,10 @@ public class OwnerScaleService {
 
         return toDto(saved);
     }
+
+    /*
+     * ACESSO PRIVADO
+     */
 
     private OwnerScaleDto toDto(final OwnerScale entity) {
         final var dto = new OwnerScaleDto();

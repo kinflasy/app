@@ -239,10 +239,12 @@ public class CalendarEventService {
     public List<ScaleDto> listScales(final UUID id) {
         final var ownerScales = ownerScaleService.listByCalendarEventId(id);
         final var collaboratorScales = collaborationRepository.findByCalendarEventId(id).stream()
-                .flatMap(collab -> collaboratorScaleService.listByCollaborationId(collab.getId()).stream())
-                .toList();
+                .flatMap(collab -> collaboratorScaleService
+                        .listByCalendarEventIdAndDepartmentId(id, collab.getDepartmentId())
+                        .stream());
 
-        return Stream.concat(ownerScales.stream(), collaboratorScales.stream())
+        return Stream.concat(ownerScales.stream(), collaboratorScales)
+                .distinct()
                 .toList();
     }
 
@@ -257,8 +259,8 @@ public class CalendarEventService {
     public Optional<ScaleDto> createCollaboratorScale(final UUID id, final UUID departmentId,
             final ScaleRequest request) {
         // Buscar a colaboração e criar a escala
-        return collaborationRepository.findByCalendarEventIdAndDepartmentId(id, departmentId)
-                .map(collab -> collaboratorScaleService.create(collab.getId(), request));
+        return collaboratorScaleService.create(id, departmentId, request)
+                .map(ScaleDto.class::cast);
     }
 
     /*

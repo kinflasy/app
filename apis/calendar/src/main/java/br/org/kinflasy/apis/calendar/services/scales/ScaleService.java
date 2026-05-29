@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.calendar.entities.scales.CollaboratorScale;
@@ -48,6 +49,11 @@ public class ScaleService {
 
     private final ApplicationEventPublisher publisher;
 
+    /*
+     * ACESSO RESTRITO
+     */
+
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_observe', 'user', principal.id)")
     public List<ScaleDto.DetailingCalendarEvent> listByDepartmentInRange(final UUID departmentId,
             final LocalDateTime start, final LocalDateTime end) {
         // Obter escalas cujo dono é este departamento
@@ -58,7 +64,8 @@ public class ScaleService {
 
         // Obter escalas de colaborações associadas a este departamento
         final var collabScales = collaborationRepository.findByDepartmentIdInRange(departmentId, start, end).stream()
-                .flatMap(collab -> collaboratorScaleService.listByCollaborationId(collab.getId()).stream()
+                .flatMap(collab -> collaboratorScaleService
+                        .listByCalendarEventIdAndDepartmentId(collab.getCalendarEventId(), departmentId).stream()
                         .map(scale -> {
                             final var event = calendarEventService.findById(collab.getCalendarEventId())
                                     .orElseThrow(EntityNotFoundException::new);
@@ -73,6 +80,8 @@ public class ScaleService {
                 .toList();
     }
 
+    @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id) or "
+            + "@fga.check('unit', #unitId, 'department_manager', 'user', principal.id)")
     public List<ScaleDto.DetailingCalendarEvent> listByUnitInRange(final UUID unitId, final LocalDateTime start,
             final LocalDateTime end) {
         // Obter escalas cuja dona é esta unidade
@@ -86,11 +95,13 @@ public class ScaleService {
                 .toList();
     }
 
+    @PreAuthorize("@fga.check('scale', #id, 'can_view', 'user', principal.id)")
     public Optional<ScaleDto> findById(final UUID id) {
         return repository.findById(id)
                 .map(this::toDto);
     }
 
+    @PreAuthorize("@fga.check('scale', #id, 'can_edit', 'user', principal.id)")
     public Optional<ScaleDto> update(final UUID id, final ScaleRequest request) {
         return repository.findById(id)
                 .map(scale -> {
@@ -108,6 +119,7 @@ public class ScaleService {
                 });
     }
 
+    @PreAuthorize("@fga.check('scale', #id, 'can_edit', 'user', principal.id)")
     public void delete(final UUID id) {
         repository.findById(id)
                 .ifPresent(scale -> {
@@ -122,19 +134,21 @@ public class ScaleService {
                 });
     }
 
-    public List<ScaleItemDto> listItems(final UUID scaleId) {
-        return itemRepository.findByScaleId(scaleId).stream()
+    @PreAuthorize("@fga.check('scale', #id, 'can_view', 'user', principal.id)")
+    public List<ScaleItemDto> listItems(final UUID id) {
+        return itemRepository.findByScaleId(id).stream()
                 .map(item -> mapper.map(item, ScaleItemDto.class))
                 .toList();
     }
 
-    public ScaleItemDto addItem(final UUID scaleId, final ScaleItemRequest request) {
-        return itemRepository.findByScaleIdAndPersonIdAndRoleId(scaleId, request.getPersonId(), request.getRoleId())
+    @PreAuthorize("@fga.check('scale', #id, 'can_edit', 'user', principal.id)")
+    public ScaleItemDto addItem(final UUID id, final ScaleItemRequest request) {
+        return itemRepository.findByScaleIdAndPersonIdAndRoleId(id, request.getPersonId(), request.getRoleId())
                 .map(entity -> mapper.map(entity, ScaleItemDto.class))
                 .orElseGet(() -> {
                     // Construir entidade
                     final var entity = new ScaleItem();
-                    entity.setScaleId(scaleId);
+                    entity.setScaleId(id);
                     entity.setPersonId(request.getPersonId());
                     entity.setRoleId(request.getRoleId());
 
@@ -149,8 +163,9 @@ public class ScaleService {
                 });
     }
 
-    public void removeItem(final UUID itemId) {
-        itemRepository.findById(itemId)
+    @PreAuthorize("@fga.check('scale', #id, 'can_edit', 'user', principal.id)")
+    public void removeItem(final UUID id, final ScaleItemRequest request) {
+        itemRepository.findByScaleIdAndPersonIdAndRoleId(id, request.getPersonId(), request.getRoleId())
                 .ifPresent(item -> {
                     // Guardar estado original
                     final var original = mapper.map(item, ScaleItemDto.class);
@@ -163,19 +178,9 @@ public class ScaleService {
                 });
     }
 
-    public void removeItem(final UUID scaleId, final ScaleItemRequest request) {
-        itemRepository.findByScaleIdAndPersonIdAndRoleId(scaleId, request.getPersonId(), request.getRoleId())
-                .ifPresent(item -> {
-                    // Guardar estado original
-                    final var original = mapper.map(item, ScaleItemDto.class);
-
-                    // Deletar
-                    itemRepository.delete(item);
-
-                    // Publicar evento
-                    publisher.publishEvent(new EntityEvent.Deleted<>(original));
-                });
-    }
+    /*
+     * ACESSO PRIVADO
+     */
 
     private ScaleDto toDto(final Scale scale) {
         return switch (scale) {

@@ -1,12 +1,15 @@
 package br.org.kinflasy.apis.calendar.services.scales;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.calendar.entities.scales.CollaboratorScale;
+import br.org.kinflasy.apis.calendar.repositories.EventCollaborationRepository;
 import br.org.kinflasy.apis.calendar.repositories.scales.CollaboratorScaleRepository;
 import br.org.kinflasy.libs.calendar.dto.scales.CollaboratorScaleDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleRequest;
@@ -18,30 +21,48 @@ import lombok.AllArgsConstructor;
 public class CollaboratorScaleService {
 
     private final CollaboratorScaleRepository repository;
+    private final EventCollaborationRepository collaborationRepository;
 
     private final ApplicationEventPublisher publisher;
 
-    public List<CollaboratorScaleDto> listByCollaborationId(final UUID collaborationId) {
-        return repository.findByCollaborationId(collaborationId).stream()
+    /*
+     * ACESSO RESTRITO
+     */
+
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_observe', 'user', principal.id) and "
+            + "@fga.check('calendar_event', #calendarEventId, 'can_observe', 'user', principal.id)")
+    public List<CollaboratorScaleDto> listByCalendarEventIdAndDepartmentId(final UUID calendarEventId,
+            final UUID departmentId) {
+        return repository.findByCalendarEventIdAndDepartmentId(calendarEventId, departmentId).stream()
                 .map(this::toDto)
                 .toList();
     }
 
-    public CollaboratorScaleDto create(final UUID collaborationId, final ScaleRequest request) {
-        // Construir entidade
-        final var entity = new CollaboratorScale();
-        entity.setCollaborationId(collaborationId);
-        entity.setLineupId(request.getLineupId());
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_manage', 'user', principal.id) and "
+            + "@fga.check('calendar_event', #calendarEventId, 'can_scale', 'user', principal.id)")
+    public Optional<CollaboratorScaleDto> create(final UUID calendarEventId, final UUID departmentId,
+            final ScaleRequest request) {
+        return collaborationRepository.findByCalendarEventIdAndDepartmentId(calendarEventId, departmentId)
+                .map(collab -> {
+                    // Construir entidade
+                    final var entity = new CollaboratorScale();
+                    entity.setCollaborationId(collab.getId());
+                    entity.setLineupId(request.getLineupId());
 
-        // Salvar
-        final var saved = repository.save(entity);
-        final var dto = toDto(saved);
+                    // Salvar
+                    final var saved = repository.save(entity);
+                    final var dto = toDto(saved);
 
-        // Publicar evento
-        publisher.publishEvent(new EntityEvent.Created<>(dto));
+                    // Publicar evento
+                    publisher.publishEvent(new EntityEvent.Created<>(dto));
 
-        return toDto(saved);
+                    return toDto(saved);
+                });
     }
+
+    /*
+     * ACESSO PRIVADO
+     */
 
     private CollaboratorScaleDto toDto(final CollaboratorScale entity) {
         final var dto = new CollaboratorScaleDto();

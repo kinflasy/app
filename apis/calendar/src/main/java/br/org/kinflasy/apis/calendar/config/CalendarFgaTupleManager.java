@@ -13,6 +13,7 @@ import br.org.kinflasy.libs.api_utils.FgaTupleManager;
 import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.EventCollaborationDto;
 import br.org.kinflasy.libs.calendar.dto.UnitCalendarEventDto;
+import br.org.kinflasy.libs.calendar.dto.scales.OwnerScaleDto;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.apis.calendar.services.CalendarEventService;
 import dev.openfga.sdk.api.client.OpenFgaClient;
@@ -29,6 +30,7 @@ public class CalendarFgaTupleManager extends FgaTupleManager {
     private static final String TYPE_CALENDAR_EVENT = "calendar_event:";
     private static final String TYPE_UNIT = "unit:";
     private static final String TYPE_DEPARTMENT = "department:";
+    private static final String TYPE_SCALE = "scale:";
 
     /*
      * Relacionamentos
@@ -133,6 +135,66 @@ public class CalendarFgaTupleManager extends FgaTupleManager {
                 .user(TYPE_DEPARTMENT + dto.getDepartmentId());
 
         return deleteTuples(tuple);
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleOwnerScaleCreated(final EntityEvent.Created<OwnerScaleDto> event) {
+        final var dto = event.getSource();
+
+        return service.findById(dto.getCalendarEventId())
+                .map(calendarEvent -> {
+                    // Determinar usuário com base no tipo do evento
+                    final var user = switch (calendarEvent) {
+                        case UnitCalendarEventDto unitEvent -> TYPE_UNIT + unitEvent.getUnitId();
+                        case DepartmentCalendarEventDto deptEvent -> TYPE_DEPARTMENT + deptEvent.getDepartmentId();
+                        default -> null;
+                    };
+
+                    // Construir tupla
+                    final var tuple = new ClientTupleKey()
+                            ._object(TYPE_SCALE + dto.getId())
+                            .relation(RELATION_OWNER)
+                            .user(user);
+
+                    // Escrever tupla
+                    return writeTuples(tuple);
+                })
+
+                // Se o evento não for encontrado, retornar um futuro concluído
+                .orElseGet(() -> CompletableFuture.failedFuture(
+                        new IllegalStateException("Evento não encontrado para a escala: " + dto.getCalendarEventId())));
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleOwnerScaleDeleted(final EntityEvent.Deleted<OwnerScaleDto> event) {
+        final var dto = event.getSource();
+
+        return service.findById(dto.getCalendarEventId())
+                .map(calendarEvent -> {
+                    // Determinar usuário com base no tipo do evento
+                    final var user = switch (calendarEvent) {
+                        case UnitCalendarEventDto unitEvent -> TYPE_UNIT + unitEvent.getUnitId();
+                        case DepartmentCalendarEventDto deptEvent -> TYPE_DEPARTMENT + deptEvent.getDepartmentId();
+                        default -> null;
+                    };
+
+                    // Construir tupla
+                    final var tuple = new ClientTupleKey()
+                            ._object(TYPE_SCALE + dto.getId())
+                            .relation(RELATION_OWNER)
+                            .user(user);
+
+                    // Deletar tupla
+                    return deleteTuples(tuple);
+                })
+
+                // Se o evento não for encontrado, retornar um futuro concluído
+                .orElseGet(() -> CompletableFuture.failedFuture(
+                        new IllegalStateException("Evento não encontrado para a escala: " + dto.getCalendarEventId())));
     }
 
 }
