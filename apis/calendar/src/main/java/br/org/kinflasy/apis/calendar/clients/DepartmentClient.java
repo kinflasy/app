@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 
-@FeignClient(name = "calendar-departmentsApi", url = "${CHURCHES_API_URL}", path = "churches/unit/departments")
+@FeignClient(name = "calendar-departmentsApi", url = "${CHURCHES_API_URL}", path = "church/unit/departments")
 public interface DepartmentClient {
 
     @GetMapping("{id}")
