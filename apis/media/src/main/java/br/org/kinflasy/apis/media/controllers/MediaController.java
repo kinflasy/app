@@ -31,7 +31,7 @@ public class MediaController {
     private final MediaService service;
 
     @PostMapping(value = "upload", consumes = "multipart/form-data")
-    @Operation(summary = "Upload", description = "Fazer upload de um arquivo.")
+    @Operation(summary = "Fazer upload", description = "Fazer upload de um arquivo.")
     public ResponseEntity<MediaDto> upload(@RequestPart final MultipartFile file) throws IOException {
         final var uploaded = service.upload(file.getBytes(), file.getOriginalFilename(), file.getContentType(),
                 file.getSize());
@@ -39,7 +39,7 @@ public class MediaController {
     }
 
     @GetMapping("{id}")
-    @Operation(summary = "Get Metadata", description = "Obter metadados de um arquivo.")
+    @Operation(summary = "Consultar metadados", description = "Obter metadados de um arquivo.")
     public ResponseEntity<MediaDto> getMetadata(@PathVariable final UUID id) {
         return service.getMetadata(id)
                 .map(ResponseEntity::ok)
@@ -47,7 +47,7 @@ public class MediaController {
     }
 
     @GetMapping(value = "{id}/download")
-    @Operation(summary = "Download", description = "Fazer download de um arquivo.")
+    @Operation(summary = "Fazer download", description = "Fazer download de um arquivo.")
     public ResponseEntity<byte[]> download(@PathVariable final UUID id) {
         return service.download(id)
                 .map(mediaWithContent -> {
@@ -62,7 +62,7 @@ public class MediaController {
     }
 
     @DeleteMapping("{id}/delete")
-    @Operation(summary = "Delete", description = "Deletar um arquivo.")
+    @Operation(summary = "Deletar arquivo", description = "Deletar um arquivo.")
     public ResponseEntity<Void> delete(@PathVariable final UUID id) throws IOException {
         service.delete(id);
         return ResponseEntity.noContent().build();
