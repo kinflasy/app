@@ -13,6 +13,7 @@ import br.org.kinflasy.apis.churches.services.MembershipService;
 import br.org.kinflasy.apis.churches.services.department.IntegrationService;
 import br.org.kinflasy.libs.churches.dto.MembershipDto.Pending;
 import br.org.kinflasy.libs.churches.dto.departments.IntegrationDto;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 
@@ -26,11 +27,13 @@ public class MembershipController {
     private final MembershipService service;
 
     @GetMapping("/pending")
+    @Operation(summary = "Listar membresias pendentes do usuário logado", description = "Listar as pendências de membresia do usuário logado.")
     public ResponseEntity<List<Pending>> listPendingForLoggedUser() {
         return ResponseEntity.ok(service.listPendingForLoggedUser());
     }
 
     @GetMapping("{id}/integrations")
+    @Operation(summary = "Listar integrações", description = "Listar as integrações de uma membresia.")
     public ResponseEntity<List<IntegrationDto>> listIntegrations(@PathVariable final UUID id) {
         return ResponseEntity.ok(integrationService.listByMembership(id));
     }

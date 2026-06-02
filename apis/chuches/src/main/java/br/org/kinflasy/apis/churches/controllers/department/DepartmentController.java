@@ -113,6 +113,7 @@ public class DepartmentController {
     }
 
     @GetMapping("{id}/extensions")
+    @Operation(summary = "Listar extensões", description = "Listar as extensões em que o departamento está inscrito.")
     public ResponseEntity<List<Extension>> listExtensions(@PathVariable final UUID id) {
         try {
             return new ResponseEntity<>(service.listExtensions(id), HttpStatus.OK);
@@ -122,6 +123,7 @@ public class DepartmentController {
     }
 
     @PostMapping("{id}/extensions")
+    @Operation(summary = "Inscrever-se em uma extensão", description = "Inscrever o departamento em uma extensão.")
     public ResponseEntity<ExtensionSubscriptionDto> subscribeToExtension(@PathVariable final UUID id,
             @RequestBody final ExtensionSubscriptionRequest request) {
         try {
@@ -132,6 +134,7 @@ public class DepartmentController {
     }
 
     @GetMapping("{id}/extensions/{extension}")
+    @Operation(summary = "Buscar inscrição do departamento em determinada extensão", description = "Buscar a inscrição do departamento em uma extensão específica.")
     public ResponseEntity<ExtensionSubscriptionDto> findExtension(@PathVariable final UUID id,
             @PathVariable final Extension extension) {
         return service.findExtension(id, extension)
@@ -140,6 +143,7 @@ public class DepartmentController {
     }
 
     @DeleteMapping("{id}/extensions")
+    @Operation(summary = "Dissociar extensão", description = "Dissociar o departamento de uma extensão.")
     public ResponseEntity<Void> dissociateExtension(@PathVariable final UUID id,
             @RequestBody final ExtensionSubscriptionRequest request) {
         try {
@@ -151,11 +155,13 @@ public class DepartmentController {
     }
 
     @GetMapping("{id}/integrants")
+    @Operation(summary = "Listar integrantes", description = "Listar os integrantes de um departamento.")
     public ResponseEntity<List<IntegrationDto.Detailed>> listIntegrants(@PathVariable final UUID id) {
         return ResponseEntity.ok(integrationService.listByDepartment(id));
     }
 
     @GetMapping("{id}/integration/{membershipId}")
+    @Operation(summary = "Buscar integração", description = "Buscar a integração de um membro com um departamento.")
     public ResponseEntity<IntegrationDto> findIntegration(@PathVariable final UUID id,
             @PathVariable final UUID membershipId) {
         return integrationService.findByDepartmentAndMembership(id, membershipId)
@@ -164,12 +170,14 @@ public class DepartmentController {
     }
 
     @PostMapping("{id}/integrants")
+    @Operation(summary = "Adicionar integrante", description = "Adicionar um novo integrante a um departamento.")
     public ResponseEntity<IntegrationDto> addIntegrant(@PathVariable final UUID id,
             @RequestBody final IntegrationRequest request) {
         return ResponseEntity.ok(integrationService.create(id, request));
     }
 
     @PutMapping("{id}/integrants")
+    @Operation(summary = "Atualizar tipo de integração", description = "Atualizar o tipo de integração de um membro com um departamento.")
     public ResponseEntity<IntegrationDto> updateIntegrationType(@PathVariable final UUID id,
             @RequestBody final IntegrationRequest request) {
         return integrationService.updateType(id, request)
@@ -178,6 +186,7 @@ public class DepartmentController {
     }
 
     @DeleteMapping("{id}/integrants")
+    @Operation(summary = "Remover integrante", description = "Remover um integrante de um departamento.")
     public ResponseEntity<Void> removeIntegrant(@PathVariable final UUID id,
             @RequestBody final IntegrationRequest request) {
         integrationService.deleteByDepartmentAndMembership(id, request.getMembershipId());
@@ -185,38 +194,45 @@ public class DepartmentController {
     }
 
     @PostMapping("{id}/join")
+    @Operation(summary = "Solicitar ingresso", description = "Solicitar ingresso em um departamento.")
     public ResponseEntity<Pending> askToJoin(@PathVariable final UUID id) {
         return ResponseEntity.ok(service.askToJoin(id));
     }
 
     @GetMapping("{id}/pending")
+    @Operation(summary = "Listar solicitações de ingresso no departamento", description = "Listar as pendências de ingresso de um departamento.")
     public ResponseEntity<List<Pending>> listPendingByDepartment(@PathVariable final UUID id) {
         return ResponseEntity.ok(integrationService.listPendingByDepartment(id));
     }
 
     @PostMapping("{id}/pending")
+    @Operation(summary = "Confirmar solicitação de ingresso", description = "Confirmar a solicitação de ingresso de um membro em um departamento.")
     public ResponseEntity<IntegrationDto> confirmPending(@PathVariable final UUID id,
             @RequestBody final IntegrationRequest request) {
         return ResponseEntity.ok(integrationService.confirmPending(id, request.getMembershipId(), request.getType()));
     }
 
     @DeleteMapping("{id}/pending/{membershipId}")
+    @Operation(summary = "Rejeitar solicitação de ingresso", description = "Rejeitar a solicitação de ingresso de um membro em um departamento.")
     public ResponseEntity<Void> deletePending(@PathVariable final UUID id, @PathVariable final UUID membershipId) {
         integrationService.deletePending(id, membershipId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("{id}/visibility-rules")
+    @Operation(summary = "Listar regras de visibilidade", description = "Listar as regras de visibilidade de um departamento.")
     public ResponseEntity<List<AccessRule>> listVisibilityRules(@PathVariable final UUID id) {
         return ResponseEntity.ok(service.listVisibilityRules(id));
     }
 
     @GetMapping("{id}/join-rules")
+    @Operation(summary = "Listar regras de ingresso", description = "Listar as regras de ingresso de um departamento.")
     public ResponseEntity<List<AccessRule>> listJoinRules(@PathVariable final UUID id) {
         return ResponseEntity.ok(service.listJoinRules(id));
     }
 
     @PutMapping("{id}/visibility-rules")
+    @Operation(summary = "Substituir regras de visibilidade", description = "Substituir as regras de visibilidade de um departamento.")
     public ResponseEntity<Void> replaceVisibilityRules(@PathVariable final UUID id,
             @RequestBody final AccessRulesRequest request) {
         service.replaceVisibilityRules(id, request.getRules());
@@ -224,6 +240,7 @@ public class DepartmentController {
     }
 
     @PutMapping("{id}/join-rules")
+    @Operation(summary = "Substituir regras de ingresso", description = "Substituir as regras de ingresso de um departamento.")
     public ResponseEntity<Void> replaceJoinRules(@PathVariable final UUID id,
             @RequestBody final AccessRulesRequest request) {
         service.replaceJoinRules(id, request.getRules());
@@ -231,6 +248,7 @@ public class DepartmentController {
     }
 
     @DeleteMapping("{id}/visibility-rules")
+    @Operation(summary = "Resetar regras de visibilidade", description = "Resetar as regras de visibilidade de um departamento.")
     public ResponseEntity<List<AccessRule>> resetVisibilityRules(@PathVariable final UUID id) {
         return service.resetVisibilityRules(id)
                 .map(ResponseEntity::ok)
@@ -238,6 +256,7 @@ public class DepartmentController {
     }
 
     @DeleteMapping("{id}/join-rules")
+    @Operation(summary = "Resetar regras de ingresso", description = "Resetar as regras de ingresso de um departamento.")
     public ResponseEntity<List<AccessRule>> resetJoinRules(@PathVariable final UUID id) {
         return service.resetJoinRules(id)
                 .map(ResponseEntity::ok)

@@ -145,6 +145,7 @@ public class UnitController {
     }
 
     @GetMapping("{id}/membership/{personId}")
+    @Operation(summary = "Buscar membresia ativa", description = "Buscar a relação de membresia ativa entre uma pessoa e uma unidade.")
     public ResponseEntity<MembershipDto.Simple> findActiveMembership(@PathVariable final UUID id,
             @PathVariable final UUID personId) {
         return service.findActiveMembership(id, personId)
