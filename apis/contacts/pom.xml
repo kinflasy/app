@@ -25,6 +25,10 @@
 
     <!-- Dependências -->
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
         <!-- Dependências do Projeto Kinflasy -->
         <dependency>
             <groupId>br.org.kinflasy.libs</groupId>
