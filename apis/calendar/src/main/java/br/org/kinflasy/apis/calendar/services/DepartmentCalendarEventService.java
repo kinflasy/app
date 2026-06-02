@@ -3,6 +3,7 @@ package br.org.kinflasy.apis.calendar.services;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
@@ -11,10 +12,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.calendar.entities.DepartmentCalendarEvent;
+import br.org.kinflasy.apis.calendar.repositories.DepartmentCalendarEventRepository;
+import br.org.kinflasy.libs.calendar.dto.CalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.CalendarEventRequest;
 import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
-import br.org.kinflasy.apis.calendar.repositories.DepartmentCalendarEventRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -27,6 +29,8 @@ public class DepartmentCalendarEventService {
 
     private final DepartmentCalendarEventRepository repository;
 
+    private final CalendarEventService calendarEventService;
+
     /*
      * ACESSO RESTRITO
      */
@@ -37,6 +41,18 @@ public class DepartmentCalendarEventService {
             final LocalDateTime end) {
         return repository.findByDepartmentIdInRange(departmentId, start, end).stream()
                 .map(entity -> mapper.map(entity, DepartmentCalendarEventDto.class))
+                .sorted((a, b) -> a.getStartDateTime().compareTo(b.getStartDateTime()))
+                .toList();
+    }
+
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_observe', 'user', principal.id)")
+    @PostFilter("@fgau.withCharacteristics('calendar_event', filterObject.id, 'can_view')")
+    public List<CalendarEventDto> listInRangeWithCollabs(final UUID departmentId, final LocalDateTime start,
+            final LocalDateTime end) {
+        final var ownedEvents = listInRange(departmentId, start, end);
+        final var collabEvents = calendarEventService.listCollaborationsInRange(departmentId, start, end);
+
+        return Stream.concat(ownedEvents.stream(), collabEvents.stream())
                 .sorted((a, b) -> a.getStartDateTime().compareTo(b.getStartDateTime()))
                 .toList();
     }

@@ -1,5 +1,6 @@
 package br.org.kinflasy.apis.calendar.services;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +9,7 @@ import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -76,6 +78,18 @@ public class CalendarEventService {
     /*
      * ACESSO RESTRITO
      */
+
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_observe', 'user', principal.id)")
+    @PostFilter("@fgau.withCharacteristics('calendar_event', filterObject.id, 'can_view')")
+    public List<CalendarEventDto> listCollaborationsInRange(final UUID departmentId, final LocalDateTime start,
+            final LocalDateTime end) {
+        return collaborationRepository.findByDepartmentIdInRange(departmentId, start, end).stream()
+                .map(collaboration -> findById(collaboration.getCalendarEventId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .sorted((a, b) -> a.getStartDateTime().compareTo(b.getStartDateTime()))
+                .toList();
+    }
 
     @PreAuthorize("@fgau.withCharacteristics('calendar_event', #id, 'can_view')")
     public Optional<CalendarEventDto> findById(final UUID id) {

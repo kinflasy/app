@@ -55,6 +55,19 @@ public class CalendarEventController {
         return ResponseEntity.ok(departmentService.listInRange(departmentId, start, end));
     }
 
+    @GetMapping("department/{departmentId}/collabs")
+    public ResponseEntity<List<CalendarEventDto>> listCollabsByDepartmentInRange(@PathVariable final UUID departmentId,
+            @RequestParam final LocalDateTime start, @RequestParam final LocalDateTime end) {
+        return ResponseEntity.ok(service.listCollaborationsInRange(departmentId, start, end));
+    }
+
+    @GetMapping("department/{departmentId}/with-collabs")
+    public ResponseEntity<List<CalendarEventDto>> listByDepartmentInRangeWithCollabs(
+            @PathVariable final UUID departmentId, @RequestParam final LocalDateTime start,
+            @RequestParam final LocalDateTime end) {
+        return ResponseEntity.ok(departmentService.listInRangeWithCollabs(departmentId, start, end));
+    }
+
     @PostMapping("unit/{unitId}")
     public ResponseEntity<UnitCalendarEventDto> createWithUnit(@PathVariable final UUID unitId,
             @RequestBody final CalendarEventRequest request) {
