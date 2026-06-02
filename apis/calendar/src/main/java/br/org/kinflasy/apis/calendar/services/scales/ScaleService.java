@@ -15,7 +15,6 @@ import br.org.kinflasy.apis.calendar.entities.scales.CollaboratorScale;
 import br.org.kinflasy.apis.calendar.entities.scales.OwnerScale;
 import br.org.kinflasy.apis.calendar.entities.scales.Scale;
 import br.org.kinflasy.apis.calendar.entities.scales.ScaleItem;
-import br.org.kinflasy.apis.calendar.repositories.EventCollaborationRepository;
 import br.org.kinflasy.apis.calendar.repositories.scales.ScaleItemRepository;
 import br.org.kinflasy.apis.calendar.repositories.scales.ScaleRepository;
 import br.org.kinflasy.apis.calendar.services.CalendarEventService;
@@ -28,7 +27,6 @@ import br.org.kinflasy.libs.calendar.dto.scales.ScaleItemDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleItemRequest;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleRequest;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -39,7 +37,6 @@ public class ScaleService {
 
     private final ScaleRepository repository;
     private final ScaleItemRepository itemRepository;
-    private final EventCollaborationRepository collaborationRepository;
 
     private final OwnerScaleService ownerScaleService;
     private final CalendarEventService calendarEventService;
@@ -63,15 +60,11 @@ public class ScaleService {
                                 .setCalendarEvent(event)));
 
         // Obter escalas de colaborações associadas a este departamento
-        final var collabScales = collaborationRepository.findByDepartmentIdInRange(departmentId, start, end).stream()
-                .flatMap(collab -> collaboratorScaleService
-                        .listByCalendarEventIdAndDepartmentId(collab.getCalendarEventId(), departmentId).stream()
-                        .map(scale -> {
-                            final var event = calendarEventService.findById(collab.getCalendarEventId())
-                                    .orElseThrow(EntityNotFoundException::new);
-                            return mapper.map(scale, ScaleDto.DetailingCalendarEvent.class)
-                                    .setCalendarEvent(event);
-                        }));
+        final var collabScales = calendarEventService.listCollaborationsInRange(departmentId, start, end).stream()
+                .flatMap(event -> collaboratorScaleService
+                        .listByCalendarEventIdAndDepartmentId(event.getId(), departmentId).stream()
+                        .map(scale -> mapper.map(scale, ScaleDto.DetailingCalendarEvent.class)
+                                .setCalendarEvent(event)));
 
         return Stream.concat(ownerScales, collabScales)
                 .distinct()
