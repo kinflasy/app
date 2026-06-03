@@ -269,7 +269,7 @@ public class CalendarEventService {
 
     @PreAuthorize("@fga.check('calendar_event', #id, 'can_scale', 'user', principal.id) and "
             + " @fga.check('department', #departmentId, 'can_manage', 'user', principal.id) and "
-            + " @fga.check('lineup', #request.lineupId, 'owner', 'department', departmentId)")
+            + " @fga.check('lineup', #request.lineupId, 'owner', 'department', #departmentId)")
     public Optional<ScaleDto> createCollaboratorScale(final UUID id, final UUID departmentId,
             final ScaleRequest request) {
         // Buscar a colaboração e criar a escala
