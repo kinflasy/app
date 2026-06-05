@@ -35,7 +35,7 @@ public class DepartmentCalendarEventService {
      * ACESSO RESTRITO
      */
 
-    @PreAuthorize("@fga.check('department', #departmentId, 'can_view', 'user', principal.id)")
+    @PreAuthorize("@fgau.withCharacteristics('department', #departmentId, 'can_view')")
     @PostFilter("@fgau.withCharacteristics('calendar_event', filterObject.id, 'can_view')")
     public List<DepartmentCalendarEventDto> listInRange(final UUID departmentId, final LocalDateTime start,
             final LocalDateTime end) {
