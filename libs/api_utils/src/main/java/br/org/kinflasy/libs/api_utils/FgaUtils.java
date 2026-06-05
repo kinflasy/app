@@ -42,8 +42,11 @@ public class FgaUtils {
                 .context(condition);
         try {
             return Boolean.TRUE.equals(fgaClient.check(body).get().getAllowed());
-        } catch (InterruptedException | FgaInvalidParameterException | ExecutionException cause) {
-            throw exceptionHandler.handle(cause, "Error performing FGA check");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw exceptionHandler.handle(e, "Error performing FGA check");
+        } catch (FgaInvalidParameterException | ExecutionException e) {
+            throw exceptionHandler.handle(e, "Error performing FGA check");
         }
     }
 
