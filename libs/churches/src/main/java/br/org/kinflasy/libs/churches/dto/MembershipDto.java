@@ -58,11 +58,18 @@ public class MembershipDto {
     }
 
     @Data
-    public static class DetailingUnit {
+    public static class IdentifyingPerson {
         private UUID id;
-        private UnitDto.Detailed unit;
+        private UUID unitId;
         private PersonIdentifierDto person;
         private Affiliation affiliation;
+
+        /**
+         * @deprecated Use {@link #person} instead, which contains more information
+         *             about the person. This field will be removed in future versions.
+         */
+        @Deprecated(forRemoval = true)
+        private UUID personId;
     }
 
     @Data
@@ -70,6 +77,14 @@ public class MembershipDto {
         private UUID id;
         private UUID unitId;
         private PersonDto person;
+        private Affiliation affiliation;
+    }
+
+    @Data
+    public static class DetailingUnit {
+        private UUID id;
+        private UnitDto.Detailed unit;
+        private PersonIdentifierDto person;
         private Affiliation affiliation;
     }
 

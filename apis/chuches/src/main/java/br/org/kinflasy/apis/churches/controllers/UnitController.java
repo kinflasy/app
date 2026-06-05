@@ -138,8 +138,14 @@ public class UnitController {
         return ResponseEntity.ok(service.listMembersWithDetails(id));
     }
 
+    @GetMapping("{id}/members/identifiers")
+    @Operation(summary = "Listar membros sem detalhes", description = "Listar apenas identificadores dos membros de uma unidade.")
+    public ResponseEntity<List<MembershipDto.IdentifyingPerson>> listMembersIdentifiers(@PathVariable final UUID id) {
+        return ResponseEntity.ok(service.listMembers(id));
+    }
+
     @GetMapping("{id}/members-and-ex-members")
-    @Operation(summary = "Listar membros", description = "Listar os membros ativos de uma unidade.")
+    @Operation(summary = "Listar membros e ex-menbros", description = "Listar os membros ativos e ex-membros de uma unidade.")
     public ResponseEntity<List<MembershipDto>> listMembersAndExMembers(@PathVariable final UUID id) {
         return ResponseEntity.ok(service.listMembersAndExMembersWithDetails(id));
     }

@@ -283,17 +283,17 @@ public class UnitService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
-    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
+    @PreAuthorize("@fga.check('unit', #id, 'department_manager', 'user', principal.id)")
     public List<UUID> listPeopleIdsFromMembers(final UUID id) {
         return membershipRepository.findByUnitIdAndLeaveDateNull(id).stream()
                 .map(Membership::getPersonId)
                 .toList();
     }
 
-    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
-    public List<MembershipDto.Simple> listMembers(final UUID id) {
+    @PreAuthorize("@fga.check('unit', #id, 'department_manager', 'user', principal.id)")
+    public List<MembershipDto.IdentifyingPerson> listMembers(final UUID id) {
         return membershipRepository.findByUnitIdAndLeaveDateNull(id).stream()
-                .map(membership -> mapper.map(membership, MembershipDto.Simple.class))
+                .map(membership -> mapper.map(membership, MembershipDto.IdentifyingPerson.class))
                 .toList();
     }
 
@@ -302,7 +302,7 @@ public class UnitService {
         return listMembers(id).stream()
                 .map(simpleDto -> {
                     final var dto = new MembershipDto.DetailingPerson();
-                    dto.setPerson(personClient.findById(simpleDto.getPersonId()));
+                    dto.setPerson(personClient.findById(simpleDto.getPerson().getId()));
                     mapper.map(simpleDto, dto);
                     return dto;
                 })
