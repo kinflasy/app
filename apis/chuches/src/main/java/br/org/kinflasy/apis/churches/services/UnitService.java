@@ -17,6 +17,7 @@ import br.org.kinflasy.apis.churches.clients.LinkClient;
 import br.org.kinflasy.apis.churches.clients.MediaClient;
 import br.org.kinflasy.apis.churches.clients.PersonClient;
 import br.org.kinflasy.apis.churches.converters.UnitConverter;
+import br.org.kinflasy.apis.churches.entities.Membership;
 import br.org.kinflasy.apis.churches.entities.UnitLink;
 import br.org.kinflasy.apis.churches.repositories.MembershipRepository;
 import br.org.kinflasy.apis.churches.repositories.UnitLinkRepository;
@@ -283,28 +284,10 @@ public class UnitService {
     }
 
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
-    public List<MembershipDto.Simple> listMembersAndExMembers(final UUID id) {
-        return membershipRepository.findByUnitId(id).stream()
-                .map(membership -> mapper.map(membership, MembershipDto.Simple.class))
+    public List<UUID> listPeopleIdsFromMembers(final UUID id) {
+        return membershipRepository.findByUnitIdAndLeaveDateNull(id).stream()
+                .map(Membership::getPersonId)
                 .toList();
-    }
-
-    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
-    public List<MembershipDto> listMembersAndExMembersWithDetails(final UUID id) {
-        return listMembersAndExMembers(id).stream()
-                .map(simpleDto -> {
-                    final var dto = new MembershipDto();
-                    dto.setPerson(personClient.identifyById(simpleDto.getPersonId()));
-                    mapper.map(simpleDto, dto);
-                    return dto;
-                })
-                .toList();
-    }
-
-    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id) or @fga.check('person_data', #personId, 'can_view', 'user', principal.id)")
-    public Optional<MembershipDto.Simple> findActiveMembership(final UUID id, final UUID personId) {
-        return membershipRepository.findByUnitIdAndPersonIdAndLeaveDateNull(id, personId)
-                .map(membership -> mapper.map(membership, MembershipDto.Simple.class));
     }
 
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
@@ -320,6 +303,25 @@ public class UnitService {
                 .map(simpleDto -> {
                     final var dto = new MembershipDto.DetailingPerson();
                     dto.setPerson(personClient.findById(simpleDto.getPersonId()));
+                    mapper.map(simpleDto, dto);
+                    return dto;
+                })
+                .toList();
+    }
+
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
+    public List<MembershipDto.Simple> listMembersAndExMembers(final UUID id) {
+        return membershipRepository.findByUnitId(id).stream()
+                .map(membership -> mapper.map(membership, MembershipDto.Simple.class))
+                .toList();
+    }
+
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
+    public List<MembershipDto> listMembersAndExMembersWithDetails(final UUID id) {
+        return listMembersAndExMembers(id).stream()
+                .map(simpleDto -> {
+                    final var dto = new MembershipDto();
+                    dto.setPerson(personClient.identifyById(simpleDto.getPersonId()));
                     mapper.map(simpleDto, dto);
                     return dto;
                 })
@@ -345,6 +347,12 @@ public class UnitService {
                     return addMember(id, membershipRequest);
                 })
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+    }
+
+    @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id) or @fga.check('person_data', #personId, 'can_view', 'user', principal.id)")
+    public Optional<MembershipDto.Simple> findActiveMembership(final UUID id, final UUID personId) {
+        return membershipRepository.findByUnitIdAndPersonIdAndLeaveDateNull(id, personId)
+                .map(membership -> mapper.map(membership, MembershipDto.Simple.class));
     }
 
     @Transactional
