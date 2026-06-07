@@ -9,7 +9,7 @@ import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
 
 public class PersonIdentifierDtoAdapter extends PersonIdentifierDto {
 
-    public static <E extends Person, D extends PersonIdentifierDto> void map(final E entity, final D dto) {
+    public static <E extends Person, D extends PersonIdentifierDto> D map(final E entity, final D dto) {
         final var nickname = Optional.ofNullable(entity.getNickname())
                 .filter(StringUtils::isNotBlank)
                 .orElseGet(() -> entity.getFullName().split(" ")[0]);
@@ -18,6 +18,8 @@ public class PersonIdentifierDtoAdapter extends PersonIdentifierDto {
         dto.setNickname(nickname);
         dto.setGender(entity.getGender());
         dto.setBirthDate(entity.getBirthDate());
+
+        return dto;
     }
 
     public PersonIdentifierDtoAdapter(final Person entity) {

@@ -1,5 +1,6 @@
 package br.org.kinflasy.apis.churches.services;
 
+import java.time.MonthDay;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,7 +36,9 @@ import br.org.kinflasy.libs.contacts.dto.LinkDto;
 import br.org.kinflasy.libs.contacts.dto.LinkRequest;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.libs.media.validators.ProfileImageValidator;
+import br.org.kinflasy.libs.people.dto.BirthdaySearchRequest;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
+import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -114,6 +117,23 @@ public class UnitService {
     public List<MembershipDto.DetailingUnit> listByLoggedUser() {
         final var loggedUser = authUtils.getLoggedUser();
         return membershipService.listByPersonId(loggedUser.getId());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    public List<PersonIdentifierDto.WithBirthday> listBirthdaysByLoggedUser(final MonthDay start, final MonthDay end) {
+        final var loggedUser = authUtils.getLoggedUser();
+        final var memberships = membershipService.listByPersonId(loggedUser.getId());
+
+        return memberships.stream()
+                .map(membership -> membership.getUnit().getId())
+                .flatMap(unitId -> {
+                    final var peopleIds = listPeopleIdsFromMembers(unitId);
+                    return personClient.searchBirthdaysIn(
+                            new BirthdaySearchRequest().setIds(peopleIds).setStart(start).setEnd(end)).stream();
+                })
+                .distinct()
+                .sorted((a, b) -> a.getBirthday().compareTo(b.getBirthday()))
+                .toList();
     }
 
     @Transactional
@@ -288,6 +308,14 @@ public class UnitService {
         return membershipRepository.findByUnitIdAndLeaveDateNull(id).stream()
                 .map(Membership::getPersonId)
                 .toList();
+    }
+
+    @PreAuthorize("@fga.check('unit', #id, 'congregated', 'user', principal.id)")
+    public List<PersonIdentifierDto.WithBirthday> listBirthdays(final UUID id, final MonthDay start,
+            final MonthDay end) {
+        final var peopleIds = listPeopleIdsFromMembers(id);
+        return personClient
+                .searchBirthdaysIn(new BirthdaySearchRequest().setIds(peopleIds).setStart(start).setEnd(end));
     }
 
     @PreAuthorize("@fga.check('unit', #id, 'department_manager', 'user', principal.id)")

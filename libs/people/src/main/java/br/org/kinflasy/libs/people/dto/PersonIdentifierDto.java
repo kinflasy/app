@@ -1,6 +1,7 @@
 package br.org.kinflasy.libs.people.dto;
 
 import java.time.LocalDate;
+import java.time.MonthDay;
 import java.time.Period;
 import java.util.Optional;
 import java.util.UUID;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.org.kinflasy.libs.people.enums.Gender;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -28,6 +30,12 @@ public class PersonIdentifierDto {
         return Optional.ofNullable(age)
                 .or(() -> Optional.ofNullable(birthDate).map(bd -> Period.between(bd, LocalDate.now()).getYears()))
                 .orElseThrow();
+    }
+
+    @Data
+    @EqualsAndHashCode(callSuper = true)
+    public static class WithBirthday extends PersonIdentifierDto {
+        private MonthDay birthday;
     }
 
 }

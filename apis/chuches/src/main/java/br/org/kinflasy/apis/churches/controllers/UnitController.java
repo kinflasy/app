@@ -1,5 +1,6 @@
 package br.org.kinflasy.apis.churches.controllers;
 
+import java.time.MonthDay;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,6 +32,7 @@ import br.org.kinflasy.libs.churches.dto.lineups.LineupRequest;
 import br.org.kinflasy.libs.churches.dto.lineups.UnitLineupDto;
 import br.org.kinflasy.libs.contacts.dto.LinkDto;
 import br.org.kinflasy.libs.contacts.dto.LinkRequest;
+import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -51,6 +53,13 @@ public class UnitController {
     @Operation(summary = "Listar membresias ativas", description = "Listar relações de membresia que estejam válidas para o usuário logado.")
     public ResponseEntity<List<MembershipDto.DetailingUnit>> listByLoggedUser() {
         return ResponseEntity.ok(service.listByLoggedUser());
+    }
+
+    @GetMapping("birthdays/{start}/{end}")
+    @Operation(summary = "Listar aniversariantes", description = "Listar pessoas que fazem aniversário dentro de um intervalo de datas.")
+    public ResponseEntity<List<PersonIdentifierDto.WithBirthday>> listBirthdaysByLoggedUser(@PathVariable final MonthDay start,
+            @PathVariable final MonthDay end) {
+        return ResponseEntity.ok(service.listBirthdaysByLoggedUser(start, end));
     }
 
     @GetMapping("{id}")
