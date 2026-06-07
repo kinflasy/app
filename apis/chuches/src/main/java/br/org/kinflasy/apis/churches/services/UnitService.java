@@ -39,6 +39,7 @@ import br.org.kinflasy.libs.media.validators.ProfileImageValidator;
 import br.org.kinflasy.libs.people.dto.BirthdaySearchRequest;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
+import dev.openfga.OpenFga;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -58,6 +59,7 @@ public class UnitService {
     private final UnitRepository repository;
     private final UnitConverter converter;
 
+    private final OpenFga fgaClient;
     private final LinkClient linkClient;
     private final AddressClient addressClient;
     private final MediaClient mediaClient;
@@ -125,6 +127,8 @@ public class UnitService {
         final var memberships = membershipService.listByPersonId(loggedUser.getId());
 
         return memberships.stream()
+                .filter(membership -> fgaClient.check("unit", membership.getUnit().getId().toString(), "congregated",
+                        "user", loggedUser.getId().toString()))
                 .map(membership -> membership.getUnit().getId())
                 .flatMap(unitId -> {
                     final var peopleIds = listPeopleIdsFromMembers(unitId);
