@@ -1,5 +1,6 @@
 package br.org.kinflasy.apis.people.controllers;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,12 @@ public class PersonController {
         return service.identifyById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(ResponseEntity.notFound()::build);
+    }
+
+    @GetMapping("identify-many/{id}")
+    @Operation(summary = "Identificar vários", description = "Identificar várias pessoas pelos IDs.")
+    public ResponseEntity<List<PersonIdentifierDto>> identifyById(@PathVariable final List<UUID> id) {
+        return ResponseEntity.ok(service.identifyById(id));
     }
 
     @GetMapping("{id}")

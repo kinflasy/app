@@ -1,5 +1,7 @@
 package br.org.kinflasy.apis.people.services;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -49,6 +51,12 @@ public class PersonService {
     public Optional<PersonIdentifierDto> identifyById(final UUID id) {
         return repository.findById(id)
                 .map(PersonIdentifierDtoAdapter::new);
+    }
+
+    public List<PersonIdentifierDto> identifyById(final Collection<UUID> id) {
+        return repository.findByIdIn(id).stream()
+                .map(entity -> new PersonIdentifierDtoAdapter(entity).asSuper())
+                .toList();
     }
 
     /*
