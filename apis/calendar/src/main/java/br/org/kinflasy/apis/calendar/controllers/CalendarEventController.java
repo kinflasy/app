@@ -42,6 +42,13 @@ public class CalendarEventController {
     private final UnitCalendarEventService unitService;
     private final DepartmentCalendarEventService departmentService;
 
+    @GetMapping("visible")
+    @Operation(summary = "Listar eventos visíveis", description = "Listar eventos que o usuário tem permissão para visualizar em um intervalo de tempo.")
+    public ResponseEntity<List<CalendarEventDto>> listVisibleInRange(@RequestParam final LocalDateTime start,
+            @RequestParam final LocalDateTime end) {
+        return ResponseEntity.ok(service.listVisibleInRange(start, end));
+    }
+
     @GetMapping("unit/{unitId}")
     @Operation(summary = "Listar eventos da unidade", description = "Listar eventos de uma unidade em um intervalo de tempo.")
     public ResponseEntity<List<UnitCalendarEventDto>> listByUnitInRange(@PathVariable final UUID unitId,

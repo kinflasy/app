@@ -3,6 +3,7 @@ package br.org.kinflasy.apis.calendar.services;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -25,6 +26,7 @@ import br.org.kinflasy.apis.calendar.repositories.EventCollaborationRepository;
 import br.org.kinflasy.apis.calendar.repositories.UnitCalendarEventRepository;
 import br.org.kinflasy.apis.calendar.services.scales.CollaboratorScaleService;
 import br.org.kinflasy.apis.calendar.services.scales.OwnerScaleService;
+import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.calendar.dto.CalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.CalendarEventRequest;
 import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
@@ -44,6 +46,7 @@ import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.libs.media.validators.ProfileImageValidator;
 import dev.openfga.sdk.api.client.OpenFgaClient;
+import dev.openfga.sdk.api.client.model.ClientListObjectsRequest;
 import dev.openfga.sdk.api.client.model.ClientReadRequest;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
 import dev.openfga.sdk.api.client.model.ClientTupleKeyWithoutCondition;
@@ -61,6 +64,7 @@ public class CalendarEventService {
     private static final String RELATION_CAN_VIEW = "can_view";
 
     private final ModelMapper mapper;
+    private final AuthUtils authUtils;
     private final ApplicationEventPublisher publisher;
 
     private final CalendarEventRepository repository;
@@ -74,6 +78,35 @@ public class CalendarEventService {
     private final OpenFgaClient fgaClient;
     private final MediaClient mediaClient;
     private final DepartmentClient departmentClient;
+
+    /*
+     * ACESSO AUTENTICADO
+     */
+
+    @SneakyThrows
+    @PreAuthorize("isAuthenticated()")
+    public List<CalendarEventDto> listVisibleInRange(final LocalDateTime start, final LocalDateTime end) {
+        final var loggedUser = authUtils.getLoggedUser();
+        final var condition = Map.of("user_gender", loggedUser.getGender(), "user_age", loggedUser.getAge());
+
+        final var request = new ClientListObjectsRequest()
+                .type("calendar_event")
+                .relation(RELATION_CAN_VIEW)
+                .user("user:" + loggedUser.getId())
+                .context(condition);
+
+        final var response = fgaClient.listObjects(request).join();
+
+        return response.getObjects().stream()
+                .map(object -> {
+                    final var id = UUID.fromString(object.substring(TYPE_CALENDAR_EVENT.length()));
+                    return findById(id);
+                })
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .sorted((a, b) -> a.getStartDateTime().compareTo(b.getStartDateTime()))
+                .toList();
+    }
 
     /*
      * ACESSO RESTRITO
