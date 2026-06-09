@@ -23,6 +23,14 @@ public class DepartmentDto {
     private UUID coverImageId;
 
     @Data
+    public static class Clean {
+        private UUID id;
+        private String name;
+        private String slug;
+        private UUID unitId;
+    }
+
+    @Data
     public static class Rules {
         private List<AccessRule> visibilityRules = Collections.emptyList();
         private List<AccessRule> joinRules = Collections.emptyList();
