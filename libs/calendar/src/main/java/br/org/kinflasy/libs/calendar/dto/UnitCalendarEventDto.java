@@ -15,7 +15,7 @@ public class UnitCalendarEventDto extends CalendarEventDto {
     @Data
     @EqualsAndHashCode(callSuper = true)
     public static class Detailed extends CalendarEventDto {
-        private UnitDto.Clean unit;
+        private UnitDto.CleanWithChurch unit;
     }
 
 }

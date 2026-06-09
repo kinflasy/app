@@ -29,6 +29,15 @@ public class UnitDto {
         private String name;
         private String slug;
         private UUID churchId;
+
+    }
+
+    @Data
+    public static class CleanWithChurch {
+        private UUID id;
+        private String name;
+        private String slug;
+        private ChurchDto.Clean church;
     }
 
     @Data

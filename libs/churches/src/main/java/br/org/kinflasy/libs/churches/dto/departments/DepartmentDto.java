@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
+import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.enums.department.DepartmentType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,6 +29,14 @@ public class DepartmentDto {
         private String name;
         private String slug;
         private UUID unitId;
+    }
+
+    @Data
+    public static class CleanWithUnit {
+        private UUID id;
+        private String name;
+        private String slug;
+        private UnitDto.CleanWithChurch unit;
     }
 
     @Data

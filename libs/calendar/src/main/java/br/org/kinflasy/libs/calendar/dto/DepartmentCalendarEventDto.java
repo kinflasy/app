@@ -15,7 +15,7 @@ public class DepartmentCalendarEventDto extends CalendarEventDto {
     @Data
     @EqualsAndHashCode(callSuper = true)
     public static class Detailed extends CalendarEventDto {
-        private DepartmentDto.Clean department;
+        private DepartmentDto.CleanWithUnit department;
     }
 
 }

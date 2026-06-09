@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
@@ -17,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.org.kinflasy.apis.calendar.clients.DepartmentClient;
 import br.org.kinflasy.apis.calendar.clients.MediaClient;
+import br.org.kinflasy.apis.calendar.clients.UnitClient;
 import br.org.kinflasy.apis.calendar.entities.DepartmentCalendarEvent;
 import br.org.kinflasy.apis.calendar.entities.EventCollaboration;
 import br.org.kinflasy.apis.calendar.entities.UnitCalendarEvent;
@@ -35,6 +37,9 @@ import br.org.kinflasy.libs.calendar.dto.UnitCalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleRequest;
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
+import br.org.kinflasy.libs.churches.dto.ChurchDto;
+import br.org.kinflasy.libs.churches.dto.UnitDto;
+import br.org.kinflasy.libs.churches.dto.UnitDto.CleanWithChurch;
 import br.org.kinflasy.libs.churches.dto.access_rules.CharacteristicCondition;
 import br.org.kinflasy.libs.churches.dto.access_rules.ChurchRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.DepartmentRule;
@@ -78,6 +83,7 @@ public class CalendarEventService {
     private final OpenFgaClient fgaClient;
     private final MediaClient mediaClient;
     private final DepartmentClient departmentClient;
+    private final UnitClient unitClient;
 
     /*
      * ACESSO AUTENTICADO
@@ -98,9 +104,9 @@ public class CalendarEventService {
         final var response = fgaClient.listObjects(request).join();
 
         return response.getObjects().stream()
-                .map(object -> {
-                    final var id = UUID.fromString(object.substring(TYPE_CALENDAR_EVENT.length()));
-                    return findById(id);
+                .map(fgaObject -> {
+                    final var id = UUID.fromString(fgaObject.substring(TYPE_CALENDAR_EVENT.length()));
+                    return detailById(id);
                 })
                 .filter(Optional::isPresent)
                 .map(Optional::get)
@@ -133,6 +139,62 @@ public class CalendarEventService {
                 // Se não encontrar, buscar o evento como sendo de departamento
                 .or(() -> departmentEventRepository.findById(id)
                         .map(entity -> mapper.map(entity, DepartmentCalendarEventDto.class)))
+
+                // Para todos os casos, preencher as regras de visibilidade
+                .map(dto -> dto.setVisibilityRules(listVisibilityRules(id)));
+    }
+
+    @PreAuthorize("@fgau.withCharacteristics('calendar_event', #id, 'can_view')")
+    public Optional<CalendarEventDto> detailById(final UUID id) {
+        // Buscar o evento como sendo de unidade
+        return unitEventRepository.findById(id)
+                .map(entity -> {
+                    // Gerar o DTO base
+                    final var calendarEvent = mapper.map(entity, UnitCalendarEventDto.Detailed.class);
+
+                    // Inicializar o DTO de unidade apenas com ID
+                    calendarEvent.setUnit(new UnitDto.CleanWithChurch().setId(entity.getUnitId()));
+
+                    return (CalendarEventDto) calendarEvent;
+                })
+
+                // Se não encontrar, buscar o evento como sendo de departamento
+                .or(() -> departmentEventRepository.findById(id)
+                        .map(entity -> {
+                            final var calendarEvent = mapper.map(entity, DepartmentCalendarEventDto.Detailed.class);
+
+                            final var department = departmentClient.findById(entity.getDepartmentId());
+                            calendarEvent.setDepartment(new DepartmentDto.CleanWithUnit()
+                                    .setId(department.getId())
+                                    .setName(department.getName())
+                                    .setSlug(department.getSlug())
+                                    .setUnit(new UnitDto.CleanWithChurch().setId(department.getUnitId())));
+
+                            return calendarEvent;
+                        }))
+
+                .map(dto -> {
+                    final Supplier<CleanWithChurch> getter = switch (dto) {
+                        case UnitCalendarEventDto.Detailed unitEvent -> unitEvent::getUnit;
+                        case DepartmentCalendarEventDto.Detailed departmentEvent ->
+                            departmentEvent.getDepartment()::getUnit;
+                        default -> UnitDto.CleanWithChurch::new;
+                    };
+
+                    // Buscar os dados da unidade e igreja para preencher o DTO detalhado
+                    final var cleanUnit = getter.get();
+                    final var detailedUnit = unitClient.findById(cleanUnit.getId());
+
+                    cleanUnit.setId(detailedUnit.getId())
+                            .setName(detailedUnit.getName())
+                            .setSlug(detailedUnit.getSlug())
+                            .setChurch(new ChurchDto.Clean()
+                                    .setId(detailedUnit.getChurch().getId())
+                                    .setName(detailedUnit.getChurch().getName())
+                                    .setSlug(detailedUnit.getChurch().getSlug()));
+
+                    return dto;
+                })
 
                 // Para todos os casos, preencher as regras de visibilidade
                 .map(dto -> dto.setVisibilityRules(listVisibilityRules(id)));
