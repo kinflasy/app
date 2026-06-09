@@ -14,7 +14,10 @@ import lombok.Data;
 @Data
 @JsonSubTypes({
         @Type(name = "DEPARTMENT", value = DepartmentCalendarEventDto.class),
-        @Type(name = "UNIT", value = UnitCalendarEventDto.class) })
+        @Type(name = "DEPARTMENT_DETAILED", value = DepartmentCalendarEventDto.Detailed.class),
+        @Type(name = "UNIT", value = UnitCalendarEventDto.class),
+        @Type(name = "UNIT_DETAILED", value = UnitCalendarEventDto.Detailed.class),
+})
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 public class CalendarEventDto {
 
