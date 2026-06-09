@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +16,13 @@ import br.org.kinflasy.apis.calendar.entities.scales.CollaboratorScale;
 import br.org.kinflasy.apis.calendar.entities.scales.OwnerScale;
 import br.org.kinflasy.apis.calendar.entities.scales.Scale;
 import br.org.kinflasy.apis.calendar.entities.scales.ScaleItem;
+import br.org.kinflasy.apis.calendar.repositories.EventCollaborationRepository;
 import br.org.kinflasy.apis.calendar.repositories.scales.ScaleItemRepository;
 import br.org.kinflasy.apis.calendar.repositories.scales.ScaleRepository;
 import br.org.kinflasy.apis.calendar.services.CalendarEventService;
 import br.org.kinflasy.apis.calendar.services.DepartmentCalendarEventService;
 import br.org.kinflasy.apis.calendar.services.UnitCalendarEventService;
+import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.calendar.dto.scales.CollaboratorScaleDto;
 import br.org.kinflasy.libs.calendar.dto.scales.OwnerScaleDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleDto;
@@ -34,9 +37,11 @@ import lombok.AllArgsConstructor;
 public class ScaleService {
 
     private final ModelMapper mapper;
+    private final AuthUtils authUtils;
 
     private final ScaleRepository repository;
     private final ScaleItemRepository itemRepository;
+    private final EventCollaborationRepository collaborationRepository;
 
     private final OwnerScaleService ownerScaleService;
     private final CalendarEventService calendarEventService;
@@ -45,6 +50,17 @@ public class ScaleService {
     private final DepartmentCalendarEventService departmentCalendarEventService;
 
     private final ApplicationEventPublisher publisher;
+
+    /*
+     * ACESSO AUTENTICADO
+     */
+
+    @PreAuthorize("isAuthenticated()")
+    public List<ScaleDto.DetailingCalendarEvent> listByLoggedUserInRange(final LocalDateTime start,
+            final LocalDateTime end) {
+        final var loggedUser = authUtils.getLoggedUser();
+        return listByPersonInRange(loggedUser.getId(), start, end);
+    }
 
     /*
      * ACESSO RESTRITO
@@ -83,6 +99,46 @@ public class ScaleService {
                         .map(scale -> mapper.map(scale, ScaleDto.DetailingCalendarEvent.class)
                                 .setCalendarEvent(event)))
                 .distinct()
+                .sorted((a, b) -> a.getCalendarEvent().getStartDateTime()
+                        .compareTo(b.getCalendarEvent().getStartDateTime()))
+                .toList();
+    }
+
+    @PreAuthorize("@fga.check('user', #personId, 'admin', 'user', principal.id) or "
+            + "#personId.equals(principal.id)")
+    @PostFilter("@fga.check('scale', filterObject.id, 'can_view', 'user', principal.id) and "
+            + "@fgau.withCharacteristics('calendar_event', filterObject.calendarEvent.id, 'can_view')")
+    public List<ScaleDto.DetailingCalendarEvent> listByPersonInRange(final UUID personId, final LocalDateTime start,
+            final LocalDateTime end) {
+        // Obter escalações da pessoa
+        final var ownerScaleItems = itemRepository.findOwnerScalesByPersonIdInRange(personId, start, end).stream();
+        final var collaboratorScaleItems = itemRepository.findCollaboratorScalesByPersonIdInRange(personId, start, end)
+                .stream();
+
+        return Stream.concat(ownerScaleItems, collaboratorScaleItems)
+                .distinct()
+
+                // Detalhar escala
+                .map(item -> repository.findById(item.getScaleId())
+                        .flatMap(scale -> {
+
+                            // Detalhar evento associado à escala
+                            final var event = switch (scale) {
+                                case OwnerScale ownerScale ->
+                                    calendarEventService.findById(ownerScale.getCalendarEventId());
+                                case CollaboratorScale collaboratorScale ->
+                                    collaborationRepository.findById(collaboratorScale.getCollaborationId())
+                                            .flatMap(collab -> calendarEventService
+                                                    .findById(collab.getCalendarEventId()));
+                                default -> throw new IllegalStateException(
+                                        "Tipo desconhecido de escala: " + scale.getClass().getName());
+                            };
+
+                            return event.map(evt -> mapper.map(scale, ScaleDto.DetailingCalendarEvent.class)
+                                    .setCalendarEvent(evt));
+                        }))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .sorted((a, b) -> a.getCalendarEvent().getStartDateTime()
                         .compareTo(b.getCalendarEvent().getStartDateTime()))
                 .toList();

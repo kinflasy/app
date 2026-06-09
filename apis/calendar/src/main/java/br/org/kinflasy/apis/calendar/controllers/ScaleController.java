@@ -49,6 +49,20 @@ public class ScaleController {
         return ResponseEntity.ok(scaleService.listByUnitInRange(unitId, start, end));
     }
 
+    @GetMapping("person/{personId}")
+    @Operation(summary = "Listar escalas da pessoa", description = "Listar as escalas associadas aos eventos de uma pessoa em um intervalo de tempo.")
+    public ResponseEntity<List<ScaleDto.DetailingCalendarEvent>> listByPersonInRange(@PathVariable final UUID personId,
+            @RequestParam final LocalDateTime start, @RequestParam final LocalDateTime end) {
+        return ResponseEntity.ok(scaleService.listByPersonInRange(personId, start, end));
+    }
+
+    @GetMapping("person")
+    @Operation(summary = "Listar escalas do usuário logado", description = "Listar as escalas associadas aos eventos do usuário logado em um intervalo de tempo.")
+    public ResponseEntity<List<ScaleDto.DetailingCalendarEvent>> listByPersonInRange(
+            @RequestParam final LocalDateTime start, @RequestParam final LocalDateTime end) {
+        return ResponseEntity.ok(scaleService.listByLoggedUserInRange(start, end));
+    }
+
     @GetMapping("{id}/items")
     @Operation(summary = "Listar itens da escala", description = "Listar os itens de uma escala.")
     public ResponseEntity<List<ScaleItemDto>> listItems(@PathVariable final UUID id) {

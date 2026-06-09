@@ -4,18 +4,19 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-
-import br.org.kinflasy.libs.calendar.dto.CalendarEventDto;
-
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import br.org.kinflasy.libs.calendar.dto.CalendarEventDto;
+import br.org.kinflasy.libs.calendar.dto.scales.ScaleDto.DetailingCalendarEvent;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Data
 @JsonSubTypes({
         @Type(name = "OWNER", value = OwnerScaleDto.class),
-        @Type(name = "COLLABORATOR", value = CollaboratorScaleDto.class) })
+        @Type(name = "COLLABORATOR", value = CollaboratorScaleDto.class),
+        @Type(name = "DETAILING_CALENDAR_EVENT", value = DetailingCalendarEvent.class)
+})
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 public class ScaleDto {
 
