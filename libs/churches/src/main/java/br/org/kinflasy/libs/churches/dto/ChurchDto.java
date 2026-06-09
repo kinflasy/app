@@ -12,6 +12,13 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 public class ChurchDto {
 
+    private UUID id;
+    private String name;
+    private String slug;
+    private String acronym;
+    private String phone;
+    private String email;
+
     @Data
     @NoArgsConstructor
     @EqualsAndHashCode(callSuper = true)
@@ -19,11 +26,11 @@ public class ChurchDto {
         private UnitDto unit;
     }
 
-    private UUID id;
-    private String name;
-    private String slug;
-    private String acronym;
-    private String phone;
-    private String email;
+    @Data
+    public static class Clean {
+        private UUID id;
+        private String name;
+        private String slug;
+    }
 
 }

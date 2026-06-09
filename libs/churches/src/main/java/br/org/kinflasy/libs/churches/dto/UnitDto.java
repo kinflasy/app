@@ -24,6 +24,14 @@ public class UnitDto {
     private UUID coverImageId;
 
     @Data
+    public static class Clean {
+        private UUID id;
+        private String name;
+        private String slug;
+        private UUID churchId;
+    }
+
+    @Data
     @EqualsAndHashCode(callSuper = true)
     public static class Detailed extends UnitDto {
         private ChurchDto church;
