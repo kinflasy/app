@@ -132,8 +132,9 @@ type lineup_item
 type scale
   relations
     define owner: [unit, department]
+    define calendar_event: [calendar_event]
 
-    define can_edit: admin from owner or can_manage from owner
+    define can_edit: admin from owner or can_manage from owner or can_scale from calendar_event
     define can_view: congregated from owner or can_observe from owner
 
 condition characteristics(user_gender: string, user_age: int, req_gender: string, min_age: int, max_age: int) {

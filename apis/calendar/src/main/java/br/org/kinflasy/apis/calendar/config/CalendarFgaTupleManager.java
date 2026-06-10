@@ -13,8 +13,10 @@ import br.org.kinflasy.libs.api_utils.FgaTupleManager;
 import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.EventCollaborationDto;
 import br.org.kinflasy.libs.calendar.dto.UnitCalendarEventDto;
+import br.org.kinflasy.libs.calendar.dto.scales.CollaboratorScaleDto;
 import br.org.kinflasy.libs.calendar.dto.scales.OwnerScaleDto;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
+import br.org.kinflasy.apis.calendar.repositories.EventCollaborationRepository;
 import br.org.kinflasy.apis.calendar.services.CalendarEventService;
 import dev.openfga.sdk.api.client.OpenFgaClient;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
@@ -36,13 +38,17 @@ public class CalendarFgaTupleManager extends FgaTupleManager {
      * Relacionamentos
      */
     private static final String RELATION_OWNER = "owner";
+    private static final String RELATION_CALENDAR_EVENT = "calendar_event";
 
     private final CalendarEventService service;
+    private final EventCollaborationRepository collaborationRepository;
 
     @Lazy
-    public CalendarFgaTupleManager(final OpenFgaClient client, final CalendarEventService service) {
+    public CalendarFgaTupleManager(final OpenFgaClient client, final CalendarEventService service,
+            final EventCollaborationRepository collaborationRepository) {
         super(client);
         this.service = service;
+        this.collaborationRepository = collaborationRepository;
     }
 
     @Async
@@ -152,14 +158,19 @@ public class CalendarFgaTupleManager extends FgaTupleManager {
                         default -> null;
                     };
 
-                    // Construir tupla
-                    final var tuple = new ClientTupleKey()
+                    // Construir tuplas
+                    final var ownerTuple = new ClientTupleKey()
                             ._object(TYPE_SCALE + dto.getId())
                             .relation(RELATION_OWNER)
                             .user(user);
 
-                    // Escrever tupla
-                    return writeTuples(tuple);
+                    final var calendarEventTuple = new ClientTupleKey()
+                            ._object(TYPE_SCALE + dto.getId())
+                            .relation(RELATION_CALENDAR_EVENT)
+                            .user(TYPE_CALENDAR_EVENT + dto.getCalendarEventId());
+
+                    // Escrever tuplas
+                    return writeTuples(ownerTuple, calendarEventTuple);
                 })
 
                 // Se o evento não for encontrado, retornar um futuro concluído
@@ -182,19 +193,84 @@ public class CalendarFgaTupleManager extends FgaTupleManager {
                         default -> null;
                     };
 
-                    // Construir tupla
-                    final var tuple = new ClientTupleKey()
+                    // Construir tuplas
+                    final var ownerTuple = new ClientTupleKey()
                             ._object(TYPE_SCALE + dto.getId())
                             .relation(RELATION_OWNER)
                             .user(user);
 
-                    // Deletar tupla
-                    return deleteTuples(tuple);
+                    final var calendarEventTuple = new ClientTupleKey()
+                            ._object(TYPE_SCALE + dto.getId())
+                            .relation(RELATION_CALENDAR_EVENT)
+                            .user(TYPE_CALENDAR_EVENT + dto.getCalendarEventId());
+
+                    // Deletar tuplas
+                    return deleteTuples(ownerTuple, calendarEventTuple);
                 })
 
                 // Se o evento não for encontrado, retornar um futuro concluído
                 .orElseGet(() -> CompletableFuture.failedFuture(
                         new IllegalStateException("Evento não encontrado para a escala: " + dto.getCalendarEventId())));
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleCollaboratorScaleCreated(
+            final EntityEvent.Created<CollaboratorScaleDto> event) {
+        final var dto = event.getSource();
+
+        return collaborationRepository.findById(dto.getCollaborationId())
+                .map(collab -> {
+                    // Construir tuplas
+                    final var ownerTuple = new ClientTupleKey()
+                            ._object(TYPE_SCALE + dto.getId())
+                            .relation(RELATION_OWNER)
+                            .user(TYPE_DEPARTMENT + collab.getDepartmentId());
+
+                    final var calendarEventTuple = new ClientTupleKey()
+                            ._object(TYPE_SCALE + dto.getId())
+                            .relation(RELATION_CALENDAR_EVENT)
+                            .user(TYPE_CALENDAR_EVENT + collab.getCalendarEventId());
+
+                    // Escrever tuplas
+                    return writeTuples(ownerTuple, calendarEventTuple);
+                })
+
+                // Se o evento não for encontrado, retornar um futuro concluído
+                .orElseGet(() -> CompletableFuture.failedFuture(
+                        new IllegalStateException(
+                                "Evento não encontrado para a colaboração: " + dto.getCollaborationId())));
+    }
+
+    @Async
+    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public CompletableFuture<Void> handleCollaboratorScaleDeleted(
+            final EntityEvent.Deleted<CollaboratorScaleDto> event) {
+        final var dto = event.getSource();
+
+        return collaborationRepository.findById(dto.getCollaborationId())
+                .map(collab -> {
+                    // Construir tuplas
+                    final var ownerTuple = new ClientTupleKey()
+                            ._object(TYPE_SCALE + dto.getId())
+                            .relation(RELATION_OWNER)
+                            .user(TYPE_DEPARTMENT + collab.getDepartmentId());
+
+                    final var calendarEventTuple = new ClientTupleKey()
+                            ._object(TYPE_SCALE + dto.getId())
+                            .relation(RELATION_CALENDAR_EVENT)
+                            .user(TYPE_CALENDAR_EVENT + collab.getCalendarEventId());
+
+                    // Escrever tuplas
+                    return deleteTuples(ownerTuple, calendarEventTuple);
+                })
+
+                // Se o evento não for encontrado, retornar um futuro concluído
+                .orElseGet(() -> CompletableFuture.failedFuture(
+                        new IllegalStateException(
+                                "Evento não encontrado para a colaboração: " + dto.getCollaborationId())));
     }
 
 }
