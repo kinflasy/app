@@ -10,5 +10,6 @@ import lombok.EqualsAndHashCode;
 public class CollaboratorScaleDto extends ScaleDto {
 
     private UUID collaborationId;
+    private UUID calendarEventId;
 
 }

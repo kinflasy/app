@@ -12,6 +12,7 @@ import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import br.org.kinflasy.apis.calendar.entities.EventCollaboration;
 import br.org.kinflasy.apis.calendar.entities.scales.CollaboratorScale;
 import br.org.kinflasy.apis.calendar.entities.scales.OwnerScale;
 import br.org.kinflasy.apis.calendar.entities.scales.Scale;
@@ -76,9 +77,11 @@ public class ScaleService {
                                 .setCalendarEvent(event)));
 
         // Obter escalas de colaborações associadas a este departamento
-        final var collabScales = calendarEventService.listCollaborationsInRange(departmentId, start, end).stream()
+        final var collabScales = calendarEventService.listCollaborationsInRange(departmentId, start, end)
+                .stream()
                 .flatMap(event -> collaboratorScaleService
-                        .listByCalendarEventIdAndDepartmentId(event.getId(), departmentId).stream()
+                        .listByCalendarEventIdAndDepartmentId(event.getId(), departmentId)
+                        .stream()
                         .map(scale -> mapper.map(scale, ScaleDto.DetailingCalendarEvent.class)
                                 .setCalendarEvent(event)));
 
@@ -111,8 +114,10 @@ public class ScaleService {
     public List<ScaleDto.DetailingCalendarEvent> listByPersonInRange(final UUID personId, final LocalDateTime start,
             final LocalDateTime end) {
         // Obter escalações da pessoa
-        final var ownerScaleItems = itemRepository.findOwnerScalesByPersonIdInRange(personId, start, end).stream();
-        final var collaboratorScaleItems = itemRepository.findCollaboratorScalesByPersonIdInRange(personId, start, end)
+        final var ownerScaleItems = itemRepository.findOwnerScalesByPersonIdInRange(personId, start, end)
+                .stream();
+        final var collaboratorScaleItems = itemRepository
+                .findCollaboratorScalesByPersonIdInRange(personId, start, end)
                 .stream();
 
         return Stream.concat(ownerScaleItems, collaboratorScaleItems)
@@ -125,16 +130,21 @@ public class ScaleService {
                             // Detalhar evento associado à escala
                             final var event = switch (scale) {
                                 case OwnerScale ownerScale ->
-                                    calendarEventService.findById(ownerScale.getCalendarEventId());
+                                    calendarEventService.findById(ownerScale
+                                            .getCalendarEventId());
                                 case CollaboratorScale collaboratorScale ->
-                                    collaborationRepository.findById(collaboratorScale.getCollaborationId())
+                                    collaborationRepository
+                                            .findById(collaboratorScale
+                                                    .getCollaborationId())
                                             .flatMap(collab -> calendarEventService
                                                     .findById(collab.getCalendarEventId()));
                                 default -> throw new IllegalStateException(
-                                        "Tipo desconhecido de escala: " + scale.getClass().getName());
+                                        "Tipo desconhecido de escala: " + scale
+                                                .getClass().getName());
                             };
 
-                            return event.map(evt -> mapper.map(scale, ScaleDto.DetailingCalendarEvent.class)
+                            return event.map(evt -> mapper.map(scale,
+                                    ScaleDto.DetailingCalendarEvent.class)
                                     .setCalendarEvent(evt));
                         }))
                 .filter(Optional::isPresent)
@@ -237,12 +247,20 @@ public class ScaleService {
                     .setCalendarEventId(ownerScale.getCalendarEventId())
                     .setId(ownerScale.getId())
                     .setLineupId(ownerScale.getLineupId());
-            case CollaboratorScale collaboratorScale -> new CollaboratorScaleDto()
-                    .setCollaborationId(collaboratorScale.getCollaborationId())
-                    .setId(collaboratorScale.getId())
-                    .setLineupId(collaboratorScale.getLineupId());
+            case CollaboratorScale collaboratorScale -> {
+                final var calendarEventId = collaborationRepository.findById(collaboratorScale.getCollaborationId())
+                        .map(EventCollaboration::getCalendarEventId)
+                        .orElse(null);
+
+                yield new CollaboratorScaleDto()
+                        .setCollaborationId(collaboratorScale.getCollaborationId())
+                        .setCalendarEventId(calendarEventId)
+                        .setId(collaboratorScale.getId())
+                        .setLineupId(collaboratorScale.getLineupId());
+            }
             default ->
-                throw new IllegalStateException("Tipo desconhecido de escala: " + scale.getClass().getName());
+                throw new IllegalStateException(
+                        "Tipo desconhecido de escala: " + scale.getClass().getName());
         };
     }
 
