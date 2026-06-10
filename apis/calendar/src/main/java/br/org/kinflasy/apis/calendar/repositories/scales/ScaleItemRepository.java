@@ -32,13 +32,19 @@ public interface ScaleItemRepository extends JpaRepository<ScaleItem, UUID> {
 
     @Query("""
             SELECT si FROM ScaleItem si
-            JOIN CollaboratorScale cs ON cs.id = si.scaleId
-            JOIN EventCollaboration ec ON ec.id = cs.collaborationId
-            JOIN CalendarEvent ce ON ce.id = ec.calendarEventId
-            WHERE si.personId = :personId AND
-                (ce.startDateTime BETWEEN :start AND :end
-                OR ce.endDateTime BETWEEN :start AND :end)
-            """)
+            WHERE si.personId = :personId
+            AND si.scaleId IN (
+                SELECT cs.id FROM CollaboratorScale cs
+                WHERE cs.collaborationId IN (
+                    SELECT ec.id FROM EventCollaboration ec
+                    WHERE ec.calendarEventId IN (
+                        SELECT ce.id FROM CalendarEvent ce
+                        WHERE ce.startDateTime < :end
+                        AND ce.endDateTime > :start
+                    )
+                )
+            )
+                    """)
     List<ScaleItem> findCollaboratorScalesByPersonIdInRange(UUID personId, final LocalDateTime start,
             final LocalDateTime end);
 

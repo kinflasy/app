@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
@@ -19,6 +20,9 @@ import lombok.experimental.Accessors;
 @DynamicUpdate
 @Table(name = "event_collaborations", uniqueConstraints = {
         @UniqueConstraint(columnNames = { EventCollaboration_.CALENDAR_EVENT_ID, EventCollaboration_.DEPARTMENT_ID })
+}, indexes = {
+        @Index(columnList = EventCollaboration_.CALENDAR_EVENT_ID),
+        @Index(columnList = EventCollaboration_.DEPARTMENT_ID)
 })
 @Data
 @Accessors(chain = false)
