@@ -2,9 +2,7 @@ package br.org.kinflasy.apis.calendar.services;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -18,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.org.kinflasy.apis.calendar.clients.DepartmentClient;
 import br.org.kinflasy.apis.calendar.clients.MediaClient;
+import br.org.kinflasy.apis.calendar.clients.MembershipClient;
 import br.org.kinflasy.apis.calendar.clients.UnitClient;
 import br.org.kinflasy.apis.calendar.entities.DepartmentCalendarEvent;
 import br.org.kinflasy.apis.calendar.entities.EventCollaboration;
@@ -28,7 +27,6 @@ import br.org.kinflasy.apis.calendar.repositories.EventCollaborationRepository;
 import br.org.kinflasy.apis.calendar.repositories.UnitCalendarEventRepository;
 import br.org.kinflasy.apis.calendar.services.scales.CollaboratorScaleService;
 import br.org.kinflasy.apis.calendar.services.scales.OwnerScaleService;
-import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.calendar.dto.CalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.CalendarEventRequest;
 import br.org.kinflasy.libs.calendar.dto.DepartmentCalendarEventDto;
@@ -50,7 +48,6 @@ import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.libs.media.validators.ProfileImageValidator;
 import dev.openfga.sdk.api.client.OpenFgaClient;
-import dev.openfga.sdk.api.client.model.ClientListObjectsRequest;
 import dev.openfga.sdk.api.client.model.ClientReadRequest;
 import dev.openfga.sdk.api.client.model.ClientTupleKey;
 import dev.openfga.sdk.api.client.model.ClientTupleKeyWithoutCondition;
@@ -68,7 +65,6 @@ public class CalendarEventService {
     private static final String RELATION_CAN_VIEW = "can_view";
 
     private final ModelMapper mapper;
-    private final AuthUtils authUtils;
     private final ApplicationEventPublisher publisher;
 
     private final CalendarEventRepository repository;
@@ -83,38 +79,49 @@ public class CalendarEventService {
     private final MediaClient mediaClient;
     private final DepartmentClient departmentClient;
     private final UnitClient unitClient;
+    private final MembershipClient membershipClient;
 
     /*
      * ACESSO AUTENTICADO
      */
 
-    @SneakyThrows
     @PreAuthorize("isAuthenticated()")
     @PostFilter("@fgau.withCharacteristics('calendar_event', filterObject.id, 'can_view')")
-    public List<CalendarEventDto> listVisibleInRange(final LocalDateTime start, final LocalDateTime end) {
-        final var loggedUser = authUtils.getLoggedUser();
-        final var condition = Map.of("user_gender", loggedUser.getGender(), "user_age", loggedUser.getAge());
+    public List<CalendarEventDto> listVisibleInRange2(final LocalDateTime start, final LocalDateTime end) {
+        return unitClient.listByLoggedUser().stream()
+                .flatMap(membershipWithUnit -> {
+                    final var detailedUnit = membershipWithUnit.getUnit();
+                    final var detailedChurch = detailedUnit.getChurch();
 
-        final var request = new ClientListObjectsRequest()
-                .type("calendar_event")
-                .relation(RELATION_CAN_VIEW)
-                .user("user:" + loggedUser.getId())
-                .context(condition);
+                    final var unit = new UnitDto.CleanWithChurch()
+                            .setId(detailedUnit.getId())
+                            .setName(detailedUnit.getName())
+                            .setSlug(detailedUnit.getSlug())
+                            .setChurch(new ChurchDto.Clean()
+                                    .setId(detailedChurch.getId())
+                                    .setName(detailedChurch.getName())
+                                    .setSlug(detailedChurch.getSlug()));
 
-        final var response = fgaClient.listObjects(request).join();
+                    final var unitEvents = unitEventRepository.findByUnitIdInRange(unit.getId(), start, end).stream()
+                            .map(calendarEvent -> mapper.map(calendarEvent, UnitCalendarEventDto.Detailed.class)
+                                    .setUnit(unit));
 
-        final Map<UUID, DepartmentDto.CleanWithUnit> departmentCache = new HashMap<>();
-        final Map<UUID, UnitDto.CleanWithChurch> unitCache = new HashMap<>();
+                    final var departmentEvents = membershipClient.listIntegrations(membershipWithUnit.getId()).stream()
+                            .flatMap(integration -> {
+                                final var department = departmentClient.findById(integration.getDepartmentId());
+                                final var cleanDepartment = mapper.map(department, DepartmentDto.CleanWithUnit.class)
+                                        .setUnit(unit);
 
-        return response.getObjects().stream()
-                .map(fgaObject -> {
-                    final var id = UUID.fromString(fgaObject.substring(TYPE_CALENDAR_EVENT.length()));
-                    return detailById(id, departmentCache, unitCache);
-                })
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .sorted((a, b) -> a.getStartDateTime().compareTo(b.getStartDateTime()))
-                .toList();
+                                return departmentEventRepository
+                                        .findByDepartmentIdInRange(department.getId(), start, end)
+                                        .stream()
+                                        .map(calendarEvent -> mapper
+                                                .map(calendarEvent, DepartmentCalendarEventDto.Detailed.class)
+                                                .setDepartment(cleanDepartment));
+                            });
+
+                    return Stream.concat(unitEvents, departmentEvents);
+                }).toList();
     }
 
     /*
@@ -145,61 +152,6 @@ public class CalendarEventService {
 
                 // Para todos os casos, preencher as regras de visibilidade
                 .map(dto -> dto.setVisibilityRules(listVisibilityRules(id)));
-    }
-
-    @PreAuthorize("@fgau.withCharacteristics('calendar_event', #id, 'can_view')")
-    private Optional<CalendarEventDto> detailById(final UUID id,
-            final Map<UUID, DepartmentDto.CleanWithUnit> departmentCache,
-            final Map<UUID, UnitDto.CleanWithChurch> unitCache) {
-        // Buscar o evento como sendo de unidade
-        return repository.findById(id)
-                .map(entity -> {
-                    switch (entity) {
-                        case UnitCalendarEvent unitEvent -> {
-                            final var dto = mapper.map(unitEvent, UnitCalendarEventDto.Detailed.class);
-                            dto.setUnit(getCachedUnit(unitEvent.getUnitId(), unitCache));
-                            return dto;
-                        }
-                        case DepartmentCalendarEvent departmentEvent -> {
-                            final var dto = mapper.map(departmentEvent, DepartmentCalendarEventDto.Detailed.class);
-                            dto.setDepartment(
-                                    getCachedDepartment(departmentEvent.getDepartmentId(), departmentCache, unitCache));
-                            return dto;
-                        }
-                        default -> throw new IllegalStateException("Evento fora das regras");
-                    }
-                })
-
-                // Para todos os casos, preencher as regras de visibilidade
-                .map(dto -> dto.setVisibilityRules(listVisibilityRules(id)));
-    }
-
-    private UnitDto.CleanWithChurch getCachedUnit(final UUID unitId,
-            final Map<UUID, UnitDto.CleanWithChurch> unitCache) {
-        return unitCache.computeIfAbsent(unitId, id -> {
-            final var detailedUnit = unitClient.findById(id);
-
-            return new UnitDto.CleanWithChurch().setId(id)
-                    .setName(detailedUnit.getName())
-                    .setSlug(detailedUnit.getSlug())
-                    .setChurch(new ChurchDto.Clean()
-                            .setId(detailedUnit.getChurch().getId())
-                            .setName(detailedUnit.getChurch().getName())
-                            .setSlug(detailedUnit.getChurch().getSlug()));
-        });
-    }
-
-    private DepartmentDto.CleanWithUnit getCachedDepartment(final UUID departmentId,
-            final Map<UUID, DepartmentDto.CleanWithUnit> departmentCache,
-            final Map<UUID, UnitDto.CleanWithChurch> unitCache) {
-        return departmentCache.computeIfAbsent(departmentId, id -> {
-            final var detailedDepartment = departmentClient.findById(id);
-
-            return new DepartmentDto.CleanWithUnit().setId(id)
-                    .setName(detailedDepartment.getName())
-                    .setSlug(detailedDepartment.getSlug())
-                    .setUnit(getCachedUnit(detailedDepartment.getUnitId(), unitCache));
-        });
     }
 
     @Transactional
