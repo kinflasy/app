@@ -334,8 +334,10 @@ public class UnitService {
         return listMembers(id).stream()
                 .map(simpleDto -> {
                     final var dto = new MembershipDto.DetailingPerson();
-                    dto.setPerson(personClient.findById(simpleDto.getPerson().getId()));
-                    mapper.map(simpleDto, dto);
+                    dto.setId(simpleDto.getId())
+                            .setPerson(personClient.findById(simpleDto.getPerson().getId()))
+                            .setUnitId(simpleDto.getUnitId())
+                            .setAffiliation(dto.getAffiliation());
                     return dto;
                 })
                 .toList();
