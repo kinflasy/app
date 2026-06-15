@@ -5,12 +5,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import br.org.kinflasy.apis.auth.dto.OpenFgaMigrationStatus;
 import br.org.kinflasy.apis.auth.entities.OpenFgaMigrationLog;
 
-@Repository
 public interface MigrationLogRepository extends JpaRepository<OpenFgaMigrationLog, UUID> {
 
     boolean existsByVersion(int version);

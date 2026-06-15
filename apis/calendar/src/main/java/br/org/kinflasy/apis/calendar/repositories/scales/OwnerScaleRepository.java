@@ -4,11 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import br.org.kinflasy.apis.calendar.entities.scales.OwnerScale;
 
-@Repository
 public interface OwnerScaleRepository extends JpaRepository<OwnerScale, UUID> {
 
     List<OwnerScale> findByCalendarEventId(final UUID calendarEventId);
