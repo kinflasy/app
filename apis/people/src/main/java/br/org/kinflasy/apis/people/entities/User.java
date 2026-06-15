@@ -11,6 +11,7 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @Entity
@@ -34,6 +35,7 @@ public class User extends Person {
     @Column
     private LocalDateTime emailVerifiedAt;
 
+    @ToString.Exclude
     @Column(nullable = false)
     private String password;
 

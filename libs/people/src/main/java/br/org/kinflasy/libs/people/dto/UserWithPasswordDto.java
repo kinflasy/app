@@ -9,12 +9,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class UserWithPasswordDto extends UserDto implements UserDetails {
 
+    @ToString.Exclude
     private String password;
 
     @Override
