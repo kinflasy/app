@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.people.adapters.UserIdentifierDtoAdapter;
@@ -37,6 +38,7 @@ public class UserService {
     private final ModelMapper mapper;
     private final ApplicationEventPublisher publisher;
     private final AuthUtils authUtils;
+    private final PasswordEncoder encoder;
 
     private final UserRepository repository;
     private final UserConverter converter;
@@ -156,11 +158,14 @@ public class UserService {
                                     // Caso 4: o endereço antigo e o novo não existem -> manter como null
                                     .orElse(null));
 
+                    // Criptografar senha
+                    final var encrypted = encoder.encode(password);
+
                     // Atualizar
                     mapper.map(request, entity);
                     entity.setEmail(email);
                     entity.setUsername(username);
-                    entity.setPassword(password);
+                    entity.setPassword(encrypted);
                     entity.setGender(gender);
                     entity.setFullName(fullName);
                     entity.setBirthDate(birthDate);
