@@ -184,7 +184,7 @@ public class MembershipService {
         return repository.findById(id)
                 .map(entity -> {
                     // Gerar DTO original
-                    final var original = mapper.map(entity, MembershipDto.Simple.class);
+                    final var original = mapper.map(entity, MembershipDto.class);
 
                     // Editar entidade
                     mapper.map(request, entity);
@@ -194,12 +194,13 @@ public class MembershipService {
                     final var saved = repository.save(entity);
 
                     // Gerar DTO modificado
-                    final var modified = mapper.map(saved, MembershipDto.Simple.class);
+                    final var modified = mapper.map(saved, MembershipDto.class);
+                    final var simple = mapper.map(saved, MembershipDto.Simple.class);
 
                     // Publicar evento
                     publisher.publishEvent(new EntityEvent.Updated<>(original, modified));
 
-                    return modified;
+                    return simple;
                 })
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
