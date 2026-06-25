@@ -337,7 +337,7 @@ public class UnitService {
                     dto.setId(simpleDto.getId())
                             .setPerson(personClient.findById(simpleDto.getPerson().getId()))
                             .setUnitId(simpleDto.getUnitId())
-                            .setAffiliation(dto.getAffiliation());
+                            .setAffiliation(simpleDto.getAffiliation());
                     return dto;
                 })
                 .toList();
