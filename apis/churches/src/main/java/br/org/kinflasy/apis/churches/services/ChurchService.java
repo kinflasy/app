@@ -86,6 +86,7 @@ public class ChurchService {
     @Transactional
     @PreAuthorize("@fga.check('church', #id, 'admin', 'user', principal.id)")
     public ChurchDto update(final UUID id, final ChurchRequest request) {
+        // Lógica interna do método
         log.info("Atualizando Igreja @{} (id {})...", request.getSlug(), id);
         return repository.findById(id)
                 .map(original -> {

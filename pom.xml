@@ -37,7 +37,7 @@
 		<module>apis/contacts</module>
 		<module>apis/people</module>
 		<module>apis/auth</module>
-		<module>apis/chuches</module>
+		<module>apis/churches</module>
 		<module>apis/calendar</module>
 		<module>apis/media</module>
 	</modules>
