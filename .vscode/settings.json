@@ -1,4 +1,10 @@
 {
+    "coverage-gutters.coverageBaseDir": "**/target/site/jacoco",
+    "coverage-gutters.coverageFileNames": [
+        "jacoco.xml"
+    ],
+    "coverage-gutters.coverageReportFileName": "target/site/jacoco/index.html",
+    "coverage-gutters.watchOnActivate": true,
     "java.compile.nullAnalysis.mode": "disabled",
     "java.configuration.updateBuildConfiguration": "automatic",
     "java.dependency.packagePresentation": "hierarchical",
