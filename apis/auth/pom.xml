@@ -48,20 +48,14 @@
 
         <!-- Dependências de utilitários -->
         <dependency>
-            <!-- ModelMapper -->
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-        <dependency>
             <groupId>dev.openfga</groupId>
             <artifactId>openfga-language</artifactId>
-            <version>v0.2.0-beta.2</version>
+            <version>0.2.1</version>
         </dependency>
         <dependency>
             <groupId>dev.openfga</groupId>
             <artifactId>openfga-sdk</artifactId>
-            <version>0.9.4</version>
+            <version>0.9.11</version>
         </dependency>
     </dependencies>
 

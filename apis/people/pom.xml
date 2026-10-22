@@ -56,15 +56,9 @@
 
         <!-- Dependências de utilitários -->
         <dependency>
-            <!-- ModelMapper -->
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-        <dependency>
             <groupId>com.github.slugify</groupId>
             <artifactId>slugify</artifactId>
-            <version>3.0.0</version>
+            <version>4.0.1</version>
         </dependency>
     </dependencies>
 

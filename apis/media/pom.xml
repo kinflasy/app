@@ -46,12 +46,6 @@
 
         <!-- Dependências de utilitários -->
         <dependency>
-            <!-- ModelMapper -->
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-        <dependency>
             <!-- MinIO -->
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>

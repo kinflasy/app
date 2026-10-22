@@ -82,8 +82,8 @@
         <dependency>
             <!-- JPA Model Gen -->
             <groupId>org.hibernate.orm</groupId>
-            <artifactId>hibernate-jpamodelgen</artifactId>
-            <version>7.0.2.Final</version>
+            <artifactId>hibernate-processor</artifactId>
+            <version>7.4.13.Final</version>
         </dependency>
 
         <!-- Dependências de utilitários -->
@@ -93,12 +93,6 @@
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
-        </dependency>
-        <dependency>
-            <!-- JWT -->
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>4.5.0</version>
         </dependency>
 
         <!-- Dependências de Testes -->
@@ -112,7 +106,7 @@
             <!-- Security Test -->
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
-            <version>6.5.1</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <!-- Banco de Dados H2 em memória -->

@@ -71,8 +71,8 @@
 						</path>
 						<path>
 							<groupId>org.hibernate.orm</groupId>
-							<artifactId>hibernate-jpamodelgen</artifactId>
-							<version>7.0.2.Final</version>
+							<artifactId>hibernate-processor</artifactId>
+							<version>7.4.13.Final</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
