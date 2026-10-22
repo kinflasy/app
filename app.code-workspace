@@ -20,7 +20,8 @@
 			"contacts",
 			"media",
 			"scales",
-			"birthday"
+			"birthday",
+			"token"
 		]
 	}
 }
