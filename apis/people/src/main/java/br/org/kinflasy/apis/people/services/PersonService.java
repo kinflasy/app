@@ -83,7 +83,7 @@ public class PersonService {
                 });
     }
 
-    @PreAuthorize("@fga.check('user', #id, 'assistant', 'user', principal.id)")
+    @PreAuthorize("@fga.check('user', #id, 'assistant', 'user', principal.id) or @fga.check('user', #id, 'admin', 'user', principal.id)")
     public Optional<PersonPhoneDto> getPhone(final UUID id) {
         return repository.findById(id)
                 .map(person -> new PersonPhoneDto().setPhone(person.getPhone()));
