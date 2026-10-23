@@ -1,9 +1,11 @@
 package br.org.kinflasy.apis.auth.controllers;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,12 +43,16 @@ public class AuthenticationController {
         final var usernamePassword = new UsernamePasswordAuthenticationToken(request.getUsername(),
                 request.getPassword());
 
-        final var authentication = manager.authenticate(usernamePassword);
-        final var token = tokenService.generateToken((UserDto) authentication.getPrincipal());
+        try {
+            final var authentication = manager.authenticate(usernamePassword);
+            final var token = tokenService.generateToken((UserDto) authentication.getPrincipal());
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .build();
+            return ResponseEntity.noContent()
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .build();
+        } catch (final AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @SecurityRequirements
