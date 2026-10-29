@@ -20,6 +20,7 @@ public class ChurchDto {
     private String email;
 
     @Data
+    @Accessors(chain = true)
     @NoArgsConstructor
     @EqualsAndHashCode(callSuper = true)
     public static class Starter extends ChurchDto {
@@ -27,6 +28,7 @@ public class ChurchDto {
     }
 
     @Data
+    @Accessors(chain = true)
     public static class Clean {
         private UUID id;
         private String name;

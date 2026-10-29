@@ -2,8 +2,10 @@ package br.org.kinflasy.apis.auth.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 @Builder
 public class FgaCheckRequest {
 
@@ -16,6 +18,7 @@ public class FgaCheckRequest {
     private Integer userAge;
 
     @Data
+    @Accessors(chain = true)
     @Builder
     public static class Simple {
         private String objectType;

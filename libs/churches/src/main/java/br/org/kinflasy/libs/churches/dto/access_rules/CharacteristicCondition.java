@@ -10,8 +10,10 @@ import dev.openfga.sdk.api.model.RelationshipCondition;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 public class CharacteristicCondition implements AccessCondition {
 
     public static final CharacteristicCondition EVERYONE = new CharacteristicCondition(null, 0, 0);

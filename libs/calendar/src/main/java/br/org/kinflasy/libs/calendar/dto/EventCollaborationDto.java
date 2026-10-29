@@ -4,8 +4,10 @@ import java.util.UUID;
 
 import br.org.kinflasy.libs.churches.dto.departments.DepartmentDto;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 public class EventCollaborationDto {
 
     private UUID id;
@@ -13,6 +15,7 @@ public class EventCollaborationDto {
     private UUID departmentId;
 
     @Data
+    @Accessors(chain = true)
     public static class DetailingDepartment {
         private UUID id;
         private UUID calendarEventId;
@@ -20,6 +23,7 @@ public class EventCollaborationDto {
     }
 
     @Data
+    @Accessors(chain = true)
     public static class DetailingEvent {
         private UUID id;
         private CalendarEventDto calendarEvent;
@@ -27,6 +31,7 @@ public class EventCollaborationDto {
     }
 
     @Data
+    @Accessors(chain = true)
     public static class Detailed {
         private UUID id;
         private CalendarEventDto calendarEvent;

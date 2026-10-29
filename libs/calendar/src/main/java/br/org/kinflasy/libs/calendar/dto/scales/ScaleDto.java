@@ -10,8 +10,10 @@ import br.org.kinflasy.libs.calendar.dto.CalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleDto.DetailingCalendarEvent;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 @JsonSubTypes({
         @Type(name = "OWNER", value = OwnerScaleDto.class),
         @Type(name = "COLLABORATOR", value = CollaboratorScaleDto.class),
@@ -24,6 +26,7 @@ public class ScaleDto {
     private UUID lineupId;
 
     @Data
+    @Accessors(chain = true)
     @EqualsAndHashCode(callSuper = true)
     public static class DetailingCalendarEvent extends ScaleDto {
         private CalendarEventDto calendarEvent;

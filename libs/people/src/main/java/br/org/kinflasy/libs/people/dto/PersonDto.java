@@ -12,8 +12,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import br.org.kinflasy.libs.people.enums.Gender;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 @NoArgsConstructor
 @JsonSubTypes({
         @Type(name = "INACTIVE", value = InactivePersonDto.class),

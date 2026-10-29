@@ -8,8 +8,10 @@ import br.org.kinflasy.libs.churches.enums.membership.EntryMode;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 public class MembershipRequest {
 
     @NotNull
@@ -22,6 +24,7 @@ public class MembershipRequest {
     private LocalDate entryDate;
 
     @Data
+    @Accessors(chain = true)
     public static class Register {
         @NotNull
         private InactivePersonRequest person;
@@ -34,6 +37,7 @@ public class MembershipRequest {
     }
 
     @Data
+    @Accessors(chain = true)
     public static class Join {
         @NotNull
         private Affiliation affiliation;

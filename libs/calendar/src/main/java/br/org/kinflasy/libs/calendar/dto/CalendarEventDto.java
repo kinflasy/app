@@ -10,8 +10,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 @JsonSubTypes({
         @Type(name = "DEPARTMENT", value = DepartmentCalendarEventDto.class),
         @Type(name = "DEPARTMENT_DETAILED", value = DepartmentCalendarEventDto.Detailed.class),

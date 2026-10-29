@@ -10,8 +10,10 @@ import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 public class ChurchRule implements AccessRule {
 
     public static final String PREFIX = "church";

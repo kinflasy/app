@@ -12,8 +12,10 @@ import br.org.kinflasy.libs.people.enums.Gender;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 @NoArgsConstructor
 public class PersonIdentifierDto {
 
@@ -33,6 +35,7 @@ public class PersonIdentifierDto {
     }
 
     @Data
+    @Accessors(chain = true)
     @EqualsAndHashCode(callSuper = true)
     public static class WithBirthday extends PersonIdentifierDto {
         private MonthDay birthday;

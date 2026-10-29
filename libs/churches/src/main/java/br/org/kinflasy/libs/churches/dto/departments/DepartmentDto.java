@@ -10,8 +10,10 @@ import br.org.kinflasy.libs.churches.enums.department.DepartmentType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 @NoArgsConstructor
 public class DepartmentDto {
 
@@ -24,6 +26,7 @@ public class DepartmentDto {
     private UUID coverImageId;
 
     @Data
+    @Accessors(chain = true)
     public static class Clean {
         private UUID id;
         private String name;
@@ -32,6 +35,7 @@ public class DepartmentDto {
     }
 
     @Data
+    @Accessors(chain = true)
     public static class CleanWithUnit {
         private UUID id;
         private String name;
@@ -40,12 +44,14 @@ public class DepartmentDto {
     }
 
     @Data
+    @Accessors(chain = true)
     public static class Rules {
         private List<AccessRule> visibilityRules = Collections.emptyList();
         private List<AccessRule> joinRules = Collections.emptyList();
     }
 
     @Data
+    @Accessors(chain = true)
     @EqualsAndHashCode(callSuper = true)
     public static class WithRules extends DepartmentDto {
         private List<AccessRule> visibilityRules = Collections.emptyList();
