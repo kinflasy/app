@@ -79,12 +79,6 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
         </dependency>
-        <dependency>
-            <!-- JPA Model Gen -->
-            <groupId>org.hibernate.orm</groupId>
-            <artifactId>hibernate-processor</artifactId>
-            <version>7.4.13.Final</version>
-        </dependency>
 
         <!-- Dependências de utilitários -->
         <dependency>
