@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.org.kinflasy.apis.churches.services.lineups.LineupItemService;
 import br.org.kinflasy.apis.churches.services.lineups.LineupService;
 import br.org.kinflasy.libs.churches.dto.lineups.LineupDto;
 import br.org.kinflasy.libs.churches.dto.lineups.LineupRequest;
@@ -30,13 +31,14 @@ import lombok.AllArgsConstructor;
 public class LineupController {
 
     private final LineupService service;
+    private final LineupItemService itemService;
 
     @GetMapping("{id}")
     @Operation(summary = "Detalhar", description = "Detalhar uma formação pelo ID.")
     public ResponseEntity<LineupDto> findById(@PathVariable final UUID id) {
         return service.findById(id)
-                .map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
     }
 
     @GetMapping("{id}/with-items")
@@ -45,14 +47,13 @@ public class LineupController {
         return service.findById(id)
                 .map(dto -> {
                     final var withItems = new LineupDto.WithItems();
-                    withItems
-                            .setItems(service.listItems(id))
+                    withItems.setItems(itemService.listByLineupId(id))
                             .setId(dto.getId())
                             .setName(dto.getName());
 
-                    return new ResponseEntity<>(withItems, HttpStatus.OK);
+                    return ResponseEntity.ok(withItems);
                 })
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PutMapping("{id}")
@@ -69,9 +70,9 @@ public class LineupController {
     public ResponseEntity<HttpStatus> delete(@PathVariable final UUID id) {
         try {
             service.delete(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return ResponseEntity.noContent().build();
         } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         } catch (final Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
@@ -80,9 +81,7 @@ public class LineupController {
     @GetMapping("{id}/items")
     @Operation(summary = "Listar itens", description = "Listar os itens (papel + descrição) de uma formação.")
     public ResponseEntity<List<LineupDto.Item.DetailingRole>> listItems(@PathVariable final UUID id) {
-        return service.findById(id)
-                .map(lineup -> new ResponseEntity<>(service.listItems(id), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return ResponseEntity.ok(itemService.listByLineupId(id));
     }
 
     @PostMapping("{id}/items")
@@ -91,26 +90,26 @@ public class LineupController {
             @RequestBody @Valid final LineupRequest.Item request) {
         return service.addItem(id, request)
                 .map(dto -> new ResponseEntity<>(dto, HttpStatus.CREATED))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+                .orElseGet(ResponseEntity.notFound()::build);
     }
 
     @PutMapping("items/{id}")
     @Operation(summary = "Editar item", description = "Editar os dados de um item de formação.")
     public ResponseEntity<LineupDto.Item> updateItem(@PathVariable final UUID id,
             @RequestBody @Valid final LineupRequest.UpdateItem request) {
-        return service.updateItem(id, request)
-                .map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        return itemService.update(id, request)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
     }
 
     @DeleteMapping("items/{id}")
     @Operation(summary = "Excluir item", description = "Remover um item de formação do sistema.")
     public ResponseEntity<HttpStatus> deleteItem(@PathVariable final UUID id) {
         try {
-            service.deleteItem(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            itemService.delete(id);
+            return ResponseEntity.noContent().build();
         } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         } catch (final Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
