@@ -16,7 +16,6 @@ import br.org.kinflasy.apis.calendar.entities.EventCollaboration;
 import br.org.kinflasy.apis.calendar.entities.scales.CollaboratorScale;
 import br.org.kinflasy.apis.calendar.entities.scales.OwnerScale;
 import br.org.kinflasy.apis.calendar.entities.scales.Scale;
-import br.org.kinflasy.apis.calendar.entities.scales.ScaleItem;
 import br.org.kinflasy.apis.calendar.repositories.EventCollaborationRepository;
 import br.org.kinflasy.apis.calendar.repositories.scales.ScaleItemRepository;
 import br.org.kinflasy.apis.calendar.repositories.scales.ScaleRepository;
@@ -27,8 +26,6 @@ import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.calendar.dto.scales.CollaboratorScaleDto;
 import br.org.kinflasy.libs.calendar.dto.scales.OwnerScaleDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleDto;
-import br.org.kinflasy.libs.calendar.dto.scales.ScaleItemDto;
-import br.org.kinflasy.libs.calendar.dto.scales.ScaleItemRequest;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleRequest;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import lombok.AllArgsConstructor;
@@ -44,6 +41,7 @@ public class ScaleService {
     private final ScaleItemRepository itemRepository;
     private final EventCollaborationRepository collaborationRepository;
 
+    private final ScaleItemService itemService;
     private final OwnerScaleService ownerScaleService;
     private final CalendarEventService calendarEventService;
     private final CollaboratorScaleService collaboratorScaleService;
@@ -80,8 +78,7 @@ public class ScaleService {
         final var collabScales = calendarEventService.listCollaborationsInRange(departmentId, start, end)
                 .stream()
                 .flatMap(event -> collaboratorScaleService
-                        .listByCalendarEventIdAndDepartmentId(event.getId(), departmentId)
-                        .stream()
+                        .listByCalendarEventIdAndDepartmentId(event.getId(), departmentId).stream()
                         .map(scale -> mapper.map(scale, ScaleDto.DetailingCalendarEvent.class)
                                 .setCalendarEvent(event)));
 
@@ -182,55 +179,14 @@ public class ScaleService {
     public void delete(final UUID id) {
         repository.findById(id)
                 .ifPresent(scale -> {
+                    // Deletar itens
+                    itemService.deleteAllByScaleId(id);
+
                     // Guardar estado original
                     final var original = toDto(scale);
 
                     // Deletar
                     repository.delete(scale);
-
-                    // Publicar evento
-                    publisher.publishEvent(new EntityEvent.Deleted<>(original));
-                });
-    }
-
-    @PreAuthorize("@fga.check('scale', #id, 'can_view', 'user', principal.id)")
-    public List<ScaleItemDto> listItems(final UUID id) {
-        return itemRepository.findByScaleId(id).stream()
-                .map(item -> mapper.map(item, ScaleItemDto.class))
-                .toList();
-    }
-
-    @PreAuthorize("@fga.check('scale', #id, 'can_edit', 'user', principal.id)")
-    public ScaleItemDto addItem(final UUID id, final ScaleItemRequest request) {
-        return itemRepository.findByScaleIdAndPersonIdAndRoleId(id, request.getPersonId(), request.getRoleId())
-                .map(entity -> mapper.map(entity, ScaleItemDto.class))
-                .orElseGet(() -> {
-                    // Construir entidade
-                    final var entity = new ScaleItem();
-                    entity.setScaleId(id);
-                    entity.setPersonId(request.getPersonId());
-                    entity.setRoleId(request.getRoleId());
-
-                    // Salvar e converter para DTO
-                    final var saved = itemRepository.save(entity);
-                    final var dto = mapper.map(saved, ScaleItemDto.class);
-
-                    // Publicar evento
-                    publisher.publishEvent(new EntityEvent.Created<>(dto));
-
-                    return dto;
-                });
-    }
-
-    @PreAuthorize("@fga.check('scale', #id, 'can_edit', 'user', principal.id)")
-    public void removeItem(final UUID id, final ScaleItemRequest request) {
-        itemRepository.findByScaleIdAndPersonIdAndRoleId(id, request.getPersonId(), request.getRoleId())
-                .ifPresent(item -> {
-                    // Guardar estado original
-                    final var original = mapper.map(item, ScaleItemDto.class);
-
-                    // Deletar
-                    itemRepository.delete(item);
 
                     // Publicar evento
                     publisher.publishEvent(new EntityEvent.Deleted<>(original));
