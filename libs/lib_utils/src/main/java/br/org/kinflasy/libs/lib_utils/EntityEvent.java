@@ -3,6 +3,7 @@ package br.org.kinflasy.libs.lib_utils;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.ResolvableTypeProvider;
 
+import br.org.kinflasy.libs.people.dto.UserDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -12,6 +13,7 @@ import lombok.experimental.Accessors;
 public abstract class EntityEvent<D> implements ResolvableTypeProvider {
 
     private final D source;
+    private UserDto user;
 
     @Override
     public ResolvableType getResolvableType() {
@@ -26,6 +28,10 @@ public abstract class EntityEvent<D> implements ResolvableTypeProvider {
             super(source);
         }
 
+        public Created(final D source, final UserDto user) {
+            this(source);
+            setUser(user);
+        }
     }
 
     @Data
@@ -38,6 +44,11 @@ public abstract class EntityEvent<D> implements ResolvableTypeProvider {
             super(modified);
             this.original = original;
         }
+
+        public Updated(final D original, final D modified, final UserDto user) {
+            this(original, modified);
+            setUser(user);
+        }
     }
 
     @Data
@@ -46,6 +57,11 @@ public abstract class EntityEvent<D> implements ResolvableTypeProvider {
     public static class Deleted<D> extends EntityEvent<D> {
         public Deleted(final D source) {
             super(source);
+        }
+
+        public Deleted(final D source, final UserDto user) {
+            this(source);
+            setUser(user);
         }
     }
 
