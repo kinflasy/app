@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.churches.clients.RoleClient;
 import br.org.kinflasy.apis.churches.entities.lineups.LineupItem;
@@ -16,6 +17,7 @@ import br.org.kinflasy.libs.churches.dto.lineups.LineupRequest;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import lombok.RequiredArgsConstructor;
 
+@Service
 @RequiredArgsConstructor
 public class LineupItemService {
 
