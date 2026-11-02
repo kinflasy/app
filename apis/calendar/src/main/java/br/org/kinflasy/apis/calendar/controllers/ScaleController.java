@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import br.org.kinflasy.apis.calendar.services.scales.ScaleItemService;
 import br.org.kinflasy.apis.calendar.services.scales.ScaleService;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleItemDto;
@@ -32,6 +33,7 @@ import lombok.AllArgsConstructor;
 public class ScaleController {
 
     private final ScaleService scaleService;
+    private final ScaleItemService scaleItemService;
 
     @GetMapping("department/{departmentId}")
     @Operation(summary = "Listar escalas do departamento", description = "Listar as escalas associadas aos eventos de um departamento em um intervalo de tempo.")
@@ -66,20 +68,20 @@ public class ScaleController {
     @GetMapping("{id}/items")
     @Operation(summary = "Listar itens da escala", description = "Listar os itens de uma escala.")
     public ResponseEntity<List<ScaleItemDto>> listItems(@PathVariable final UUID id) {
-        return ResponseEntity.ok(scaleService.listItems(id));
+        return ResponseEntity.ok(scaleItemService.listByScaleId(id));
     }
 
     @PostMapping("{id}/items")
     @Operation(summary = "Escalar alguém", description = "Adicionar um item a uma escala.")
     public ResponseEntity<ScaleItemDto> addItem(@PathVariable final UUID id,
             @RequestBody final ScaleItemRequest request) {
-        return ResponseEntity.ok(scaleService.addItem(id, request));
+        return ResponseEntity.ok(scaleItemService.create(id, request));
     }
 
     @DeleteMapping("{id}/items")
     @Operation(summary = "Remover alguém da escala", description = "Remover um item de uma escala.")
     public ResponseEntity<Void> removeItem(@PathVariable final UUID id, @RequestBody final ScaleItemRequest request) {
-        scaleService.removeItem(id, request);
+        scaleItemService.delete(id, request);
         return ResponseEntity.noContent().build();
     }
 
