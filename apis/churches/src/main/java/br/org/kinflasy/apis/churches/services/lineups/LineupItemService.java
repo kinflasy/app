@@ -86,9 +86,9 @@ public class LineupItemService {
                 });
     }
 
-    @PreAuthorize("@fga.check('lineup_item', #id, 'can_edit', 'user', principal.id)")
-    public void deleteAllByLineupId(final UUID lineUpId) {
-        itemRepository.findByLineupId(lineUpId)
+    @PreAuthorize("@fga.check('lineup', #lineupId, 'can_edit', 'user', principal.id)")
+    public void deleteAllByLineupId(final UUID lineupId) {
+        itemRepository.findByLineupId(lineupId)
                 .forEach(item -> {
                     final var dto = mapper.map(item, LineupDto.Item.class);
 

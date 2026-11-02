@@ -12,6 +12,7 @@ import br.org.kinflasy.apis.churches.entities.lineups.DepartmentLineup;
 import br.org.kinflasy.apis.churches.entities.lineups.Lineup;
 import br.org.kinflasy.apis.churches.entities.lineups.UnitLineup;
 import br.org.kinflasy.apis.churches.repositories.lineups.LineupRepository;
+import br.org.kinflasy.libs.api_utils.PublisherUtils;
 import br.org.kinflasy.libs.churches.dto.lineups.LineupDto;
 import br.org.kinflasy.libs.churches.dto.lineups.LineupRequest;
 import br.org.kinflasy.libs.churches.dto.lineups.UnitLineupDto;
@@ -24,6 +25,7 @@ public class LineupService {
 
     private final ModelMapper mapper;
     private final ApplicationEventPublisher publisher;
+    private final PublisherUtils publisherUtils;
 
     private final LineupRepository repository;
 
@@ -60,7 +62,7 @@ public class LineupService {
 
                     final var dto = toDto(lineup);
                     repository.delete(lineup);
-                    publisher.publishEvent(new EntityEvent.Deleted<>(dto));
+                    publisherUtils.deleted(dto);
                 });
     }
 
