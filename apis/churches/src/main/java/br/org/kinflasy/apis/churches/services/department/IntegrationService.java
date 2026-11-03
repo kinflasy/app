@@ -147,6 +147,11 @@ public class IntegrationService {
                 });
     }
 
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_manage', 'user', principal.id)")
+    public void deleteAllByDepartment(final UUID departmentId) {
+        repository.deleteAll(repository.findByDepartmentId(departmentId));
+    }
+
     @PreAuthorize("@fgau.withCharacteristics('department', #departmentId, 'can_join')")
     public Pending askToJoin(final UUID departmentId, final UUID unitId) {
         final var loggedUser = authUtils.getLoggedUser();
@@ -200,6 +205,11 @@ public class IntegrationService {
                     return saved;
                 })
                 .orElseThrow(() -> new EntityNotFoundException("Essa solicitação não existe"));
+    }
+
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_manage', 'user', principal.id)")
+    public void deleteAllPendingByDepartment(final UUID departmentId) {
+        pendingRepository.deleteAll(pendingRepository.findByDepartmentId(departmentId));
     }
 
     @PreAuthorize("@fga.check('department', #departmentId, 'can_manage', 'user', principal.id) or "

@@ -214,6 +214,17 @@ public class DepartmentService {
     @Transactional
     @PreAuthorize("@fga.check('department', #id, 'can_edit', 'user', principal.id)")
     public void delete(final UUID id) {
+        subscriptionRepository.deleteAll(subscriptionRepository.findByDepartmentId(id));
+
+        deleteProfileImage(id);
+        deleteCoverImage(id);
+
+        resetJoinRules(id);
+        resetVisibilityRules(id);
+
+        integrationService.deleteAllByDepartment(id);
+        integrationService.deleteAllPendingByDepartment(id);
+
         repository.deleteById(id);
     }
 
@@ -252,6 +263,12 @@ public class DepartmentService {
     public void dissociateExtension(final UUID id, final ExtensionSubscriptionRequest request) {
         subscriptionRepository.findByDepartmentIdAndExtension(id, request.getExtension())
                 .ifPresent(subscriptionRepository::delete);
+    }
+
+    @Transactional
+    @PreAuthorize("@fga.check('department', #id, 'can_manage', 'user', principal.id)")
+    public void dissociateAllExtensions(final UUID id) {
+        subscriptionRepository.deleteAll(subscriptionRepository.findByDepartmentId(id));
     }
 
     @PreAuthorize("@fga.check('department', #id, 'can_observe', 'user', principal.id)")
