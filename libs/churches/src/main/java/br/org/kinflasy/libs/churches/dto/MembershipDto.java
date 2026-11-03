@@ -7,6 +7,7 @@ import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
 import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
+import br.org.kinflasy.libs.people.ids.PersonId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -35,7 +36,7 @@ public class MembershipDto {
     public static class Simple {
         private UUID id;
         private UUID unitId;
-        private UUID personId;
+        private PersonId personId;
         private Affiliation affiliation;
     }
 
@@ -73,7 +74,7 @@ public class MembershipDto {
          *             about the person. This field will be removed in future versions.
          */
         @Deprecated(forRemoval = true)
-        private UUID personId;
+        private PersonId personId;
     }
 
     @Data

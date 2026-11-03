@@ -33,6 +33,7 @@ import br.org.kinflasy.libs.churches.dto.lineups.UnitLineupDto;
 import br.org.kinflasy.libs.contacts.dto.LinkDto;
 import br.org.kinflasy.libs.contacts.dto.LinkRequest;
 import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
+import br.org.kinflasy.libs.people.ids.PersonId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -162,7 +163,7 @@ public class UnitController {
     @GetMapping("{id}/membership/{personId}")
     @Operation(summary = "Buscar membresia ativa", description = "Buscar a relação de membresia ativa entre uma pessoa e uma unidade.")
     public ResponseEntity<MembershipDto.Simple> findActiveMembership(@PathVariable final UUID id,
-            @PathVariable final UUID personId) {
+            @PathVariable final PersonId personId) {
         return service.findActiveMembership(id, personId)
                 .map(ResponseEntity::ok)
                 .orElseGet(ResponseEntity.notFound()::build);
@@ -190,7 +191,7 @@ public class UnitController {
 
     @PostMapping("{id}/member/{personId}/confirm")
     @Operation(summary = "Confirmar solicitação de usuário para ingressar na unidade", description = "Confirmar solicitação de usuário para ingressar na unidade.")
-    public ResponseEntity<SimplePending> confirmAsUnit(@PathVariable final UUID id, @PathVariable final UUID personId) {
+    public ResponseEntity<SimplePending> confirmAsUnit(@PathVariable final UUID id, @PathVariable final PersonId personId) {
         return ResponseEntity.ok(membershipService.confirmAsUnit(id, personId));
     }
 
@@ -209,7 +210,7 @@ public class UnitController {
 
     @PostMapping("{id}/member/{personId}/reject")
     @Operation(summary = "Rejeitar solicitação de usuário para ingressar na unidade", description = "Rejeitar solicitação de usuário para ingressar na unidade.")
-    public ResponseEntity<SimplePending> reject(@PathVariable final UUID id, @PathVariable final UUID personId) {
+    public ResponseEntity<SimplePending> reject(@PathVariable final UUID id, @PathVariable final PersonId personId) {
         membershipService.reject(id, personId);
         return ResponseEntity.noContent().build();
     }

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 import br.org.kinflasy.libs.people.enums.Gender;
+import br.org.kinflasy.libs.people.ids.PersonId;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -23,7 +24,7 @@ import lombok.experimental.Accessors;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 public abstract class PersonDto {
 
-    private UUID id;
+    private PersonId id;
     private String fullName;
     private String nickname;
     private Gender gender;

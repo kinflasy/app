@@ -4,7 +4,6 @@ import java.time.MonthDay;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +24,7 @@ import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
 import br.org.kinflasy.libs.people.dto.PersonPhoneDto;
 import br.org.kinflasy.libs.people.dto.UserDto;
+import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 
@@ -50,12 +50,12 @@ public class PersonService {
                 .orElse(false);
     }
 
-    public Optional<PersonIdentifierDto> identifyById(final UUID id) {
+    public Optional<PersonIdentifierDto> identifyById(final PersonId id) {
         return repository.findById(id)
                 .map(PersonIdentifierDtoAdapter::new);
     }
 
-    public List<PersonIdentifierDto> identifyById(final Collection<UUID> id) {
+    public List<PersonIdentifierDto> identifyById(final Collection<PersonId> id) {
         return repository.findByIdIn(id).stream()
                 .map(entity -> new PersonIdentifierDtoAdapter(entity).asSuper())
                 .toList();
@@ -73,7 +73,7 @@ public class PersonService {
      */
 
     @PreAuthorize("@fga.check('person_data', #id, 'can_view', 'user', principal.id)")
-    public Optional<PersonDto> findById(final UUID id) throws EntityNotFoundException {
+    public Optional<PersonDto> findById(final PersonId id) throws EntityNotFoundException {
         return repository.findById(id)
                 .map(person -> switch (person) {
                     case User user -> mapper.map(user, UserDto.class);
@@ -84,13 +84,13 @@ public class PersonService {
     }
 
     @PreAuthorize("@fga.check('user', #id, 'assistant', 'user', principal.id) or @fga.check('user', #id, 'admin', 'user', principal.id)")
-    public Optional<PersonPhoneDto> getPhone(final UUID id) {
+    public Optional<PersonPhoneDto> getPhone(final PersonId id) {
         return repository.findById(id)
                 .map(person -> new PersonPhoneDto().setPhone(person.getPhone()));
     }
 
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
-    public Optional<PersonDto> updateProfileImage(final UUID id, final MultipartFile file) {
+    public Optional<PersonDto> updateProfileImage(final PersonId id, final MultipartFile file) {
         return repository.findById(id)
                 .map(person -> {
                     // Validar a imagem
@@ -124,7 +124,7 @@ public class PersonService {
     }
 
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
-    public Optional<PersonDto> deleteProfileImage(final UUID id) {
+    public Optional<PersonDto> deleteProfileImage(final PersonId id) {
         return repository.findById(id)
                 .map(person -> {
                     // Deletar a foto antiga, se existir

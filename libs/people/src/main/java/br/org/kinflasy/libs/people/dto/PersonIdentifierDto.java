@@ -9,6 +9,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import br.org.kinflasy.libs.people.enums.Gender;
+import br.org.kinflasy.libs.people.ids.PersonId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 public class PersonIdentifierDto {
 
-    private UUID id;
+    private PersonId id;
     private String nickname;
     private Gender gender;
     private UUID profileImageId;

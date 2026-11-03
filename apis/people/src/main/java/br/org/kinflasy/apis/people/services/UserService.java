@@ -1,7 +1,6 @@
 package br.org.kinflasy.apis.people.services;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -23,6 +22,7 @@ import br.org.kinflasy.libs.lib_utils.EntityEvent.Created;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
+import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -85,7 +85,7 @@ public class UserService {
         return dto;
     }
 
-    public Optional<UserIdentifierDto> identifyById(final UUID id) {
+    public Optional<UserIdentifierDto> identifyById(final PersonId id) {
         return repository.findById(id)
                 .map(UserIdentifierDtoAdapter::new);
     }
@@ -110,7 +110,7 @@ public class UserService {
      */
 
     @PreAuthorize("@fga.check('person_data', #id, 'can_view', 'user', principal.id)")
-    public Optional<UserDto> findById(final UUID id) {
+    public Optional<UserDto> findById(final PersonId id) {
         return repository.findById(id)
                 .map(converter::toDto);
     }
@@ -124,7 +124,7 @@ public class UserService {
 
     @Transactional
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
-    public UserDto update(final UUID id, final UserRequest request) {
+    public UserDto update(final PersonId id, final UserRequest request) {
         return repository.findById(id)
                 .map(entity -> {
                     final var originalDto = mapper.map(entity, UserDto.class);
@@ -186,7 +186,7 @@ public class UserService {
 
     @Transactional
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
-    public void delete(final UUID id) {
+    public void delete(final PersonId id) {
         repository.findById(id)
                 .ifPresent(entity -> {
                     // Desativar membresias do usuário

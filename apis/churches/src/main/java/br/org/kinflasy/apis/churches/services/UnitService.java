@@ -39,6 +39,7 @@ import br.org.kinflasy.libs.media.validators.ProfileImageValidator;
 import br.org.kinflasy.libs.people.dto.BirthdaySearchRequest;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
+import br.org.kinflasy.libs.people.ids.PersonId;
 import dev.openfga.OpenFga;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -308,7 +309,7 @@ public class UnitService {
     }
 
     @PreAuthorize("@fga.check('unit', #id, 'department_manager', 'user', principal.id)")
-    public List<UUID> listPeopleIdsFromMembers(final UUID id) {
+    public List<PersonId> listPeopleIdsFromMembers(final UUID id) {
         return membershipRepository.findByUnitIdAndLeaveDateNull(id).stream()
                 .map(Membership::getPersonId)
                 .toList();
@@ -384,14 +385,14 @@ public class UnitService {
     }
 
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id) or @fga.check('person_data', #personId, 'can_view', 'user', principal.id)")
-    public Optional<MembershipDto.Simple> findActiveMembership(final UUID id, final UUID personId) {
+    public Optional<MembershipDto.Simple> findActiveMembership(final UUID id, final PersonId personId) {
         return membershipRepository.findByUnitIdAndPersonIdAndLeaveDateNull(id, personId)
                 .map(membership -> mapper.map(membership, MembershipDto.Simple.class));
     }
 
     @Transactional
     @PreAuthorize("@fga.check('unit', #id, 'admin', 'user', principal.id)")
-    public void removeMember(final UUID id, final UUID personId) {
+    public void removeMember(final UUID id, final PersonId personId) {
         membershipRepository.findByUnitIdAndPersonId(id, personId)
                 .forEach(membership -> {
                     if (membership.getLeaveDate() != null) {

@@ -3,6 +3,7 @@ package br.org.kinflasy.libs.people.dto.roles;
 import java.util.UUID;
 
 import br.org.kinflasy.libs.people.dto.PersonDto;
+import br.org.kinflasy.libs.people.ids.PersonId;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -11,7 +12,7 @@ import lombok.experimental.Accessors;
 public class AbilityDto {
 
     private UUID id;
-    private UUID personId;
+    private PersonId personId;
     private UUID roleId;
 
     @Data
@@ -26,7 +27,7 @@ public class AbilityDto {
     @Accessors(chain = true)
     public static class DetailingRole {
         private UUID id;
-        private UUID personId;
+        private PersonId personId;
         private RoleDto role;
     }
 

@@ -24,6 +24,7 @@ import br.org.kinflasy.libs.churches.dto.MembershipDto.Pending;
 import br.org.kinflasy.libs.churches.dto.MembershipDto.SimplePending;
 import br.org.kinflasy.libs.churches.dto.MembershipRequest;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
+import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -124,7 +125,7 @@ public class MembershipService {
     }
 
     @PreAuthorize("@fga.check('person_data', #personId, 'can_view', 'user', principal.id) or #personId.equals(principal.id)")
-    public List<MembershipDto.DetailingUnit> listByPersonId(final UUID personId) {
+    public List<MembershipDto.DetailingUnit> listByPersonId(final PersonId personId) {
         return repository.findByPersonId(personId).stream()
                 .map(entity -> {
                     return unitService.findById(entity.getUnitId())
@@ -206,7 +207,7 @@ public class MembershipService {
     }
 
     @PreAuthorize("@fga.check('membership', #id, 'can_edit', 'user', principal.id) or #personId.equals(principal.id)")
-    public MembershipDto.Simple changePerson(final UUID id, final UUID personId) {
+    public MembershipDto.Simple changePerson(final UUID id, final PersonId personId) {
         return repository.findById(id)
                 .map(entity -> {
                     // Gerar requisição com base no original
@@ -222,7 +223,7 @@ public class MembershipService {
     }
 
     @PreAuthorize("#personId.equals(principal.id)")
-    public List<Pending> listPendingByPersonId(final UUID personId) {
+    public List<Pending> listPendingByPersonId(final PersonId personId) {
         return pendingRepository.findByPersonId(personId).stream()
                 .map(entity -> Optional.ofNullable(userClient.identifyById(entity.getPersonId()))
                         .map(identifier -> {
@@ -276,7 +277,7 @@ public class MembershipService {
     }
 
     @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id)")
-    public SimplePending confirmAsUnit(final UUID unitId, final UUID personId) {
+    public SimplePending confirmAsUnit(final UUID unitId, final PersonId personId) {
         return pendingRepository.findByUnitIdAndPersonId(unitId, personId)
                 .map(pending -> {
                     if (pending.getAffiliation() == null) {
@@ -289,13 +290,13 @@ public class MembershipService {
     }
 
     @PreAuthorize("@fga.check('unit', #unitId, 'admin', 'user', principal.id) or #personId.equals(principal.id)")
-    public void reject(final UUID unitId, final UUID personId) {
+    public void reject(final UUID unitId, final PersonId personId) {
         pendingRepository.findByUnitIdAndPersonId(unitId, personId)
                 .ifPresent(pendingRepository::delete);
     }
 
     private SimplePending createPendingMembership(final UUID unitId, final MembershipRequest.Join request,
-            final UUID loggedUserId) {
+            final PersonId loggedUserId) {
         final var entity = new PendingMembership();
         entity.setId(null);
         entity.setUnitId(unitId);

@@ -1,7 +1,5 @@
 package br.org.kinflasy.apis.people.controllers;
 
-import java.util.UUID;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +16,7 @@ import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
+import br.org.kinflasy.libs.people.ids.PersonId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -45,7 +44,7 @@ public class UserController {
 
     @GetMapping("identify/{id}")
     @Operation(summary = "Identificar", description = "Identificar um usuário ativo pelo ID.")
-    public ResponseEntity<UserIdentifierDto> identifyById(@PathVariable final UUID id) {
+    public ResponseEntity<UserIdentifierDto> identifyById(@PathVariable final PersonId id) {
         return service.identifyById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -77,7 +76,7 @@ public class UserController {
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar um usuário ativo pelo ID.")
-    public ResponseEntity<UserDto> findById(@PathVariable final UUID id) {
+    public ResponseEntity<UserDto> findById(@PathVariable final PersonId id) {
         return service.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -106,7 +105,7 @@ public class UserController {
 
     @PutMapping("admin/{id}")
     @Operation(summary = "ADMIN - Editar", description = "Editar os dados de um usuário ativo.")
-    public ResponseEntity<UserDto> update(@PathVariable final UUID id, @RequestBody final UserRequest request) {
+    public ResponseEntity<UserDto> update(@PathVariable final PersonId id, @RequestBody final UserRequest request) {
         try {
             return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
         } catch (final EntityNotFoundException e) {
@@ -128,7 +127,7 @@ public class UserController {
 
     @DeleteMapping("admin/{id}")
     @Operation(summary = "ADMIN - Excluir", description = "Descadastrar um usuário ativo, removendo-o do sistema.")
-    public ResponseEntity<HttpStatus> delete(@PathVariable final UUID id) {
+    public ResponseEntity<HttpStatus> delete(@PathVariable final PersonId id) {
         try {
             service.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

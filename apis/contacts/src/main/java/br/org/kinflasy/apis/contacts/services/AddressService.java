@@ -9,6 +9,7 @@ import br.org.kinflasy.apis.contacts.converters.AddressConverter;
 import br.org.kinflasy.apis.contacts.repositories.AddressRepository;
 import br.org.kinflasy.libs.contacts.dto.AddressDto;
 import br.org.kinflasy.libs.contacts.dto.AddressRequest;
+import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -34,7 +35,7 @@ public class AddressService {
     }
 
     @Transactional
-    public AddressDto create(final AddressRequest form, final UUID createdBy) {
+    public AddressDto create(final AddressRequest form, final PersonId createdBy) {
         final var entity = converter.toEntity(form);
         entity.setCreatedBy(createdBy);
         repository.save(entity);

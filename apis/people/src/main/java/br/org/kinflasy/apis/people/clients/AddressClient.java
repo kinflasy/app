@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import br.org.kinflasy.libs.contacts.dto.AddressDto;
 import br.org.kinflasy.libs.contacts.dto.AddressRequest;
+import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.validation.Valid;
 
 @FeignClient(name = "people-addressesApi", url = "${CONTACTS_API_URL}", path = "addresses")
@@ -26,7 +27,7 @@ public interface AddressClient {
     AddressDto create(@RequestBody @Valid AddressRequest request);
 
     @PostMapping("register")
-    AddressDto create(@RequestBody @Valid AddressRequest request, @RequestParam UUID createdBy);
+    AddressDto create(@RequestBody @Valid AddressRequest request, @RequestParam PersonId createdBy);
 
     @GetMapping("{id}")
     AddressDto findById(@PathVariable UUID id);

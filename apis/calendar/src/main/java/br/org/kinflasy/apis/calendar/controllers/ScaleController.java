@@ -21,6 +21,7 @@ import br.org.kinflasy.libs.calendar.dto.scales.ScaleDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleItemDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleItemRequest;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleRequest;
+import br.org.kinflasy.libs.people.ids.PersonId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -53,8 +54,9 @@ public class ScaleController {
 
     @GetMapping("person/{personId}")
     @Operation(summary = "Listar escalas da pessoa", description = "Listar as escalas associadas aos eventos de uma pessoa em um intervalo de tempo.")
-    public ResponseEntity<List<ScaleDto.DetailingCalendarEvent>> listByPersonInRange(@PathVariable final UUID personId,
-            @RequestParam final LocalDateTime start, @RequestParam final LocalDateTime end) {
+    public ResponseEntity<List<ScaleDto.DetailingCalendarEvent>> listByPersonInRange(
+            @PathVariable final PersonId personId, @RequestParam final LocalDateTime start,
+            @RequestParam final LocalDateTime end) {
         return ResponseEntity.ok(scaleService.listByPersonInRange(personId, start, end));
     }
 

@@ -1,7 +1,6 @@
 package br.org.kinflasy.libs.api_utils;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -10,6 +9,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import br.org.kinflasy.libs.people.dto.UserDto;
+import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
@@ -22,13 +22,15 @@ import lombok.experimental.Accessors;
 public abstract class AbstractSimpleAuditable {
 
     @CreatedBy
-    private UUID createdBy;
+    // todo substituir por UserId
+    private PersonId createdBy;
 
     @CreatedDate
     private LocalDateTime createdDate;
 
     @LastModifiedBy
-    private UUID lastModifiedBy;
+    // todo substituir por UserId
+    private PersonId lastModifiedBy;
 
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;

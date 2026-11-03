@@ -1,7 +1,5 @@
 package br.org.kinflasy.apis.churches.clients;
 
-import java.util.UUID;
-
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
+import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.validation.Valid;
 
 @FeignClient(name = "churches-inactivePeopleApi", url = "${PEOPLE_API_URL}", path = "inactive-people")
@@ -24,9 +23,9 @@ public interface InactivePersonClient {
     InactivePersonDto create(@RequestBody @Valid InactivePersonRequest.FromUser request);
 
     @GetMapping("{id}")
-    InactivePersonDto findById(@PathVariable UUID id);
+    InactivePersonDto findById(@PathVariable PersonId id);
 
     @DeleteMapping("{id}")
-    HttpStatus delete(@PathVariable UUID id);
+    HttpStatus delete(@PathVariable PersonId id);
 
 }

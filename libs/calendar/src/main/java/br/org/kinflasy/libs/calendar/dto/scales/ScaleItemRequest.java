@@ -2,6 +2,7 @@ package br.org.kinflasy.libs.calendar.dto.scales;
 
 import java.util.UUID;
 
+import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -14,6 +15,6 @@ public class ScaleItemRequest {
     private UUID roleId;
 
     @NotNull
-    private UUID personId;
+    private PersonId personId;
 
 }

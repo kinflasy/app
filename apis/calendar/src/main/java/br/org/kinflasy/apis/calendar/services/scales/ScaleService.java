@@ -28,6 +28,7 @@ import br.org.kinflasy.libs.calendar.dto.scales.OwnerScaleDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleRequest;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
+import br.org.kinflasy.libs.people.ids.PersonId;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -108,7 +109,7 @@ public class ScaleService {
             + "#personId.equals(principal.id)")
     @PostFilter("@fga.check('scale', filterObject.id, 'can_view', 'user', principal.id) and "
             + "@fgau.withCharacteristics('calendar_event', filterObject.calendarEvent.id, 'can_view')")
-    public List<ScaleDto.DetailingCalendarEvent> listByPersonInRange(final UUID personId, final LocalDateTime start,
+    public List<ScaleDto.DetailingCalendarEvent> listByPersonInRange(final PersonId personId, final LocalDateTime start,
             final LocalDateTime end) {
         // Obter escalações da pessoa
         final var ownerScaleItems = itemRepository.findOwnerScalesByPersonIdInRange(personId, start, end)
