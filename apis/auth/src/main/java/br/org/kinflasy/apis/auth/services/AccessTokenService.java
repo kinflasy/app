@@ -13,7 +13,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import br.org.kinflasy.libs.people.dto.UserDto;
 
 @Service
-public class TokenService {
+public class AccessTokenService {
 
     @Value("${app.api.security.token.secret}")
     private String secret;

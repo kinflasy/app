@@ -15,6 +15,7 @@
         "media",
         "scales",
         "email",
-        "birthday"
+        "birthday",
+        "auth"
     ]
 }

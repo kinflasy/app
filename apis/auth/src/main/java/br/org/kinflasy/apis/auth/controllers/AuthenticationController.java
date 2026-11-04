@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.apis.auth.clients.UserClient;
 import br.org.kinflasy.apis.auth.dto.LoginRequest;
-import br.org.kinflasy.apis.auth.services.TokenService;
+import br.org.kinflasy.apis.auth.services.AccessTokenService;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,7 +34,7 @@ public class AuthenticationController {
     private AuthenticationManager manager;
     private UserClient client;
     private PasswordEncoder encoder;
-    private TokenService tokenService;
+    private AccessTokenService accessTokenService;
 
     @SecurityRequirements
     @PostMapping("/login")
@@ -45,10 +45,10 @@ public class AuthenticationController {
 
         try {
             final var authentication = manager.authenticate(usernamePassword);
-            final var token = tokenService.generateToken((UserDto) authentication.getPrincipal());
+            final var accessToken = accessTokenService.generateToken((UserDto) authentication.getPrincipal());
 
             return ResponseEntity.noContent()
-                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                     .build();
         } catch (final AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

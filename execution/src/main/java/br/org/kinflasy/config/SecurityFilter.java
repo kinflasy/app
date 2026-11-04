@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import br.org.kinflasy.apis.auth.services.TokenService;
+import br.org.kinflasy.apis.auth.services.AccessTokenService;
 import br.org.kinflasy.apis.auth.services.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,7 +22,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
 
-    private TokenService tokenService;
+    private AccessTokenService accessTokenService;
     private UserService userService;
 
     @Override
@@ -29,10 +30,11 @@ public class SecurityFilter extends OncePerRequestFilter {
             final FilterChain filterChain) throws ServletException, IOException {
         recoverToken(request)
                 .ifPresent(token -> {
-                    final var username = tokenService.validateToken(token);
+                    final var username = accessTokenService.validateToken(token);
                     final var user = userService.findByUsername(username);
 
-                    final var authentication = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+                    final var authentication = new UsernamePasswordAuthenticationToken(user, null,
+                            Collections.emptyList());
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 });
 
@@ -40,7 +42,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     }
 
     private Optional<String> recoverToken(final HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader("Authorization"))
+        return Optional.ofNullable(request.getHeader(HttpHeaders.AUTHORIZATION))
                 .map(authorization -> authorization.replace("Bearer ", ""));
     }
 
