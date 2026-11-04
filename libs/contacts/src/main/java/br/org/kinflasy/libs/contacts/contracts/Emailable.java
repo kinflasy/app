@@ -1,9 +1,11 @@
 package br.org.kinflasy.libs.contacts.contracts;
 
+import java.util.UUID;
+
 public interface Emailable {
 
-    public String getEmail();
+    public UUID getId();
 
-    public void setEmail(String email);
+    public String getEmail();
 
 }
