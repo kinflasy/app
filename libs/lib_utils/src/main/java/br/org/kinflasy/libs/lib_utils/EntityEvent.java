@@ -5,8 +5,10 @@ import org.springframework.core.ResolvableTypeProvider;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 public abstract class EntityEvent<D> implements ResolvableTypeProvider {
 
     private final D source;
@@ -17,15 +19,16 @@ public abstract class EntityEvent<D> implements ResolvableTypeProvider {
     }
 
     @Data
+    @Accessors(chain = true)
     @EqualsAndHashCode(callSuper = true)
     public static class Created<D> extends EntityEvent<D> {
         public Created(final D source) {
             super(source);
         }
-
     }
 
     @Data
+    @Accessors(chain = true)
     @EqualsAndHashCode(callSuper = true)
     public static class Updated<D> extends EntityEvent<D> {
         private final D original;
@@ -37,6 +40,7 @@ public abstract class EntityEvent<D> implements ResolvableTypeProvider {
     }
 
     @Data
+    @Accessors(chain = true)
     @EqualsAndHashCode(callSuper = true)
     public static class Deleted<D> extends EntityEvent<D> {
         public Deleted(final D source) {

@@ -11,6 +11,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.Table;
@@ -20,7 +21,10 @@ import lombok.experimental.Accessors;
 
 @Entity
 @DynamicUpdate
-@Table(name = "calendar_events")
+@Table(name = "calendar_events", indexes = {
+        @Index(columnList = CalendarEvent_.START_DATE_TIME),
+        @Index(columnList = CalendarEvent_.END_DATE_TIME)
+})
 @Inheritance(strategy = InheritanceType.JOINED)
 @Data
 @Accessors(chain = false)

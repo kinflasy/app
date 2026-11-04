@@ -12,18 +12,27 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 public class ChurchDto {
 
-    @Data
-    @NoArgsConstructor
-    @EqualsAndHashCode(callSuper = true)
-    public static class Starter extends ChurchDto {
-        private UnitDto unit;
-    }
-
     private UUID id;
     private String name;
     private String slug;
     private String acronym;
     private String phone;
     private String email;
+
+    @Data
+    @Accessors(chain = true)
+    @NoArgsConstructor
+    @EqualsAndHashCode(callSuper = true)
+    public static class Starter extends ChurchDto {
+        private UnitDto unit;
+    }
+
+    @Data
+    @Accessors(chain = true)
+    public static class Clean {
+        private UUID id;
+        private String name;
+        private String slug;
+    }
 
 }

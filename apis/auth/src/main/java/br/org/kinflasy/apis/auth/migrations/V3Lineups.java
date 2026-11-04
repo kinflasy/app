@@ -6,10 +6,12 @@ import br.org.kinflasy.apis.auth.config.OpenFgaConfigManager;
 import br.org.kinflasy.apis.auth.migrations.contracts.SimpleReparameterizationOpenFgaMigration;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Data
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @Component
 public class V3Lineups extends SimpleReparameterizationOpenFgaMigration {

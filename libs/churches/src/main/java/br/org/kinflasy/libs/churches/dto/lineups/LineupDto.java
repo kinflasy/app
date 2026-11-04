@@ -13,8 +13,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 @NoArgsConstructor
 @JsonSubTypes({
         @Type(name = "DEPARTMENT", value = DepartmentLineupDto.class),
@@ -26,6 +28,7 @@ public class LineupDto {
     private String name;
 
     @Data
+    @Accessors(chain = true)
     @NoArgsConstructor
     public static class Item {
         private UUID id;
@@ -34,6 +37,7 @@ public class LineupDto {
         private String description;
 
         @Data
+        @Accessors(chain = true)
         @NoArgsConstructor
         public static class DetailingRole {
             private UUID id;
@@ -44,6 +48,7 @@ public class LineupDto {
     }
 
     @Data
+    @Accessors(chain = true)
     @NoArgsConstructor
     @EqualsAndHashCode(callSuper = true)
     public static class WithItems extends LineupDto {

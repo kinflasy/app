@@ -1,9 +1,11 @@
 package br.org.kinflasy.libs.api_utils;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import javax.security.sasl.AuthenticationException;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +24,22 @@ public class AuthUtils {
                 .map(Authentication::getPrincipal)
                 .map(UserDto.class::cast)
                 .orElseThrow(AuthenticationException::new);
+    }
+
+    @SneakyThrows
+    public void runAs(final UserDto user, final Runnable action) {
+        final var originalContext = SecurityContextHolder.getContext();
+        final var authentication = new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+
+        final var tempContext = SecurityContextHolder.createEmptyContext();
+        tempContext.setAuthentication(authentication);
+
+        try {
+            SecurityContextHolder.setContext(tempContext);
+            action.run();
+        } finally {
+            SecurityContextHolder.setContext(originalContext);
+        }
     }
 
 }

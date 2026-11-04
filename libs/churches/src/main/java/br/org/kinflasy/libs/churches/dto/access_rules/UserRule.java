@@ -8,8 +8,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 public class UserRule implements AccessRule {
 
     private static final String PREFIX = "user";

@@ -4,8 +4,10 @@ import java.util.UUID;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 public class MediaDto {
 
     private UUID id;
@@ -15,6 +17,7 @@ public class MediaDto {
     private String url;
 
     @Data
+    @Accessors(chain = true)
     @EqualsAndHashCode(callSuper = true)
     public static class WithContent extends MediaDto {
         private byte[] content;

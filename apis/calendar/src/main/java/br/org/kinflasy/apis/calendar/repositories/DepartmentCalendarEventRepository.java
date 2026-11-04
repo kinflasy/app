@@ -6,11 +6,8 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
-
 import br.org.kinflasy.apis.calendar.entities.DepartmentCalendarEvent;
 
-@Repository
 public interface DepartmentCalendarEventRepository extends JpaRepository<DepartmentCalendarEvent, UUID> {
 
     @Query("""

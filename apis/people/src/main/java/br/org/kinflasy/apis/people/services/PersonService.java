@@ -1,5 +1,8 @@
 package br.org.kinflasy.apis.people.services;
 
+import java.time.MonthDay;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,6 +19,7 @@ import br.org.kinflasy.apis.people.entities.User;
 import br.org.kinflasy.apis.people.repositories.PersonRepository;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.media.validators.ProfileImageValidator;
+import br.org.kinflasy.libs.people.dto.BirthdaySearchRequest;
 import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
@@ -51,6 +55,19 @@ public class PersonService {
                 .map(PersonIdentifierDtoAdapter::new);
     }
 
+    public List<PersonIdentifierDto> identifyById(final Collection<UUID> id) {
+        return repository.findByIdIn(id).stream()
+                .map(entity -> new PersonIdentifierDtoAdapter(entity).asSuper())
+                .toList();
+    }
+
+    public List<PersonIdentifierDto.WithBirthday> searchBirthdaysIn(final BirthdaySearchRequest request) {
+        return repository.findByIdInAndBirthdateInRange(request.getIds(), request.getStart(), request.getEnd()).stream()
+                .map(entity -> PersonIdentifierDtoAdapter.map(entity,
+                        new PersonIdentifierDto.WithBirthday().setBirthday(MonthDay.from(entity.getBirthDate()))))
+                .toList();
+    }
+
     /*
      * ACESSO RESTRITO
      */
@@ -66,7 +83,7 @@ public class PersonService {
                 });
     }
 
-    @PreAuthorize("@fga.check('user', #id, 'assistant', 'user', principal.id)")
+    @PreAuthorize("@fga.check('user', #id, 'assistant', 'user', principal.id) or @fga.check('user', #id, 'admin', 'user', principal.id)")
     public Optional<PersonPhoneDto> getPhone(final UUID id) {
         return repository.findById(id)
                 .map(person -> new PersonPhoneDto().setPhone(person.getPhone()));

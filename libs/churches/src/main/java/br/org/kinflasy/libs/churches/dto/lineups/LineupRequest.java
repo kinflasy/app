@@ -6,8 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 @NoArgsConstructor
 public class LineupRequest {
 
@@ -15,6 +17,7 @@ public class LineupRequest {
     private String name;
 
     @Data
+    @Accessors(chain = true)
     @NoArgsConstructor
     public static class Item {
         @NotNull
@@ -25,6 +28,7 @@ public class LineupRequest {
     }
 
     @Data
+    @Accessors(chain = true)
     @NoArgsConstructor
     public static class UpdateItem {
         @NotBlank

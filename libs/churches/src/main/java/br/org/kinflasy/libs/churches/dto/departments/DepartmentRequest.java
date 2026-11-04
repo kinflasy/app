@@ -10,8 +10,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 @NoArgsConstructor
 public class DepartmentRequest {
 
@@ -25,12 +27,14 @@ public class DepartmentRequest {
     private DepartmentType type;
 
     @Data
+    @Accessors(chain = true)
     public static class Rules {
         private List<AccessRule> visibilityRules = Collections.emptyList();
         private List<AccessRule> joinRules = Collections.emptyList();
     }
 
     @Data
+    @Accessors(chain = true)
     @EqualsAndHashCode(callSuper = true)
     public static class WithRules extends DepartmentRequest {
         private List<AccessRule> visibilityRules = Collections.emptyList();

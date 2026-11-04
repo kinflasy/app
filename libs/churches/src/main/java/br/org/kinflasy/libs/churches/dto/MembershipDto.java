@@ -31,6 +31,7 @@ public class MembershipDto {
     }
 
     @Data
+    @Accessors(chain = true)
     public static class Simple {
         private UUID id;
         private UUID unitId;
@@ -39,6 +40,7 @@ public class MembershipDto {
     }
 
     @Data
+    @Accessors(chain = true)
     @NoArgsConstructor
     @EqualsAndHashCode(callSuper = true)
     public static class SimplePending extends Simple {
@@ -47,6 +49,7 @@ public class MembershipDto {
     }
 
     @Data
+    @Accessors(chain = true)
     @NoArgsConstructor
     public static class Pending {
         private UUID id;
@@ -58,14 +61,23 @@ public class MembershipDto {
     }
 
     @Data
-    public static class DetailingUnit {
+    @Accessors(chain = true)
+    public static class IdentifyingPerson {
         private UUID id;
-        private UnitDto.Detailed unit;
+        private UUID unitId;
         private PersonIdentifierDto person;
         private Affiliation affiliation;
+
+        /**
+         * @deprecated Use {@link #person} instead, which contains more information
+         *             about the person. This field will be removed in future versions.
+         */
+        @Deprecated(forRemoval = true)
+        private UUID personId;
     }
 
     @Data
+    @Accessors(chain = true)
     public static class DetailingPerson {
         private UUID id;
         private UUID unitId;
@@ -74,6 +86,16 @@ public class MembershipDto {
     }
 
     @Data
+    @Accessors(chain = true)
+    public static class DetailingUnit {
+        private UUID id;
+        private UnitDto.Detailed unit;
+        private PersonIdentifierDto person;
+        private Affiliation affiliation;
+    }
+
+    @Data
+    @Accessors(chain = true)
     public static class Detailed {
         private UUID id;
         private UnitDto.Detailed unit;
@@ -82,6 +104,7 @@ public class MembershipDto {
     }
 
     @Data
+    @Accessors(chain = true)
     @EqualsAndHashCode(callSuper = true)
     public static class WithPhone extends MembershipDto {
         private String phone;

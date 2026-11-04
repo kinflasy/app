@@ -5,14 +5,24 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class UserRequest extends PersonRequest {
 
-    private @NotBlank String username;
-    private @NotBlank @Email String email;
-    private @NotBlank String password;
+    @NotBlank
+    private String username;
+
+    @Email
+    @NotBlank
+    private String email;
+
+    @NotBlank
+    @ToString.Exclude
+    private String password;
 
 }

@@ -10,7 +10,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.14</version>
+		<version>4.1.2</version>
 		<relativePath />
 	</parent>
 
@@ -37,7 +37,7 @@
 		<module>apis/contacts</module>
 		<module>apis/people</module>
 		<module>apis/auth</module>
-		<module>apis/chuches</module>
+		<module>apis/churches</module>
 		<module>apis/calendar</module>
 		<module>apis/media</module>
 	</modules>
@@ -53,7 +53,6 @@
 			<!-- Lombok -->
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
 		</dependency>
 	</dependencies>
 
@@ -71,8 +70,8 @@
 						</path>
 						<path>
 							<groupId>org.hibernate.orm</groupId>
-							<artifactId>hibernate-jpamodelgen</artifactId>
-							<version>7.0.2.Final</version>
+							<artifactId>hibernate-processor</artifactId>
+							<version>7.4.13.Final</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

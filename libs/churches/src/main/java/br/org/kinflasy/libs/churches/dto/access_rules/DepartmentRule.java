@@ -10,8 +10,10 @@ import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
 import br.org.kinflasy.libs.churches.enums.department.IntegrationType;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = true)
 public class DepartmentRule implements AccessRule {
 
     public static final String PREFIX = "department";

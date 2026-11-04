@@ -2,6 +2,7 @@ package br.org.kinflasy.config;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,15 +21,19 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import lombok.AllArgsConstructor;
-
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@AllArgsConstructor
 public class SecurityConfig {
 
-    private SecurityFilter securityFilter;
+    private final SecurityFilter securityFilter;
+    private final String allowedOrigins;
+
+    public SecurityConfig(final SecurityFilter securityFilter,
+            @Value("${app.cors.allowed-origins}") final String allowedOrigins) {
+        this.securityFilter = securityFilter;
+        this.allowedOrigins = allowedOrigins;
+    }
 
     @Bean
     SecurityFilterChain securityFilterChain(final HttpSecurity httpSecurity) throws Exception {
@@ -48,12 +53,11 @@ public class SecurityConfig {
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
+        final var allowedOriginsList = List.of(allowedOrigins.split(","));
+        allowedOriginsList.forEach(String::trim);
+
         final var configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(
-                "https://kinflasy-client.web.app",
-                "http://localhost:3000",
-                "http://localhost:8080"
-        ));
+        configuration.setAllowedOrigins(allowedOriginsList);
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

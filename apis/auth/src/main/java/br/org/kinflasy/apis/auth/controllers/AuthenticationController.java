@@ -1,8 +1,11 @@
 package br.org.kinflasy.apis.auth.controllers;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.apis.auth.clients.UserClient;
 import br.org.kinflasy.apis.auth.dto.LoginRequest;
-import br.org.kinflasy.apis.auth.dto.LoginResponse;
 import br.org.kinflasy.apis.auth.services.TokenService;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
@@ -37,15 +39,20 @@ public class AuthenticationController {
     @SecurityRequirements
     @PostMapping("/login")
     @Operation(summary = "Fazer login")
-    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest request) {
+    public ResponseEntity<Void> login(@RequestBody @Valid LoginRequest request) {
         final var usernamePassword = new UsernamePasswordAuthenticationToken(request.getUsername(),
                 request.getPassword());
 
-        final var authentication = manager.authenticate(usernamePassword);
-        final var token = tokenService.generateToken((UserDto) authentication.getPrincipal());
-        final var response = new LoginResponse().setToken(token);
+        try {
+            final var authentication = manager.authenticate(usernamePassword);
+            final var token = tokenService.generateToken((UserDto) authentication.getPrincipal());
 
-        return ResponseEntity.ok(response);
+            return ResponseEntity.noContent()
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .build();
+        } catch (final AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @SecurityRequirements

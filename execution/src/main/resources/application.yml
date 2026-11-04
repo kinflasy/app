@@ -3,6 +3,10 @@ spring:
     import:
       - optional:file:../.env[.properties]
 
+  threads:
+    virtual:
+      enabled: true
+
   # Configurações do DataSource
   datasource:
     driver-class-name: org.postgresql.Driver
@@ -15,9 +19,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-    properties:
-      "[hibernate.format_sql]": true
-      "[hibernate.use_sql_comments]": true
 
   cloud:
     openfeign:
@@ -47,8 +48,6 @@ spring:
 
   # Configurações do DevTools
   devtools:
-    livereload:
-      enabled: true
     restart:
       enabled: false
 
@@ -76,6 +75,8 @@ openfga:
       api-token: ${OPENFGA_API_TOKEN}
 
 app:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS}
   api:
     security:
       token:

@@ -1,5 +1,6 @@
 package br.org.kinflasy.apis.calendar.services;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -8,12 +9,15 @@ import java.util.stream.Stream;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.org.kinflasy.apis.calendar.clients.DepartmentClient;
 import br.org.kinflasy.apis.calendar.clients.MediaClient;
+import br.org.kinflasy.apis.calendar.clients.MembershipClient;
+import br.org.kinflasy.apis.calendar.clients.UnitClient;
 import br.org.kinflasy.apis.calendar.entities.DepartmentCalendarEvent;
 import br.org.kinflasy.apis.calendar.entities.EventCollaboration;
 import br.org.kinflasy.apis.calendar.entities.UnitCalendarEvent;
@@ -31,6 +35,8 @@ import br.org.kinflasy.libs.calendar.dto.UnitCalendarEventDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleDto;
 import br.org.kinflasy.libs.calendar.dto.scales.ScaleRequest;
 import br.org.kinflasy.libs.churches.contracts.access_rules.AccessRule;
+import br.org.kinflasy.libs.churches.dto.ChurchDto;
+import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.churches.dto.access_rules.CharacteristicCondition;
 import br.org.kinflasy.libs.churches.dto.access_rules.ChurchRule;
 import br.org.kinflasy.libs.churches.dto.access_rules.DepartmentRule;
@@ -72,10 +78,67 @@ public class CalendarEventService {
     private final OpenFgaClient fgaClient;
     private final MediaClient mediaClient;
     private final DepartmentClient departmentClient;
+    private final UnitClient unitClient;
+    private final MembershipClient membershipClient;
+
+    /*
+     * ACESSO AUTENTICADO
+     */
+
+    @PreAuthorize("isAuthenticated()")
+    @PostFilter("@fgau.withCharacteristics('calendar_event', filterObject.id, 'can_view')")
+    public List<CalendarEventDto> listVisibleInRange2(final LocalDateTime start, final LocalDateTime end) {
+        return unitClient.listByLoggedUser().stream()
+                .flatMap(membershipWithUnit -> {
+                    final var detailedUnit = membershipWithUnit.getUnit();
+                    final var detailedChurch = detailedUnit.getChurch();
+
+                    final var unit = new UnitDto.CleanWithChurch()
+                            .setId(detailedUnit.getId())
+                            .setName(detailedUnit.getName())
+                            .setSlug(detailedUnit.getSlug())
+                            .setChurch(new ChurchDto.Clean()
+                                    .setId(detailedChurch.getId())
+                                    .setName(detailedChurch.getName())
+                                    .setSlug(detailedChurch.getSlug()));
+
+                    final var unitEvents = unitEventRepository.findByUnitIdInRange(unit.getId(), start, end).stream()
+                            .map(calendarEvent -> mapper.map(calendarEvent, UnitCalendarEventDto.Detailed.class)
+                                    .setUnit(unit));
+
+                    final var departmentEvents = membershipClient.listIntegrations(membershipWithUnit.getId()).stream()
+                            .flatMap(integration -> {
+                                final var department = departmentClient.findById(integration.getDepartmentId());
+                                final var cleanDepartment = mapper.map(department, DepartmentDto.CleanWithUnit.class)
+                                        .setUnit(unit);
+
+                                return departmentEventRepository
+                                        .findByDepartmentIdInRange(department.getId(), start, end)
+                                        .stream()
+                                        .map(calendarEvent -> mapper
+                                                .map(calendarEvent, DepartmentCalendarEventDto.Detailed.class)
+                                                .setDepartment(cleanDepartment));
+                            });
+
+                    return Stream.concat(unitEvents, departmentEvents);
+                }).toList();
+    }
 
     /*
      * ACESSO RESTRITO
      */
+
+    @PreAuthorize("@fga.check('department', #departmentId, 'can_observe', 'user', principal.id)")
+    @PostFilter("@fgau.withCharacteristics('calendar_event', filterObject.id, 'can_view')")
+    public List<CalendarEventDto> listCollaborationsInRange(final UUID departmentId, final LocalDateTime start,
+            final LocalDateTime end) {
+        return collaborationRepository.findByDepartmentIdInRange(departmentId, start, end).stream()
+                .map(collaboration -> findById(collaboration.getCalendarEventId()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .sorted((a, b) -> a.getStartDateTime().compareTo(b.getStartDateTime()))
+                .toList();
+    }
 
     @PreAuthorize("@fgau.withCharacteristics('calendar_event', #id, 'can_view')")
     public Optional<CalendarEventDto> findById(final UUID id) {
@@ -255,7 +318,7 @@ public class CalendarEventService {
 
     @PreAuthorize("@fga.check('calendar_event', #id, 'can_scale', 'user', principal.id) and "
             + " @fga.check('department', #departmentId, 'can_manage', 'user', principal.id) and "
-            + " @fga.check('lineup', #request.lineupId, 'owner', 'department', departmentId)")
+            + " @fga.check('lineup', #request.lineupId, 'owner', 'department', #departmentId)")
     public Optional<ScaleDto> createCollaboratorScale(final UUID id, final UUID departmentId,
             final ScaleRequest request) {
         // Buscar a colaboração e criar a escala

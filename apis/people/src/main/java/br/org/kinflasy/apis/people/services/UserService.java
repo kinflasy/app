@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import br.org.kinflasy.apis.people.adapters.UserIdentifierDtoAdapter;
@@ -37,6 +38,7 @@ public class UserService {
     private final ModelMapper mapper;
     private final ApplicationEventPublisher publisher;
     private final AuthUtils authUtils;
+    private final PasswordEncoder encoder;
 
     private final UserRepository repository;
     private final UserConverter converter;
@@ -130,10 +132,14 @@ public class UserService {
                     // Dados obrigatórios: obter da requisição ou manter original
                     final var email = Optional.ofNullable(request.getEmail()).orElseGet(entity::getEmail);
                     final var username = Optional.ofNullable(request.getUsername()).orElseGet(entity::getUsername);
-                    final var password = Optional.ofNullable(request.getPassword()).orElseGet(entity::getPassword);
                     final var gender = Optional.ofNullable(request.getGender()).orElseGet(entity::getGender);
                     final var fullName = Optional.ofNullable(request.getFullName()).orElseGet(entity::getFullName);
                     final var birthDate = Optional.ofNullable(request.getBirthDate()).orElseGet(entity::getBirthDate);
+                    final var password = Optional.ofNullable(request.getPassword())
+                            // Criptografar nova senha recebida
+                            .map(encoder::encode)
+                            // Ou manter a senha antiga caso não seja recebida uma nova
+                            .orElseGet(entity::getPassword);
 
                     // Atualizar endereço
                     final var addressId = Optional.ofNullable(entity.getAddressId())

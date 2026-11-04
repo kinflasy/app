@@ -14,8 +14,10 @@ import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 @Data
+@Accessors(chain = false)
 @MappedSuperclass
 public abstract class AbstractSimpleAuditable {
 
