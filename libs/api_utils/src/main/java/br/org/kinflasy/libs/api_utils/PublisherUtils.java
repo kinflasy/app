@@ -11,18 +11,17 @@ import lombok.RequiredArgsConstructor;
 public class PublisherUtils {
 
     private final ApplicationEventPublisher publisher;
-    private final AuthUtils authUtils;
 
     public <D> void created(final D dto) {
-        publisher.publishEvent(new EntityEvent.Created<>(dto, authUtils.getLoggedUser()));
+        publisher.publishEvent(new EntityEvent.Created<>(dto));
     }
 
     public <D> void updated(final D original, final D modified) {
-        publisher.publishEvent(new EntityEvent.Updated<>(original, modified, authUtils.getLoggedUser()));
+        publisher.publishEvent(new EntityEvent.Updated<>(original, modified));
     }
 
     public <D> void deleted(final D dto) {
-        publisher.publishEvent(new EntityEvent.Deleted<>(dto, authUtils.getLoggedUser()));
+        publisher.publishEvent(new EntityEvent.Deleted<>(dto));
     }
 
 }
