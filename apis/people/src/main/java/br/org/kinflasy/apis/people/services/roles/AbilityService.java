@@ -14,7 +14,6 @@ import br.org.kinflasy.apis.people.repositories.roles.AbilityRepository;
 import br.org.kinflasy.apis.people.services.PersonService;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.people.dto.roles.AbilityDto;
-import br.org.kinflasy.libs.people.ids.PersonId;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -44,7 +43,7 @@ public class AbilityService {
      */
 
     @PostFilter("@fga.check('ability', filterObject.id, 'can_view', 'user', principal.id)")
-    public List<AbilityDto.DetailingRole> findAllByUser(final PersonId personId) {
+    public List<AbilityDto.DetailingRole> findAllByUser(final UUID personId) {
         return repository.findAllByPersonId(personId).stream()
                 .map(ability -> {
                     final var dto = modelMapper.map(ability, AbilityDto.DetailingRole.class);
@@ -59,7 +58,7 @@ public class AbilityService {
     @PreAuthorize("#personId.equals(principal.id) or "
             + " @fga.check('user', #personId, 'admin', 'user', principal.id) or "
             + " @fga.check('user', #personId, 'assistant', 'user', principal.id)")
-    public Optional<AbilityDto> create(final PersonId personId, final UUID roleId) {
+    public Optional<AbilityDto> create(final UUID personId, final UUID roleId) {
         // Assegurar que a pessoa existe
         return personService.findById(personId)
 

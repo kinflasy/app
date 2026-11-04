@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.hibernate.annotations.DynamicUpdate;
 
-import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -41,7 +40,7 @@ public class Ability {
      */
 
     @Column(nullable = false)
-    private PersonId personId;
+    private UUID personId;
 
     @Column(nullable = false)
     private UUID roleId;

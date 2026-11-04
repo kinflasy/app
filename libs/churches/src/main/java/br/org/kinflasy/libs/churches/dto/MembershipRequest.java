@@ -1,11 +1,11 @@
 package br.org.kinflasy.libs.churches.dto;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.churches.enums.membership.EntryMode;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
-import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
 public class MembershipRequest {
 
     @NotNull
-    private PersonId personId;
+    private UUID personId;
 
     @NotNull
     private Affiliation affiliation;

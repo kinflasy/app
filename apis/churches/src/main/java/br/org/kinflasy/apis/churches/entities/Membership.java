@@ -9,7 +9,6 @@ import br.org.kinflasy.libs.api_utils.AbstractSimpleAuditable;
 import br.org.kinflasy.libs.churches.enums.membership.Affiliation;
 import br.org.kinflasy.libs.churches.enums.membership.EntryMode;
 import br.org.kinflasy.libs.churches.enums.membership.LeaveMode;
-import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -46,7 +45,7 @@ public class Membership extends AbstractSimpleAuditable {
     private UUID unitId;
 
     @Column(nullable = false)
-    private PersonId personId;
+    private UUID personId;
 
     /*
      * Enumerações

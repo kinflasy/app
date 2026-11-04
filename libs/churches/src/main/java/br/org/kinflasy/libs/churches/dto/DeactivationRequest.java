@@ -1,6 +1,7 @@
 package br.org.kinflasy.libs.churches.dto;
 
-import br.org.kinflasy.libs.people.ids.PersonId;
+import java.util.UUID;
+
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -9,6 +10,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class DeactivationRequest {
 
-    private @NotBlank PersonId userId;
+    private @NotBlank UUID userId;
 
 }

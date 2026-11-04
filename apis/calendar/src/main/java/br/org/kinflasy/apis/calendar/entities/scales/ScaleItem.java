@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.hibernate.annotations.DynamicUpdate;
 
-import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -49,6 +48,6 @@ public class ScaleItem {
     private UUID roleId;
 
     @Column(nullable = false)
-    private PersonId personId;
+    private UUID personId;
 
 }

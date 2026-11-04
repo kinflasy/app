@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import br.org.kinflasy.apis.contacts.services.AddressService;
 import br.org.kinflasy.libs.contacts.dto.AddressDto;
 import br.org.kinflasy.libs.contacts.dto.AddressRequest;
-import br.org.kinflasy.libs.people.ids.PersonId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -41,7 +40,7 @@ public class AddressController {
     @PostMapping("/register")
     @Operation(summary = "Cadastrar durante cadastro de usuário", description = "Cadastrar um endereço enquanto um novo usuário está sendo criado.")
     public ResponseEntity<AddressDto> create(@RequestBody @Valid final AddressRequest form,
-            @RequestParam final PersonId createdBy) {
+            @RequestParam final UUID createdBy) {
         return new ResponseEntity<>(service.create(form, createdBy), HttpStatus.CREATED);
     }
 

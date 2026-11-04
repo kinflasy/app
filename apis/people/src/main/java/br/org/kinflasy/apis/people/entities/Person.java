@@ -8,7 +8,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import br.org.kinflasy.libs.api_utils.AbstractSimpleAuditable;
 import br.org.kinflasy.libs.contacts.contracts.Emailable;
 import br.org.kinflasy.libs.people.enums.Gender;
-import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -38,7 +37,7 @@ public abstract class Person extends AbstractSimpleAuditable implements Emailabl
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private PersonId id;
+    private UUID id;
 
     /*
      * Chaves "estrangeiras" (referência)

@@ -1,6 +1,7 @@
 package br.org.kinflasy.apis.people.services;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -17,7 +18,6 @@ import br.org.kinflasy.libs.lib_utils.EntityEvent;
 import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
 import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
-import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -42,7 +42,7 @@ public class InactivePersonService {
      * ACESSO PÚBLICO
      */
 
-    public Optional<PersonIdentifierDto> identifyById(final PersonId id) {
+    public Optional<PersonIdentifierDto> identifyById(final UUID id) {
         return repository.findById(id)
                 .map(PersonIdentifierDtoAdapter::new);
     }
@@ -98,13 +98,13 @@ public class InactivePersonService {
     }
 
     @PreAuthorize("@fga.check('person_data', #id, 'can_view', 'user', principal.id)")
-    public Optional<InactivePersonDto> findById(final PersonId id) {
+    public Optional<InactivePersonDto> findById(final UUID id) {
         return repository.findById(id).map(converter::toDto);
     }
 
     @Transactional
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
-    public InactivePersonDto update(final PersonId id, final InactivePersonRequest request) {
+    public InactivePersonDto update(final UUID id, final InactivePersonRequest request) {
         // Obter original
         final var entity = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
         final var originalDto = mapper.map(entity, InactivePersonDto.class);
@@ -132,7 +132,7 @@ public class InactivePersonService {
         // Atualizar original
         mapper.map(request, entity);
         entity.setId(id);
-        entity.setChurchId(request.getChurchId());
+        entity.setChurchId(id);
         entity.setAddressId(addressId);
 
         repository.save(entity);
@@ -148,7 +148,7 @@ public class InactivePersonService {
 
     @Transactional
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
-    public void delete(final PersonId id) {
+    public void delete(final UUID id) {
         // Obter dados
         final var entity = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
         final var dto = mapper.map(entity, InactivePersonDto.class);

@@ -2,8 +2,8 @@ package br.org.kinflasy.libs.people.dto;
 
 import java.time.MonthDay;
 import java.util.List;
+import java.util.UUID;
 
-import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class BirthdaySearchRequest {
 
-    private List<PersonId> ids;
+    private List<UUID> ids;
 
     @NotNull
     private MonthDay start;

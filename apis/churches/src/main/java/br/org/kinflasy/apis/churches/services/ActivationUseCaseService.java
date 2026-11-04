@@ -1,6 +1,7 @@
 package br.org.kinflasy.apis.churches.services;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Service;
 import br.org.kinflasy.apis.churches.clients.InactivePersonClient;
 import br.org.kinflasy.apis.churches.clients.UserClient;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
-import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -23,7 +23,7 @@ public class ActivationUseCaseService {
 
     @Transactional
     @PreAuthorize("@fga.check('person_data', #inactivePersonId, 'can_edit', 'user', principal.id)")
-    public List<MembershipDto.Simple> activate(final PersonId inactivePersonId, final String username) {
+    public List<MembershipDto.Simple> activate(final UUID inactivePersonId, final String username) {
         // Garantir existência do usuário ativo
         // Caso não encontre, lança exceção FeignException.NotFound
         final var user = userClient.identifyByUsername(username);
@@ -32,14 +32,14 @@ public class ActivationUseCaseService {
 
     @Transactional
     @PreAuthorize("@fga.check('person_data', #inactivePersonId, 'can_edit', 'user', principal.id)")
-    public List<MembershipDto.Simple> activate(final PersonId inactivePersonId, final PersonId userId) {
+    public List<MembershipDto.Simple> activate(final UUID inactivePersonId, final UUID userId) {
         // Garantir existência do usuário ativo
         // Caso não encontre, lança exceção FeignException.NotFound
         userClient.identifyById(userId);
         return updateMemberships(inactivePersonId, userId);
     }
 
-    private List<MembershipDto.Simple> updateMemberships(final PersonId inactivePersonId, final PersonId userId) {
+    private List<MembershipDto.Simple> updateMemberships(final UUID inactivePersonId, final UUID userId) {
         // Buscar membresias da pessoa inativa
         final var memberships = membershipService.listByPersonId(inactivePersonId).stream()
 

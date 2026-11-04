@@ -1,6 +1,7 @@
 package br.org.kinflasy.apis.people.controllers;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,7 +20,6 @@ import br.org.kinflasy.libs.people.dto.BirthdaySearchRequest;
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people.dto.PersonIdentifierDto;
 import br.org.kinflasy.libs.people.dto.PersonPhoneDto;
-import br.org.kinflasy.libs.people.ids.PersonId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -35,7 +35,7 @@ public class PersonController {
 
     @GetMapping("identify/{id}")
     @Operation(summary = "Identificar", description = "Identificar uma pessoa pelo ID.")
-    public ResponseEntity<PersonIdentifierDto> identifyById(@PathVariable final PersonId id) {
+    public ResponseEntity<PersonIdentifierDto> identifyById(@PathVariable final UUID id) {
         return service.identifyById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(ResponseEntity.notFound()::build);
@@ -43,7 +43,7 @@ public class PersonController {
 
     @GetMapping("identify-many/{id}")
     @Operation(summary = "Identificar vários", description = "Identificar várias pessoas pelos IDs.")
-    public ResponseEntity<List<PersonIdentifierDto>> identifyById(@PathVariable final List<PersonId> id) {
+    public ResponseEntity<List<PersonIdentifierDto>> identifyById(@PathVariable final List<UUID> id) {
         return ResponseEntity.ok(service.identifyById(id));
     }
 
@@ -56,7 +56,7 @@ public class PersonController {
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma pessoa pelo ID.")
-    public ResponseEntity<PersonDto> findById(@PathVariable final PersonId id) {
+    public ResponseEntity<PersonDto> findById(@PathVariable final UUID id) {
         return service.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(ResponseEntity.notFound()::build);
@@ -64,7 +64,7 @@ public class PersonController {
 
     @GetMapping("{id}/phone")
     @Operation(summary = "Buscar telefone", description = "Buscar o telefone de uma pessoa pelo ID.")
-    public ResponseEntity<PersonPhoneDto> getPhone(@PathVariable final PersonId id) {
+    public ResponseEntity<PersonPhoneDto> getPhone(@PathVariable final UUID id) {
         return service.getPhone(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(ResponseEntity.notFound()::build);
@@ -72,7 +72,7 @@ public class PersonController {
 
     @PutMapping(value = "{id}/profile-image", consumes = "multipart/form-data")
     @Operation(summary = "Atualizar imagem de perfil", description = "Atualizar a imagem de perfil de uma pessoa.")
-    public ResponseEntity<PersonDto> updateProfileImage(@PathVariable final PersonId id,
+    public ResponseEntity<PersonDto> updateProfileImage(@PathVariable final UUID id,
             @RequestPart final MultipartFile file) {
         return service.updateProfileImage(id, file)
                 .map(ResponseEntity::ok)
@@ -89,7 +89,7 @@ public class PersonController {
 
     @DeleteMapping("{id}/profile-image")
     @Operation(summary = "Deletar imagem de perfil", description = "Deletar a imagem de perfil de uma pessoa.")
-    public ResponseEntity<PersonDto> deleteProfileImage(@PathVariable final PersonId id) {
+    public ResponseEntity<PersonDto> deleteProfileImage(@PathVariable final UUID id) {
         return service.deleteProfileImage(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(ResponseEntity.notFound()::build);

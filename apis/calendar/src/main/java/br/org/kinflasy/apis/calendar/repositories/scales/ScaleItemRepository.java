@@ -8,15 +8,14 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import br.org.kinflasy.apis.calendar.entities.scales.ScaleItem;
-import br.org.kinflasy.libs.people.ids.PersonId;
 
 public interface ScaleItemRepository extends JpaRepository<ScaleItem, UUID> {
 
     List<ScaleItem> findByScaleId(UUID scaleId);
 
-    List<ScaleItem> findByPersonId(PersonId personId);
+    List<ScaleItem> findByPersonId(UUID personId);
 
-    Optional<ScaleItem> findByScaleIdAndPersonIdAndRoleId(UUID scaleId, PersonId personId, UUID roleId);
+    Optional<ScaleItem> findByScaleIdAndPersonIdAndRoleId(UUID scaleId, UUID personId, UUID roleId);
 
     @Query("""
             SELECT si FROM ScaleItem si
@@ -26,7 +25,7 @@ public interface ScaleItemRepository extends JpaRepository<ScaleItem, UUID> {
                 (ce.startDateTime BETWEEN :start AND :end
                 OR ce.endDateTime BETWEEN :start AND :end)
             """)
-    List<ScaleItem> findOwnerScalesByPersonIdInRange(PersonId personId, LocalDateTime start, LocalDateTime end);
+    List<ScaleItem> findOwnerScalesByPersonIdInRange(UUID personId, final LocalDateTime start, final LocalDateTime end);
 
     @Query("""
             SELECT si FROM ScaleItem si
@@ -43,6 +42,7 @@ public interface ScaleItemRepository extends JpaRepository<ScaleItem, UUID> {
                 )
             )
                     """)
-    List<ScaleItem> findCollaboratorScalesByPersonIdInRange(PersonId personId, LocalDateTime start, LocalDateTime end);
+    List<ScaleItem> findCollaboratorScalesByPersonIdInRange(UUID personId, final LocalDateTime start,
+            final LocalDateTime end);
 
 }

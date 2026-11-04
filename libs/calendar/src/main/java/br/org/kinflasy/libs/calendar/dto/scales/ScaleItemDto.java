@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import br.org.kinflasy.libs.people.dto.PersonDto;
 import br.org.kinflasy.libs.people.dto.roles.RoleDto;
-import br.org.kinflasy.libs.people.ids.PersonId;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -15,7 +14,7 @@ public class ScaleItemDto {
     private UUID id;
     private UUID scaleId;
     private UUID roleId;
-    private PersonId personId;
+    private UUID personId;
 
     @Data
     @Accessors(chain = true)
@@ -23,7 +22,7 @@ public class ScaleItemDto {
         private UUID id;
         private ScaleDto scale;
         private RoleDto role;
-        private PersonId personId;
+        private UUID personId;
     }
 
     @Data

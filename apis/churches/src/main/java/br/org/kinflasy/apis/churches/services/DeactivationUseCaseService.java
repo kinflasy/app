@@ -12,7 +12,6 @@ import br.org.kinflasy.apis.churches.clients.InactivePersonClient;
 import br.org.kinflasy.libs.churches.dto.MembershipDto;
 import br.org.kinflasy.libs.churches.dto.UnitDto;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
-import br.org.kinflasy.libs.people.ids.PersonId;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
@@ -28,13 +27,13 @@ public class DeactivationUseCaseService {
 
     @Transactional
     @PreAuthorize("@fga.check('church', #churchId, 'unit_admin', 'user', principal.id) or #userId.equals(principal.id)")
-    public List<MembershipDto.Simple> deactivateOne(final UUID churchId, final PersonId userId) {
+    public List<MembershipDto.Simple> deactivateOne(final UUID churchId, final UUID userId) {
         return deactivate(churchId, userId);
     }
 
     @Transactional
     @PreAuthorize("#userId.equals(principal.id)")
-    public List<MembershipDto.Simple> deactivateAll(final PersonId userId) {
+    public List<MembershipDto.Simple> deactivateAll(final UUID userId) {
         // Buscar relações de membresia do usuário em questão
         return membershipService.listByPersonId(userId).stream()
 
@@ -49,7 +48,7 @@ public class DeactivationUseCaseService {
                 .toList();
     }
 
-    private List<MembershipDto.Simple> deactivate(final UUID churchId, final PersonId userId) {
+    private List<MembershipDto.Simple> deactivate(final UUID churchId, final UUID userId) {
         // Criar pessoa inativa
         final var inactivePerson = inactivePersonClient
                 .create(new InactivePersonRequest.FromUser().setChurchId(churchId).setUserId(userId));

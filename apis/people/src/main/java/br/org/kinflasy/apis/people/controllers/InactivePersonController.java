@@ -1,5 +1,7 @@
 package br.org.kinflasy.apis.people.controllers;
 
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 import br.org.kinflasy.apis.people.services.InactivePersonService;
 import br.org.kinflasy.libs.people.dto.InactivePersonDto;
 import br.org.kinflasy.libs.people.dto.InactivePersonRequest;
-import br.org.kinflasy.libs.people.ids.PersonId;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
@@ -43,7 +44,7 @@ public class InactivePersonController {
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar uma pessoa inativa pelo ID.")
-    public ResponseEntity<InactivePersonDto> findById(@PathVariable final PersonId id) {
+    public ResponseEntity<InactivePersonDto> findById(@PathVariable final UUID id) {
         return service.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -51,7 +52,7 @@ public class InactivePersonController {
 
     @PutMapping("{id}")
     @Operation(summary = "Editar", description = "Editar os dados de uma pessoa inativa.")
-    public ResponseEntity<InactivePersonDto> update(@PathVariable final PersonId id,
+    public ResponseEntity<InactivePersonDto> update(@PathVariable final UUID id,
             @RequestBody final InactivePersonRequest request) {
         try {
             return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
@@ -62,7 +63,7 @@ public class InactivePersonController {
 
     @DeleteMapping("{id}")
     @Operation(summary = "Excluir", description = "Descadastrar uma pessoa inativa, removendo-a do sistema.")
-    public ResponseEntity<HttpStatus> delete(@PathVariable final PersonId id) {
+    public ResponseEntity<HttpStatus> delete(@PathVariable final UUID id) {
         try {
             service.delete(id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
