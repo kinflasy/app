@@ -1,6 +1,7 @@
 package br.org.kinflasy.apis.people.entities;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -30,10 +31,7 @@ public class User extends Person {
     private String username;
 
     @Column(nullable = false)
-    private String email;
-
-    @Column
-    private LocalDateTime emailVerifiedAt;
+    private UUID emailId;
 
     @ToString.Exclude
     @Column(nullable = false)

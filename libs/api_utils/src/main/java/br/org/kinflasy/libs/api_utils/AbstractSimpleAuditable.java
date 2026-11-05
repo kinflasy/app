@@ -44,10 +44,8 @@ public abstract class AbstractSimpleAuditable {
 
     @PreUpdate
     protected void onPreUpdate() {
-        if (lastModifiedBy == null) {
-            final var user = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            setLastModifiedBy(user.getId());
-        }
+        final var user = (UserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        setLastModifiedBy(user.getId());
         setLastModifiedDate(LocalDateTime.now());
     }
 

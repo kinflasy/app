@@ -1,6 +1,5 @@
 package br.org.kinflasy.apis.contacts.controllers;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -34,8 +33,10 @@ public class EmailAddressController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Optional<EmailAddressDto>> findById(@PathVariable final UUID id) {
-        return ResponseEntity.ok(emailAddressService.findById(id));
+    public ResponseEntity<EmailAddressDto> findById(@PathVariable final UUID id) {
+        return emailAddressService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("{id}")

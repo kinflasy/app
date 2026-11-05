@@ -37,7 +37,7 @@ public class User extends Person {
     private String username;
 
     @Column(nullable = false)
-    private String email;
+    private UUID emailId;
 
     @ToString.Exclude
     @Column(nullable = false)

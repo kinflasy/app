@@ -2,6 +2,7 @@ package br.org.kinflasy.libs.people.dto;
 
 import java.util.UUID;
 
+import br.org.kinflasy.libs.contacts.dto.EmailAddressDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,6 @@ import lombok.experimental.Accessors;
 public class InactivePersonDto extends PersonDto {
 
     private UUID churchId;
-    private String email;
+    private EmailAddressDto email;
 
 }

@@ -14,15 +14,18 @@ import org.springframework.stereotype.Service;
 import br.org.kinflasy.apis.people.adapters.UserIdentifierDtoAdapter;
 import br.org.kinflasy.apis.people.clients.AddressClient;
 import br.org.kinflasy.apis.people.clients.ChurchClient;
+import br.org.kinflasy.apis.people.clients.EmailAddressClient;
 import br.org.kinflasy.apis.people.converters.UserConverter;
 import br.org.kinflasy.apis.people.repositories.UserRepository;
 import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.churches.dto.DeactivationRequest;
+import br.org.kinflasy.libs.contacts.dto.EmailAddressDto;
+import br.org.kinflasy.libs.contacts.dto.EmailAddressRequest;
 import br.org.kinflasy.libs.lib_utils.EntityEvent;
-import br.org.kinflasy.libs.lib_utils.EntityEvent.Created;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
+import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -43,6 +46,7 @@ public class UserService {
     private final UserRepository repository;
     private final UserConverter converter;
 
+    private final EmailAddressClient emailAddressClient;
     private final AddressClient addressClient;
     private final ChurchClient churchClient;
 
@@ -60,6 +64,12 @@ public class UserService {
             entity.setNickname(firstName);
         }
 
+        final var emailRequest = new EmailAddressRequest().setAddress(request.getEmail());
+        final var emailData = emailAddressClient.create(emailRequest);
+
+        // Referenciar e-mail
+        entity.setEmailId(emailData.getId());
+
         final var savedUser = repository.save(entity);
 
         Optional.ofNullable(request.getAddress())
@@ -76,11 +86,11 @@ public class UserService {
                         () -> log.info("Endereço não recebido. Pulando etapa..."));
 
         // Gerar DTO
-        final UserDto dto = converter.toDto(entity);
+        final var dto = converter.toDto(entity)
+                .setEmail(emailData);
 
         // Publicar evento
-        Created<UserDto> event = new EntityEvent.Created<>(dto);
-        publisher.publishEvent(event);
+        publisher.publishEvent(new EntityEvent.Created<>(dto));
 
         return dto;
     }
@@ -112,13 +122,18 @@ public class UserService {
     @PreAuthorize("@fga.check('person_data', #id, 'can_view', 'user', principal.id)")
     public Optional<UserDto> findById(final UUID id) {
         return repository.findById(id)
-                .map(converter::toDto);
+                .map(converter::toDto)
+                .flatMap(dto -> getCurrentEmailData(dto.getEmail().getId())
+                        .map(dto::setEmail));
     }
 
+    // todo retornar optional?
     @PostAuthorize("@fga.check('person_data', returnObject.id, 'can_view', 'user', principal.id)")
     public UserDto findByUsername(final String username) {
         return repository.findByUsername(username)
                 .map(user -> mapper.map(user, UserDto.class))
+                .flatMap(dto -> getCurrentEmailData(dto.getEmail().getId())
+                        .map(dto::setEmail))
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
@@ -130,7 +145,6 @@ public class UserService {
                     final var originalDto = mapper.map(entity, UserDto.class);
 
                     // Dados obrigatórios: obter da requisição ou manter original
-                    final var email = Optional.ofNullable(request.getEmail()).orElseGet(entity::getEmail);
                     final var username = Optional.ofNullable(request.getUsername()).orElseGet(entity::getUsername);
                     final var gender = Optional.ofNullable(request.getGender()).orElseGet(entity::getGender);
                     final var fullName = Optional.ofNullable(request.getFullName()).orElseGet(entity::getFullName);
@@ -141,9 +155,10 @@ public class UserService {
                             // Ou manter a senha antiga caso não seja recebida uma nova
                             .orElseGet(entity::getPassword);
 
+                    final var emailData = getOrUpdateEmailId(entity.getEmailId(), request.getEmail());
+
                     // Atualizar endereço
                     final var addressId = Optional.ofNullable(entity.getAddressId())
-
                             .map(currentAddressId -> Optional.ofNullable(request.getAddress())
                                     // Caso 1: o endereço antigo e o novo existem -> atualizar
                                     .map(addressRequest -> addressClient.update(currentAddressId, addressRequest)
@@ -164,17 +179,18 @@ public class UserService {
 
                     // Atualizar
                     mapper.map(request, entity);
-                    entity.setEmail(email);
                     entity.setUsername(username);
                     entity.setPassword(password);
                     entity.setGender(gender);
                     entity.setFullName(fullName);
                     entity.setBirthDate(birthDate);
                     entity.setAddressId(addressId);
+                    entity.setEmailId(emailData.getId());
 
                     // Salvar
                     repository.save(entity);
-                    final var modifiedDto = mapper.map(entity, UserDto.class);
+                    final var modifiedDto = mapper.map(entity, UserDto.class)
+                            .setEmail(emailData);
 
                     // Publicar evento
                     publisher.publishEvent(new EntityEvent.Updated<>(originalDto, modifiedDto));
@@ -184,6 +200,10 @@ public class UserService {
                 .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
     }
 
+    // todo updateUsername
+
+    // todo updatePassword
+
     @Transactional
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
     public void delete(final UUID id) {
@@ -191,6 +211,9 @@ public class UserService {
                 .ifPresent(entity -> {
                     // Desativar membresias do usuário
                     churchClient.deactivateMember(new DeactivationRequest().setUserId(id));
+
+                    // Deletar e-mail
+                    emailAddressClient.delete(entity.getEmailId());
 
                     // Deletar
                     repository.deleteById(id);
@@ -202,6 +225,31 @@ public class UserService {
                     publisher.publishEvent(new EntityEvent.Deleted<>(dto));
                 });
 
+    }
+
+    private EmailAddressDto getOrUpdateEmailId(final UUID currentEmailId, final String requestedEmail) {
+        return getCurrentEmailData(currentEmailId)
+                .filter(emailData -> {
+                    final var addressesAreDifferent = !requestedEmail.equals(emailData.getAddress());
+
+                    // Se o e-mail pré-existente for diferente do e-mail recebido na requisição...
+                    if (addressesAreDifferent) {
+                        // ... excluir o antigo
+                        emailAddressClient.delete(emailData.getId());
+                    }
+
+                    // Barrar caso os endereços sejam diferentes, para criar um novo e-mail
+                    return !addressesAreDifferent;
+                })
+                .orElseGet(() -> emailAddressClient.create(new EmailAddressRequest().setAddress(requestedEmail)));
+    }
+
+    private Optional<EmailAddressDto> getCurrentEmailData(final UUID currentEmailId) {
+        try {
+            return Optional.of(emailAddressClient.findById(currentEmailId));
+        } catch (final FeignException.NotFound e) {
+            return Optional.empty();
+        }
     }
 
 }

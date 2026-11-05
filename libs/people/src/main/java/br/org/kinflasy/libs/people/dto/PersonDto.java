@@ -9,7 +9,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import br.org.kinflasy.libs.contacts.contracts.Emailable;
 import br.org.kinflasy.libs.people.enums.Gender;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +21,7 @@ import lombok.experimental.Accessors;
         @Type(name = "INACTIVE", value = InactivePersonDto.class),
         @Type(name = "USER", value = UserDto.class) })
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-public abstract class PersonDto implements Emailable {
+public abstract class PersonDto {
 
     private UUID id;
     private String fullName;

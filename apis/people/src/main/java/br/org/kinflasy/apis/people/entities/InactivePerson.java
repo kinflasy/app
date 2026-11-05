@@ -25,11 +25,7 @@ public class InactivePerson extends Person {
     @Column(nullable = false)
     private UUID churchId;
 
-    /*
-     * Dados primitivos
-     */
-
     @Column
-    private String email;
+    private UUID emailId;
 
 }

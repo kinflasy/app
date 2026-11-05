@@ -6,7 +6,6 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import br.org.kinflasy.libs.api_utils.AbstractSimpleAuditable;
 import br.org.kinflasy.libs.churches.enums.UnitType;
-import br.org.kinflasy.libs.contacts.contracts.Emailable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -29,7 +28,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
-public class Unit extends AbstractSimpleAuditable implements Emailable {
+public class Unit extends AbstractSimpleAuditable {
 
     /*
      * Chave primária
@@ -74,7 +73,7 @@ public class Unit extends AbstractSimpleAuditable implements Emailable {
     private String slug;
 
     @Column(nullable = false)
-    private String email;
+    private UUID emailId;
 
     @Column(nullable = false)
     private String phone;

@@ -1,7 +1,6 @@
 package br.org.kinflasy.libs.people.dto;
 
-import java.time.LocalDateTime;
-
+import br.org.kinflasy.libs.contacts.dto.EmailAddressDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,6 @@ import lombok.experimental.Accessors;
 public class UserDto extends PersonDto {
 
     private String username;
-    private String email;
-    private LocalDateTime emailVerifiedAt;
+    private EmailAddressDto email;
 
 }

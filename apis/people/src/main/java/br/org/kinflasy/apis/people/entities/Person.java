@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.hibernate.annotations.DynamicUpdate;
 
 import br.org.kinflasy.libs.api_utils.AbstractSimpleAuditable;
-import br.org.kinflasy.libs.contacts.contracts.Emailable;
 import br.org.kinflasy.libs.people.enums.Gender;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +28,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
-public abstract class Person extends AbstractSimpleAuditable implements Emailable {
+public abstract class Person extends AbstractSimpleAuditable {
 
     /*
      * Chave primária

@@ -1,12 +1,10 @@
 package br.org.kinflasy.apis.churches.entities;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.hibernate.annotations.DynamicUpdate;
 
 import br.org.kinflasy.libs.api_utils.AbstractSimpleAuditable;
-import br.org.kinflasy.libs.contacts.contracts.Emailable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,7 +21,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
-public class Church extends AbstractSimpleAuditable implements Emailable {
+public class Church extends AbstractSimpleAuditable {
 
     /*
      * Chave primária
@@ -49,10 +47,7 @@ public class Church extends AbstractSimpleAuditable implements Emailable {
     @Column
     private String phone;
 
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column
-    private LocalDateTime emailVerifiedAt;
+    @Column(nullable = false)
+    private UUID emailId;
 
 }

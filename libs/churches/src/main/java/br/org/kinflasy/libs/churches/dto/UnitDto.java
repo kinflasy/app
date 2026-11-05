@@ -3,7 +3,6 @@ package br.org.kinflasy.libs.churches.dto;
 import java.util.UUID;
 
 import br.org.kinflasy.libs.churches.enums.UnitType;
-import br.org.kinflasy.libs.contacts.contracts.Emailable;
 import br.org.kinflasy.libs.contacts.dto.AddressDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +12,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
-public class UnitDto implements Emailable {
+public class UnitDto {
 
     private UUID id;
     private String name;
