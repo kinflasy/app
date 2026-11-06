@@ -75,6 +75,7 @@ openfga:
       api-token: ${OPENFGA_API_TOKEN}
 
 app:
+  base-url: ${API_URL:http://localhost:8080}
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS}
   api:

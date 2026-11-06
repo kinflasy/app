@@ -46,6 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/**", "/v1/core/users/admin",
                                 "/v1/core/addresses/register", "/v1/core/email-addresses")
                         .permitAll()
+                        .requestMatchers(HttpMethod.GET, "/v1/core/contacts/mail/verify/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
