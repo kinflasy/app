@@ -22,7 +22,7 @@ import lombok.experimental.Accessors;
 @Entity
 @DynamicUpdate
 @Table(name = "extensions_subscriptions", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "departmentId", "extension" }) })
+        @UniqueConstraint(columnNames = { ExtensionSubscription_.DEPARTMENT_ID, ExtensionSubscription_.EXTENSION }) })
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = true)

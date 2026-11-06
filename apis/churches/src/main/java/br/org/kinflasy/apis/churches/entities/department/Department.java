@@ -22,8 +22,8 @@ import lombok.experimental.Accessors;
 @Entity
 @DynamicUpdate
 @Table(name = "departments", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "unit_id", "name" }),
-        @UniqueConstraint(columnNames = { "unit_id", "slug" }) })
+        @UniqueConstraint(columnNames = { Department_.UNIT_ID, Department_.NAME }),
+        @UniqueConstraint(columnNames = { Department_.UNIT_ID, Department_.SLUG }) })
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
@@ -43,7 +43,7 @@ public class Department extends AbstractSimpleAuditable {
 
     @Column(nullable = false)
     private UUID unitId;
-    
+
     @Column(nullable = true)
     private UUID visibilityId;
 

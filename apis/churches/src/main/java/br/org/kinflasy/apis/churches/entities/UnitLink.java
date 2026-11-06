@@ -19,8 +19,7 @@ import lombok.experimental.Accessors;
 @IdClass(UnitLinkId.class)
 @DynamicUpdate
 @Table(name = "unit_links", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "unit_id", "link_id" })
-})
+        @UniqueConstraint(columnNames = { UnitLink_.UNIT_ID, UnitLink_.LINK_ID }) })
 @Data
 @Accessors(chain = false)
 @EqualsAndHashCode(callSuper = false)
@@ -29,7 +28,7 @@ public class UnitLink {
     @Id
     @Column(nullable = false)
     private UUID unitId;
-    
+
     @Id
     @Column(nullable = false)
     private UUID linkId;

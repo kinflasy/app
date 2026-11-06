@@ -19,7 +19,8 @@ import lombok.experimental.Accessors;
 
 @Entity
 @DynamicUpdate
-@Table(name = "abilities", uniqueConstraints = @UniqueConstraint(columnNames = { "person_id", "role_id" }))
+@Table(name = "abilities", uniqueConstraints = @UniqueConstraint(columnNames = { Ability_.PERSON_ID,
+        Ability_.ROLE_ID }))
 @Data
 @Builder
 @NoArgsConstructor

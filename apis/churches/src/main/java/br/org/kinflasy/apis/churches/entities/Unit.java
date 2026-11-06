@@ -22,8 +22,8 @@ import lombok.experimental.Accessors;
 @Entity
 @DynamicUpdate
 @Table(name = "units", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "church_id", "name" }),
-        @UniqueConstraint(columnNames = { "church_id", "slug" })
+        @UniqueConstraint(columnNames = { Unit_.CHURCH_ID, Unit_.NAME }),
+        @UniqueConstraint(columnNames = { Unit_.CHURCH_ID, Unit_.SLUG })
 })
 @Data
 @Accessors(chain = false)
