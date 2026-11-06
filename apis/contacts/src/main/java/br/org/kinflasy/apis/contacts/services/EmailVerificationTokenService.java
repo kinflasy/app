@@ -3,6 +3,7 @@ package br.org.kinflasy.apis.contacts.services;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.modelmapper.ModelMapper;
@@ -19,6 +20,9 @@ import br.org.kinflasy.libs.contacts.dto.EmailVerificationTokenDto;
 
 @Service
 public class EmailVerificationTokenService {
+
+    private static final int MINUTES_TO_RESEND_TOKEN = 2;
+    private static final int MINUTES_TO_EXPIRE_TOKEN = 30;
 
     private final ModelMapper mapper;
 
@@ -39,6 +43,13 @@ public class EmailVerificationTokenService {
 
                 // Ou criar um novo token caso não exista
                 .orElseGet(EmailVerificationToken::new);
+
+        Optional.ofNullable(entity.getCreatedDate())
+                .filter(createdDate -> createdDate.plusMinutes(MINUTES_TO_RESEND_TOKEN).isAfter(LocalDateTime.now()))
+                .ifPresent(createdDate -> {
+                    throw new IllegalStateException("Aguarde " + MINUTES_TO_RESEND_TOKEN
+                            + " minutos para solicitar um novo token de verificação para este e-mail.");
+                });
 
         // Preencher os campos do token
         entity.setEmailId(emailId);
@@ -87,7 +98,7 @@ public class EmailVerificationTokenService {
     }
 
     private Instant generateExpirationDate() {
-        return LocalDateTime.now().plusDays(1).toInstant(ZoneOffset.ofHours(-3));
+        return LocalDateTime.now().plusMinutes(MINUTES_TO_EXPIRE_TOKEN).toInstant(ZoneOffset.ofHours(-3));
     }
 
 }
