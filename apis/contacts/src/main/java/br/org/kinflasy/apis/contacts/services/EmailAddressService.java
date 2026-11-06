@@ -77,7 +77,7 @@ public class EmailAddressService {
                     }
 
                     final var tokenDto = emailVerificationTokenService.create(id);
-                    final var url = "%s/v1/core/contacts/mail/verify/%s"
+                    final var url = "%s/v1/core/contacts/email-addresses/verify/%s"
                             .formatted(baseUrl, tokenDto.getToken());
 
                     final var mail = new MailDto()

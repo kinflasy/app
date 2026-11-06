@@ -20,7 +20,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("v1/core/email-addresses")
+@RequestMapping("v1/core/contacts/email-addresses")
 @Tag(name = "Email")
 @AllArgsConstructor
 public class EmailAddressController {
@@ -43,6 +43,24 @@ public class EmailAddressController {
     public ResponseEntity<Void> delete(@PathVariable final UUID id) {
         emailAddressService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("send-verification/{emailId}")
+    public ResponseEntity<Void> sendToken(@PathVariable final UUID emailId) {
+        emailAddressService.sendVerificationEmail(emailId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("send-verification")
+    public ResponseEntity<Void> sendToken() {
+        emailAddressService.sendVerificationEmail();
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("verify/{token}")
+    public ResponseEntity<Void> validateToken(@PathVariable final String token) {
+        final var result = emailAddressService.verifyEmail(token);
+        return result.isVerified() ? ResponseEntity.noContent().build() : ResponseEntity.badRequest().build();
     }
 
 }
