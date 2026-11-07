@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.org.kinflasy.apis.people.services.UserService;
-import br.org.kinflasy.libs.api_utils.AuthUtils;
 import br.org.kinflasy.libs.people.dto.UserDto;
 import br.org.kinflasy.libs.people.dto.UserIdentifierDto;
 import br.org.kinflasy.libs.people.dto.UserRequest;
@@ -31,11 +30,6 @@ import lombok.AllArgsConstructor;
 public class UserController {
 
     private final UserService service;
-    private final AuthUtils authUtils;
-
-    /*
-     * ACESSO PÚBLICO
-     */
 
     @PostMapping("admin")
     @Operation(summary = "ADMIN - Cadastrar", description = "Cadastrar um novo usuário ativo.")
@@ -59,10 +53,6 @@ public class UserController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /*
-     * ACESSO AUTENTICADO
-     */
-
     @GetMapping("identify")
     @Operation(summary = "Identificar usuário logado", description = "Identificar o usuário logado.")
     public ResponseEntity<UserIdentifierDto> identifyLoggedUser() {
@@ -70,10 +60,6 @@ public class UserController {
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
-
-    /*
-     * ACESSO RESTRITO
-     */
 
     @GetMapping("{id}")
     @Operation(summary = "Buscar", description = "Buscar um usuário ativo pelo ID.")
@@ -95,31 +81,41 @@ public class UserController {
 
     @PutMapping
     @Operation(summary = "Editar-se", description = "Editar os dados do usuário logado.")
-    public ResponseEntity<UserDto> update(@RequestBody final UserRequest request) {
-        try {
-            final var loggedUser = authUtils.getLoggedUser();
-            return new ResponseEntity<>(service.update(loggedUser.getId(), request), HttpStatus.OK);
-        } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<UserDto> update(@RequestBody final UserRequest.Update request) {
+        return service.update(request)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
     }
 
     @PutMapping("admin/{id}")
     @Operation(summary = "ADMIN - Editar", description = "Editar os dados de um usuário ativo.")
-    public ResponseEntity<UserDto> update(@PathVariable final UUID id, @RequestBody final UserRequest request) {
-        try {
-            return new ResponseEntity<>(service.update(id, request), HttpStatus.OK);
-        } catch (final EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<UserDto> update(@PathVariable final UUID id, @RequestBody final UserRequest.Update request) {
+        return service.update(id, request)
+                .map(ResponseEntity::ok)
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
+
+    @PutMapping("username")
+    @Operation(summary = "Mudar username", description = "Mudar o username do usuário logado.")
+    public ResponseEntity<Void> updateUsername(@Valid @RequestBody final UserRequest.UpdateUsername request) {
+        return service.updateUsername(request)
+                .map(ignored -> ResponseEntity.ok().<Void>build())
+                .orElseGet(ResponseEntity.notFound()::build);
+    }
+
+    @PutMapping("password")
+    @Operation(summary = "Mudar senha", description = "Mudar a senha do usuário logado.")
+    public ResponseEntity<Void> updatePassword(@Valid @RequestBody final UserRequest.UpdatePassword request) {
+        return service.updatePassword(request)
+                .map(ignored -> ResponseEntity.ok().<Void>build())
+                .orElseGet(ResponseEntity.notFound()::build);
     }
 
     @DeleteMapping
     @Operation(summary = "Excluir-se", description = "Descadastrar usuário logado, removendo-o do sistema.")
     public ResponseEntity<HttpStatus> delete() {
         try {
-            final var loggedUser = authUtils.getLoggedUser();
-            service.delete(loggedUser.getId());
+            service.delete();
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (final Exception e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);

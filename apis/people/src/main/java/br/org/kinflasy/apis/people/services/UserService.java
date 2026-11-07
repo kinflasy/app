@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import br.org.kinflasy.apis.people.adapters.UserIdentifierDtoAdapter;
 import br.org.kinflasy.apis.people.clients.AddressClient;
@@ -28,10 +29,12 @@ import br.org.kinflasy.libs.people.dto.UserRequest;
 import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Validated
 @Service
 @AllArgsConstructor
 public class UserService {
@@ -139,21 +142,15 @@ public class UserService {
 
     @Transactional
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
-    public UserDto update(final UUID id, final UserRequest request) {
+    public Optional<UserDto> update(final UUID id, final UserRequest.Update request) {
         return repository.findById(id)
                 .map(entity -> {
                     final var originalDto = mapper.map(entity, UserDto.class);
 
                     // Dados obrigatórios: obter da requisição ou manter original
-                    final var username = Optional.ofNullable(request.getUsername()).orElseGet(entity::getUsername);
                     final var gender = Optional.ofNullable(request.getGender()).orElseGet(entity::getGender);
                     final var fullName = Optional.ofNullable(request.getFullName()).orElseGet(entity::getFullName);
                     final var birthDate = Optional.ofNullable(request.getBirthDate()).orElseGet(entity::getBirthDate);
-                    final var password = Optional.ofNullable(request.getPassword())
-                            // Criptografar nova senha recebida
-                            .map(encoder::encode)
-                            // Ou manter a senha antiga caso não seja recebida uma nova
-                            .orElseGet(entity::getPassword);
 
                     final var emailData = getOrUpdateEmailId(entity.getEmailId(), request.getEmail());
 
@@ -179,8 +176,6 @@ public class UserService {
 
                     // Atualizar
                     mapper.map(request, entity);
-                    entity.setUsername(username);
-                    entity.setPassword(password);
                     entity.setGender(gender);
                     entity.setFullName(fullName);
                     entity.setBirthDate(birthDate);
@@ -196,16 +191,73 @@ public class UserService {
                     publisher.publishEvent(new EntityEvent.Updated<>(originalDto, modifiedDto));
 
                     return modifiedDto;
-                })
-                .orElseThrow(() -> new EntityNotFoundException(NOT_FOUND_MESSAGE));
+                });
     }
 
-    // todo updateUsername
-
-    // todo updatePassword
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    public Optional<UserDto> update(final UserRequest.Update request) {
+        final var loggedUser = authUtils.getLoggedUser();
+        return update(loggedUser.getId(), request);
+    }
 
     @Transactional
     @PreAuthorize("@fga.check('person_data', #id, 'can_edit', 'user', principal.id)")
+    public Optional<UserDto> updateUsername(final UUID id, @Valid final UserRequest.UpdateUsername request) {
+        return repository.findById(id)
+                .map(entity -> {
+                    final var originalDto = mapper.map(entity, UserDto.class);
+
+                    // Atualizar
+                    entity.setUsername(request.getUsername());
+
+                    // Salvar
+                    repository.save(entity);
+                    final var modifiedDto = mapper.map(entity, UserDto.class);
+
+                    // Publicar evento
+                    publisher.publishEvent(new EntityEvent.Updated<>(originalDto, modifiedDto));
+
+                    return modifiedDto;
+                });
+    }
+
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    public Optional<UserDto> updateUsername(@Valid final UserRequest.UpdateUsername request) {
+        final var loggedUser = authUtils.getLoggedUser();
+        return updateUsername(loggedUser.getId(), request);
+    }
+
+    @Transactional
+    @PreAuthorize("#id.equals(principal.id)")
+    public Optional<UserDto> updatePassword(final UUID id, final UserRequest.UpdatePassword request) {
+        return repository.findById(id)
+                .map(entity -> {
+                    // Barrar caso a senha atual esteja errada
+                    if (!encoder.matches(request.getCurrentPassword(), entity.getPassword())) {
+                        throw new IllegalArgumentException("Senha atual incorreta.");
+                    }
+
+                    // Atualizar senha
+                    final var newPassword = encoder.encode(request.getNewPassword());
+                    entity.setPassword(newPassword);
+
+                    // Salvar
+                    repository.save(entity);
+                    return mapper.map(entity, UserDto.class);
+                });
+    }
+
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    public Optional<UserDto> updatePassword(final UserRequest.UpdatePassword request) {
+        final var loggedUser = authUtils.getLoggedUser();
+        return updatePassword(loggedUser.getId(), request);
+    }
+
+    @Transactional
+    @PreAuthorize("#id.equals(principal.id)")
     public void delete(final UUID id) {
         repository.findById(id)
                 .ifPresent(entity -> {
@@ -225,6 +277,13 @@ public class UserService {
                     publisher.publishEvent(new EntityEvent.Deleted<>(dto));
                 });
 
+    }
+
+    @Transactional
+    @PreAuthorize("isAuthenticated()")
+    public void delete() {
+        final var loggedUser = authUtils.getLoggedUser();
+        delete(loggedUser.getId());
     }
 
     private EmailAddressDto getOrUpdateEmailId(final UUID currentEmailId, final String requestedEmail) {
